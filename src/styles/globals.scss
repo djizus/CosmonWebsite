@@ -1,0 +1,10 @@
+@tailwind base;
+
+@tailwind utilities;
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  @apply bg-cosmon-dark-blue;
+  @apply font-poppins;
+}
