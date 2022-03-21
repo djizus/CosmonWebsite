@@ -3,8 +3,26 @@
 @tailwind utilities;
 
 html {
+  @apply bg-cosmon-blue-dark font-poppins text-[#d4d4d4];
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  @apply bg-cosmon-dark-blue;
-  @apply font-poppins;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+div,
+p {
+  @apply text-center;
+}
+
+h2 {
+  @apply text-[26px] font-bold leading-[45px];
+}
+
+p {
+  @apply text-[16px] leading-[22px];
 }

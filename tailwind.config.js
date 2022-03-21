@@ -7,7 +7,10 @@ module.exports = {
       },
       colors: {
         cosmon: {
-          'dark-blue': '#08062B',
+          blue: {
+            dark: '#0A0733',
+            darker: '#08062B',
+          },
           black: '#050505',
           gray: {
             10: '#F2F2F2',

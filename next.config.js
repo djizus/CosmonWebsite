@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   images: {
-    loader: 'imgix',
-    path: 'https://cosmon.ki/',
+    loader: 'akamai',
+    path: '',
   },
   reactStrictMode: true,
   webpack(config) {

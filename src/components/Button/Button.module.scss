@@ -1,8 +1,8 @@
 .btn {
   @apply flex items-center gap-x-2 rounded-xl px-10 py-4 font-semibold text-white;
-  width: fit-content;
   font-size: 16px;
   line-height: 26px;
+  box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.4);
 
   .arrow {
     &.reverse {
@@ -14,7 +14,7 @@
   }
 
   &.primary {
-    background: linear-gradient(
+    background-image: linear-gradient(
       180deg,
       #a996ff 0%,
       rgba(118, 96, 216, 0.5) 100%
@@ -26,9 +26,9 @@
       }
     }
     &:focus {
-      @apply relative bg-cosmon-main-secondary bg-none;
-      &::before {
-        @apply rounded-xl;
+      @apply bg-cosmon-main-secondary;
+      &::after {
+        @apply absolute -z-10 rounded-xl;
         width: calc(100% + 2px);
         height: calc(100% + 2px);
         content: '';
@@ -39,17 +39,35 @@
         );
         top: -1px;
         left: -1px;
-        position: absolute;
-        z-index: -1;
       }
     }
     &:active {
-      @apply relative bg-cosmon-main-secondary bg-none;
-      &::before {
+      @apply bg-cosmon-main-secondary;
+      &::after {
+        @apply z-10;
         background-image: none;
       }
     }
   }
+
+  &.secondary {
+    background: #070627;
+
+    &::after {
+      @apply absolute -z-10 rounded-xl;
+      width: calc(100% + 2px);
+      height: calc(100% + 2px);
+      content: '';
+      background-image: linear-gradient(
+        180deg,
+        #a996ff 0%,
+        rgba(118, 96, 216, 0.5) 100%
+      );
+      top: -1px;
+      left: -1px;
+    }
+  }
+
   &.disabled {
     @apply bg-cosmon-gray-1 font-normal text-cosmon-gray-6;
     background-color: #2e3736;

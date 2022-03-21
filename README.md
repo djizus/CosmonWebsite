@@ -9,6 +9,6 @@ The colors, fonts and theme are configured within `tailwind.config.js`
 
 ## Export as a static site
 
-Run `yarn && yarn build` to export a static build of the website. The output should be inside the `out` generated folder.
+Run `yarn build` OR `npm run build` to export a static build of the website. The output should be inside the `out` generated folder.
 
 ## Preview
