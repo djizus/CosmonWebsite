@@ -16,26 +16,26 @@ import Section from '../components/Section/Section'
 export default function Page() {
   return (
     <>
-      <Section className="bg-cosmon-blue-darker pb-2">
+      <Section className="bg-cosmon-blue-darker pb-2 lg:pb-32">
         <Hero>
           The first play to earn in the COSMOS ecosystem combining video games,
           NFT and financial gain. Now, let's go to war!{' '}
         </Hero>
       </Section>
 
-      <Section className="bg-cosmon-blue-darker pt-[91px]">
+      <Section className="bg-cosmon-blue-darker pt-[91px] lg:pt-[60px] lg:pb-[134px]">
         <Intro />
       </Section>
 
-      <Section className="-mt-3 mb-[160px] pt-36 pb-[360px]">
+      <Section className="-mt-3 mb-[160px] pt-36 pb-[360px] lg:mb-0 lg:pb-[717px]">
         <ChooseYourLeaders />
       </Section>
 
-      <Section className="pt-[165px] pb-[76px]">
+      <Section className="pt-[165px] pb-[76px] lg:pt-[272px] lg:pb-[138px]">
         <RarityLevels />
       </Section>
 
-      <Section className=" pt-[159px]">
+      <Section className=" pt-[159px] lg:pt-[172px]">
         <HoldAndEarn />
       </Section>
 
@@ -43,19 +43,19 @@ export default function Page() {
         <Treasury />
       </Section>
 
-      <Section className="pt-44">
+      <Section className="overflow-hidden pt-44">
         <Roadmap />
       </Section>
 
-      <Section className="pt-[86px]">
+      <Section className="pt-[86px] lg:pt-[240px]">
         <Partners />
       </Section>
 
-      <Section className="pt-52">
+      <Section className="pt-52 lg:pt-[261px]">
         <CommonQuestions />
       </Section>
 
-      <Section className="pt-48">
+      <Section className="pt-48 pb-44 lg:pt-[298px]">
         <Subscribe />
       </Section>
     </>

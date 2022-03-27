@@ -1,0 +1,17 @@
+.footer {
+  @apply mx-auto max-w-6xl px-12 pb-10 lg:w-full lg:pb-[60px];
+
+  .link-group {
+    @apply flex flex-col gap-y-3;
+  }
+  .title,
+  .link {
+    @apply text-left text-lg font-semibold leading-8 tracking-[0.75px];
+  }
+  .title {
+    @apply text-[#FCFCFC];
+  }
+  .link {
+    @apply font-normal text-[#D9DBE9];
+  }
+}

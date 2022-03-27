@@ -20,9 +20,13 @@ p {
 }
 
 h2 {
-  @apply text-[26px] font-bold leading-[45px];
+  @apply text-[26px] font-bold leading-[45px] lg:text-[40px];
 }
 
 p {
   @apply text-[16px] leading-[22px];
+}
+
+input[type='text'] {
+  @apply flex w-full rounded-2xl border border-cosmon-main-primary bg-transparent bg-[#4E4B66] py-[18px] pl-6;
 }

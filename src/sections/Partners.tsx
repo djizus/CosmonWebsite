@@ -2,9 +2,9 @@ import Image from 'next/image'
 
 export default function Partners() {
   return (
-    <div>
+    <div className="mx-auto max-w-6xl">
       <h2>Early supports and partners</h2>
-      <p className="pt-[30px] text-lg leading-8">
+      <p className="mx-auto max-w-[860px] pt-[30px] text-lg leading-8">
         Cosmon is an in initiative from Klub and the Ki Foundation. We are
         working on some of the most promising Cosmos-based projects, including
         Cosmos Hub, Osmosis, Juno, Stargaze, Persistence, Akash, Sentinel,
@@ -13,7 +13,9 @@ export default function Partners() {
         to come soon!
       </p>
 
-      <div className="partner-list grid grid-cols-2 pt-10">
+      <div className="partner-list grid grid-cols-2 pt-10 lg:grid-cols-4">
+        <Image width="132px" height="64px" src="/partners/partner.svg" />
+        <Image width="132px" height="64px" src="/partners/partner.svg" />
         <Image width="132px" height="64px" src="/partners/partner.svg" />
         <Image width="132px" height="64px" src="/partners/partner.svg" />
         <Image width="132px" height="64px" src="/partners/partner.svg" />

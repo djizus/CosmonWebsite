@@ -4,7 +4,10 @@ import style from './Button.module.scss'
 
 type ButtonProps = {
   type?: 'primary' | 'secondary' | 'tertiary'
-  withDirection?: 'none' | 'left' | 'right'
+  icon?: {
+    position: 'left' | 'right'
+    direction: 'left' | 'right'
+  }
   children: React.ReactNode
   disabled?: boolean
   className?: string
@@ -12,27 +15,37 @@ type ButtonProps = {
 
 export default function Button({
   type = 'primary',
-  withDirection = 'none',
   children,
+  icon,
   disabled = false,
   className = '',
   ...props
 }: ButtonProps) {
   return (
-    <div className="relative z-10 mx-auto mb-1 flex w-fit flex-row">
+    <div className="relative z-10 mx-auto mb-1 flex w-fit flex-row lg:m-0">
       <button
         disabled={disabled}
         className={clsx(
           `${style.btn}`,
-          `${className}`,
-          !disabled ? style[type] : style.disabled
+          !disabled ? style[type] : style.disabled,
+          `${className}`
         )}
       >
-        {withDirection === 'left' && (
-          <ArrowRight className={`${style.arrow} ${style.reverse}`} />
+        {icon && icon.position === 'left' && (
+          <ArrowRight
+            className={`${style.arrow} ${
+              icon.direction === 'left' && style.reverse
+            }`}
+          />
         )}
         {children}
-        {withDirection === 'right' && <ArrowRight className={style.arrow} />}
+        {icon && icon.position === 'right' && (
+          <ArrowRight
+            className={`${style.arrow} ${
+              icon.direction === 'left' && style.reverse
+            }`}
+          />
+        )}
       </button>
     </div>
   )

@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Button from '../Button/Button'
 
 export type RarityLevelType =
   | 'common'
@@ -10,11 +11,12 @@ export type RarityLevelType =
 
 export type RarityLevelProps = {
   type: RarityLevelType
+  comingSoon?: boolean
 }
 
-export default function RarityLevel({ type }: RarityLevelProps) {
+export default function RarityLevel({ type, comingSoon }: RarityLevelProps) {
   return (
-    <div>
+    <div className="">
       <Image
         height="112px"
         width="112px"
@@ -25,6 +27,13 @@ export default function RarityLevel({ type }: RarityLevelProps) {
           {type}
         </div>
       </div>
+      {comingSoon && (
+        <div className="absolute -ml-10 mt-3">
+          <Button type="primary" className="lg:max-h-10" disabled>
+            Coming soon
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

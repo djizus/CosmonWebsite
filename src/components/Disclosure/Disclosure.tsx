@@ -11,8 +11,8 @@ export default function Disclosure({ title, children }: DisclosureProps) {
       <DisclosureUi>
         {({ open }) => (
           <>
-            <DisclosureUi.Button className="flex w-full items-center justify-between py-6">
-              <div className="pr-5 text-left text-[16px] font-semibold leading-[26px]">
+            <DisclosureUi.Button className="flex w-full items-center justify-between py-6 lg:py-[30px]">
+              <div className="pr-5 text-left text-[16px] font-semibold leading-[26px] lg:text-[22px]">
                 {title}
               </div>
               <Chevron
@@ -20,7 +20,7 @@ export default function Disclosure({ title, children }: DisclosureProps) {
               />
             </DisclosureUi.Button>
 
-            <DisclosureUi.Panel className="pb-3 text-left text-sm font-light">
+            <DisclosureUi.Panel className="pb-3 text-left text-sm font-light lg:pb-6 lg:text-[16px]">
               {children}
             </DisclosureUi.Panel>
           </>
