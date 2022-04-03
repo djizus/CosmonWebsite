@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import router from 'next/router'
 import Button from '../components/Button/Button'
 import ChooseYourLeadersBackground from '/public/choose-your-leaders/choose-your-leaders-background.png'
 
@@ -52,7 +53,7 @@ export default function ChooseYourLeaders() {
           strengths with one common goal: to win that war.{' '}
         </p>
         <div className="flex justify-center pt-8 lg:pt-16">
-          <Button>Buy cosmon</Button>
+          <Button onClick={() => router.push('/buy-cosmon')}>Buy cosmon</Button>
         </div>
       </div>
       <div className="absolute -bottom-24 left-0 flex w-full justify-center overflow-hidden lg:bottom-24 lg:justify-start lg:pl-12">

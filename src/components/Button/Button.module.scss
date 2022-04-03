@@ -4,6 +4,10 @@
   line-height: 26px;
   box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.4);
 
+  &.small {
+    @apply px-5 py-3;
+  }
+
   .arrow {
     &.reverse {
       @apply rotate-180;
@@ -66,6 +70,13 @@
       top: -1px;
       left: -1px;
     }
+  }
+
+  &.ghost {
+    background: transparent;
+    box-shadow: none;
+    border: 1px solid #7660d8;
+    height: 42px;
   }
 
   &.disabled {

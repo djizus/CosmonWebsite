@@ -1,4 +1,3 @@
-import type { NextPage } from 'next'
 import type { ReactElement } from 'react'
 import ChooseYourLeaders from '../sections/ChooseYourLeaders'
 import Hero from '../sections/Hero'

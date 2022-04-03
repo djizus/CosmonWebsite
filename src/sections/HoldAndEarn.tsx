@@ -1,5 +1,6 @@
 import Button from '../components/Button/Button'
 import Image from 'next/image'
+import router from 'next/router'
 
 export default function HoldAndEarn() {
   return (
@@ -32,7 +33,9 @@ export default function HoldAndEarn() {
             It will also provide a daily fuel to be used ingame.
           </p>
           <div className="pt-10">
-            <Button>Buy Cosmon</Button>
+            <Button onClick={() => router.push('/buy-cosmon')}>
+              Buy Cosmon
+            </Button>
           </div>
         </div>
       </div>

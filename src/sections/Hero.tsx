@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Button from '../components/Button/Button'
 import HeroBackground from '../../public/hero-background.png'
+import router from 'next/router'
 
 type HeroProps = {
   children: React.ReactNode
@@ -40,7 +41,7 @@ export default function Hero({ children }: HeroProps) {
         </p>
 
         <div className="flex flex-col gap-y-8 pt-32 lg:flex-row lg:justify-center lg:gap-x-8 lg:pt-[62px]">
-          <Button>Buy Cosmon</Button>
+          <Button onClick={() => router.push('/buy-cosmon')}>Buy Cosmon</Button>
           <Button
             type="secondary"
             icon={{

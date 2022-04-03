@@ -23,7 +23,7 @@ export default function RarityLevel({ type, comingSoon }: RarityLevelProps) {
         src={`/rarity-levels/${type}.png`}
       ></Image>
       <div>
-        <div className="text-[18px] font-bold uppercase leading-[36px] tracking-[0.12em] text-white">
+        <div className="text-center text-[18px] font-bold uppercase leading-[36px] tracking-[0.12em] text-white">
           {type}
         </div>
       </div>

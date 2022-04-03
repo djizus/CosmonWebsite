@@ -14,13 +14,19 @@ h3,
 h4,
 h5,
 h6,
-div,
 p {
   @apply text-center;
 }
 
 h2 {
   @apply text-[26px] font-bold leading-[45px] lg:text-[40px];
+}
+
+h4 {
+  @apply text-[26px] font-bold leading-[32px];
+  @screen lg {
+    @apply text-[40px] leading-[45px];
+  }
 }
 
 p {

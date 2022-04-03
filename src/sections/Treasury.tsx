@@ -24,7 +24,7 @@ export default function Treasury() {
 
         <p className="pt-10 lg:text-left">All Yield generated goes to: </p>
 
-        <ul className="lg:ùl-3 flex flex-col gap-y-6 px-6  pt-6 lg:text-left">
+        <ul className="flex flex-col gap-y-6 px-6 pt-6  text-center lg:ml-3 lg:text-left">
           <li className="list-disc">
             All the proceeds of the NFT sales will be pooled in a decentralized
             treasury and invested in the most promising Cosmos-based tokens.
