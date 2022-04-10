@@ -1,23 +1,27 @@
 import Image from 'next/image'
+import { useState } from 'react'
+import { Scarcity } from '../../../types/Scarcity'
+import { useWalletStore } from '../../store/walletStore'
 import Button from '../Button/Button'
-import { useStoreState } from '../../store/hooks'
 
 type PotionItemProps = {
-  type: string
+  type: Scarcity
   price: string
   img: string
   isAvailable?: boolean
+  isCurrentlyBuying: boolean
   buy?: () => void
 }
 
 export default function PotionItem({
+  isCurrentlyBuying,
   type,
   price,
   img,
   isAvailable = false,
   buy,
 }: PotionItemProps) {
-  const isConnected = useStoreState((state) => state.isConnected)
+  const { isConnected } = useWalletStore((state) => state)
 
   return (
     <div className="flex flex-col items-center">
@@ -32,9 +36,15 @@ export default function PotionItem({
         {price}
       </p>
 
-      {isConnected && (
+      {isConnected() && (
         <div className="pt-8">
-          <Button disabled={!isAvailable} size={'small'} onClick={buy}>
+          <Button
+            isLoading={isCurrentlyBuying}
+            type={'secondary'}
+            disabled={!isAvailable}
+            size={'small'}
+            onClick={buy}
+          >
             {isAvailable ? 'Buy' : 'Sold out'}
           </Button>
         </div>

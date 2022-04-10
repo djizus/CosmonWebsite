@@ -1,0 +1,18 @@
+:root {
+  --toastify-color-dark: #08062b;
+  --toastify-font-family: 'Poppins';
+  --toastify-toast-min-height: 72px;
+}
+
+.Toastify {
+  font-family: 'Poppins';
+  font-size: 13px;
+  &__toast {
+    border: 1px solid #151336;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 9px 5px;
+    border-radius: 10px;
+  }
+  &__toast-icon {
+    margin-inline-end: 16px;
+  }
+}

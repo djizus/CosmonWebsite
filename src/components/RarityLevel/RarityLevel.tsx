@@ -1,16 +1,9 @@
 import Image from 'next/image'
+import { Scarcity } from '../../../types/Scarcity'
 import Button from '../Button/Button'
 
-export type RarityLevelType =
-  | 'common'
-  | 'uncommon'
-  | 'rare'
-  | 'epic'
-  | 'legendary'
-  | 'divinity'
-
 export type RarityLevelProps = {
-  type: RarityLevelType
+  type: Scarcity
   comingSoon?: boolean
 }
 

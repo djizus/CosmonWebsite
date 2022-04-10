@@ -1,3 +1,4 @@
+import { useWalletStore } from '../../store/walletStore'
 import Button from '../Button/Button'
 
 type WalletPopupProps = {
@@ -5,13 +6,17 @@ type WalletPopupProps = {
 }
 
 export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
+  const { addMoneyFromFaucet, isFetchingData } = useWalletStore(
+    (state) => state
+  )
+
   return (
     <>
       <div
         onClick={onClosePopup}
         className="fixed left-0 top-0 z-[40] h-full w-full bg-[rgba(27,27,27,0.5)]"
       ></div>
-      <div className="absolute top-14 right-0 z-[50] w-[327px] rounded-xl border-[0.5px] border-[#A996FF] bg-cosmon-main-secondary p-5">
+      <div className="absolute top-14 right-0 z-[50] w-[327px] rounded-xl border-[0.5px] border-[#A996FF] border-opacity-50 bg-cosmon-main-secondary p-5">
         <div className="font-[14px]  text-white">
           <div className="font-semibold">Your XKI Breakdown</div>
           <div className="flex flex-col gap-y-1 pt-4">
@@ -35,10 +40,19 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
           </div>
 
           <div className="flex justify-between pt-4">
-            <Button size="small" type="ghost">
+            <Button
+              // isLoading={isWalletLoading}
+              onClick={addMoneyFromFaucet}
+              size="small"
+              type="secondary"
+            >
               Deposit
             </Button>
-            <Button size="small" type="ghost">
+            <Button
+              onClick={() => console.log('here')}
+              size="small"
+              type="secondary"
+            >
               Withdraw
             </Button>
           </div>

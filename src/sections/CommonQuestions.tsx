@@ -16,7 +16,7 @@ const CallToActionButton = () => {
 
 export default function CommonQuestions() {
   return (
-    <div className="mx-auto flex max-w-6xl flex-col justify-between lg:flex-row">
+    <div className="max-w-auto  flex w-full flex-col justify-between lg:flex-row">
       <div className="max-w-[405px]">
         <h2 className="lg:text-left"> Common questions </h2>
         <div className="hidden pt-10 lg:flex">
@@ -24,7 +24,7 @@ export default function CommonQuestions() {
         </div>
       </div>
 
-      <div className="pt-[60px] lg:-mt-5 lg:w-3/5 lg:pt-0">
+      <div className="pt-[60px] lg:-mt-5 lg:w-2/3 lg:pt-0">
         <Disclosure title="What is Cosmon?">
           Cosmon is a play-to-earn digital card game based on NFTs on the Cosmos
           ecosystem. Having a Cosmon NFT give you an exposure to the most

@@ -5,16 +5,15 @@ import Subscribe from '../sections/Subscribe'
 import Section from '../components/Section/Section'
 import Image from 'next/image'
 import Button from '../components/Button/Button'
-import { useStoreActions } from '../store/hooks'
+import { useWalletStore } from '../store/walletStore'
 
 export default function Page() {
-  const isConnected = false
-  const walletAction = useStoreActions((thunk) => thunk.walletAction)
+  const { connect, isConnected } = useWalletStore((state) => state)
 
   return (
-    <div className="px-2 pt-[100px] lg:pt-[158px]">
-      {!isConnected && (
-        <div className="relative  mx-auto flex h-[500px] w-full max-w-6xl items-center justify-center">
+    <div className="max-w-auto px-2 pt-[100px] lg:pt-[158px]">
+      {!isConnected() && (
+        <div className="relative flex h-[500px] w-full items-center justify-center">
           <Image
             objectFit="fill"
             layout="fill"
@@ -29,14 +28,7 @@ export default function Page() {
               <p className="px-10 text-[22px] font-semibold leading-[32px] text-white">
                 Connect your wallet to see your assets
               </p>
-              <Button
-                onClick={() =>
-                  walletAction({
-                    action: 'connect',
-                  })
-                }
-                className="max-h-[42px]"
-              >
+              <Button onClick={connect} className="max-h-[42px]">
                 Connect Wallet{' '}
               </Button>
             </div>

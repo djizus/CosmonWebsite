@@ -4,19 +4,45 @@ import Link from 'next/link'
 import Button from '../Button/Button'
 import Footer from '../Footer/Footer'
 import HamburgerMenu from '../HamburgerMenu/hamburgerMenu'
-import { useStoreActions, useStoreState } from '../../store/hooks'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import WalletPopup from './WalletPopup'
+import { getShortAddress } from '../../utils/'
+import { convertMicroDenomToDenom } from '../../utils/conversion'
+import { useWalletStore } from '../../store/walletStore'
+import { toast } from 'react-toastify'
 
 type LayoutProps = {
   children: React.ReactNode
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const isConnected = useStoreState((state) => state.isConnected)
-  const walletAction = useStoreActions((thunk) => thunk.walletAction)
+  const {
+    address: walletAddress,
+    connect,
+    disconnect,
+    isFetchingData,
+    isConnected,
+    coins,
+  } = useWalletStore((state) => state)
 
   const [showWalletPopup, set_showWalletPopup] = useState(false)
+
+  useEffect(() => {
+    // The user has been connected before, connect him automatically
+    if (walletAddress !== '') {
+      connect()
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('loading', isFetchingData)
+  }, [isFetchingData])
+
+  useEffect(() => {
+    if (coins.length > 0) {
+    }
+  }, [coins])
+
   return (
     <div className="flex flex-col">
       <Head>
@@ -24,7 +50,7 @@ export default function Layout({ children }: LayoutProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className=" relative z-10 mx-auto -mb-[60px] flex w-full max-w-[1380px] items-center justify-between px-5 pt-4">
+      <header className=" max-w-auto relative z-10 -mb-[60px] flex w-full items-center justify-between px-5 pt-4">
         <div className="flex">
           <Link href="/">
             <a>
@@ -52,21 +78,20 @@ export default function Layout({ children }: LayoutProps) {
         </div>
 
         <div className="hidden items-center lg:flex">
-          {isConnected ? (
+          {isConnected() ? (
             <div className="flex items-center gap-x-5">
               <div className="relative">
                 <Button
+                  isLoading={isFetchingData}
                   className="relative max-h-[42px]"
                   size="small"
                   type="secondary"
-                  onClick={() =>
-                    // walletAction({
-                    //   action: 'disconnect',
-                    // })
-                    set_showWalletPopup(true)
-                  }
+                  onClick={() => set_showWalletPopup(true)}
                 >
-                  <span className="font-bold">212.72 XKI</span>
+                  <span className="font-bold">
+                    {convertMicroDenomToDenom(coins[0]?.amount)}{' '}
+                    {coins[0]?.denom}
+                  </span>
                 </Button>
                 {showWalletPopup && (
                   <WalletPopup
@@ -76,16 +101,12 @@ export default function Layout({ children }: LayoutProps) {
               </div>
 
               <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
-                14.23 ATOM
+                ? ATOM
                 <div
-                  onClick={() =>
-                    walletAction({
-                      action: 'disconnect',
-                    })
-                  }
+                  onClick={() => disconnect()}
                   className="ml-2 flex h-full cursor-pointer items-center rounded-xl border-[3px] border-[#A996FF] bg-white py-2 px-4 text-[#6A71BA]"
                 >
-                  Cosmos05...e96e
+                  {getShortAddress(walletAddress)}
                   <img className="ml-2 h-6 w-6" src="/avatar.png" alt="" />
                 </div>
               </div>
@@ -94,11 +115,8 @@ export default function Layout({ children }: LayoutProps) {
             <Button
               className="max-h-[42px]"
               type="secondary"
-              onClick={() =>
-                walletAction({
-                  action: 'connect',
-                })
-              }
+              isLoading={isFetchingData}
+              onClick={() => connect()}
             >
               Connect wallet
             </Button>

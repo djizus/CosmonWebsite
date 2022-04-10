@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className={style.footer}>
+    <footer className={`max-w-auto ${style.footer}`}>
       <div className="flex flex-col lg:flex-row lg:justify-between">
         <h1 className="text-left text-3xl font-bold leading-[48px] text-[#FCFCFC]">
           Cosmon

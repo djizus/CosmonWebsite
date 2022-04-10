@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import ArrowRight from '/public/icons/arrow-right.svg'
 import style from './Button.module.scss'
+import LoadingIcon from '../LoadingIcon/LoadingIcon'
 
 type ButtonProps = {
   type?: 'primary' | 'secondary' | 'tertiary' | 'ghost'
@@ -13,6 +14,7 @@ type ButtonProps = {
   children: React.ReactNode
   disabled?: boolean
   className?: string
+  isLoading?: boolean
 }
 
 export default function Button({
@@ -23,6 +25,7 @@ export default function Button({
   disabled = false,
   className = '',
   onClick,
+  isLoading = false,
   ...props
 }: ButtonProps) {
   return (
@@ -37,6 +40,7 @@ export default function Button({
           `${className}`
         )}
       >
+        {isLoading && <LoadingIcon />}
         {icon && icon.position === 'left' && (
           <ArrowRight
             className={`${style.arrow} ${

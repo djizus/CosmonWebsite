@@ -1,5 +1,5 @@
 @tailwind base;
-
+@tailwind components;
 @tailwind utilities;
 
 html {
@@ -35,4 +35,10 @@ p {
 
 input[type='text'] {
   @apply flex w-full rounded-2xl border border-cosmon-main-primary bg-transparent bg-[#4E4B66] py-[18px] pl-6;
+}
+
+@layer components {
+  .max-w-auto {
+    @apply mx-auto max-w-[1380px];
+  }
 }
