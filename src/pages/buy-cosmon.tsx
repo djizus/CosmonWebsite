@@ -53,8 +53,9 @@ export default function Page() {
         {isConnected() && (
           <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
             <div className="hidden items-center justify-center py-[24px] lg:flex">
-              <p className="px-10 text-[22px] font-semibold leading-[32px] text-white">
-                Congrats, you received an airdrop of 3 common Cosmon!
+              <p className="flex items-center gap-x-8 px-10 text-[22px] font-semibold leading-[32px] text-white">
+                Congrats, you're elligible to a Cosmon airdrop!
+                <Button size="small"> Claim</Button>
               </p>
             </div>
           </div>

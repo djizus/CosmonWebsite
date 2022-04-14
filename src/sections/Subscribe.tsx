@@ -12,6 +12,7 @@ export default function Subscribe() {
             onChange={(e) => set_email(e.target.value)}
             value={email}
             type="text"
+            className="primary-text"
             placeholder="Enter your email address"
           />
         </div>

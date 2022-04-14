@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { connectKeplr, makeClient } from '../services/keplr'
 import { Coin } from '@cosmjs/amino/build/coins'
-import { FaucetClient } from '@cosmjs/faucet-client'
 import { Scarcity } from '../../types/Scarcity'
 import {
   executeBuyCosmon,

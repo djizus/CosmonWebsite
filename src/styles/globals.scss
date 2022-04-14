@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-  @apply overflow-x-hidden bg-cosmon-blue-dark font-poppins text-[#d4d4d4];
+  @apply overflow-x-hidden bg-[#09082D] font-poppins text-[#d4d4d4];
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -37,8 +37,13 @@ p {
   @apply text-[16px] leading-[22px];
 }
 
-input[type='text'] {
-  @apply flex w-full rounded-2xl border border-cosmon-main-primary bg-transparent bg-[#4E4B66] py-[18px] pl-6;
+input {
+  &.primary-text {
+    @apply flex w-full rounded-2xl border border-cosmon-main-primary bg-transparent bg-[#4E4B66] py-[18px] pl-6;
+  }
+  &.secondary-text {
+    @apply min-w-[316px] rounded-2xl border border-cosmon-main-primary bg-transparent py-[11px] pl-6;
+  }
 }
 
 @layer components {

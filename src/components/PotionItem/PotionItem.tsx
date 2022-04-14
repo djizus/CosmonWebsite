@@ -40,7 +40,7 @@ export default function PotionItem({
         <div className="pt-8">
           <Button
             isLoading={isCurrentlyBuying}
-            type={'secondary'}
+            // type={'secondary'}
             disabled={!isAvailable}
             size={'small'}
             onClick={buy}

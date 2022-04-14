@@ -21,10 +21,21 @@ export default function RarityLevel({ type, comingSoon }: RarityLevelProps) {
         </div>
       </div>
       {comingSoon && (
-        <div className="absolute -ml-10 mt-3">
-          <Button type="primary" className="lg:max-h-10" disabled>
-            Coming soon
-          </Button>
+        <div className="absolute -ml-5 mt-3">
+          <div className="flex h-[42px] w-[143px] items-center justify-center rounded-lg bg-white bg-opacity-20">
+            <div
+              style={{
+                background:
+                  '-webkit-linear-gradient(355deg, #A996FF 0%, rgba(118, 96, 216, 0.5) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+              className="font-black tracking-wider"
+            >
+              Coming soon
+            </div>
+          </div>
         </div>
       )}
     </div>

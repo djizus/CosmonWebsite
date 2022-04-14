@@ -54,7 +54,7 @@ export default function Page() {
         <CommonQuestions />
       </Section>
 
-      <Section className="pt-48 pb-44 lg:pt-[298px]">
+      <Section className="pt-48 pb-28 lg:pt-[298px]">
         <Subscribe />
       </Section>
     </>

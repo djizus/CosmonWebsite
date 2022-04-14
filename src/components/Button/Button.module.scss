@@ -17,10 +17,11 @@
   }
 
   &.primary {
-    background-image: linear-gradient(
+    box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(
       180deg,
       #a996ff 0%,
-      rgba(118, 96, 216, 0.5) 100%
+      rgba(76, 54, 173, 0.5) 100%
     );
     &:hover {
       @apply bg-cosmon-main-primary bg-none;
@@ -99,8 +100,9 @@
   }
 
   &.disabled {
-    @apply bg-cosmon-gray-1 font-normal text-cosmon-gray-6;
-    background-color: #2e3736;
-    opacity: 0.4;
+    // @apply bg-cosmon-gray-1 font-normal text-cosmon-gray-6;
+    // background-color: #2e3736;
+    // opacity: 0.4;
+    background: linear-gradient(180deg, #9194a3 0%, #545454 100%);
   }
 }

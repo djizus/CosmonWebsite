@@ -9,14 +9,14 @@ const CallToActionButton = () => {
         position: 'left',
       }}
     >
-      Go to help center
+      Read our whitepaper
     </Button>
   )
 }
 
 export default function CommonQuestions() {
   return (
-    <div className="max-w-auto  flex w-full flex-col justify-between lg:flex-row">
+    <div className="mx-auto flex w-full max-w-[1088px] flex-col justify-between lg:flex-row lg:gap-x-40">
       <div className="max-w-[405px]">
         <h2 className="lg:text-left"> Common questions </h2>
         <div className="hidden pt-10 lg:flex">
