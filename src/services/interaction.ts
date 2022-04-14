@@ -3,54 +3,57 @@ import { Scarcity } from '../../types/Scarcity'
 import { useWalletStore } from '../store/walletStore'
 import { ReactText, useRef } from 'react'
 import { toast } from 'react-toastify'
+import { FaucetClient } from '@cosmjs/faucet-client'
 
 const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 
-export const executeBuyCosmon = async (
-  signingClient: SigningCosmWasmClient,
-  address: string,
-  scarcity: Scarcity
-) => {
-  const toastInstance = toast.loading(`Buying ${scarcity} cosmon`)
-  try {
-    const price = await queryCosmonPrice(signingClient, scarcity)
-    const response = await signingClient.execute(
-      address,
-      PUBLIC_SELL_CONTRACT,
-      { buy: { scarcity: scarcity } },
-      'auto',
-      'memo',
-      [
-        {
-          amount: price,
-          denom: PUBLIC_STAKING_DENOM,
-        },
-      ]
-    )
-    toast.update(toastInstance, {
-      isLoading: false,
-      render: 'Cosmon bought successfully',
-      closeOnClick: true,
-      type: toast.TYPE.SUCCESS,
-      autoClose: 2000,
+export const executeBuyCosmon =
+  (signingClient: SigningCosmWasmClient, address: string, scarcity: Scarcity) =>
+  async (): Promise<string> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const price = await queryCosmonPrice(signingClient, scarcity)
+        await signingClient.execute(
+          address,
+          PUBLIC_SELL_CONTRACT,
+          { buy: { scarcity: scarcity } },
+          'auto',
+          'memo',
+          [
+            {
+              amount: price,
+              denom: PUBLIC_STAKING_DENOM,
+            },
+          ]
+        )
+        return resolve('Bought successfully')
+      } catch (e: any) {
+        console.log('error', e)
+        if (e.toString().includes('rejected')) {
+          reject('Request has been canceled')
+        } else {
+          reject(e.toString())
+        }
+      }
     })
-  } catch (e: any) {
-    if (e.toString().includes('rejected')) {
-      toast.update(toastInstance, {
-        isLoading: false,
-        render: 'Request rejected by the user',
-        closeOnClick: true,
-        type: toast.TYPE.INFO,
-        autoClose: 2000,
-      })
-    }
-
-    console.log('error', e)
-  } finally {
-    toast.clearWaitingQueue()
   }
-}
+
+export const executeCreditWalletWithFaucet =
+  (address: string) => async (): Promise<string> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const faucetClient = new FaucetClient(
+          'https://faucet.cliffnet.cosmwasm.com'
+        )
+        await faucetClient.credit(address, PUBLIC_STAKING_DENOM)
+        return resolve('Credited successfully')
+      } catch (e: any) {
+        console.log('error', e)
+        reject(e.toString())
+      }
+    })
+  }
 
 export const queryCosmonPrice = async (
   signingClient: SigningCosmWasmClient,

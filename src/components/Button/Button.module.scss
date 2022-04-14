@@ -24,9 +24,9 @@
     );
     &:hover {
       @apply bg-cosmon-main-primary bg-none;
-      .arrow {
-        @apply ml-3;
-      }
+      // .arrow {
+      //   @apply ml-3;
+      // }
     }
     &:focus {
       @apply bg-cosmon-main-secondary;

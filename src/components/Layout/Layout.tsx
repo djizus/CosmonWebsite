@@ -35,7 +35,20 @@ export default function Layout({ children }: LayoutProps) {
   }, [])
 
   useEffect(() => {
-    console.log('loading', isFetchingData)
+    // const functionThatReturnPromise = () =>
+    //   new Promise((resolve, reject) => setTimeout(reject, 3000))
+    // toast
+    //   .promise(functionThatReturnPromise, {
+    //     pending: 'Promise is pending',
+    //     success: 'Promise resolved 👌',
+    //     error: 'Promise rejected 🤯',
+    //   })
+    //   .then(() => {
+    //     console.log('done!')
+    //   })
+    //   .catch(() => {
+    //     console.log('too bad :-(')
+    //   })
   }, [isFetchingData])
 
   useEffect(() => {

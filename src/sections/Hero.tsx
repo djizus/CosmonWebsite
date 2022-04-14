@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Button from '../components/Button/Button'
 import HeroBackground from '../../public/hero-background.png'
+import HeroBackgroundMobile from '../../public/hero-background-mobile.png'
 import router from 'next/router'
 
 type HeroProps = {
@@ -11,15 +12,37 @@ export default function Hero({ children }: HeroProps) {
   return (
     <>
       <div className="absolute top-0 left-0 z-0 h-full w-full">
-        <Image
-          layout="fill"
-          className="pointer-events-none object-center"
-          src={HeroBackground}
-          objectPosition="61%"
-          objectFit="cover"
-          priority={true}
-          quality={75}
-        />
+        {/* <div
+          className="h-[791px] w-full"
+          style={{
+            backgroundSize: 'cover',
+            background:
+              'linear-gradient(180deg, rgba(48, 4, 57, 0.6) 0%, rgba(8, 8, 40, 0.354) 100%), url(hero-background.png)',
+          }}
+        ></div> */}
+        <div className="hidden lg:flex">
+          <Image
+            layout="fill"
+            className="pointer-events-none hidden object-center lg:flex"
+            src={HeroBackground}
+            objectPosition="61%"
+            objectFit="cover"
+            priority={true}
+            quality={75}
+          />
+        </div>
+
+        <div className="lg:hidden">
+          <Image
+            layout="fill"
+            className="pointer-events-none object-center "
+            src={HeroBackgroundMobile}
+            objectPosition="61%"
+            objectFit="cover"
+            priority={true}
+            quality={75}
+          />
+        </div>
       </div>
 
       <div className="content relative">

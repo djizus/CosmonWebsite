@@ -1,9 +1,11 @@
 import Image from 'next/image'
 import router from 'next/router'
+import { useInView } from 'react-intersection-observer'
 import Button from '../components/Button/Button'
-import ChooseYourLeadersBackground from '/public/choose-your-leaders/choose-your-leaders-background.png'
+import ChooseYourLeadersBackground from '/public/choose-your-leaders/choose-your-leaders-background-2.png'
 
 export default function ChooseYourLeaders() {
+  const { ref, inView, entry } = useInView({})
   const LeadersIllustration = () => (
     <>
       <div className="relative h-[161px] w-[119px]">
@@ -36,11 +38,17 @@ export default function ChooseYourLeaders() {
   return (
     <>
       <div className="absolute top-[160px] left-0 z-0 h-full w-full lg:top-0">
+        <div
+          style={{
+            background:
+              'linear-gradient(180deg, #09082D 0%, rgba(9, 8, 45, 0.1) 25%)',
+          }}
+          className="absolute z-10 h-full w-full"
+        ></div>
         <Image
           layout="fill"
-          className="pointer-events-none object-center"
           src={ChooseYourLeadersBackground}
-          objectPosition="50%"
+          objectPosition="0% 80%"
           objectFit="cover"
           quality={75}
         />
@@ -56,13 +64,24 @@ export default function ChooseYourLeaders() {
           <Button onClick={() => router.push('/buy-cosmon')}>Buy cosmon</Button>
         </div>
       </div>
-      <div className="absolute -bottom-24 left-0 flex w-full justify-center overflow-hidden lg:bottom-24 lg:justify-start lg:pl-12">
+
+      <div
+        className={`absolute -bottom-24 left-0 flex w-full  justify-center overflow-hidden transition-transform duration-700 ease-out lg:bottom-24 lg:justify-start lg:pl-[15%] ${
+          inView ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
         <LeadersIllustration />
       </div>
 
-      <div className="absolute -bottom-24 left-0 hidden w-full justify-center overflow-hidden lg:bottom-24 lg:flex lg:justify-end lg:pr-12">
+      <div
+        className={`absolute -bottom-24 left-0 hidden w-full  justify-center overflow-hidden transition-transform delay-300 duration-700 ease-out lg:bottom-48 lg:flex lg:justify-end lg:pr-[15%] ${
+          inView ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
         <LeadersIllustration />
       </div>
+
+      <div ref={ref} className="absolute bottom-0"></div>
     </>
   )
 }

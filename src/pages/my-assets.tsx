@@ -12,7 +12,7 @@ export default function Page() {
 
   return (
     <div className="max-w-auto px-2 pt-[100px] lg:pt-[158px]">
-      {!isConnected() && (
+      {!isConnected() ? (
         <div className="relative flex h-[500px] w-full items-center justify-center">
           <Image
             objectFit="fill"
@@ -32,6 +32,14 @@ export default function Page() {
                 Connect Wallet{' '}
               </Button>
             </div>
+          </div>
+        </div>
+      ) : (
+        <div className="mx-auto hidden max-w-[1120px] flex-col rounded-[20px] bg-[#312E5A] p-10 lg:flex">
+          <div className="flex"></div>
+          <div className="text-[22px] font-semibold text-white">
+            {' '}
+            My Cosmon Assets
           </div>
         </div>
       )}

@@ -3,9 +3,13 @@
 @tailwind utilities;
 
 html {
-  @apply bg-cosmon-blue-dark font-poppins text-[#d4d4d4];
+  @apply overflow-x-hidden bg-cosmon-blue-dark font-poppins text-[#d4d4d4];
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  @apply overflow-x-hidden;
 }
 
 h1,

@@ -5,7 +5,11 @@ import { connectKeplr, makeClient } from '../services/keplr'
 import { Coin } from '@cosmjs/amino/build/coins'
 import { FaucetClient } from '@cosmjs/faucet-client'
 import { Scarcity } from '../../types/Scarcity'
-import { executeBuyCosmon, queryCosmonPrice } from '../services/interaction'
+import {
+  executeBuyCosmon,
+  executeCreditWalletWithFaucet,
+  queryCosmonPrice,
+} from '../services/interaction'
 import { toast } from 'react-toastify'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
@@ -84,23 +88,21 @@ const useWalletStore = create<WalletState>(
         })
 
         const { signingClient, address, fetchCoin } = get()
-        const faucetClient = new FaucetClient(
-          'https://faucet.cliffnet.cosmwasm.com'
-        )
 
         if (signingClient && address) {
-          const toastInstance = toast.loading(
-            `Getting ${PUBLIC_STAKING_DENOM} from faucet`
-          )
-          await faucetClient.credit(address, PUBLIC_STAKING_DENOM)
-          await fetchCoin()
-          toast.update(toastInstance, {
-            isLoading: false,
-            render: `${PUBLIC_STAKING_DENOM} has been deposited successfully`,
-            closeOnClick: true,
-            type: toast.TYPE.SUCCESS,
-            autoClose: 4000,
-          })
+          toast
+            .promise(executeCreditWalletWithFaucet(address), {
+              pending: `Adding from faucet`,
+              success: `Wallet credited successfully 👌`,
+              error: {
+                render({ data }) {
+                  return data
+                },
+              },
+            })
+            .then(() => {
+              fetchCoin()
+            })
         }
         set({
           isFetchingData: false,
@@ -136,8 +138,19 @@ const useWalletStore = create<WalletState>(
       buyCosmon: async (scarcity) => {
         const { signingClient, refetchMyTokens, address } = get()
         if (signingClient && address) {
-          await executeBuyCosmon(signingClient, address, scarcity)
-          await refetchMyTokens()
+          toast
+            .promise(executeBuyCosmon(signingClient, address, scarcity), {
+              pending: `Buying ${scarcity} cosmon`,
+              success: `${scarcity} bought successfully 👌`,
+              error: {
+                render({ data }) {
+                  return data
+                },
+              },
+            })
+            .then(() => {
+              refetchMyTokens()
+            })
         }
       },
       getCosmonPrice: async (scarcity) => {

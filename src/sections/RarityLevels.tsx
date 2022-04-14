@@ -13,12 +13,12 @@ export default function RarityLevels() {
       </p>
 
       <div className="rarity-levels flex flex-col items-center gap-y-9 gap-x-[45px] pt-6 lg:flex-row lg:justify-center lg:pt-[123px] xl:gap-x-[60px]">
-        <RarityLevel type="common" />
-        <RarityLevel type="uncommon" />
-        <RarityLevel type="rare" />
-        <RarityLevel type="epic" />
-        <RarityLevel type="legendary" />
-        <RarityLevel comingSoon type="divinity" />
+        <RarityLevel type="Common" />
+        <RarityLevel type="Uncommon" />
+        <RarityLevel type="Rare" />
+        <RarityLevel type="Epic" />
+        <RarityLevel type="Legendary" />
+        <RarityLevel comingSoon type="Divinity" />
       </div>
     </>
   )
