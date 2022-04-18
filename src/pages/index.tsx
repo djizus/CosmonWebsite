@@ -14,7 +14,7 @@ import Section from '../components/Section/Section'
 
 export default function Page() {
   return (
-    <>
+    <div className="bg-[#09082D]">
       <Section className="bg-cosmon-blue-darker pb-2 lg:pb-32">
         <Hero>
           The first play to earn in the COSMOS ecosystem combining video games,
@@ -22,11 +22,11 @@ export default function Page() {
         </Hero>
       </Section>
 
-      <Section className="bg-cosmon-blue-darker pt-[91px] lg:pt-[60px] lg:pb-[134px]">
+      <Section className="bg-cosmon-blue-darker pt-[91px] lg:pt-[60px] lg:pb-[180px]">
         <Intro />
       </Section>
 
-      <Section className="-mt-3 mb-[160px] pt-36 pb-[360px] lg:mb-0 lg:pb-[857px]">
+      <Section className="-mt-3 mb-[160px] pt-36 pb-[360px] lg:mb-0 lg:min-h-[1500px]">
         <ChooseYourLeaders />
       </Section>
 
@@ -57,7 +57,7 @@ export default function Page() {
       <Section className="pt-48 pb-28 lg:pt-[298px]">
         <Subscribe />
       </Section>
-    </>
+    </div>
   )
 }
 

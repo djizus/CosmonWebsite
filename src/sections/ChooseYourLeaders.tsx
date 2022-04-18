@@ -5,7 +5,7 @@ import Button from '../components/Button/Button'
 import ChooseYourLeadersBackground from '/public/choose-your-leaders/choose-your-leaders-background-2.png'
 
 export default function ChooseYourLeaders() {
-  const { ref, inView, entry } = useInView({})
+  const { ref, inView, entry } = useInView({ triggerOnce: true })
   const LeadersIllustration = () => (
     <>
       <div className="relative h-[161px] w-[119px]">
@@ -39,12 +39,13 @@ export default function ChooseYourLeaders() {
     <>
       <div className="absolute top-[160px] left-0 z-0 h-full w-full lg:top-0">
         <div
+          className="absolute z-20 h-72 w-full"
           style={{
             background:
-              'linear-gradient(180deg, #09082D 0%, rgba(9, 8, 45, 0.1) 25%)',
+              'linear-gradient(180deg, rgba(8,6,43) 0%, rgba(9, 8, 45, 0) 100%)',
           }}
-          className="absolute z-10 h-full w-full"
         ></div>
+        <div className="absolute z-10 h-full w-full"></div>
         <Image
           layout="fill"
           src={ChooseYourLeadersBackground}
@@ -53,7 +54,7 @@ export default function ChooseYourLeaders() {
           quality={75}
         />
       </div>
-      <div className="relative mx-auto max-w-[598px]">
+      <div className="relative mx-auto -mt-28 max-w-[598px]">
         <h2>Choose your Leaders</h2>
         <p className="pt-6">
           On the eve of the greatest battle in history, build your deck with the
@@ -74,7 +75,7 @@ export default function ChooseYourLeaders() {
       </div>
 
       <div
-        className={`absolute -bottom-24 left-0 hidden w-full  justify-center overflow-hidden transition-transform delay-300 duration-700 ease-out lg:bottom-48 lg:flex lg:justify-end lg:pr-[15%] ${
+        className={`absolute -bottom-24 left-0 hidden w-full  justify-center overflow-hidden transition-transform delay-300 duration-700 ease-out lg:bottom-64 lg:flex lg:justify-end lg:pr-[15%] ${
           inView ? 'translate-x-0' : 'translate-x-full'
         }`}
       >

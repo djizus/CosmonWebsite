@@ -2,10 +2,12 @@ import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { Scarcity } from '../../types/Scarcity'
 import { useWalletStore } from '../store/walletStore'
 import { ReactText, useRef } from 'react'
-import { toast } from 'react-toastify'
+
 import { FaucetClient } from '@cosmjs/faucet-client'
 
 const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
+const PUBLIC_NFT_CONTRACT = process.env.NEXT_PUBLIC_NFT_CONTRACT || ''
+
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 
 export const executeBuyCosmon =
@@ -29,12 +31,7 @@ export const executeBuyCosmon =
         )
         return resolve('Bought successfully')
       } catch (e: any) {
-        console.log('error', e)
-        if (e.toString().includes('rejected')) {
-          reject('Request has been canceled')
-        } else {
-          reject(e.toString())
-        }
+        reject(handleTransactionError(e))
       }
     })
   }
@@ -49,8 +46,7 @@ export const executeCreditWalletWithFaucet =
         await faucetClient.credit(address, PUBLIC_STAKING_DENOM)
         return resolve('Credited successfully')
       } catch (e: any) {
-        console.log('error', e)
-        reject(e.toString())
+        reject(handleTransactionError(e))
       }
     })
   }
@@ -65,4 +61,35 @@ export const queryCosmonPrice = async (
   })
   console.log(`price of ${scarcity}`, price)
   return price.amount
+}
+
+export const queryCosmonInfo = async (
+  signingClient: SigningCosmWasmClient,
+  cosmonId: number
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    if (cosmonId) {
+      const data = await signingClient.queryContractSmart(PUBLIC_NFT_CONTRACT, {
+        nft_info: { token_id: cosmonId },
+      })
+      return resolve(data)
+    } else {
+      return reject('Cosmon ID is missing')
+    }
+  })
+}
+
+export const handleTransactionError = (error: any) => {
+  console.log('error', error)
+  if (error.toString().includes('rejected')) {
+    return {
+      title: 'Action canceled',
+      message: 'Action has been canceled by the user',
+    }
+  } else {
+    return {
+      title: 'Unknown error',
+      message: error.toString(),
+    }
+  }
 }

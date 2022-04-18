@@ -21,7 +21,7 @@ export default function RarityLevel({ type, comingSoon }: RarityLevelProps) {
         </div>
       </div>
       {comingSoon && (
-        <div className="absolute -ml-5 mt-3">
+        <div className="absolute -ml-[18px] mt-3">
           <div className="flex h-[42px] w-[143px] items-center justify-center rounded-lg bg-white bg-opacity-20">
             <div
               style={{

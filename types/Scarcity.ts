@@ -1,7 +1,10 @@
-export type Scarcity =
-  | 'Common'
-  | 'Uncommon'
-  | 'Rare'
-  | 'Epic'
-  | 'Legendary'
-  | 'Divinity'
+export const scarcities = [
+  'Common',
+  'Uncommon',
+  'Rare',
+  'Epic',
+  'Legendary',
+  'Divinity',
+] as const
+
+export type Scarcity = typeof scarcities[number]

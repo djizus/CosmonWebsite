@@ -10,6 +10,7 @@ import { getShortAddress } from '../../utils/'
 import { convertMicroDenomToDenom } from '../../utils/conversion'
 import { useWalletStore } from '../../store/walletStore'
 import { toast } from 'react-toastify'
+import { ToastContainer } from '../ToastContainer/ToastContainer'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -30,6 +31,14 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     // The user has been connected before, connect him automatically
     if (walletAddress !== '') {
+      // toast.error(
+      //   <ToastContainer title={'Transaction in progress'}>
+      //     Waiting for transaction to be included in the block
+      //   </ToastContainer>,
+      //   {
+      //     icon: SuccessIcon,
+      //   }
+      // )
       connect()
     }
   }, [])
@@ -63,7 +72,7 @@ export default function Layout({ children }: LayoutProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className=" max-w-auto relative z-10 -mb-[60px] flex w-full items-center justify-between px-5 pt-4">
+      <header className=" max-w-auto relative z-10 -mb-[60px] flex w-full items-center justify-between px-5 pt-4 lg:pt-6">
         <div className="flex">
           <Link href="/">
             <a>
@@ -102,8 +111,13 @@ export default function Layout({ children }: LayoutProps) {
                   onClick={() => set_showWalletPopup(true)}
                 >
                   <span className="font-bold">
-                    {convertMicroDenomToDenom(coins[0]?.amount)}{' '}
-                    {coins[0]?.denom}
+                    {convertMicroDenomToDenom(
+                      coins.find(
+                        (coin) =>
+                          coin.denom === process.env.NEXT_PUBLIC_STAKING_DENOM
+                      )?.amount || 0
+                    )}
+                    {' ' + process.env.NEXT_PUBLIC_DENOM}
                   </span>
                 </Button>
                 {showWalletPopup && (
@@ -114,10 +128,10 @@ export default function Layout({ children }: LayoutProps) {
               </div>
 
               <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
-                ? ATOM
+                {coins.find((coin) => coin.denom === 'UST')?.amount} UST
                 <div
                   onClick={() => disconnect()}
-                  className="ml-2 flex h-full cursor-pointer items-center rounded-xl border-[3px] border-[#A996FF] bg-white py-2 px-4 text-[#6A71BA]"
+                  className="ml-2 flex h-full cursor-pointer items-center rounded-xl border border-[#9FA4DD] py-2 px-4 text-white"
                 >
                   {getShortAddress(walletAddress)}
                   <img className="ml-2 h-6 w-6" src="/avatar.png" alt="" />
@@ -137,7 +151,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </header>
 
-      <main>{children}</main>
+      <main className="-mt-4 lg:-mt-6">{children}</main>
       <Footer />
     </div>
   )

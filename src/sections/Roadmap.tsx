@@ -12,7 +12,7 @@ export default function Roadmap() {
       <div className="relative mx-auto flex h-full w-[300px] pt-5 lg:w-auto">
         <Line className="absolute left-7 h-full lg:hidden" />
         <div className="lg:relative lg:mx-auto lg:mt-32 ">
-          <LineDesktop className="absolute top-[140px] -z-10 -ml-[100px] hidden h-1 w-[calc(100%_+_200px)] lg:block " />
+          <LineDesktop className="absolute top-[140px] z-0 -ml-[100px] hidden h-1 w-[calc(100%_+_200px)] lg:block" />
           <div className="my-8 ml-2 flex flex-col gap-y-10 lg:flex-row">
             <RoadmapItem order={1} date="Q4 2021">
               Project Start

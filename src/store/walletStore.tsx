@@ -7,9 +7,14 @@ import { Scarcity } from '../../types/Scarcity'
 import {
   executeBuyCosmon,
   executeCreditWalletWithFaucet,
+  queryCosmonInfo,
   queryCosmonPrice,
 } from '../services/interaction'
 import { toast } from 'react-toastify'
+import { CosmonType } from '../../types/Cosmon'
+import { ToastContainer } from '../components/ToastContainer/ToastContainer'
+import ErrorIcon from '/public/icons/error.svg'
+import SuccessIcon from '/public/icons/success.svg'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT || ''
@@ -22,13 +27,15 @@ interface WalletState {
   signingClient: SigningCosmWasmClient | null
   error: any
   coins: Coin[]
+  cosmons: CosmonType[]
   isConnected: () => boolean
   buyCosmon: (scarcity: Scarcity) => void
   connect: () => void
   disconnect: () => void
   fetchCoin: () => void
   addMoneyFromFaucet: () => void
-  refetchMyTokens: () => void
+  fetchCosmons: () => void
+
   getCosmonPrice: (scarcity: Scarcity) => void
 }
 
@@ -36,6 +43,7 @@ const useWalletStore = create<WalletState>(
   persist(
     (set, get) => ({
       coins: [],
+      cosmons: [],
       address: '',
       isFetchingData: false,
       signingClient: null,
@@ -70,8 +78,7 @@ const useWalletStore = create<WalletState>(
           set({
             address: address,
           })
-
-          await get().refetchMyTokens()
+          await get().fetchCosmons()
           await get().fetchCoin()
         } catch (error: any) {
           console.error('error while connecting', error)
@@ -92,11 +99,24 @@ const useWalletStore = create<WalletState>(
           toast
             .promise(executeCreditWalletWithFaucet(address), {
               pending: `Adding from faucet`,
-              success: `Wallet credited successfully 👌`,
-              error: {
-                render({ data }) {
-                  return data
+              success: {
+                render() {
+                  return (
+                    <ToastContainer type="success">
+                      Wallet credited successfully
+                    </ToastContainer>
+                  )
                 },
+                icon: SuccessIcon,
+              },
+              error: {
+                render({ data }: any) {
+                  console.log('my data', data)
+                  return (
+                    <ToastContainer type="error">{data.message}</ToastContainer>
+                  )
+                },
+                icon: ErrorIcon,
               },
             })
             .then(() => {
@@ -111,44 +131,89 @@ const useWalletStore = create<WalletState>(
       fetchCoin: async () => {
         const { signingClient, address, coins } = get()
         if (signingClient && address) {
-          const coin = await signingClient.getBalance(
+          const mainCoin = await signingClient.getBalance(
             address,
             PUBLIC_STAKING_DENOM
           )
+          const ustCoin = await signingClient.getBalance(address, 'UST')
           let newCoins = coins.filter(
             (coin) => coin.denom !== PUBLIC_STAKING_DENOM
           )
-          newCoins.push(coin)
+          newCoins.push(mainCoin, ustCoin)
           set({
             coins: newCoins,
           })
         }
       },
-      refetchMyTokens: async () => {
+      fetchCosmons: async () => {
+        set({
+          isFetchingData: true,
+        })
         const { signingClient, address } = get()
         if (signingClient && address) {
-          const my_tokens = await signingClient.queryContractSmart(
+          const { tokens } = await signingClient.queryContractSmart(
             process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
             { tokens: { owner: address } }
           )
-          console.log('my tokens', JSON.stringify(my_tokens))
+
+          // getting cosmon details
+          const myCosmons: CosmonType[] = await Promise.all(
+            tokens.map(async (token: number) => {
+              const cosmon = await queryCosmonInfo(signingClient, token)
+              return {
+                id: token,
+                data: cosmon,
+              }
+            })
+          )
+          set({
+            cosmons: myCosmons.map(
+              (cosmon) =>
+                get().cosmons.find((c) => c.id === cosmon.id) || cosmon
+            ),
+          })
+          console.log('my cosmons', myCosmons)
+          set({
+            isFetchingData: false,
+          })
         }
       },
       buyCosmon: async (scarcity) => {
-        const { signingClient, refetchMyTokens, address } = get()
+        const { signingClient, fetchCosmons, address } = get()
         if (signingClient && address) {
           toast
             .promise(executeBuyCosmon(signingClient, address, scarcity), {
-              pending: `Buying ${scarcity} cosmon`,
-              success: `${scarcity} bought successfully 👌`,
-              error: {
-                render({ data }) {
-                  return data
+              pending: {
+                render() {
+                  return (
+                    <ToastContainer type="pending">
+                      {`Buying ${scarcity.toLowerCase()} cosmon`}
+                    </ToastContainer>
+                  )
                 },
+              },
+              success: {
+                render() {
+                  return (
+                    <ToastContainer type={'success'}>
+                      `${scarcity} bought successfully`,
+                    </ToastContainer>
+                  )
+                },
+                icon: SuccessIcon,
+              },
+
+              error: {
+                render({ data }: any) {
+                  return (
+                    <ToastContainer type="error">{data.message}</ToastContainer>
+                  )
+                },
+                icon: ErrorIcon,
               },
             })
             .then(() => {
-              refetchMyTokens()
+              fetchCosmons()
             })
         }
       },
