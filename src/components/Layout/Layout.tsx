@@ -110,7 +110,7 @@ export default function Layout({ children }: LayoutProps) {
                   type="secondary"
                   onClick={() => set_showWalletPopup(true)}
                 >
-                  <span className="font-bold">
+                  <span className="font-bold uppercase">
                     {convertMicroDenomToDenom(
                       coins.find(
                         (coin) =>

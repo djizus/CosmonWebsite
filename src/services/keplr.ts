@@ -113,7 +113,7 @@ export const connectKeplr = async () => {
           gasPriceStep: {
             low: 0.01,
             average: 0.025,
-            high: 0.04,
+            high: 0.03,
           },
         })
       } catch (e) {
@@ -131,8 +131,10 @@ export const makeClient = async (offlineSigner: OfflineSigner) => {
     PUBLIC_RPC_ENDPOINT,
     offlineSigner,
     {
-      prefix: 'wasm',
-      gasPrice: GasPrice.fromString('0.025upebble'),
+      prefix: process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX,
+      gasPrice: GasPrice.fromString(
+        `0.025${process.env.NEXT_PUBLIC_STAKING_DENOM}`
+      ),
     }
   )
 }

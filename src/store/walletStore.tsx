@@ -9,6 +9,7 @@ import {
   executeCreditWalletWithFaucet,
   queryCosmonInfo,
   queryCosmonPrice,
+  queryCosmonAvailableByScarcity,
 } from '../services/interaction'
 import { toast } from 'react-toastify'
 import { CosmonType } from '../../types/Cosmon'
@@ -37,6 +38,7 @@ interface WalletState {
   fetchCosmons: () => void
 
   getCosmonPrice: (scarcity: Scarcity) => void
+  getCosmonScarcityAvailable: (scarcity: Scarcity) => Promise<number>
 }
 
 const useWalletStore = create<WalletState>(
@@ -196,7 +198,7 @@ const useWalletStore = create<WalletState>(
                 render() {
                   return (
                     <ToastContainer type={'success'}>
-                      `${scarcity} bought successfully`,
+                      {scarcity} bought successfully,
                     </ToastContainer>
                   )
                 },
@@ -216,6 +218,17 @@ const useWalletStore = create<WalletState>(
               fetchCosmons()
             })
         }
+      },
+      getCosmonScarcityAvailable: async (scarcity): Promise<number> => {
+        const { signingClient } = get()
+        if (signingClient) {
+          const result = await queryCosmonAvailableByScarcity(
+            signingClient,
+            scarcity
+          )
+          return result?.count || 0
+        }
+        return 0
       },
       getCosmonPrice: async (scarcity) => {
         const { signingClient } = get()

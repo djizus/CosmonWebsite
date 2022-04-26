@@ -79,6 +79,25 @@ export const queryCosmonInfo = async (
   })
 }
 
+export const queryCosmonAvailableByScarcity = async (
+  signingClient: SigningCosmWasmClient,
+  scarcity: Scarcity
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    if (scarcity) {
+      const data = await signingClient.queryContractSmart(
+        PUBLIC_SELL_CONTRACT,
+        {
+          get_cosmon_available_by_scarcity: { scarcity: scarcity },
+        }
+      )
+      return resolve(data)
+    } else {
+      return reject('Scarcity is missing')
+    }
+  })
+}
+
 export const handleTransactionError = (error: any) => {
   console.log('error', error)
   if (error.toString().includes('rejected')) {

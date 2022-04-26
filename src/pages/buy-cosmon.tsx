@@ -5,7 +5,7 @@ import Subscribe from '../sections/Subscribe'
 import Section from '../components/Section/Section'
 import PotionItem from '../components/PotionItem/PotionItem'
 import Button from '../components/Button/Button'
-import { Scarcity } from '../../types/Scarcity'
+import { scarcities, Scarcity } from '../../types/Scarcity'
 import { useWalletStore } from '../store/walletStore'
 import { toast } from 'react-toastify'
 
@@ -15,12 +15,33 @@ export default function Page() {
     address,
     buyCosmon,
     getCosmonPrice,
+    getCosmonScarcityAvailable,
     isConnected,
     connect,
   } = useWalletStore((state) => state)
   const [isCurrentlyBuying, set_isCurrentlyBuying] = useState<Scarcity | null>(
     null
   )
+
+  const [scarcitiesAvailable, set_scarcitiesAvailable] = useState<
+    {
+      scarcity: Scarcity
+      count: number
+    }[]
+  >([])
+
+  const cosmonScarcityAvailable = async () => {
+    set_scarcitiesAvailable(
+      await Promise.all(
+        scarcities.map(async (scarcity) => {
+          return {
+            scarcity: scarcity,
+            count: await getCosmonScarcityAvailable(scarcity),
+          }
+        })
+      )
+    )
+  }
 
   const buy = async (scarcity: Scarcity) => {
     set_isCurrentlyBuying(scarcity)
@@ -32,6 +53,10 @@ export default function Page() {
       set_isCurrentlyBuying(null)
     }
   }
+
+  useEffect(() => {
+    cosmonScarcityAvailable()
+  }, [])
 
   return (
     <div className="max-w-auto">
@@ -61,13 +86,30 @@ export default function Page() {
           </div>
         )}
         <div className="grid grid-cols-2 gap-y-[60px] lg:grid-cols-4">
+          {/* {scarcities.map((scarcity) => (
+            <PotionItem
+              buy={() => buy(scarcity)}
+              isCurrentlyBuying={isCurrentlyBuying === scarcity}
+              type={scarcity}
+              price={'?'}
+              img={`${scarcity}.png`}
+              isAvailable={
+                (scarcitiesAvailable.find((data) => data.scarcity === scarcity)
+                  ?.count || 0) > 0
+              }
+            />
+          ))} */}
+
           <PotionItem
             buy={() => buy('Common')}
             isCurrentlyBuying={isCurrentlyBuying === 'Common'}
             type="Uncommon"
             price={'100$'}
             img="uncommon.png"
-            isAvailable={true}
+            isAvailable={
+              (scarcitiesAvailable.find((data) => data.scarcity === 'Common')
+                ?.count || 0) > 0
+            }
           />
           <PotionItem
             buy={() => buy('Rare')}
@@ -75,7 +117,10 @@ export default function Page() {
             type="Rare"
             price={'250$'}
             img="rare.png"
-            isAvailable={true}
+            isAvailable={
+              (scarcitiesAvailable.find((data) => data.scarcity === 'Rare')
+                ?.count || 0) > 0
+            }
           />
           <PotionItem
             buy={() => buy('Epic')}
@@ -83,7 +128,10 @@ export default function Page() {
             type="Epic"
             price={'1000$'}
             img="epic.png"
-            isAvailable={false}
+            isAvailable={
+              (scarcitiesAvailable.find((data) => data.scarcity === 'Epic')
+                ?.count || 0) > 0
+            }
           />
           <PotionItem
             buy={() => buy('Legendary')}
@@ -91,7 +139,10 @@ export default function Page() {
             type="Legendary"
             price={'2500$'}
             img="legendary.png"
-            isAvailable={true}
+            isAvailable={
+              (scarcitiesAvailable.find((data) => data.scarcity === 'Legendary')
+                ?.count || 0) > 0
+            }
           />
         </div>
       </Section>
