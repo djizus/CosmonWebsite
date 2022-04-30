@@ -10,6 +10,7 @@ import {
   queryCosmonInfo,
   queryCosmonPrice,
   queryCosmonAvailableByScarcity,
+  executeTransferNft,
 } from '../services/interaction'
 import { toast } from 'react-toastify'
 import { CosmonType } from '../../types/Cosmon'
@@ -29,14 +30,15 @@ interface WalletState {
   error: any
   coins: Coin[]
   cosmons: CosmonType[]
-  isConnected: () => boolean
-  buyCosmon: (scarcity: Scarcity) => void
+  isConnected: boolean
+  buyCosmon: (scarcity: Scarcity) => any
+  transferAsset: (recipient: string, asset: CosmonType) => void
   connect: () => void
   disconnect: () => void
   fetchCoin: () => void
   addMoneyFromFaucet: () => void
   fetchCosmons: () => void
-
+  fetchWalletData: () => void
   getCosmonPrice: (scarcity: Scarcity) => void
   getCosmonScarcityAvailable: (scarcity: Scarcity) => Promise<number>
 }
@@ -50,9 +52,7 @@ const useWalletStore = create<WalletState>(
       isFetchingData: false,
       signingClient: null,
       error: null,
-      isConnected: () => {
-        return !!get().address && !!get().signingClient
-      },
+      isConnected: false,
       connect: async () => {
         set({
           isFetchingData: true,
@@ -79,9 +79,9 @@ const useWalletStore = create<WalletState>(
 
           set({
             address: address,
+            isConnected: true,
           })
-          await get().fetchCosmons()
-          await get().fetchCoin()
+          await get().fetchWalletData()
         } catch (error: any) {
           console.error('error while connecting', error)
         } finally {
@@ -129,22 +129,37 @@ const useWalletStore = create<WalletState>(
           isFetchingData: false,
         })
       },
+      fetchWalletData: async () => {
+        set({
+          isFetchingData: true,
+        })
+        const { fetchCosmons, fetchCoin } = get()
+        await fetchCosmons()
+        await fetchCoin()
+        set({
+          isFetchingData: false,
+        })
+      },
 
       fetchCoin: async () => {
         const { signingClient, address, coins } = get()
         if (signingClient && address) {
-          const mainCoin = await signingClient.getBalance(
-            address,
-            PUBLIC_STAKING_DENOM
-          )
-          const ustCoin = await signingClient.getBalance(address, 'UST')
-          let newCoins = coins.filter(
-            (coin) => coin.denom !== PUBLIC_STAKING_DENOM
-          )
-          newCoins.push(mainCoin, ustCoin)
-          set({
-            coins: newCoins,
-          })
+          try {
+            const mainCoin = await signingClient.getBalance(
+              address,
+              PUBLIC_STAKING_DENOM
+            )
+            const ustCoin = await signingClient.getBalance(address, 'UST')
+            let newCoins = coins.filter(
+              (coin) => coin.denom !== PUBLIC_STAKING_DENOM
+            )
+            newCoins.push(mainCoin, ustCoin)
+            set({
+              coins: newCoins,
+            })
+          } catch (e) {
+            console.error('Error while fetching coin', e)
+          }
         }
       },
       fetchCosmons: async () => {
@@ -153,37 +168,72 @@ const useWalletStore = create<WalletState>(
         })
         const { signingClient, address } = get()
         if (signingClient && address) {
-          const { tokens } = await signingClient.queryContractSmart(
-            process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
-            { tokens: { owner: address } }
-          )
+          try {
+            // let cursor = 1
+            // let limit = 10
+            // let updatedTokens: string[] = []
+            // let previousTokens: string[] = []
 
-          // getting cosmon details
-          const myCosmons: CosmonType[] = await Promise.all(
-            tokens.map(async (token: number) => {
-              const cosmon = await queryCosmonInfo(signingClient, token)
-              return {
-                id: token,
-                data: cosmon,
+            // while (
+            //   // updatedTokens.length !== previousTokens.length ||
+            //   cursor === 1
+            // ) {
+            //   previousTokens = [...updatedTokens]
+            //   const tempTokens = await signingClient.queryContractSmart(
+            //     process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
+            //     {
+            //       all_tokens: {
+            //         owner: address,
+            //         // start_after: updatedTokens[updatedTokens.length],
+            //         limit: 5000,
+            //       },
+            //     }
+            //   )
+            //   updatedTokens = [...updatedTokens, ...tempTokens.tokens]
+            //   console.log('updatedTokens', updatedTokens)
+            //   cursor += limit
+            // }
+
+            const { tokens } = await signingClient.queryContractSmart(
+              process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
+              {
+                tokens: {
+                  owner: address,
+                  limit: 5000,
+                },
               }
+            )
+
+            // getting cosmon details
+            const myCosmons: CosmonType[] = await Promise.all(
+              tokens.map(async (token: string) => {
+                const cosmon = await queryCosmonInfo(signingClient, token)
+                return {
+                  id: token,
+                  data: cosmon,
+                }
+              })
+            )
+            // console.log('myCosmons', myCosmons)
+            set({
+              cosmons: myCosmons.map(
+                (cosmon) =>
+                  get().cosmons.find((c) => c.id === cosmon.id) || cosmon
+              ),
             })
-          )
-          set({
-            cosmons: myCosmons.map(
-              (cosmon) =>
-                get().cosmons.find((c) => c.id === cosmon.id) || cosmon
-            ),
-          })
-          console.log('my cosmons', myCosmons)
-          set({
-            isFetchingData: false,
-          })
+          } catch (e) {
+            console.error('Error while fetching cosmons', e)
+          } finally {
+            set({
+              isFetchingData: false,
+            })
+          }
         }
       },
       buyCosmon: async (scarcity) => {
         const { signingClient, fetchCosmons, address } = get()
         if (signingClient && address) {
-          toast
+          const response = await toast
             .promise(executeBuyCosmon(signingClient, address, scarcity), {
               pending: {
                 render() {
@@ -214,6 +264,53 @@ const useWalletStore = create<WalletState>(
                 icon: ErrorIcon,
               },
             })
+            .then(({ token }: any) => {
+              fetchCosmons()
+              return token
+            })
+          return response
+        }
+      },
+      transferAsset: async (recipient: string, asset: CosmonType) => {
+        const { signingClient, fetchCosmons, address } = get()
+        if (signingClient && address) {
+          toast
+            .promise(
+              executeTransferNft(signingClient, address, recipient, asset.id),
+              {
+                pending: {
+                  render() {
+                    return (
+                      <ToastContainer type="pending">
+                        {`Transferring ${asset.data.extension.name}`}
+                      </ToastContainer>
+                    )
+                  },
+                },
+                success: {
+                  render() {
+                    return (
+                      <ToastContainer type={'success'}>
+                        {`${asset.data.extension.name}`} transferred
+                        successfully,
+                      </ToastContainer>
+                    )
+                  },
+                  icon: SuccessIcon,
+                },
+
+                error: {
+                  render({ data }: any) {
+                    return (
+                      <ToastContainer type="error">
+                        {data.message}
+                      </ToastContainer>
+                    )
+                  },
+                  icon: ErrorIcon,
+                },
+              }
+            )
             .then(() => {
               fetchCosmons()
             })
@@ -226,6 +323,9 @@ const useWalletStore = create<WalletState>(
             signingClient,
             scarcity
           )
+          // if (scarcity === 'Epic') {
+          //   return 0
+          // }
           return result?.count || 0
         }
         return 0
@@ -239,6 +339,7 @@ const useWalletStore = create<WalletState>(
         set({
           address: '',
           signingClient: null,
+          isConnected: false,
         })
       },
     }),

@@ -1,5 +1,5 @@
 export type CosmonType = {
-  id: number
+  id: string
   data: {
     extension: {
       animation_url: null

@@ -9,8 +9,7 @@ import WalletPopup from './WalletPopup'
 import { getShortAddress } from '../../utils/'
 import { convertMicroDenomToDenom } from '../../utils/conversion'
 import { useWalletStore } from '../../store/walletStore'
-import { toast } from 'react-toastify'
-import { ToastContainer } from '../ToastContainer/ToastContainer'
+import { getAmountFromDenom } from '../../utils/index'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -22,48 +21,36 @@ export default function Layout({ children }: LayoutProps) {
     connect,
     disconnect,
     isFetchingData,
+    fetchWalletData,
+    cosmons,
     isConnected,
     coins,
   } = useWalletStore((state) => state)
 
   const [showWalletPopup, set_showWalletPopup] = useState(false)
+  // const [refreshWalletDataInterval, set_refreshWalletDataInterval] = useState<
+  //   number | null
+  // >()
 
   useEffect(() => {
     // The user has been connected before, connect him automatically
     if (walletAddress !== '') {
-      // toast.error(
-      //   <ToastContainer title={'Transaction in progress'}>
-      //     Waiting for transaction to be included in the block
-      //   </ToastContainer>,
-      //   {
-      //     icon: SuccessIcon,
-      //   }
-      // )
       connect()
     }
   }, [])
 
   useEffect(() => {
-    // const functionThatReturnPromise = () =>
-    //   new Promise((resolve, reject) => setTimeout(reject, 3000))
-    // toast
-    //   .promise(functionThatReturnPromise, {
-    //     pending: 'Promise is pending',
-    //     success: 'Promise resolved 👌',
-    //     error: 'Promise rejected 🤯',
-    //   })
-    //   .then(() => {
-    //     console.log('done!')
-    //   })
-    //   .catch(() => {
-    //     console.log('too bad :-(')
-    //   })
-  }, [isFetchingData])
-
-  useEffect(() => {
     if (coins.length > 0) {
     }
   }, [coins])
+
+  useEffect(() => {
+    const refreshInterval = window.setInterval(() => {
+      console.log('Re-fetching data...')
+      fetchWalletData()
+    }, 8000)
+    return () => clearInterval(refreshInterval)
+  }, [isConnected])
 
   return (
     <div className="flex flex-col">
@@ -90,7 +77,10 @@ export default function Layout({ children }: LayoutProps) {
               <a>Buy Cosmon</a>
             </Link>
             <Link href="/my-assets">
-              <a>My Assets</a>
+              <a>
+                My Assets
+                {cosmons.length > 0 && ` (${cosmons.length})`}
+              </a>
             </Link>
           </div>
         </div>
@@ -100,7 +90,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
 
         <div className="hidden items-center lg:flex">
-          {isConnected() ? (
+          {isConnected ? (
             <div className="flex items-center gap-x-5">
               <div className="relative">
                 <Button
@@ -111,11 +101,9 @@ export default function Layout({ children }: LayoutProps) {
                   onClick={() => set_showWalletPopup(true)}
                 >
                   <span className="font-bold uppercase">
-                    {convertMicroDenomToDenom(
-                      coins.find(
-                        (coin) =>
-                          coin.denom === process.env.NEXT_PUBLIC_STAKING_DENOM
-                      )?.amount || 0
+                    {getAmountFromDenom(
+                      process.env.NEXT_PUBLIC_STAKING_DENOM || '',
+                      coins
                     )}
                     {' ' + process.env.NEXT_PUBLIC_DENOM}
                   </span>

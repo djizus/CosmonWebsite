@@ -18,10 +18,15 @@
     "env-cmd": "^10.1.0",
     "next": "latest",
     "react": "^17.0.2",
+    "react-3d-hover": "^1.1.1",
+    "react-confetti": "^6.0.1",
     "react-dom": "^17.0.2",
     "react-intersection-observer": "^8.34.0",
+    "react-lazy-load-image-component": "^1.5.4",
     "react-toastify": "^8.2.0",
+    "react-use": "^17.3.2",
     "sass": "^1.49.9",
+    "use-debounce": "^7.0.1",
     "zustand": "^3.7.2"
   },
   "devDependencies": {

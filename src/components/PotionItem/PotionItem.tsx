@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Scarcity } from '../../../types/Scarcity'
 import { useWalletStore } from '../../store/walletStore'
 import Button from '../Button/Button'
@@ -8,7 +8,6 @@ type PotionItemProps = {
   type: Scarcity
   price: string
   img: string
-  isAvailable?: boolean
   isCurrentlyBuying: boolean
   buy?: () => void
 }
@@ -18,10 +17,25 @@ export default function PotionItem({
   type,
   price,
   img,
-  isAvailable = false,
   buy,
 }: PotionItemProps) {
-  const { isConnected } = useWalletStore((state) => state)
+  const { isConnected, getCosmonScarcityAvailable } = useWalletStore(
+    (state) => state
+  )
+
+  const [cosmonAvailable, set_cosmonAvailable] = useState<number | null>(null)
+
+  const getCosmonAvailable = async () => {
+    set_cosmonAvailable(await getCosmonScarcityAvailable(type))
+  }
+
+  useEffect(() => {
+    isConnected && getCosmonAvailable()
+  }, [isConnected])
+
+  useEffect(() => {
+    // console.log('cosmonAvailable', cosmonAvailable)
+  }, [cosmonAvailable])
 
   return (
     <div className="flex flex-col items-center">
@@ -36,16 +50,20 @@ export default function PotionItem({
         {price}
       </p>
 
-      {isConnected() && (
+      {isConnected && (
         <div className="pt-8">
           <Button
-            isLoading={isCurrentlyBuying}
+            isLoading={isCurrentlyBuying || cosmonAvailable === null}
             // type={'secondary'}
-            disabled={!isAvailable}
+            disabled={!cosmonAvailable}
             size={'small'}
             onClick={buy}
           >
-            {isAvailable ? 'Buy' : 'Sold out'}
+            {cosmonAvailable === null
+              ? 'Fetching data'
+              : cosmonAvailable > 0
+              ? 'Buy'
+              : 'Sold out'}
           </Button>
         </div>
       )}

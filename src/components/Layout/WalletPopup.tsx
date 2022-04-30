@@ -1,4 +1,5 @@
 import { useWalletStore } from '../../store/walletStore'
+import { getAmountFromDenom } from '../../utils/index'
 import Button from '../Button/Button'
 
 type WalletPopupProps = {
@@ -6,7 +7,7 @@ type WalletPopupProps = {
 }
 
 export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
-  const { addMoneyFromFaucet, isFetchingData } = useWalletStore(
+  const { addMoneyFromFaucet, isFetchingData, coins } = useWalletStore(
     (state) => state
   )
 
@@ -22,7 +23,13 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
           <div className="flex flex-col gap-y-1 pt-4">
             <div className="flex justify-between">
               <div> XKI balance </div>
-              <div> 147.534 XKI </div>
+              <div>
+                {getAmountFromDenom(
+                  process.env.NEXT_PUBLIC_STAKING_DENOM || '',
+                  coins
+                )}
+                XKI{' '}
+              </div>
             </div>
             <div className="flex justify-between">
               <div>XKI to claim</div>
@@ -30,12 +37,12 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
                 <div className="font-semibold text-cosmon-main-tertiary">
                   Claim
                 </div>
-                65.189 XKI
+                0 XKI
               </div>
             </div>
             <div className="flex justify-between">
               <div> XKI earned </div>
-              <div> 7,065.16 XKI </div>
+              <div> 0 XKI </div>
             </div>
           </div>
 

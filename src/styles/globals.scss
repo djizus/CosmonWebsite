@@ -44,10 +44,34 @@ input {
   &.secondary-text {
     @apply min-w-[316px] rounded-2xl border border-cosmon-main-primary bg-transparent py-[11px] pl-6;
   }
+  &.dark-text {
+    @apply rounded-2xl border border-cosmon-main-primary py-4 px-6 text-[14px] font-semibold text-[#D9DBE9];
+    background-color: #0d0531;
+  }
 }
 
 @layer components {
   .max-w-auto {
     @apply mx-auto max-w-[1380px];
+  }
+
+  .border-shiny-gradient {
+    position: relative;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+      margin: -1px;
+      border-radius: inherit;
+      background-image: linear-gradient(
+        180deg,
+        #a996ff 0%,
+        rgba(118, 96, 216, 0.5) 100%
+      );
+    }
   }
 }

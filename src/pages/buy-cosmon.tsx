@@ -5,48 +5,27 @@ import Subscribe from '../sections/Subscribe'
 import Section from '../components/Section/Section'
 import PotionItem from '../components/PotionItem/PotionItem'
 import Button from '../components/Button/Button'
-import { scarcities, Scarcity } from '../../types/Scarcity'
+import { Scarcity } from '../../types/Scarcity'
 import { useWalletStore } from '../store/walletStore'
-import { toast } from 'react-toastify'
+import useWindowSize from 'react-use/lib/useWindowSize'
+import Confetti from 'react-confetti'
+import { CosmonType } from '../../types/Cosmon'
+import ShowCosmonBoughtModal from '../components/Modal/ShowCosmonBoughtModal'
 
 export default function Page() {
-  const {
-    signingClient,
-    address,
-    buyCosmon,
-    getCosmonPrice,
-    getCosmonScarcityAvailable,
-    isConnected,
-    connect,
-  } = useWalletStore((state) => state)
+  const { buyCosmon, isConnected, connect } = useWalletStore((state) => state)
   const [isCurrentlyBuying, set_isCurrentlyBuying] = useState<Scarcity | null>(
     null
   )
 
-  const [scarcitiesAvailable, set_scarcitiesAvailable] = useState<
-    {
-      scarcity: Scarcity
-      count: number
-    }[]
-  >([])
-
-  const cosmonScarcityAvailable = async () => {
-    set_scarcitiesAvailable(
-      await Promise.all(
-        scarcities.map(async (scarcity) => {
-          return {
-            scarcity: scarcity,
-            count: await getCosmonScarcityAvailable(scarcity),
-          }
-        })
-      )
-    )
-  }
+  const [dropConfetti, set_dropConfetti] = useState(false)
+  const [cosmonBought, set_cosmonBought] = useState<null | CosmonType>()
+  const { width, height } = useWindowSize()
 
   const buy = async (scarcity: Scarcity) => {
     set_isCurrentlyBuying(scarcity)
     try {
-      await buyCosmon(scarcity)
+      set_cosmonBought(await buyCosmon(scarcity))
     } catch (e: any) {
       console.log('Error! ', e)
     } finally {
@@ -55,38 +34,47 @@ export default function Page() {
   }
 
   useEffect(() => {
-    cosmonScarcityAvailable()
-  }, [])
+    if (cosmonBought) {
+      console.log('cosmonBought', cosmonBought)
+    }
+  }, [cosmonBought])
 
   return (
-    <div className="max-w-auto">
-      <Section className="px-[40px] pt-[107px] lg:pt-[140px]">
-        <h4 className="mx-auto max-w-[288px] lg:max-w-none">
-          Open a potion, unleash a leader!
-        </h4>
-        <p className="mx-auto pt-[40px] lg:max-w-4xl lg:pt-[20px]">
-          Get a vial to mint a random Cosmon from a given rarity level! Each
-          vial will unleash one of our 25 Cosmons.
-          <br /> <br />
-          The rarer your Cosmons are, the more yield you will get from it. Your
-          Cosmon's initial characteristics will also be higher with an upper
-          rarity.
-        </p>
-      </Section>
+    <>
+      {cosmonBought && (
+        <ShowCosmonBoughtModal
+          cosmon={cosmonBought}
+          onCloseModal={() => set_cosmonBought(null)}
+        />
+      )}
+      <div className="mx-auto max-w-[1120px]">
+        <Section className="px-[40px] pt-[107px] lg:pt-[140px]">
+          <h4 className="mx-auto max-w-[288px] lg:max-w-none">
+            Open a potion, unleash a leader!
+          </h4>
+          <p className="mx-auto pt-[40px] lg:max-w-4xl lg:pt-[20px]">
+            Get a vial to mint a random Cosmon from a given rarity level! Each
+            vial will unleash one of our 25 Cosmons.
+            <br /> <br />
+            The rarer your Cosmons are, the more yield you will get from it.
+            Your Cosmon's initial characteristics will also be higher with an
+            upper rarity.
+          </p>
+        </Section>
 
-      <Section className=" pt-[72px] ">
-        {isConnected() && (
-          <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
-            <div className="hidden items-center justify-center py-[24px] lg:flex">
-              <p className="flex items-center gap-x-8 px-10 text-[22px] font-semibold leading-[32px] text-white">
-                Congrats, you're elligible to a Cosmon airdrop!
-                <Button size="small"> Claim</Button>
-              </p>
+        <Section className=" pt-[72px]">
+          {isConnected && (
+            <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
+              <div className="hidden items-center justify-center py-[24px] lg:flex">
+                <p className="flex items-center gap-x-8 px-10 text-[22px] font-semibold leading-[32px] text-white">
+                  Congrats, you're elligible to a Cosmon airdrop!
+                  <Button size="small"> Claim</Button>
+                </p>
+              </div>
             </div>
-          </div>
-        )}
-        <div className="grid grid-cols-2 gap-y-[60px] lg:grid-cols-4">
-          {/* {scarcities.map((scarcity) => (
+          )}
+          <div className="grid grid-cols-2 gap-y-[60px] lg:grid-cols-4">
+            {/* {scarcities.map((scarcity) => (
             <PotionItem
               buy={() => buy(scarcity)}
               isCurrentlyBuying={isCurrentlyBuying === scarcity}
@@ -100,82 +88,76 @@ export default function Page() {
             />
           ))} */}
 
-          <PotionItem
-            buy={() => buy('Common')}
-            isCurrentlyBuying={isCurrentlyBuying === 'Common'}
-            type="Uncommon"
-            price={'100$'}
-            img="uncommon.png"
-            isAvailable={
-              (scarcitiesAvailable.find((data) => data.scarcity === 'Common')
-                ?.count || 0) > 0
-            }
-          />
-          <PotionItem
-            buy={() => buy('Rare')}
-            isCurrentlyBuying={isCurrentlyBuying === 'Rare'}
-            type="Rare"
-            price={'250$'}
-            img="rare.png"
-            isAvailable={
-              (scarcitiesAvailable.find((data) => data.scarcity === 'Rare')
-                ?.count || 0) > 0
-            }
-          />
-          <PotionItem
-            buy={() => buy('Epic')}
-            isCurrentlyBuying={isCurrentlyBuying === 'Epic'}
-            type="Epic"
-            price={'1000$'}
-            img="epic.png"
-            isAvailable={
-              (scarcitiesAvailable.find((data) => data.scarcity === 'Epic')
-                ?.count || 0) > 0
-            }
-          />
-          <PotionItem
-            buy={() => buy('Legendary')}
-            isCurrentlyBuying={isCurrentlyBuying === 'Legendary'}
-            type="Legendary"
-            price={'2500$'}
-            img="legendary.png"
-            isAvailable={
-              (scarcitiesAvailable.find((data) => data.scarcity === 'Legendary')
-                ?.count || 0) > 0
-            }
-          />
-        </div>
-      </Section>
+            <PotionItem
+              buy={() => buy('Common')}
+              isCurrentlyBuying={isCurrentlyBuying === 'Common'}
+              type="Uncommon"
+              price={'100$'}
+              img="uncommon.png"
+            />
+            <PotionItem
+              buy={() => buy('Rare')}
+              isCurrentlyBuying={isCurrentlyBuying === 'Rare'}
+              type="Rare"
+              price={'250$'}
+              img="rare.png"
+            />
+            <PotionItem
+              buy={() => buy('Epic')}
+              isCurrentlyBuying={isCurrentlyBuying === 'Epic'}
+              type="Epic"
+              price={'1000$'}
+              img="epic.png"
+            />
+            <PotionItem
+              buy={() => buy('Legendary')}
+              isCurrentlyBuying={isCurrentlyBuying === 'Legendary'}
+              type="Legendary"
+              price={'2500$'}
+              img="legendary.png"
+            />
+          </div>
+        </Section>
 
-      <Section className="pt-20 lg:pt-[42px] ">
-        <div className="rounded-[20px] bg-[#312E5A] bg-opacity-50">
-          <p className="px-10 py-6 text-[22px] font-semibold leading-[32px] text-white lg:hidden">
-            Go to the desktop version to buy Cosmon
-          </p>
+        <Section className="pt-20 lg:pt-[42px] ">
+          <div className="rounded-[20px] bg-[#312E5A] bg-opacity-50">
+            <p className="px-10 py-6 text-[22px] font-semibold leading-[32px] text-white lg:hidden">
+              Go to the desktop version to buy Cosmon
+            </p>
 
-          {!isConnected() && (
-            <div className="hidden items-center justify-center py-[24px] lg:flex">
-              <p className="px-10 text-[22px] font-semibold leading-[32px] text-white">
-                Connect your wallet to buy Cosmon
-              </p>
-              {!isConnected && (
-                <Button onClick={connect} className="max-h-[42px]">
-                  Connect Wallet{' '}
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
-      </Section>
+            {!isConnected && (
+              <div className="hidden items-center justify-center py-[24px] lg:flex">
+                <p className="px-10 text-[22px] font-semibold leading-[32px] text-white">
+                  Connect your wallet to buy Cosmon
+                </p>
+                {!isConnected && (
+                  <Button onClick={connect} className="max-h-[42px]">
+                    Connect Wallet{' '}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        </Section>
 
-      <Section className="pt-36 lg:pt-[261px]">
-        <CommonQuestions />
-      </Section>
+        <Section className="pt-36 lg:pt-[261px]">
+          <CommonQuestions />
+        </Section>
 
-      <Section className="pt-48 pb-44 lg:pt-[298px]">
-        <Subscribe />
-      </Section>
-    </div>
+        <Section className="pt-48 pb-44 lg:pt-[298px]">
+          <Subscribe />
+        </Section>
+      </div>
+      {dropConfetti && (
+        <Confetti
+          numberOfPieces={1450}
+          tweenDuration={16000}
+          recycle={false}
+          width={width}
+          height={height}
+        />
+      )}
+    </>
   )
 }
 
