@@ -13,7 +13,9 @@ import TransferAssetModal from '../components/Modal/TransferAssetModal'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import 'react-lazy-load-image-component/src/effects/opacity.css'
 import { LazyLoadComponent } from 'react-lazy-load-image-component'
-
+import { Transition } from '@headlessui/react'
+import CosmonFullModal from '../components/Modal/CosmonFullModal'
+import Hover from 'react-3d-hover'
 export default function Page() {
   const { connect, isConnected, cosmons } = useWalletStore((state) => state)
   const [assetToTransfer, set_assetToTransfer] = useState<null | CosmonType>()
@@ -25,6 +27,8 @@ export default function Page() {
     }[]
   >([])
 
+  const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
+
   useEffect(() => {
     if (cosmons.length > 0) {
       set_scarcitiesNumberByCosmons(getScarcitiesNumberByCosmons(cosmons))
@@ -33,22 +37,29 @@ export default function Page() {
 
   return (
     <>
-      {/* <Transition
-        show={!!assetToTransfer}
-        enter="transition-opacity duration-[.3s]"
+      <Transition
+        show={showCosmonDetail !== null}
+        className="relative z-[1000]"
+        enter="transition-opacity duration-[.5s]"
         enterFrom="opacity-0"
         enterTo="opacity-100"
-        leave="transition-opacity duration-[.3s]"
+        leave="transition-opacity duration-[.5s]"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-      > */}
+      >
+        {showCosmonDetail && (
+          <CosmonFullModal
+            onCloseModal={() => set_showCosmonDetail(null)}
+            cosmon={showCosmonDetail && showCosmonDetail}
+          />
+        )}
+      </Transition>
       {assetToTransfer && (
         <TransferAssetModal
           asset={assetToTransfer}
           onCloseModal={() => set_assetToTransfer(null)}
         ></TransferAssetModal>
       )}
-      {/* </Transition> */}
       <div className="max-w-auto px-2 pt-[100px] lg:pt-[158px]">
         {!isConnected ? (
           <div className="relative flex h-[500px] w-full items-center justify-center">
@@ -109,30 +120,41 @@ export default function Page() {
               </div>
             </div>
 
-            <div
-              style={{
-                gridTemplateColumns:
-                  'repeat(auto-fit, minmax(167px, max-content))',
-              }}
-              className="mx-auto mt-40 grid max-w-[1180px] gap-[60px]  px-8"
-            >
-              {cosmons.map((cosmon) => (
-                <div
-                  key={cosmon.id}
-                  className="flex flex-col items-center gap-y-5"
-                >
-                  <LazyLoadComponent
-                    delayTime={1500}
-                    placeholder={
-                      <div className="h-[280px] w-[167px] animate-pulse rounded-2xl bg-gray-200"></div>
-                    }
+            <Transition show={true} appear={true}>
+              <div
+                style={{
+                  gridTemplateColumns:
+                    'repeat(auto-fit, minmax(167px, max-content))',
+                }}
+                className="mx-auto mt-40 grid max-w-[1180px] gap-[60px]  px-8"
+              >
+                {cosmons.map((cosmon, index) => (
+                  <Transition.Child
+                    key={cosmon.id}
+                    className={`flex cursor-pointer flex-col items-center gap-y-5`}
+                    enter={`transition-opacity ease-linear duration-800`}
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity ease-linear duration-800"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
                   >
-                    <LazyLoadImage
-                      height={280}
-                      width={167}
-                      effect="opacity"
+                    {/* <img
                       src={cosmon.data.extension.image}
-                    />
+                      alt=""
+                      width={167}
+                      height={280}
+                    /> */}
+                    <Hover scale={1.05} perspective={300} speed={10}>
+                      <LazyLoadImage
+                        onClick={() => set_showCosmonDetail(cosmon)}
+                        height={280}
+                        width={167}
+                        effect="opacity"
+                        className="hover:animate-"
+                        src={cosmon.data.extension.image}
+                      />
+                    </Hover>
 
                     <Button
                       type="secondary"
@@ -143,10 +165,10 @@ export default function Page() {
                     >
                       Transfer
                     </Button>
-                  </LazyLoadComponent>
-                </div>
-              ))}
-            </div>
+                  </Transition.Child>
+                ))}
+              </div>
+            </Transition>
           </>
         )}
 

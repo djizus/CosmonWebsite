@@ -17,6 +17,8 @@ import { CosmonType } from '../../types/Cosmon'
 import { ToastContainer } from '../components/ToastContainer/ToastContainer'
 import ErrorIcon from '/public/icons/error.svg'
 import SuccessIcon from '/public/icons/success.svg'
+import useSWR from 'swr'
+import { chainFetcher } from '../services/fetcher'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT || ''
@@ -27,10 +29,10 @@ interface WalletState {
   address: string
   isFetchingData: boolean
   signingClient: SigningCosmWasmClient | null
-  error: any
   coins: Coin[]
   cosmons: CosmonType[]
   isConnected: boolean
+  setCosmons: (cosmons: CosmonType[]) => void
   buyCosmon: (scarcity: Scarcity) => any
   transferAsset: (recipient: string, asset: CosmonType) => void
   connect: () => void
@@ -51,7 +53,6 @@ const useWalletStore = create<WalletState>(
       address: '',
       isFetchingData: false,
       signingClient: null,
-      error: null,
       isConnected: false,
       connect: async () => {
         set({
@@ -89,6 +90,11 @@ const useWalletStore = create<WalletState>(
             isFetchingData: false,
           })
         }
+      },
+      setCosmons: (cosmons) => {
+        set({
+          cosmons: cosmons,
+        })
       },
       addMoneyFromFaucet: async () => {
         set({
@@ -194,6 +200,16 @@ const useWalletStore = create<WalletState>(
             //   cursor += limit
             // }
 
+            // const { data } = useSWR({
+            //   type: "query",
+            //   contractAddress: process.env.NEXT_PUBLIC_NFT_CONTRACT,
+            //   payload:               {
+            //     tokens: {
+            //       owner: address,
+            //       limit: 5000,
+            //     },
+            //   }
+            //  }, chainFetcher)
             const { tokens } = await signingClient.queryContractSmart(
               process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
               {
@@ -203,6 +219,7 @@ const useWalletStore = create<WalletState>(
                 },
               }
             )
+            // const tokens: any = []
 
             // getting cosmon details
             const myCosmons: CosmonType[] = await Promise.all(

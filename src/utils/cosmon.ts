@@ -12,6 +12,15 @@ export function getScarcityByCosmon(cosmon: CosmonType): Scarcity | null {
   return scarcity
 }
 
+export function getTrait(
+  cosmon: CosmonType,
+  traitType: 'character_id' | 'Personality' | 'Geographical' | 'Time'
+) {
+  return cosmon.data.extension.attributes.find(
+    (attr) => attr.trait_type === traitType
+  )?.value
+}
+
 export function getScarcitiesNumberByCosmons(cosmons: CosmonType[]): {
   key: Scarcity
   count: number

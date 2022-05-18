@@ -7,9 +7,12 @@ import HamburgerMenu from '../HamburgerMenu/hamburgerMenu'
 import { useEffect, useState } from 'react'
 import WalletPopup from './WalletPopup'
 import { getShortAddress } from '../../utils/'
-import { convertMicroDenomToDenom } from '../../utils/conversion'
 import { useWalletStore } from '../../store/walletStore'
 import { getAmountFromDenom } from '../../utils/index'
+import { chainFetcher } from '../../services/fetcher'
+import useSWR from 'swr'
+
+import DisconnectOrCopyPopup from './DisconnectOrCopyPopup'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -27,10 +30,31 @@ export default function Layout({ children }: LayoutProps) {
     coins,
   } = useWalletStore((state) => state)
 
+  // const { data: tokens, error } = useSWR(
+  //   {
+  //     type: 'query',
+  //     contractAddress: process.env.NEXT_PUBLIC_NFT_CONTRACT,
+  //     payload: {
+  //       tokens: {
+  //         owner: walletAddress,
+  //         limit: 5000,
+  //       },
+  //     },
+  //   },
+  //   chainFetcher
+  // )
+
+  // console.log('data', tokens)
+  // console.log('error', error)
+
   const [showWalletPopup, set_showWalletPopup] = useState(false)
+  const [showDisconnectOrCopyPopup, set_showDisconnectOrCopyPopup] =
+    useState(false)
   // const [refreshWalletDataInterval, set_refreshWalletDataInterval] = useState<
   //   number | null
   // >()
+
+  // useEffect(() => {}, [tokens])
 
   useEffect(() => {
     // The user has been connected before, connect him automatically
@@ -115,15 +139,22 @@ export default function Layout({ children }: LayoutProps) {
                 )}
               </div>
 
-              <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
+              <div className="relative flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
                 {coins.find((coin) => coin.denom === 'UST')?.amount} UST
                 <div
-                  onClick={() => disconnect()}
+                  onClick={() =>
+                    set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)
+                  }
                   className="ml-2 flex h-full cursor-pointer items-center rounded-xl border border-[#9FA4DD] py-2 px-4 text-white"
                 >
                   {getShortAddress(walletAddress)}
                   <img className="ml-2 h-6 w-6" src="/avatar.png" alt="" />
                 </div>
+                {showDisconnectOrCopyPopup && (
+                  <DisconnectOrCopyPopup
+                    onClosePopup={() => set_showDisconnectOrCopyPopup(false)}
+                  />
+                )}
               </div>
             </div>
           ) : (

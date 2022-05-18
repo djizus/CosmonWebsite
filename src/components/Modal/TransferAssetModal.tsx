@@ -109,7 +109,10 @@ export default function TransferAssetModal({
           <Button
             isLoading={isFetchingInfo}
             disabled={!destinationAddressValid}
-            onClick={() => transferAsset(destinationAddressDebounced, asset)}
+            onClick={async () => {
+              await transferAsset(destinationAddressDebounced, asset)
+              onCloseModal()
+            }}
           >
             {' '}
             Transfer{' '}
