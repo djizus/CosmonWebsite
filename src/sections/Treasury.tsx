@@ -19,23 +19,28 @@ export default function Treasury() {
         <h2 className="lg:text-left">Treasury management</h2>
         <p className="pt-10 lg:max-w-xl lg:text-left">
           All the proceeds of the NFT sales will be pooled in a decentralized
-          treasury and invested in the most promising Cosmos-based tokens.
+          treasury to get an exposure to the most promising Cosmos-based tokens.
+          These assets will be used to secure the associated networks, fueling
+          the $XKI returns thanks to the inflation of targeted protocols.
         </p>
 
-        <p className="pt-10 lg:text-left">All Yield generated goes to: </p>
+        <p className="pt-4 lg:text-left">
+          This unique approach is at the origin of the key tokenomics dimension
+          of Cosmon:{' '}
+        </p>
 
-        <ul className="flex flex-col gap-y-6 px-6 pt-6  text-center lg:ml-3 lg:text-left">
+        <ul className="flex flex-col gap-y-6 px-6 pt-4  text-center lg:ml-2 lg:text-left">
           <li className="list-disc">
-            All the proceeds of the NFT sales will be pooled in a decentralized
-            treasury and invested in the most promising Cosmos-based tokens.
+            {/* <li className="list-disc text-[8px]"> */}
+            {/* <div className="text-base"> */} Bring a growing fondamental
+            value to the Cosmons NFTs
+            {/* </div> */}
           </li>
           <li className="list-disc">
-            All the proceeds of the NFT sales will be pooled in a decentralized
-            treasury and invested in the most promising Cosmos-based tokens.
+            Provide recurring $XKI returns to their holders to be used ingame
           </li>
           <li className="list-disc">
-            All the proceeds of the NFT sales will be pooled in a decentralized
-            treasury and invested in the most promising Cosmos-based tokens.
+            Fuel the prize pools of the different leagues
           </li>
         </ul>
         <div className="pt-[60px]">

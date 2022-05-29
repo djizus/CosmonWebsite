@@ -16,6 +16,7 @@ import { LazyLoadComponent } from 'react-lazy-load-image-component'
 import { Transition } from '@headlessui/react'
 import CosmonFullModal from '../components/Modal/CosmonFullModal'
 import Hover from 'react-3d-hover'
+
 export default function Page() {
   const { connect, isConnected, cosmons } = useWalletStore((state) => state)
   const [assetToTransfer, set_assetToTransfer] = useState<null | CosmonType>()
@@ -145,16 +146,37 @@ export default function Page() {
                       width={167}
                       height={280}
                     /> */}
-                    <Hover scale={1.05} perspective={300} speed={10}>
-                      <LazyLoadImage
-                        onClick={() => set_showCosmonDetail(cosmon)}
-                        height={280}
-                        width={167}
-                        effect="opacity"
-                        className="hover:animate-"
-                        src={cosmon.data.extension.image}
-                      />
-                    </Hover>
+                    {/* <Hover scale={1.05} perspective={300} speed={10}> */}
+                    <Image
+                      src={cosmon.data.extension.image}
+                      height={280}
+                      width={167}
+                      blurDataURL="/cosmon-placeholder.svg"
+                    />
+
+                    {/* <LazyLoadImage
+                      onClick={() => set_showCosmonDetail(cosmon)}
+                      height={280}
+                      width={167}
+                      // effect="opacity"
+                      // className="hover:animate-"
+                      // src={cosmon.data.extension.image}
+                      src={
+                        'https://unsplash.com/photos/tBRkEnznjJ4/download?ixid=MnwxMjA3fDB8MXx0b3BpY3x8dG93SlpGc2twR2d8fHx8fDJ8fDE2NTM4NTMyODI&force=true'
+                      }
+                      placeholder={
+                        <div
+                          className=" h-[167px] w-[280px]"
+                          style={{
+                            background:
+                              'linear-gradient(180deg, #A996FF 0%, rgba(118, 96, 216, 0.5) 100%)',
+                            opacity: '0.2',
+                            borderRadius: '8px',
+                          }}
+                        ></div>
+                      }
+                    /> */}
+                    {/* </Hover> */}
 
                     <Button
                       type="secondary"

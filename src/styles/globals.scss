@@ -75,3 +75,10 @@ input {
     }
   }
 }
+
+.partners img {
+  @apply max-h-[32px] max-w-[140px];
+  @screen sm {
+    @apply max-h-fit max-w-fit;
+  }
+}

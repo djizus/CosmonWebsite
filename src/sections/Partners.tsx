@@ -13,15 +13,62 @@ export default function Partners() {
         to come soon!
       </p>
 
-      <div className="partner-list grid grid-cols-2 pt-10 lg:grid-cols-4">
-        <Image width="132px" height="64px" src="/partners/partner.svg" />
-        <Image width="132px" height="64px" src="/partners/partner.svg" />
-        <Image width="132px" height="64px" src="/partners/partner.svg" />
-        <Image width="132px" height="64px" src="/partners/partner.svg" />
-        <Image width="132px" height="64px" src="/partners/partner.svg" />
-        <Image width="132px" height="64px" src="/partners/partner.svg" />
-        <Image width="132px" height="64px" src="/partners/partner.svg" />
-        <Image width="132px" height="64px" src="/partners/partner.svg" />
+      <div className="partners flex flex-col gap-y-4 pt-10">
+        <div className="relative flex flex-wrap items-center justify-center gap-x-20 gap-y-10">
+          <img
+            className="h-full w-auto object-contain"
+            src="/partners/klub.png"
+          />
+          <img
+            className="h-full w-auto object-contain"
+            src="/partners/ki.png"
+          />
+          <img
+            className="h-full w-auto object-contain"
+            src="/partners/cosmos.png"
+          />
+          <img
+            className="h-full w-auto object-contain"
+            src="/partners/osmosis.png"
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-x-20 gap-y-10">
+          <img
+            className="h-full w-auto object-cover"
+            src="/partners/juno.png"
+          />
+
+          <img
+            className="h-full w-auto object-cover"
+            src="/partners/stargaze.png"
+          />
+
+          <img
+            className="h-full w-auto object-cover"
+            src="/partners/persistence.png"
+          />
+
+          <img
+            className="h-full w-auto object-cover"
+            src="/partners/akash.png"
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-x-20 gap-y-10">
+          <img
+            className="h-full w-auto object-cover"
+            src="/partners/sentinel.png"
+          />
+          <img
+            className="h-full w-auto object-cover"
+            src="/partners/comdex.png"
+          />
+          <img
+            className="h-[41px] w-auto object-cover"
+            src="/partners/lum-network.png"
+          />
+        </div>
       </div>
     </div>
   )

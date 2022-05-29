@@ -10,7 +10,8 @@ import { useWalletStore } from '../store/walletStore'
 import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from 'react-confetti'
 import { CosmonType } from '../../types/Cosmon'
-import ShowCosmonBoughtModal from '../components/Modal/ShowCosmonBoughtModal'
+import ShowCosmonBoughtModal from '../components/Modal/CosmonBoughtModal'
+import CosmonAirdropModal from '../components/Modal/CosmonAirdropModal'
 
 export default function Page() {
   const { buyCosmon, isConnected, connect } = useWalletStore((state) => state)
@@ -47,18 +48,24 @@ export default function Page() {
           onCloseModal={() => set_cosmonBought(null)}
         />
       )}
+
+      {/* {<CosmonAirdropModal onCloseModal={() => console.log('siii')} />} */}
+
       <div className="mx-auto max-w-[1120px]">
-        <Section className="px-[40px] pt-[107px] lg:pt-[140px]">
+        <Section className="px-[40px] pt-[107px] lg:pt-[160px]">
           <h4 className="mx-auto max-w-[288px] lg:max-w-none">
             Open a potion, unleash a leader!
           </h4>
-          <p className="mx-auto pt-[40px] lg:max-w-4xl lg:pt-[20px]">
-            Get a vial to mint a random Cosmon from a given rarity level! Each
-            vial will unleash one of our 25 Cosmons.
-            <br /> <br />
-            The rarer your Cosmons are, the more yield you will get from it.
-            Your Cosmon's initial characteristics will also be higher with an
-            upper rarity.
+          <p className="mx-auto flex flex-col gap-y-2 pt-[40px] lg:max-w-[880px] lg:pt-[20px]">
+            <div>
+              Get a vial to mint a random Cosmon from a given rarity level! Each
+              vial will unleash one of our 25 Cosmons.
+            </div>
+            <div>
+              The rarer your Cosmons are, the more yield you will get from it.
+              Your Cosmon's initial characteristics will also be higher with an
+              upper rarity.
+            </div>
           </p>
         </Section>
 
@@ -66,10 +73,12 @@ export default function Page() {
           {isConnected && (
             <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
               <div className="hidden items-center justify-center py-[24px] lg:flex">
-                <p className="flex items-center gap-x-8 px-10 text-[22px] font-semibold leading-[32px] text-white">
-                  Congrats, you're elligible to a Cosmon airdrop!
-                  <Button size="small"> Claim</Button>
-                </p>
+                <div className="flex items-center gap-x-8 px-10 ">
+                  <p className="text-[22px] font-semibold leading-[32px] text-white">
+                    Test your eligibility to our Cosmon airdrop!
+                  </p>
+                  <Button size="small"> Check</Button>
+                </div>
               </div>
             </div>
           )}
@@ -92,28 +101,28 @@ export default function Page() {
               buy={() => buy('Common')}
               isCurrentlyBuying={isCurrentlyBuying === 'Common'}
               type="Uncommon"
-              price={'100$'}
+              price={'10 ATOM'}
               img="uncommon.png"
             />
             <PotionItem
               buy={() => buy('Rare')}
               isCurrentlyBuying={isCurrentlyBuying === 'Rare'}
               type="Rare"
-              price={'250$'}
+              price={'25 ATOM'}
               img="rare.png"
             />
             <PotionItem
               buy={() => buy('Epic')}
               isCurrentlyBuying={isCurrentlyBuying === 'Epic'}
               type="Epic"
-              price={'1000$'}
+              price={'100 ATOM'}
               img="epic.png"
             />
             <PotionItem
               buy={() => buy('Legendary')}
               isCurrentlyBuying={isCurrentlyBuying === 'Legendary'}
               type="Legendary"
-              price={'2500$'}
+              price={'250 ATOM'}
               img="legendary.png"
             />
           </div>

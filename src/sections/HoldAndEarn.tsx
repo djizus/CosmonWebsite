@@ -17,22 +17,15 @@ export default function HoldAndEarn() {
         </div>
 
         <div className="lg:w-[44%] ">
-          <h2 className="max-w-sm pt-10 lg:max-w-none lg:pt-0 lg:text-left">
+          <h2 className="mx-auto max-w-sm pt-10 lg:max-w-none lg:pt-0 lg:text-left">
             Hold Cosmon, Earn $XKI
           </h2>
-          <p className="pt-8 lg:pr-12 lg:text-left">
-            Cosmons holders will benefit of recurring payment in the $XKI
-            utility token, representing a cash flow to incentivize players to
-            hold their NFTs, increasing their scarcity on the secondary market.
-            It will also provide a daily fuel to be used ingame.
-            <br />
-            <br />
-            Cosmons holders will benefit of recurring payment in the $XKI
-            utility token, representing a cash flow to incentivize players to
-            hold their NFTs, increasing their scarcity on the secondary market.
-            It will also provide a daily fuel to be used ingame.
+          <p className="pt-8 lg:pt-[40px] lg:pr-12 lg:text-left">
+            Cosmons holders will benefit of recurring $XKI return, providing to
+            players a daily fuel to boost their Cosmon performance. The $XKI
+            returns are increasing with the rarity levels of your Cosmons!
           </p>
-          <div className="pt-10">
+          <div className="pt-10 lg:pt-[60px]">
             <Button onClick={() => router.push('/buy-cosmon')}>
               Buy Cosmon
             </Button>

@@ -19,23 +19,26 @@ export default function Roadmap() {
             </RoadmapItem>
 
             <RoadmapItem order={2} date="Q1 2022">
-              <div>Private Sale</div>
-              <div>Public Sale</div>
-              <div>Stakedrop</div>
+              <div>Light paper formalization</div>
+              <div>First Cosmon private sale</div>
             </RoadmapItem>
             <RoadmapItem order={3} date="Q2 2022">
-              <div>Accessories Launch</div>
-              <div>Marketplace Listing</div>
+              <div>Public sale launch</div>
+              <div>Stakedrop</div>
             </RoadmapItem>
-            <RoadmapItem order={4} date="Q2 2022">
-              <div>Alpha 1st Season</div>
-              <div>Build Your Deck</div>
+            <RoadmapItem order={4} date="Q3 2022">
+              <div> Gameplay MVP</div>
+              <div> Build your deck</div>
+              <div>Cosmon training mode</div>
             </RoadmapItem>
-            <RoadmapItem order={5} date="Q3 2022">
-              <div>Beta 1st Season</div>
+            <RoadmapItem order={5} date="Q4 2022">
+              <div>Alpha 1st season</div>
+              <div>Accessories launch</div>
+              <div>Marketplace listing</div>
             </RoadmapItem>
-            <RoadmapItem order={6} date="Q4 2022">
-              <div>Launch 1st Season</div>
+            <RoadmapItem order={6} date="Q1 2023">
+              <div> Full gameplay final release</div>
+              <div>Launch of pro leagues</div>
             </RoadmapItem>
           </div>
         </div>
