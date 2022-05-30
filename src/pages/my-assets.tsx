@@ -149,6 +149,7 @@ export default function Page() {
                     {/* <Hover scale={1.05} perspective={300} speed={10}> */}
                     <Image
                       src={cosmon.data.extension.image}
+                      onClick={() => set_showCosmonDetail(cosmon)}
                       height={280}
                       width={167}
                       blurDataURL="/cosmon-placeholder.svg"

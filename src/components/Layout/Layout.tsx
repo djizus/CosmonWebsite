@@ -113,7 +113,7 @@ export default function Layout({ children }: LayoutProps) {
           <HamburgerMenu />
         </div>
 
-        <div className="hidden items-center lg:flex">
+        <div className="relative hidden items-center lg:flex">
           {isConnected ? (
             <div className="flex items-center gap-x-5">
               <div className="relative">
@@ -139,7 +139,7 @@ export default function Layout({ children }: LayoutProps) {
                 )}
               </div>
 
-              <div className="relative flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
+              <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
                 {coins.find((coin) => coin.denom === 'UST')?.amount} UST
                 <div
                   onClick={() =>
