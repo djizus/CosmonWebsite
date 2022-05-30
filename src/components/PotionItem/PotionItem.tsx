@@ -40,7 +40,7 @@ export default function PotionItem({
   return (
     <div className="flex flex-col items-center">
       <div className="relative flex h-[140px] w-full">
-        <Image layout="fill" objectFit="contain" src={`/potions/${img}`} />
+        <Image layout="fill" objectFit="contain" src={`..//potions/${img}`} />
       </div>
       <p className="pt-6 text-[22px] font-bold leading-[27px] text-[#E7E7E7]">
         {type}

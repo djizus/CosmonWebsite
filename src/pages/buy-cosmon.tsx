@@ -71,13 +71,28 @@ export default function Page() {
 
         <Section className=" pt-[72px]">
           {isConnected && (
+            // Cosmon AIRDROP SECTION
+            // <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
+            //   <div className="hidden items-center justify-center py-[24px] lg:flex">
+            //     <div className="flex items-center gap-x-8 px-10 ">
+            //       <p className="text-[22px] font-semibold leading-[32px] text-white">
+            //         Test your eligibility to our Cosmon airdrop!
+            //       </p>
+            //       <Button size="small"> Check</Button>
+            //     </div>
+            //   </div>
+            // </div>
+
             <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
               <div className="hidden items-center justify-center py-[24px] lg:flex">
                 <div className="flex items-center gap-x-8 px-10 ">
                   <p className="text-[22px] font-semibold leading-[32px] text-white">
-                    Test your eligibility to our Cosmon airdrop!
+                    Congrats, you’re eligible to 3 discounted Cosmons!
                   </p>
-                  <Button size="small"> Check</Button>
+                  <Button className="h-[34px]" size="small">
+                    {' '}
+                    3 mints left
+                  </Button>
                 </div>
               </div>
             </div>

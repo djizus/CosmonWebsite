@@ -67,7 +67,7 @@ export default function Page() {
             <Image
               objectFit="fill"
               layout="fill"
-              src="/blurry-bg-connect-wallet.png"
+              src="..//blurry-bg-connect-wallet.png"
             ></Image>
 
             <div className="relative px-6">

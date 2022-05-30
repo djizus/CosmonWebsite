@@ -33,24 +33,24 @@ export default function CommonQuestions() {
         </Disclosure>
 
         <Disclosure title="When will the full gameplay be launched?">
-          Cosmon is a play-to-earn digital card game based on NFTs on the Cosmos
-          ecosystem. Having a Cosmon NFT give you an exposure to the most
-          promising networks of this environment, while enjoying the gameplay
-          and pretending to the amazing prize pools.{' '}
+          The gameplay is still under development, with a planned release for
+          early S2 2022. The first phase from March to June 2022 will be
+          dedicated to the release of Cosmon NFTs through different sales
+          operation.
         </Disclosure>
 
         <Disclosure title="On which technology and ecosystem is it based?">
-          Cosmon is a play-to-earn digital card game based on NFTs on the Cosmos
-          ecosystem. Having a Cosmon NFT give you an exposure to the most
-          promising networks of this environment, while enjoying the gameplay
-          and pretending to the amazing prize pools.{' '}
+          Cosmon is based on Cosmos, an ecosystem of interoperable blockchains.
+          Each blockchain of this ecosystem is running on the same protocol to
+          smoothly exchange value and data. For these reasons, Cosmos is often
+          described as an “Internet of Blockchain”.
         </Disclosure>
 
-        <Disclosure title="On which technology and ecosystem is it based?">
-          Cosmon is a play-to-earn digital card game based on NFTs on the Cosmos
-          ecosystem. Having a Cosmon NFT give you an exposure to the most
-          promising networks of this environment, while enjoying the gameplay
-          and pretending to the amazing prize pools.{' '}
+        <Disclosure title="What are the sales proceeds used to?">
+          The proceeds from the NFT sales are fueling a decentralized treasury
+          used to secure different blockchains in the Cosmos ecosystem,
+          providing $XKI returns thanks to their respective inflation. It is
+          managed by Klub and the Ki foundation.
         </Disclosure>
       </div>
 

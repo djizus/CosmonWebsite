@@ -88,7 +88,7 @@ export default function Layout({ children }: LayoutProps) {
           <Link href="/">
             <a>
               <div className="relative h-[22px] w-[73px] lg:h-[40px] lg:w-[131px]">
-                <Image priority={true} src={'/logo.png'} layout="fill" />
+                <Image priority={true} src={'../logo.png'} layout="fill" />
               </div>
             </a>
           </Link>
