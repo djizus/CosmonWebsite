@@ -152,6 +152,7 @@ export default function Page() {
                       onClick={() => set_showCosmonDetail(cosmon)}
                       height={280}
                       width={167}
+                      placeholder="blur"
                       blurDataURL="/cosmon-placeholder.svg"
                     />
 

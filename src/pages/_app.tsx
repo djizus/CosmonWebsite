@@ -25,7 +25,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <Component {...pageProps} />
       <ToastContainer
         closeButton={
-          <div className="-mt-2 flex h-[24px] min-w-[24px] flex-1 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-10">
+          <div className="-mt-2 flex h-[24px] w-[24px] flex-none cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-10">
             <Close className="h-[16px] w-[16px]" />
           </div>
         }
