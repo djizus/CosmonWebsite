@@ -15,6 +15,14 @@
     padding-top: 20px;
     padding-bottom: 20px;
   }
+  &__toast-body {
+    // padding: 0;
+    padding-top: 0px;
+    font-size: 14px;
+    line-height: 24px;
+  }
+  &__close-button {
+  }
   &__spinner {
     @apply animate-[spin_2s_linear_infinite];
     border: none;
@@ -24,7 +32,7 @@
   &__toast-icon {
     margin-inline-end: 16px;
     margin-left: 5px;
-    margin-top: 5px;
+    margin-top: 0px;
     align-self: start;
   }
   &__toast-container {
