@@ -56,10 +56,24 @@ export default function Layout({ children }: LayoutProps) {
 
   // useEffect(() => {}, [tokens])
 
+  const handleSwitchAccount = () => {
+    setTimeout(() => {
+      connect()
+    }, 250)
+  }
+
   useEffect(() => {
     // The user has been connected before, connect him automatically
     if (walletAddress !== '') {
-      connect()
+      setTimeout(() => {
+        connect()
+      }, 250)
+    }
+    window.addEventListener('keplr_keystorechange', handleSwitchAccount)
+
+    // cleanup this component
+    return () => {
+      window.removeEventListener('keydown', handleSwitchAccount)
     }
   }, [])
 
