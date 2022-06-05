@@ -16,9 +16,13 @@ import { LazyLoadComponent } from 'react-lazy-load-image-component'
 import { Transition } from '@headlessui/react'
 import CosmonFullModal from '../components/Modal/CosmonFullModal'
 import Hover from 'react-3d-hover'
+import { queryGetMaxClaimableToken } from '../services/interaction'
+import { getAmountFromDenom } from '../utils/index'
 
 export default function Page() {
-  const { connect, isConnected, cosmons } = useWalletStore((state) => state)
+  const { connect, isConnected, cosmons, coins } = useWalletStore(
+    (state) => state
+  )
   const [assetToTransfer, set_assetToTransfer] = useState<null | CosmonType>()
 
   const [scarcitiesNumberByCosmons, set_scarcitiesNumberByCosmons] = useState<
@@ -119,6 +123,90 @@ export default function Page() {
                   </div>
                 </div>
               </div>
+              <table className="mt-12 border-collapse font-semibold">
+                <thead className="border-b border-cosmon-main-primary leading-[80px]">
+                  <th className="text-left text-cosmon-main-tertiary">
+                    Assets
+                  </th>
+                  <th className="text-left text-cosmon-main-tertiary">
+                    Balance
+                  </th>
+                  <th></th>
+                  <th className="text-left text-cosmon-main-tertiary">
+                    Transfer
+                  </th>
+                </thead>
+                <tbody className="text-xl text-white">
+                  <tr className="h-4"></tr>
+                  <tr className="h-[72px]">
+                    <td>
+                      <div className="flex items-center gap-x-[10px]  leading-9">
+                        <img
+                          width="32px"
+                          height="32px"
+                          src="../icons/xki.png"
+                          alt=""
+                        />
+                        Ki - XKI
+                      </div>
+                    </td>
+                    <td>
+                      {getAmountFromDenom(
+                        process.env.NEXT_PUBLIC_STAKING_DENOM || '',
+                        coins
+                      )}
+                    </td>
+                    <td
+                      // style={{
+                      //   textAlign: '-webkit-right',
+                      // }}
+
+                      className="mr-8 text-right"
+                    >
+                      <div className="mr-8 flex justify-end">
+                        <Button type="primary" size="small" className="text-sm">
+                          Claim rewards: 1,238.34 XKI
+                        </Button>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex gap-x-3">
+                        <Button size="small" type="secondary">
+                          Deposit
+                        </Button>
+                        <Button size="small" type="secondary">
+                          Withdraw
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr className="h-[72px]">
+                    <td>
+                      <div className="flex items-center gap-x-[10px]  leading-9">
+                        <img
+                          width="32px"
+                          height="32px"
+                          src="../icons/cosmos.png"
+                          alt=""
+                        />
+                        Cosmos Hub - ATOM
+                      </div>
+                    </td>
+                    <td> {getAmountFromDenom('ATOM', coins)}</td>
+                    <td></td>
+                    <td>
+                      <div className="flex gap-x-3">
+                        <Button size="small" type="secondary">
+                          Deposit
+                        </Button>
+                        <Button size="small" type="secondary">
+                          Withdraw
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             <Transition show={true} appear={true}>
@@ -132,7 +220,7 @@ export default function Page() {
                 {cosmons.map((cosmon, index) => (
                   <Transition.Child
                     key={cosmon.id}
-                    className={`flex cursor-pointer flex-col items-center gap-y-5`}
+                    className={`relative flex cursor-pointer flex-col items-center gap-y-5 `}
                     enter={`transition-opacity ease-linear duration-800`}
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
@@ -147,14 +235,30 @@ export default function Page() {
                       height={280}
                     /> */}
                     {/* <Hover scale={1.05} perspective={300} speed={10}> */}
-                    <Image
-                      src={cosmon.data.extension.image}
-                      onClick={() => set_showCosmonDetail(cosmon)}
-                      height={280}
-                      width={167}
-                      placeholder="blur"
-                      blurDataURL="/cosmon-placeholder.svg"
-                    />
+
+                    <div className="group  transition-all hover:scale-[104%] hover:shadow-2xl">
+                      <div
+                        onClick={() => {
+                          set_assetToTransfer(cosmon)
+                        }}
+                        className="transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 rounded-full p-2 transition-all group-hover:scale-100"
+                      >
+                        <img
+                          width="16px"
+                          height="16px"
+                          src="../icons/transfer-card.svg"
+                          alt=""
+                        />
+                      </div>
+                      <Image
+                        src={cosmon.data.extension.image}
+                        onClick={() => set_showCosmonDetail(cosmon)}
+                        height={280}
+                        width={167}
+                        placeholder="blur"
+                        blurDataURL="/cosmon-placeholder.svg"
+                      />
+                    </div>
 
                     {/* <LazyLoadImage
                       onClick={() => set_showCosmonDetail(cosmon)}
@@ -180,7 +284,7 @@ export default function Page() {
                     /> */}
                     {/* </Hover> */}
 
-                    <Button
+                    {/* <Button
                       type="secondary"
                       size="small"
                       onClick={() => {
@@ -188,7 +292,7 @@ export default function Page() {
                       }}
                     >
                       Transfer
-                    </Button>
+                    </Button> */}
                   </Transition.Child>
                 ))}
               </div>

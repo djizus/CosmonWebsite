@@ -8,8 +8,7 @@ export const getShortAddress = (address?: string) => {
 export const getAmountFromDenom = (denom: string, coins: Coin[]) => {
   const amount =
     convertMicroDenomToDenom(
-      coins.find((coin) => coin.denom === process.env.NEXT_PUBLIC_STAKING_DENOM)
-        ?.amount || 0
+      coins.find((coin) => coin.denom === denom)?.amount || 0
     ) || 0
-  return amount.toFixed(3)
+  return Number(amount.toFixed(3))
 }

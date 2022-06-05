@@ -55,6 +55,26 @@ input {
     @apply mx-auto max-w-[1380px];
   }
 
+  .transfer-card-icon {
+    @apply rounded-full;
+    background: linear-gradient(
+        0deg,
+        rgba(25, 22, 63, 0.8),
+        rgba(25, 22, 63, 0.8)
+      ),
+      #ffffff;
+
+    border: 0.5px solid #413673;
+    box-shadow: 0px 2px 5px rgba(48, 48, 48, 0.05);
+    &:hover {
+      background: linear-gradient(180deg, #a996ff 0%, #4a3d90 100%);
+
+      border: 0.5px solid #413673;
+
+      box-shadow: 0px 2px 5px rgba(48, 48, 48, 0.05);
+    }
+  }
+
   .border-shiny-gradient {
     position: relative;
     &::after {

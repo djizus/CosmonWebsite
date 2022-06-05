@@ -27,17 +27,16 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
                 {getAmountFromDenom(
                   process.env.NEXT_PUBLIC_STAKING_DENOM || '',
                   coins
-                )}
-                XKI{' '}
+                )}{' '}
+                XKI
               </div>
             </div>
-            <div className="flex justify-between">
+            <div className="flex items-center justify-between">
               <div>XKI to claim</div>
-              <div className="flex gap-x-2">
-                <div className="font-semibold text-cosmon-main-tertiary">
-                  Claim
-                </div>
-                0 XKI
+              <div className="flex gap-x-[10px]">
+                {/* <div className="font-semibold text-cosmon-main-tertiary"> */}
+                <Button type="ghost">Claim</Button>
+                {/* </div> */}0 XKI
               </div>
             </div>
             <div className="flex justify-between">

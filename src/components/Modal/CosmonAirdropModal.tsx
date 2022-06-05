@@ -16,6 +16,7 @@ export default function CosmonAirdropModal({
   onCloseModal,
 }: CosmonAirdropModalProps) {
   const elligible = true
+  const alreadyClaimed = true
 
   const cosmonEligibilitySection = (
     <ul className="ml-8 flex flex-col gap-y-1 text-left text-sm">
@@ -54,15 +55,21 @@ export default function CosmonAirdropModal({
                 </div>
               ) : (
                 <div className="text-center">
-                  <Image
-                    layout="fixed"
-                    width="387px"
-                    height="274px"
-                    src={'cosmon-aidrop-cards-when-elligible.png'}
-                  />
+                  {!alreadyClaimed && (
+                    <Image
+                      layout="fixed"
+                      width="387px"
+                      height="274px"
+                      src={'../cosmon-aidrop-cards-when-elligible.png'}
+                    />
+                  )}
+
                   <h4 className="mb-5 mt-2 text-lg font-semibold leading-[26px]">
-                    Congrats, you’re eligible to 3 Cosmon airdrop!
+                    {alreadyClaimed
+                      ? 'You already claimed all your Cosmon airdrop'
+                      : 'Congrats, you’re eligible to 3 Cosmon airdrop!'}
                   </h4>
+
                   <p className="mb-4 text-sm font-normal">
                     You get 1 Cosmon airdrop (3 max.) for each condition
                     fulfilled as follows (snapshot taken on June 1st), within
@@ -75,22 +82,24 @@ export default function CosmonAirdropModal({
             </div>
           </div>
 
-          <div className="flex py-5">
-            {elligible ? (
-              <>
+          {!alreadyClaimed && (
+            <div className="flex py-5">
+              {elligible ? (
+                <>
+                  <Button size="small" onClick={onCloseModal}>
+                    I understand
+                  </Button>
+                </>
+              ) : (
                 <Button size="small" onClick={onCloseModal}>
-                  I understand
+                  Claim airdrop
                 </Button>
-              </>
-            ) : (
-              <Button size="small" onClick={onCloseModal}>
-                Claim airdrop
-              </Button>
-            )}
-            {/* <Button size="small" type="secondary" onClick={onCloseModal}>
+              )}
+              {/* <Button size="small" type="secondary" onClick={onCloseModal}>
               Close
             </Button> */}
-          </div>
+            </div>
+          )}
         </div>
       </Modal>
     </>

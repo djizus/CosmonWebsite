@@ -108,6 +108,25 @@ export const queryCosmonPrice = async (
   return price.amount
 }
 
+export const queryGetMaxClaimableToken = async (
+  signingClient: SigningCosmWasmClient
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await signingClient.queryContractSmart(
+        PUBLIC_SELL_CONTRACT,
+        {
+          get_max_claimable_token: {},
+        }
+      )
+      return resolve(response)
+    } catch (e) {
+      console.error(`Error while fetching claimable token number`, e)
+      return reject(`Error while fetching claimable token number`)
+    }
+  })
+}
+
 export const queryCosmonInfo = async (
   signingClient: SigningCosmWasmClient,
   cosmonId: string

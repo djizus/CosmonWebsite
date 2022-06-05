@@ -154,7 +154,7 @@ export default function Layout({ children }: LayoutProps) {
               </div>
 
               <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
-                {coins.find((coin) => coin.denom === 'UST')?.amount} UST
+                {coins.find((coin) => coin.denom === 'ATOM')?.amount} ATOM
                 <div
                   onClick={() =>
                     set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)

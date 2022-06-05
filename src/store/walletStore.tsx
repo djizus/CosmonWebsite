@@ -11,6 +11,7 @@ import {
   queryCosmonPrice,
   queryCosmonAvailableByScarcity,
   executeTransferNft,
+  queryGetMaxClaimableToken,
 } from '../services/interaction'
 import { toast } from 'react-toastify'
 import { CosmonType } from '../../types/Cosmon'
@@ -29,6 +30,7 @@ interface WalletState {
   address: string
   isFetchingData: boolean
   signingClient: SigningCosmWasmClient | null
+  maxClaimableToken?: number
   coins: Coin[]
   cosmons: CosmonType[]
   isConnected: boolean
@@ -136,13 +138,20 @@ const useWalletStore = create<WalletState>(
         })
       },
       fetchWalletData: async () => {
+        const { signingClient } = get()
+        let maxClaimableToken
         set({
           isFetchingData: true,
         })
         const { fetchCosmons, fetchCoin } = get()
         await fetchCosmons()
         await fetchCoin()
+        if (signingClient) {
+          maxClaimableToken = await queryGetMaxClaimableToken(signingClient)
+        }
+
         set({
+          maxClaimableToken: maxClaimableToken,
           isFetchingData: false,
         })
       },
@@ -155,11 +164,11 @@ const useWalletStore = create<WalletState>(
               address,
               PUBLIC_STAKING_DENOM
             )
-            const ustCoin = await signingClient.getBalance(address, 'UST')
+            const atomCoin = await signingClient.getBalance(address, 'ATOM')
             let newCoins = coins.filter(
               (coin) => coin.denom !== PUBLIC_STAKING_DENOM
             )
-            newCoins.push(mainCoin, ustCoin)
+            newCoins.push(mainCoin, atomCoin)
             set({
               coins: newCoins,
             })
@@ -175,41 +184,6 @@ const useWalletStore = create<WalletState>(
         const { signingClient, address } = get()
         if (signingClient && address) {
           try {
-            // let cursor = 1
-            // let limit = 10
-            // let updatedTokens: string[] = []
-            // let previousTokens: string[] = []
-
-            // while (
-            //   // updatedTokens.length !== previousTokens.length ||
-            //   cursor === 1
-            // ) {
-            //   previousTokens = [...updatedTokens]
-            //   const tempTokens = await signingClient.queryContractSmart(
-            //     process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
-            //     {
-            //       all_tokens: {
-            //         owner: address,
-            //         // start_after: updatedTokens[updatedTokens.length],
-            //         limit: 5000,
-            //       },
-            //     }
-            //   )
-            //   updatedTokens = [...updatedTokens, ...tempTokens.tokens]
-            //   console.log('updatedTokens', updatedTokens)
-            //   cursor += limit
-            // }
-
-            // const { data } = useSWR({
-            //   type: "query",
-            //   contractAddress: process.env.NEXT_PUBLIC_NFT_CONTRACT,
-            //   payload:               {
-            //     tokens: {
-            //       owner: address,
-            //       limit: 5000,
-            //     },
-            //   }
-            //  }, chainFetcher)
             const { tokens } = await signingClient.queryContractSmart(
               process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
               {

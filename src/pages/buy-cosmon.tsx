@@ -8,7 +8,6 @@ import Button from '../components/Button/Button'
 import { Scarcity } from '../../types/Scarcity'
 import { useWalletStore } from '../store/walletStore'
 import useWindowSize from 'react-use/lib/useWindowSize'
-import Confetti from 'react-confetti'
 import { CosmonType } from '../../types/Cosmon'
 import ShowCosmonBoughtModal from '../components/Modal/CosmonBoughtModal'
 import CosmonAirdropModal from '../components/Modal/CosmonAirdropModal'
@@ -19,9 +18,8 @@ export default function Page() {
     null
   )
 
-  const [dropConfetti, set_dropConfetti] = useState(false)
+  const [showCosmonAirdropModal, set_showCosmonAirdropModal] = useState(false)
   const [cosmonBought, set_cosmonBought] = useState<null | CosmonType>()
-  const { width, height } = useWindowSize()
 
   const buy = async (scarcity: Scarcity) => {
     set_isCurrentlyBuying(scarcity)
@@ -49,7 +47,11 @@ export default function Page() {
         />
       )}
 
-      {/* {<CosmonAirdropModal onCloseModal={() => console.log('siii')} />} */}
+      {showCosmonAirdropModal && (
+        <CosmonAirdropModal
+          onCloseModal={() => set_showCosmonAirdropModal(false)}
+        />
+      )}
 
       <div className="mx-auto max-w-[1120px]">
         <Section className="px-[40px] pt-[107px] lg:pt-[160px]">
@@ -172,15 +174,6 @@ export default function Page() {
           <Subscribe />
         </Section>
       </div>
-      {dropConfetti && (
-        <Confetti
-          numberOfPieces={1450}
-          tweenDuration={16000}
-          recycle={false}
-          width={width}
-          height={height}
-        />
-      )}
     </>
   )
 }
