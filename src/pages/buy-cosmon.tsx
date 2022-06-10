@@ -9,7 +9,7 @@ import { Scarcity } from '../../types/Scarcity'
 import { useWalletStore } from '../store/walletStore'
 import useWindowSize from 'react-use/lib/useWindowSize'
 import { CosmonType } from '../../types/Cosmon'
-import ShowCosmonBoughtModal from '../components/Modal/CosmonBoughtModal'
+import CosmonBoughtModal from '../components/Modal/CosmonBoughtModal'
 import CosmonAirdropModal from '../components/Modal/CosmonAirdropModal'
 
 export default function Page() {
@@ -41,7 +41,7 @@ export default function Page() {
   return (
     <>
       {cosmonBought && (
-        <ShowCosmonBoughtModal
+        <CosmonBoughtModal
           cosmon={cosmonBought}
           onCloseModal={() => set_cosmonBought(null)}
         />

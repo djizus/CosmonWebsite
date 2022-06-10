@@ -34,11 +34,13 @@ interface WalletState {
   coins: Coin[]
   cosmons: CosmonType[]
   isConnected: boolean
+  hasSubscribed: boolean
   setCosmons: (cosmons: CosmonType[]) => void
   buyCosmon: (scarcity: Scarcity) => any
   transferAsset: (recipient: string, asset: CosmonType) => void
   connect: () => void
   disconnect: () => void
+  setHasSubscribed: (hasSubscribed: boolean) => void
   fetchCoin: () => void
   addMoneyFromFaucet: () => void
   fetchCosmons: () => void
@@ -56,6 +58,12 @@ const useWalletStore = create<WalletState>(
       isFetchingData: false,
       signingClient: null,
       isConnected: false,
+      hasSubscribed: false,
+      setHasSubscribed: (hasSubscribed) => {
+        set({
+          hasSubscribed: hasSubscribed,
+        })
+      },
       connect: async () => {
         set({
           isFetchingData: true,

@@ -120,9 +120,9 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
 
-        <div className="lg:hidden">
+        {/* <div className="lg:hidden">
           <HamburgerMenu />
-        </div>
+        </div> */}
 
         <div className="relative hidden items-center lg:flex">
           {isConnected ? (

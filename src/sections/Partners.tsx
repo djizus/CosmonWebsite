@@ -29,6 +29,7 @@ export default function Partners() {
           delay: 0.3,
           duration: 0.3,
         }}
+        viewport={{ once: true }}
       >
         Early supports and partners
       </motion.h2>
@@ -39,6 +40,7 @@ export default function Partners() {
           delay: 0.45,
           duration: 0.3,
         }}
+        viewport={{ once: true }}
         className="mx-auto max-w-[860px] pt-[30px] text-lg leading-8"
       >
         Cosmon is an in initiative from Klub and the Ki Foundation. We are
@@ -54,6 +56,7 @@ export default function Partners() {
         whileInView={'visible'}
         variants={partnerListAnimation}
         className="partners flex flex-col gap-y-4 pt-10"
+        viewport={{ once: true }}
       >
         <div className="relative flex flex-wrap items-center justify-center gap-x-20 gap-y-10">
           <motion.img
@@ -117,7 +120,7 @@ export default function Partners() {
           />
           <motion.img
             variants={partnerItemAnimation}
-            className="h-[41px] w-auto object-cover"
+            className="h-full w-auto object-cover lg:h-[41px]"
             src="/partners/lum-network.png"
           />
         </div>

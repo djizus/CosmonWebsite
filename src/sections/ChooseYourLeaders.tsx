@@ -3,9 +3,10 @@ import router from 'next/router'
 import Button from '../components/Button/Button'
 import ChooseYourLeadersBackground from '/public/choose-your-leaders/town.png'
 import { motion } from 'framer-motion'
+import { useInView } from 'react-intersection-observer'
 
 export default function ChooseYourLeaders() {
-  // const { ref, inView, entry } = useInView({ triggerOnce: true })
+  const { ref, inView, entry } = useInView({ triggerOnce: true })
   // const LeadersIllustration = () => (
 
   // )
@@ -66,132 +67,87 @@ export default function ChooseYourLeaders() {
         </motion.div>
       </div>
 
-      <div
+      <motion.div
+        initial={{ x: '-80%' }}
+        // whileInView={{ opacity: 1, x: '0%' }}
+        animate={
+          inView && {
+            x: '0%',
+          }
+        }
+        transition={{
+          // delay: 0.8,
+          duration: 0.6,
+        }}
         className={`absolute -bottom-40 left-0 flex w-full  justify-center overflow-hidden transition-transform duration-700 ease-out lg:bottom-[80px] lg:justify-start lg:pl-[280px]`}
       >
         <>
-          <motion.div
-            initial={{ opacity: 0, x: '-100%' }}
-            whileInView={{ opacity: 1, x: '0%' }}
-            viewport={{ once: true }}
-            transition={{
-              delay: 0.4,
-              type: 'spring',
-              stiffness: 260,
-              damping: 15,
-            }}
-            // viewport={{ once: true }}
-            className="relative h-[203px] w-[106px]"
-          >
+          <div className="relative h-[203px] w-[106px]">
             <Image
               layout="fill"
               className="object-cover"
               src={'/choose-your-leaders/leaders/leader-1.png'}
             />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: '-100%' }}
-            whileInView={{ opacity: 1, x: '0%' }}
-            viewport={{ once: true }}
-            transition={{
-              delay: 0.5,
-              type: 'spring',
-              stiffness: 260,
-              damping: 15,
-            }}
-            className="relative mx-5 mt-12 h-[266px] w-[109px] lg:ml-[100px] lg:mr-[56px]"
-          >
+          </div>
+          <div className="relative mx-5 mt-12 h-[266px] w-[109px] lg:ml-[100px] lg:mr-[56px]">
             <Image
               layout="fill"
               className="object-cover"
               src={'/choose-your-leaders/leaders/leader-2.png'}
             />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: '-100%' }}
-            whileInView={{ opacity: 1, x: '0%' }}
-            viewport={{ once: true }}
-            transition={{
-              delay: 0.6,
-              type: 'spring',
-              stiffness: 280,
-              damping: 15,
-            }}
-            className="relative h-[216px] w-[95px]"
-          >
+          </div>
+          <div className="relative h-[216px] w-[95px]">
             <Image
               layout="fill"
               className="object-cover"
               src={'/choose-your-leaders/leaders/leader-3.png'}
             />
-          </motion.div>
+          </div>
         </>
-      </div>
+      </motion.div>
 
-      <div
+      <motion.div
+        initial={{ x: '80%' }}
+        // whileInView={{ opacity: 1, x: '0%' }}
+        animate={
+          inView && {
+            x: '0%',
+          }
+        }
+        transition={{
+          // delay: 0.8,
+          duration: 0.6,
+        }}
         className={`absolute -bottom-24 left-0 hidden w-full  justify-center overflow-hidden pt-16 transition-transform delay-300 duration-700 ease-out lg:left-[440px] lg:bottom-[245px] lg:flex lg:w-full xl:left-[410px]`}
       >
         <>
-          <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            whileInView={{ opacity: 1, x: '0%' }}
-            viewport={{ once: true }}
-            transition={{
-              delay: 0.8,
-              type: 'spring',
-              stiffness: 260,
-              damping: 15,
-            }}
-            className="relative h-[209px] w-[105px]"
-          >
+          <div className="relative h-[209px] w-[105px]">
             <Image
               layout="fill"
               className="object-cover"
               src={'/choose-your-leaders/leaders/leader-4.png'}
             />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            whileInView={{ opacity: 1, x: '0%' }}
-            viewport={{ once: true }}
-            transition={{
-              delay: 0.9,
-              type: 'spring',
-              stiffness: 260,
-              damping: 15,
-            }}
-            className="relative mx-5 mt-16 h-[199px] w-[114px] lg:mx-16"
-          >
+          </div>
+          <div className="relative mx-5 mt-16 h-[199px] w-[114px] lg:mx-16">
             <Image
               layout="fill"
               className="object-cover"
               src={'/choose-your-leaders/leaders/leader-5.png'}
             />
-          </motion.div>
+          </div>
           <div className="relative -mt-8 h-[193px] w-[97px]">
-            <motion.div
-              viewport={{ once: true }}
-              initial={{ opacity: 0, x: '100%' }}
-              whileInView={{ opacity: 1, x: '0%' }}
-              transition={{
-                delay: 1,
-                type: 'spring',
-                stiffness: 260,
-                damping: 15,
-              }}
-              className="absolute h-full w-full"
-            >
+            <div className="absolute h-full w-full">
               <Image
                 layout="fill"
                 className="object-cover"
                 src={'/choose-your-leaders/leaders/leader-6.png'}
               />
-            </motion.div>
+            </div>
           </div>
         </>
-      </div>
+      </motion.div>
 
-      {/* <div ref={ref} className="absolute bottom-0"></div> */}
+      <div ref={ref} className="absolute bottom-10"></div>
     </>
   )
 }

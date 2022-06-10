@@ -14,6 +14,7 @@ export default function Treasury() {
             stiffness: 250,
             damping: 15,
           }}
+          viewport={{ once: true }}
           className="-ml-[50px] w-[calc(100%_+_100px)] lg:-ml-44 lg:-mr-10 lg:w-[720px]"
         >
           <Image
@@ -33,6 +34,7 @@ export default function Treasury() {
             delay: 0.3,
             duration: 0.3,
           }}
+          viewport={{ once: true }}
           className="lg:text-left"
         >
           Treasury management
@@ -44,6 +46,7 @@ export default function Treasury() {
             delay: 0.4,
             duration: 0.3,
           }}
+          viewport={{ once: true }}
           className="pt-10 lg:max-w-xl lg:text-left"
         >
           All the proceeds of the NFT sales will be pooled in a decentralized
@@ -59,6 +62,7 @@ export default function Treasury() {
             delay: 0.55,
             duration: 0.3,
           }}
+          viewport={{ once: true }}
           className="pt-4 lg:text-left"
         >
           This unique approach is at the origin of the key tokenomics dimension
@@ -73,6 +77,7 @@ export default function Treasury() {
               delay: 0.7,
               duration: 0.3,
             }}
+            viewport={{ once: true }}
             className="list-disc"
           >
             {/* <li className="list-disc text-[8px]"> */}
@@ -87,6 +92,7 @@ export default function Treasury() {
               delay: 0.8,
               duration: 0.3,
             }}
+            viewport={{ once: true }}
             className="list-disc"
           >
             Provide recurring $XKI returns to their holders to be used ingame
@@ -98,6 +104,7 @@ export default function Treasury() {
               delay: 0.9,
               duration: 0.3,
             }}
+            viewport={{ once: true }}
             className="list-disc"
           >
             Fuel the prize pools of the different leagues
@@ -110,6 +117,7 @@ export default function Treasury() {
             delay: 1,
             duration: 0.3,
           }}
+          viewport={{ once: true }}
           className="pt-[60px]"
         >
           <Button

@@ -55,6 +55,7 @@ export default function RarityLevels() {
         initial="hidden"
         whileInView={'visible'}
         variants={rarityListAnimation}
+        viewport={{ once: true }}
         className="rarity-levels flex flex-col items-center gap-y-9 gap-x-[45px] pt-6 lg:flex-row lg:justify-center lg:pt-[123px] xl:gap-x-[60px]"
       >
         <motion.div variants={rarityItemAnimation}>

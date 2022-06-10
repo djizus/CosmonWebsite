@@ -1,8 +1,31 @@
 import style from './Footer.module.scss'
 import Link from 'next/link'
 import Button from '../Button/Button'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import MailchimpSubscribe from 'react-mailchimp-subscribe'
+import { useWalletStore } from '../../store/walletStore'
 
 export default function Footer() {
+  const { hasSubscribed, setHasSubscribed } = useWalletStore((state) => state)
+  const [email, set_email] = useState('')
+  const [subscribeStatus, set_subscribeStatus] = useState('')
+  const [subscribeMessage, set_subscribeMessage] = useState('')
+  const MAILCHIMP_URL = process.env.NEXT_PUBLIC_MAILCHIMP_URL
+
+  useEffect(() => {
+    if (subscribeMessage) {
+      if (subscribeStatus === 'sending') {
+        toast.loading('Subscribing', {})
+      } else if (subscribeStatus === 'error') {
+        toast.error(subscribeMessage.replace('0 -', ''))
+      } else if (subscribeStatus === 'success') {
+        toast.success(subscribeMessage.replace('0 -', ''))
+        setHasSubscribed(true)
+      }
+    }
+  }, [subscribeMessage])
+
   return (
     <footer className={`relative ${style.footer} bg-cosmon-blue-dark`}>
       <div className="max-w-auto">
@@ -43,14 +66,39 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="hidden flex-col items-end gap-y-5 lg:flex">
-            <input
-              className="secondary-text"
-              type="text"
-              placeholder="Enter your email address"
-            />
-            <Button size="small">Subscribe</Button>
-          </div>
+          <MailchimpSubscribe
+            url={MAILCHIMP_URL}
+            render={(props: any) => {
+              const { subscribe, status, message } = props || {}
+              if (status) {
+                set_subscribeStatus(status)
+              }
+              if (message) {
+                set_subscribeMessage(message)
+              }
+              return hasSubscribed ? (
+                <div>Thank you for subscribing!</div>
+              ) : (
+                <div className="hidden flex-col items-end gap-y-5 lg:flex">
+                  <input
+                    className="secondary-text"
+                    type="text"
+                    placeholder="Enter your email address"
+                    value={email}
+                    onChange={(e) => set_email(e.target.value)}
+                  />
+                  <Button
+                    onClick={() => {
+                      subscribe({ EMAIL: email })
+                    }}
+                    size="small"
+                  >
+                    Subscribe
+                  </Button>
+                </div>
+              )
+            }}
+          />
         </div>
 
         <div className="flex gap-x-9 pt-14 lg:absolute lg:top-40 ">
