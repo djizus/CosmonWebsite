@@ -108,9 +108,6 @@ export default function Layout({ children }: LayoutProps) {
           </Link>
 
           <div className="ml-20 hidden items-center gap-x-[60px] lg:flex">
-            <Link href="/">
-              <a>About</a>
-            </Link>
             <Link href="/buy-cosmon">
               <a>Buy Cosmon</a>
             </Link>

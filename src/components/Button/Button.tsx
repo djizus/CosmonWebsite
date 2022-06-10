@@ -15,12 +15,14 @@ type ButtonProps = {
   disabled?: boolean
   className?: string
   isLoading?: boolean
+  fullWidth?: boolean
 }
 
 export default function Button({
   type = 'primary',
   size = 'normal',
   children,
+  fullWidth,
   icon,
   disabled = false,
   className = '',
@@ -29,13 +31,18 @@ export default function Button({
   ...props
 }: ButtonProps) {
   return (
-    <div className="relative z-0 mx-auto mb-1 flex w-fit flex-row lg:m-0">
+    <div
+      className={`relative z-0 mx-auto mb-1 flex flex-row lg:m-0 ${
+        fullWidth ? 'w-full' : 'w-fit'
+      }`}
+    >
       <button
         onClick={onClick}
         disabled={disabled}
         className={clsx(
           `${style.btn}`,
           `${style[size]}`,
+          fullWidth && 'w-full',
           !disabled ? style[type] : style.disabled,
           `${className}`
         )}

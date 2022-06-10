@@ -1,12 +1,23 @@
 import Button from '../components/Button/Button'
 import Image from 'next/image'
 import router from 'next/router'
+import { motion } from 'framer-motion'
 
 export default function HoldAndEarn() {
   return (
     <>
       <div className="lg:mx-auto lg:flex lg:max-w-6xl lg:flex-row-reverse lg:items-center lg:justify-between">
-        <div className="relative lg:w-1/2">
+        <motion.div
+          initial={{ scale: 0.5 }}
+          whileInView={{ scale: 1 }}
+          transition={{
+            type: 'spring',
+            stiffness: 250,
+            damping: 15,
+          }}
+          viewport={{ once: true }}
+          className="relative lg:w-1/2"
+        >
           <Image
             layout="responsive"
             objectFit="contain"
@@ -14,22 +25,49 @@ export default function HoldAndEarn() {
             width="100%"
             height="100%"
           />
-        </div>
+        </motion.div>
 
         <div className="lg:w-[44%] ">
-          <h2 className="mx-auto max-w-sm pt-10 lg:max-w-none lg:pt-0 lg:text-left">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: 0.3,
+              duration: 0.3,
+            }}
+            viewport={{ once: true }}
+            className="mx-auto max-w-sm pt-10 lg:max-w-none lg:pt-0 lg:text-left"
+          >
             Hold Cosmon, Earn $XKI
-          </h2>
-          <p className="pt-8 lg:pt-[40px] lg:pr-12 lg:text-left">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: 0.45,
+              duration: 0.3,
+            }}
+            viewport={{ once: true }}
+            className="pt-8 lg:pt-[40px] lg:pr-12 lg:text-left"
+          >
             Cosmons holders will benefit of recurring $XKI return, providing to
             players a daily fuel to boost their Cosmon performance. The $XKI
             returns are increasing with the rarity levels of your Cosmons!
-          </p>
-          <div className="pt-10 lg:pt-[60px]">
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: 0.6,
+              duration: 0.3,
+            }}
+            viewport={{ once: true }}
+            className="pt-10 lg:pt-[60px]"
+          >
             <Button onClick={() => router.push('/buy-cosmon')}>
               Buy Cosmon
             </Button>
-          </div>
+          </motion.div>
         </div>
       </div>
     </>

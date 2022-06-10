@@ -16,6 +16,7 @@
     "@svgr/webpack": "^6.2.1",
     "clsx": "^1.1.1",
     "env-cmd": "^10.1.0",
+    "framer-motion": "^6.3.11",
     "next": "latest",
     "react": "^17.0.2",
     "react-3d-hover": "^1.1.1",

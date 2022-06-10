@@ -14,10 +14,10 @@ export default function Footer() {
             <div className="flex lg:ml-20 lg:mr-[96px]">
               <div className={style['link-group']}>
                 <div className={style.title}>About</div>
-                <Link href={'/about'}>
+                <Link href={'/buy-cosmon'}>
                   <a className={style.link}>Buy Cosmon</a>
                 </Link>
-                <Link href={'/about'}>
+                <Link href={'/my-assets'}>
                   <a className={style.link}>Gallery</a>
                 </Link>
                 <Link href={'/about'}>
@@ -31,8 +31,14 @@ export default function Footer() {
               <Link href={'/about'}>
                 <a className={style.link}>Help Center</a>
               </Link>
-              <Link href={'/about'}>
-                <a className={style.link}>Light Paper</a>
+              <Link
+                href={
+                  'https://inky-sidewalk-879.notion.site/Cosmon-white-paper-722dc48d832a49e9ae348eaf94184706'
+                }
+              >
+                <a target="_blank" className={style.link}>
+                  Light Paper
+                </a>
               </Link>
             </div>
           </div>
@@ -48,25 +54,20 @@ export default function Footer() {
         </div>
 
         <div className="flex gap-x-9 pt-14 lg:absolute lg:top-40 ">
-          <Link href="instagram">
-            <a href="">
-              <img src="/socials/instagram.svg" alt="" />
-            </a>
-          </Link>
-          <Link href="instagram">
-            <a href="">
+          <Link href="https://twitter.com/playcosmon">
+            <a target="_blank">
               <img src="/socials/twitter.svg" alt="" />
             </a>
           </Link>
 
-          <Link href="instagram">
-            <a href="">
+          <Link href="https://discord.gg/8szcmpypvt">
+            <a target="_blank">
               <img src="/socials/discord.svg" alt="" />
             </a>
           </Link>
 
-          <Link href="instagram">
-            <a href="">
+          <Link href="https://medium.com/ki-foundation">
+            <a target="_blank">
               <img src="/socials/medium.svg" alt="" />
             </a>
           </Link>

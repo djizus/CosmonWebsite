@@ -26,7 +26,7 @@ export default function Page() {
         <Intro />
       </Section>
 
-      <Section className="-mt-3 mb-[160px] pt-36 pb-[360px] lg:mb-0 lg:min-h-[1500px]">
+      <Section className="-mt-3 mb-[160px] pb-[360px] pt-80 lg:mb-0 lg:min-h-[1500px] lg:pt-36">
         <ChooseYourLeaders />
       </Section>
 

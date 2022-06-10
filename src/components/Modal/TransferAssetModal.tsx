@@ -65,7 +65,7 @@ export default function TransferAssetModal({
         <div className="mb-9 rounded-[20px] bg-[#312E5A] bg-opacity-50">
           <div className="items-center justify-center py-[24px]">
             <p className="flex items-center gap-x-8 px-10 text-[14px] leading-[18px] text-white">
-              Cosmon NFT are only transferable on the Osmosis chain
+              Cosmon NFT are only transferable on the Ki chain
             </p>
           </div>
         </div>

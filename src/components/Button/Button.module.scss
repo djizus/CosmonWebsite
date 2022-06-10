@@ -18,6 +18,8 @@
   }
 
   &.primary {
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
     background: linear-gradient(
       180deg,
       #a996ff 0%,
@@ -31,7 +33,9 @@
       );
     }
     &:focus {
-      border: 1px solid #9fa4dd;
+      border-left: 1px solid transparent;
+      border-right: 1px solid transparent;
+
       // border: 1px solid #9fa4dd;
       // &::after {
       //   @apply absolute -z-10 rounded-xl;
@@ -48,7 +52,7 @@
       // }
     }
     &:active {
-      border: none;
+      border: 1px solid #9fa4dd;
       background: linear-gradient(
         180deg,
         #a996ff 0%,
