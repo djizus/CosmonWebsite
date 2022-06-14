@@ -1,7 +1,6 @@
 import { CosmonType } from '../../../types/Cosmon'
 import Modal from './Modal'
 import useWindowSize from 'react-use/lib/useWindowSize'
-import Hover from 'react-3d-hover'
 import Button from '../Button/Button'
 import { useRouter } from 'next/router'
 import { Transition } from '@headlessui/react'
