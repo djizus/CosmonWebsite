@@ -61,9 +61,19 @@ export default function ChooseYourLeaders() {
             delay: 0.5,
           }}
           viewport={{ once: true }}
-          className="flex justify-center pt-8 lg:pt-16"
+          className="flex flex-col items-center justify-center gap-y-5 pt-8 opacity-60 lg:pt-16"
         >
-          <Button onClick={() => router.push('/buy-cosmon')}>Buy cosmon</Button>
+          {/* MVP - Button disabled */}
+          <div className="absolute left-0 z-50 h-full w-full"></div>
+          <div className="opacity-60">
+            <Button
+
+            // onClick={() => router.push('/buy-cosmon')}
+            >
+              Buy cosmon
+            </Button>
+          </div>
+          <div className="italic text-cosmon-main-tertiary">(Coming soon)</div>
         </motion.div>
       </div>
 

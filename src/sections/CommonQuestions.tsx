@@ -8,6 +8,12 @@ const CallToActionButton = () => {
         direction: 'right',
         position: 'left',
       }}
+      onClick={() =>
+        window.open(
+          `https://inky-sidewalk-879.notion.site/Cosmon-white-paper-722dc48d832a49e9ae348eaf94184706`,
+          '_blank'
+        )
+      }
     >
       Read our whitepaper
     </Button>

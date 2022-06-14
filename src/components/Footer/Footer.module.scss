@@ -12,6 +12,7 @@
     @apply text-[#FCFCFC] lg:pb-3;
   }
   .link {
-    @apply font-normal text-[#D9DBE9];
+    // @apply font-normal text-[#D9DBE9];
+    @apply cursor-pointer font-normal text-[#A6A8B4];
   }
 }

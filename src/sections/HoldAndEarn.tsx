@@ -64,9 +64,21 @@ export default function HoldAndEarn() {
             viewport={{ once: true }}
             className="pt-10 lg:pt-[60px]"
           >
-            <Button onClick={() => router.push('/buy-cosmon')}>
-              Buy Cosmon
-            </Button>
+            <div className="relative flex items-center gap-x-8">
+              <div className="absolute left-0 z-50 h-full w-full"></div>
+              <div className="opacity-50">
+                {/* MVP  */}
+                <Button
+                // onClick={
+                //   () => router.push('/buy-cosmon')}
+                >
+                  Buy Cosmon
+                </Button>
+              </div>
+              <div className="italic text-cosmon-main-tertiary">
+                (Coming soon)
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>

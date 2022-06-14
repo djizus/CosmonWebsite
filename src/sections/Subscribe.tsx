@@ -4,7 +4,11 @@ import MailchimpSubscribe from 'react-mailchimp-subscribe'
 import { toast } from 'react-toastify'
 import { useWalletStore } from '../store/walletStore'
 
-export default function Subscribe() {
+type SubscribeProps = {
+  withTitle?: boolean
+}
+
+export default function Subscribe({ withTitle = true }: SubscribeProps) {
   const { hasSubscribed, setHasSubscribed } = useWalletStore((state) => state)
   const [email, set_email] = useState('')
   const [subscribeStatus, set_subscribeStatus] = useState('')
@@ -37,14 +41,18 @@ export default function Subscribe() {
             set_subscribeMessage(message)
           }
           return hasSubscribed ? (
-            <h2 className="mx-auto max-w-[448px]">
-              Thank you for subscribing!
-            </h2>
+            withTitle && (
+              <h2 className="mx-auto max-w-[448px]">
+                Thank you for subscribing!
+              </h2>
+            )
           ) : (
             <>
-              <h2 className="mx-auto max-w-[448px]">
-                Don't miss a drop ever again!
-              </h2>
+              {withTitle && (
+                <h2 className="mx-auto max-w-[448px]">
+                  Don't miss a drop ever again!
+                </h2>
+              )}
               <div className="items-center gap-x-[10px] lg:flex lg:justify-center lg:pt-[60px]">
                 <div className="pt-[60px] lg:w-[468px] lg:pt-0">
                   <input

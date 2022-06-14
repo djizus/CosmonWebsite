@@ -106,7 +106,8 @@ export default function Layout({ children }: LayoutProps) {
               </div>
             </a>
           </Link>
-
+          {/* MVP - Remove navigation */}
+          {/* 
           <div className="ml-20 hidden items-center gap-x-[60px] lg:flex">
             <Link href="/buy-cosmon">
               <a>Buy Cosmon</a>
@@ -117,14 +118,15 @@ export default function Layout({ children }: LayoutProps) {
                 {cosmons.length > 0 && ` (${cosmons.length})`}
               </a>
             </Link>
-          </div>
+          </div> */}
         </div>
 
         {/* <div className="lg:hidden">
           <HamburgerMenu />
         </div> */}
 
-        <div className="relative hidden items-center lg:flex">
+        {/* MVP - Remove navigation */}
+        {/* <div className="relative hidden items-center lg:flex">
           {isConnected ? (
             <div className="flex items-center gap-x-5">
               <div className="relative">
@@ -178,7 +180,7 @@ export default function Layout({ children }: LayoutProps) {
               Connect wallet
             </Button>
           )}
-        </div>
+        </div> */}
       </header>
 
       <main className="-mt-4 lg:-mt-6">{children}</main>

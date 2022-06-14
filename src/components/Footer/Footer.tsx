@@ -37,23 +37,26 @@ export default function Footer() {
             <div className="flex lg:ml-20 lg:mr-[96px]">
               <div className={style['link-group']}>
                 <div className={style.title}>About</div>
-                <Link href={'/buy-cosmon'}>
-                  <a className={style.link}>Buy Cosmon</a>
-                </Link>
-                <Link href={'/my-assets'}>
-                  <a className={style.link}>Gallery</a>
-                </Link>
-                <Link href={'/about'}>
+                {/* <Link 
+                  href={'/buy-cosmon'}
+                  > */}
+                <a className={style.link}>Buy Cosmon</a>
+                {/* </Link> */}
+                {/* <Link href={'/my-assets'}> */}
+                <a className={style.link}>My Assets</a>
+                {/* </Link> */}
+                {/* <Link href={'/about'}>
                   <a className={style.link}>Storyline</a>
-                </Link>
+                </Link> */}
               </div>
             </div>
 
             <div className={style['link-group']}>
               <div className={style.title}>Support</div>
-              <Link href={'/about'}>
+              {/* MVP */}
+              {/* <Link href={'/about'}>
                 <a className={style.link}>Help Center</a>
-              </Link>
+              </Link> */}
               <Link
                 href={
                   'https://inky-sidewalk-879.notion.site/Cosmon-white-paper-722dc48d832a49e9ae348eaf94184706'
@@ -122,7 +125,7 @@ export default function Footer() {
         </div>
 
         <div className="pt-[42px] text-left lg:pt-28 lg:text-center">
-          Created on 🌍 &nbsp; by the Cosmon DAO
+          Created on <span className="px-[2px]"> 🌍 </span> by the Cosmon DAO
         </div>
       </div>
     </footer>

@@ -4,6 +4,7 @@ import HeroBackground from '../../public/hero-background.png'
 import HeroBackgroundMobile from '../../public/hero-background-mobile.png'
 import router from 'next/router'
 import { motion } from 'framer-motion'
+import Subscribe from './Subscribe'
 
 type HeroProps = {
   children: React.ReactNode
@@ -90,7 +91,10 @@ export default function Hero({ children }: HeroProps) {
           {children}
         </motion.p>
 
-        <div className="flex flex-col gap-y-8 pt-32 lg:flex-row lg:justify-center lg:gap-x-8 lg:pt-[62px]">
+        <Subscribe withTitle={false}></Subscribe>
+
+        {/* MVP - Remove Subscribe and discord */}
+        {/* <div className="flex flex-col gap-y-8 pt-32 lg:flex-row lg:justify-center lg:gap-x-8 lg:pt-[62px]">
           <motion.div
             initial={{ translateY: 10, opacity: 0 }}
             animate={{ translateY: 0, opacity: 1 }}
@@ -119,7 +123,7 @@ export default function Hero({ children }: HeroProps) {
               Join discord
             </Button>
           </motion.div>
-        </div>
+        </div> */}
       </div>
     </>
   )
