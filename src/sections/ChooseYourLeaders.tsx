@@ -94,6 +94,7 @@ export default function ChooseYourLeaders() {
             className="relative mb-20 w-[164px]"
           >
             <Image
+              priority={true}
               layout="fill"
               className="object-contain"
               src={'/choose-your-leaders/leaders/resized/leader-1-animated.gif'}
@@ -114,6 +115,7 @@ export default function ChooseYourLeaders() {
             className="relative mx-5 mt-20 h-[220px] w-[120px] lg:ml-[100px] lg:mr-[66px]"
           >
             <Image
+              priority={true}
               layout="fill"
               className="object-contain"
               src={'/choose-your-leaders/leaders/resized/leader-2-animated.gif'}
@@ -134,6 +136,7 @@ export default function ChooseYourLeaders() {
             className="relative h-[216px] w-[95px]"
           >
             <Image
+              priority={true}
               layout="fill"
               className="object-contain"
               src={'/choose-your-leaders/leaders/resized/leader-3-animated.gif'}
@@ -161,6 +164,7 @@ export default function ChooseYourLeaders() {
             className="relative h-[209px] w-[105px]"
           >
             <Image
+              priority={true}
               layout="fill"
               className="object-cover"
               src={'/choose-your-leaders/leaders/resized/leader-4-animated.gif'}
@@ -181,6 +185,7 @@ export default function ChooseYourLeaders() {
             className="relative mx-5 mt-16 h-[199px] w-[114px] lg:mx-16"
           >
             <Image
+              priority={true}
               layout="fill"
               className="object-cover"
               src={'/choose-your-leaders/leaders/resized/leader-5-animated.gif'}
