@@ -96,7 +96,7 @@ export default function ChooseYourLeaders() {
             <Image
               layout="fill"
               className="object-contain"
-              src={'/choose-your-leaders/leaders/leader-1-animated-min.gif'}
+              src={'/choose-your-leaders/leaders/resized/leader-1-animated.gif'}
             />
           </motion.div>
           <motion.div
@@ -116,7 +116,7 @@ export default function ChooseYourLeaders() {
             <Image
               layout="fill"
               className="object-contain"
-              src={'/choose-your-leaders/leaders/leader-2-animated-min.gif'}
+              src={'/choose-your-leaders/leaders/resized/leader-2-animated.gif'}
             />
           </motion.div>
           <motion.div
@@ -136,7 +136,7 @@ export default function ChooseYourLeaders() {
             <Image
               layout="fill"
               className="object-contain"
-              src={'/choose-your-leaders/leaders/leader-3-animated-min.gif'}
+              src={'/choose-your-leaders/leaders/resized/leader-3-animated.gif'}
             />
           </motion.div>
         </>
@@ -163,7 +163,7 @@ export default function ChooseYourLeaders() {
             <Image
               layout="fill"
               className="object-cover"
-              src={'/choose-your-leaders/leaders/leader-4-animated-min.gif'}
+              src={'/choose-your-leaders/leaders/resized/leader-4-animated.gif'}
             />
           </motion.div>
           <motion.div
@@ -183,7 +183,7 @@ export default function ChooseYourLeaders() {
             <Image
               layout="fill"
               className="object-cover"
-              src={'/choose-your-leaders/leaders/leader-5-animated-min.gif'}
+              src={'/choose-your-leaders/leaders/resized/leader-5-animated.gif'}
             />
           </motion.div>
           <motion.div
@@ -202,9 +202,12 @@ export default function ChooseYourLeaders() {
           >
             <div className="absolute h-full w-full">
               <Image
+                priority={true}
                 layout="fill"
                 className="object-cover"
-                src={'/choose-your-leaders/leaders/leader-6-animated-min.gif'}
+                src={
+                  '/choose-your-leaders/leaders/resized/leader-6-animated.gif'
+                }
               />
             </div>
           </motion.div>
