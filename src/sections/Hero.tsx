@@ -91,7 +91,15 @@ export default function Hero({ children }: HeroProps) {
           {children}
         </motion.p>
 
-        <Subscribe withTitle={false}></Subscribe>
+        <motion.div
+          initial={{ translateY: 10, opacity: 0 }}
+          animate={{ translateY: 0, opacity: 1 }}
+          transition={{
+            delay: 0.9,
+          }}
+        >
+          <Subscribe withTitle={false}></Subscribe>
+        </motion.div>
 
         {/* MVP - Remove Subscribe and discord */}
         {/* <div className="flex flex-col gap-y-8 pt-32 lg:flex-row lg:justify-center lg:gap-x-8 lg:pt-[62px]">

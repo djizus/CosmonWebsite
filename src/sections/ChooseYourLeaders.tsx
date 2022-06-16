@@ -88,7 +88,8 @@ export default function ChooseYourLeaders() {
               }
             }
             transition={{
-              delay: 0,
+              type: 'spring',
+              delay: 0.4,
               duration: 1,
             }}
             className="relative mb-20 w-[164px]"
@@ -109,6 +110,7 @@ export default function ChooseYourLeaders() {
               }
             }
             transition={{
+              type: 'spring',
               delay: 0.2,
               duration: 1,
             }}
@@ -130,7 +132,8 @@ export default function ChooseYourLeaders() {
               }
             }
             transition={{
-              delay: 0.4,
+              type: 'spring',
+              delay: 0,
               duration: 1,
             }}
             className="relative h-[216px] w-[95px]"
@@ -158,6 +161,7 @@ export default function ChooseYourLeaders() {
               }
             }
             transition={{
+              type: 'spring',
               delay: 0.8,
               duration: 1,
             }}
@@ -179,6 +183,7 @@ export default function ChooseYourLeaders() {
               }
             }
             transition={{
+              type: 'spring',
               delay: 1,
               duration: 1,
             }}
@@ -201,6 +206,7 @@ export default function ChooseYourLeaders() {
             }
             transition={{
               delay: 1.2,
+              type: 'spring',
               duration: 1,
             }}
             className="relative -mt-8 h-[193px] w-[107px]"
