@@ -96,7 +96,7 @@ export default function ChooseYourLeaders() {
             <Image
               layout="fill"
               className="object-contain"
-              src={'/choose-your-leaders/leaders/leader-1-animated.gif'}
+              src={'/choose-your-leaders/leaders/leader-1-animated-min.gif'}
             />
           </motion.div>
           <motion.div
@@ -116,7 +116,7 @@ export default function ChooseYourLeaders() {
             <Image
               layout="fill"
               className="object-contain"
-              src={'/choose-your-leaders/leaders/leader-2-animated.gif'}
+              src={'/choose-your-leaders/leaders/leader-2-animated-min.gif'}
             />
           </motion.div>
           <motion.div
@@ -136,7 +136,7 @@ export default function ChooseYourLeaders() {
             <Image
               layout="fill"
               className="object-contain"
-              src={'/choose-your-leaders/leaders/leader-3-animated.gif'}
+              src={'/choose-your-leaders/leaders/leader-3-animated-min.gif'}
             />
           </motion.div>
         </>
@@ -163,7 +163,7 @@ export default function ChooseYourLeaders() {
             <Image
               layout="fill"
               className="object-cover"
-              src={'/choose-your-leaders/leaders/leader-4-animated.gif'}
+              src={'/choose-your-leaders/leaders/leader-4-animated-min.gif'}
             />
           </motion.div>
           <motion.div
@@ -183,7 +183,7 @@ export default function ChooseYourLeaders() {
             <Image
               layout="fill"
               className="object-cover"
-              src={'/choose-your-leaders/leaders/leader-5-animated.gif'}
+              src={'/choose-your-leaders/leaders/leader-5-animated-min.gif'}
             />
           </motion.div>
           <motion.div
@@ -204,7 +204,7 @@ export default function ChooseYourLeaders() {
               <Image
                 layout="fill"
                 className="object-cover"
-                src={'/choose-your-leaders/leaders/leader-6-animated.gif'}
+                src={'/choose-your-leaders/leaders/leader-6-animated-min.gif'}
               />
             </div>
           </motion.div>
