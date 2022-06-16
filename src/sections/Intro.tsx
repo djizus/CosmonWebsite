@@ -30,7 +30,7 @@ export default function Intro() {
           urgent need to select the best ones.{' '}
         </motion.p>
 
-        <motion.h2
+        <motion.h3
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{
@@ -40,7 +40,7 @@ export default function Intro() {
           className="pt-8 text-[22px] font-semibold leading-8"
         >
           Welcome to Cosmon!
-        </motion.h2>
+        </motion.h3>
       </div>
     </>
   )

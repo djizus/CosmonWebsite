@@ -4,7 +4,7 @@ import style from './Button.module.scss'
 import LoadingIcon from '../LoadingIcon/LoadingIcon'
 
 type ButtonProps = {
-  type?: 'primary' | 'secondary' | 'tertiary' | 'ghost'
+  type?: 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'disabled-colored'
   size?: 'small' | 'normal'
   icon?: {
     position: 'left' | 'right'

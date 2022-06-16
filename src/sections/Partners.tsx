@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import PartnerLogos from './PartnerLogos'
 
 export default function Partners() {
   const partnerListAnimation = {
@@ -55,75 +56,10 @@ export default function Partners() {
         initial="hidden"
         whileInView={'visible'}
         variants={partnerListAnimation}
-        className="partners flex flex-col gap-y-4 pt-10"
+        className="partners flex flex-col pt-10 lg:gap-y-4"
         viewport={{ once: true }}
       >
-        <div className="relative flex flex-wrap items-center justify-center gap-x-20 gap-y-10">
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-contain"
-            src="/partners/klub.png"
-          />
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-contain"
-            src="/partners/ki.png"
-          />
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-contain"
-            src="/partners/cosmos.png"
-          />
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-contain"
-            src="/partners/osmosis.png"
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-x-20 gap-y-10">
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-cover"
-            src="/partners/juno.png"
-          />
-
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-cover"
-            src="/partners/stargaze.png"
-          />
-
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-cover"
-            src="/partners/persistence.png"
-          />
-
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-cover"
-            src="/partners/akash.png"
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-x-20 gap-y-10">
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-cover"
-            src="/partners/sentinel.png"
-          />
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-cover"
-            src="/partners/comdex.png"
-          />
-          <motion.img
-            variants={partnerItemAnimation}
-            className="h-full w-auto object-cover lg:h-[41px]"
-            src="/partners/lum-network.png"
-          />
-        </div>
+        <PartnerLogos />
       </motion.div>
     </div>
   )

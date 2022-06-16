@@ -24,6 +24,12 @@ p {
 
 h2 {
   @apply text-[26px] font-bold leading-[45px] lg:text-[40px];
+  background: linear-gradient(180deg, #4b0978 0%, #74107f 100%);
+  background-size: 200% 200%;
+  color: #f8c11f;
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 4px transparent;
+  // border-image-source: linear-gradient(180deg, #4b0978 0%, #74107f 100%);
 }
 
 h4 {

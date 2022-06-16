@@ -152,4 +152,15 @@
     // opacity: 0.4;
     background: linear-gradient(180deg, #9194a3 0%, #545454 100%);
   }
+
+  &.disabled-colored {
+    background: linear-gradient(
+        180deg,
+        rgba(169, 150, 255, 0.6) 0%,
+        rgba(55, 33, 105, 0.6) 100%
+      ),
+      linear-gradient(0deg, #383838, #383838);
+
+    color: rgba(255, 255, 255, 0.6);
+  }
 }

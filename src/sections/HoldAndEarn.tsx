@@ -64,17 +64,16 @@ export default function HoldAndEarn() {
             viewport={{ once: true }}
             className="pt-10 lg:pt-[60px]"
           >
-            <div className="relative flex items-center gap-x-8">
-              <div className="absolute left-0 z-50 h-full w-full"></div>
-              <div className="opacity-50">
-                {/* MVP  */}
-                <Button
+            <div className="relative flex flex-col items-center  gap-x-8 gap-y-5 lg:flex-row">
+              {/* MVP  */}
+              <Button
+                type="disabled-colored"
                 // onClick={
                 //   () => router.push('/buy-cosmon')}
-                >
-                  Buy Cosmon
-                </Button>
-              </div>
+              >
+                Buy Cosmon
+              </Button>
+
               <div className="italic text-cosmon-main-tertiary">
                 (Coming soon)
               </div>
