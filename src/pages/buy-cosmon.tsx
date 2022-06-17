@@ -74,30 +74,30 @@ export default function Page() {
         <Section className=" pt-[72px]">
           {isConnected && (
             // Cosmon AIRDROP SECTION
-            // <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
-            //   <div className="hidden items-center justify-center py-[24px] lg:flex">
-            //     <div className="flex items-center gap-x-8 px-10 ">
-            //       <p className="text-[22px] font-semibold leading-[32px] text-white">
-            //         Test your eligibility to our Cosmon airdrop!
-            //       </p>
-            //       <Button size="small"> Check</Button>
-            //     </div>
-            //   </div>
-            // </div>
-
             <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
               <div className="hidden items-center justify-center py-[24px] lg:flex">
                 <div className="flex items-center gap-x-8 px-10 ">
                   <p className="text-[22px] font-semibold leading-[32px] text-white">
-                    Congrats, you’re eligible to 3 discounted Cosmons!
+                    Test your eligibility to our Cosmon airdrop!
                   </p>
-                  <Button className="h-[34px]" size="small">
-                    {' '}
-                    3 mints left
-                  </Button>
+                  <Button size="small"> Check</Button>
                 </div>
               </div>
             </div>
+
+            // <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
+            //   <div className="hidden items-center justify-center py-[24px] lg:flex">
+            //     <div className="flex items-center gap-x-8 px-10 ">
+            //       <p className="text-[22px] font-semibold leading-[32px] text-white">
+            //         Congrats, you’re eligible to 3 discounted Cosmons!
+            //       </p>
+            //       <Button className="h-[34px]" size="small">
+            //         {' '}
+            //         3 mints left
+            //       </Button>
+            //     </div>
+            //   </div>
+            // </div>
           )}
           <div className="grid grid-cols-2 gap-y-[60px] lg:grid-cols-4">
             {/* {scarcities.map((scarcity) => (
