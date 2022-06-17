@@ -16,7 +16,9 @@ export default function Disclosure({ title, children }: DisclosureProps) {
                 {title}
               </div>
               <Chevron
-                className={`h-full flex-none ${open ? '' : 'rotate-180'}`}
+                className={`h-full flex-none rotate-180 ${
+                  open ? '' : 'rotate-0'
+                }`}
               />
             </DisclosureUi.Button>
 

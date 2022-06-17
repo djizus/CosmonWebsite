@@ -15,7 +15,7 @@ const CallToActionButton = () => {
         )
       }
     >
-      Read our whitepaper
+      Read our light paper
     </Button>
   )
 }

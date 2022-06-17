@@ -40,10 +40,10 @@ export default function Footer() {
                 {/* <Link 
                   href={'/buy-cosmon'}
                   > */}
-                <a className={style.link}>Buy Cosmon</a>
+                <a className={`${style.link} ${style.inactive}`}>Buy Cosmon</a>
                 {/* </Link> */}
                 {/* <Link href={'/my-assets'}> */}
-                <a className={style.link}>My Assets</a>
+                <a className={`${style.link} ${style.inactive}`}>My Assets</a>
                 {/* </Link> */}
                 {/* <Link href={'/about'}>
                   <a className={style.link}>Storyline</a>
