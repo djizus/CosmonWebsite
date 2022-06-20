@@ -83,10 +83,12 @@ workflows:
             - test_and_build
           filters:
             branches:
-              only: preprod
-      # - deploy_prod:
-      #     requires:
-      #       - test_and_build
-      #     filters:
-      #       branches:
-      #         only: main
+              only: 
+                - preprod
+                - preprod-new
+      - deploy_prod:
+          requires:
+            - test_and_build
+          filters:
+            branches:
+              only: main
