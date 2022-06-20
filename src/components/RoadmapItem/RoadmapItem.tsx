@@ -13,7 +13,7 @@ export default function RoadmapItem({
 }: RoadmapItemType) {
   return (
     <div
-      className={`flex items-center gap-x-11 lg:-mt-[70px] lg:inline-flex lg:h-full lg:flex-col ${
+      className={`flex items-center gap-x-8 sm:gap-x-11 lg:-mt-[70px] lg:inline-flex lg:h-full lg:flex-col ${
         order % 2 === 1 ? 'lg:-mt-[70px] lg:flex-col-reverse' : 'lg:mt-[190px]'
       }`}
     >
@@ -22,9 +22,9 @@ export default function RoadmapItem({
           order % 2 === 1 ? '' : ''
         }`}
       />
-      <div className="flex w-[178px] flex-col items-center justify-center rounded-xl bg-[#443E78] bg-opacity-40 py-3 px-5 text-white">
+      <div className="flex  flex-col items-center justify-center rounded-xl bg-[#443E78] bg-opacity-40 py-3 px-5 text-white">
         <div className="text-[16px] leading-[26px]">{date}</div>
-        <div className="text-sm leading-6">{children}</div>
+        <div className="text-center text-sm leading-6">{children}</div>
       </div>
     </div>
   )

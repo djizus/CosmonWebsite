@@ -4,12 +4,92 @@ import Link from 'next/link'
 import Button from '../Button/Button'
 import Footer from '../Footer/Footer'
 import HamburgerMenu from '../HamburgerMenu/hamburgerMenu'
+import { useEffect, useState } from 'react'
+import WalletPopup from './WalletPopup'
+import { getShortAddress } from '../../utils/'
+import { useWalletStore } from '../../store/walletStore'
+import { getAmountFromDenom } from '../../utils/index'
+import { chainFetcher } from '../../services/fetcher'
+import useSWR from 'swr'
+
+import DisconnectOrCopyPopup from './DisconnectOrCopyPopup'
 
 type LayoutProps = {
   children: React.ReactNode
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const {
+    address: walletAddress,
+    connect,
+    disconnect,
+    isFetchingData,
+    fetchWalletData,
+    cosmons,
+    isConnected,
+    coins,
+  } = useWalletStore((state) => state)
+
+  // const { data: tokens, error } = useSWR(
+  //   {
+  //     type: 'query',
+  //     contractAddress: process.env.NEXT_PUBLIC_NFT_CONTRACT,
+  //     payload: {
+  //       tokens: {
+  //         owner: walletAddress,
+  //         limit: 5000,
+  //       },
+  //     },
+  //   },
+  //   chainFetcher
+  // )
+
+  // console.log('data', tokens)
+  // console.log('error', error)
+
+  const [showWalletPopup, set_showWalletPopup] = useState(false)
+  const [showDisconnectOrCopyPopup, set_showDisconnectOrCopyPopup] =
+    useState(false)
+  // const [refreshWalletDataInterval, set_refreshWalletDataInterval] = useState<
+  //   number | null
+  // >()
+
+  // useEffect(() => {}, [tokens])
+
+  const handleSwitchAccount = () => {
+    setTimeout(() => {
+      connect()
+    }, 250)
+  }
+
+  useEffect(() => {
+    // The user has been connected before, connect him automatically
+    if (walletAddress !== '') {
+      setTimeout(() => {
+        connect()
+      }, 250)
+    }
+    window.addEventListener('keplr_keystorechange', handleSwitchAccount)
+
+    // cleanup this component
+    return () => {
+      window.removeEventListener('keydown', handleSwitchAccount)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (coins.length > 0) {
+    }
+  }, [coins])
+
+  useEffect(() => {
+    const refreshInterval = window.setInterval(() => {
+      console.log('Re-fetching data...')
+      fetchWalletData()
+    }, 8000)
+    return () => clearInterval(refreshInterval)
+  }, [isConnected])
+
   return (
     <div className="flex flex-col">
       <Head>
@@ -17,37 +97,93 @@ export default function Layout({ children }: LayoutProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="absolute z-10 flex w-full items-center justify-between px-5 pt-5">
+      <header className=" max-w-auto relative z-10 -mb-[60px] flex w-full items-center justify-between px-5 pt-4 lg:pt-6">
         <div className="flex">
-          <div className="relative h-[22px] w-[73px] lg:h-[40px] lg:w-[131px]">
-            <Image priority={true} src={'/logo.png'} layout="fill" />
-          </div>
-
+          <Link href="/">
+            <a>
+              <div className="relative h-[22px] w-[73px] lg:h-[40px] lg:w-[131px]">
+                <Image priority={true} src={'../logo.png'} layout="fill" />
+              </div>
+            </a>
+          </Link>
+          {/* MVP - Remove navigation */}
+          {/* 
           <div className="ml-20 hidden items-center gap-x-[60px] lg:flex">
-            <Link href="/about">
-              <a>About</a>
+            <Link href="/buy-cosmon">
+              <a>Buy Cosmon</a>
             </Link>
-            <Link href="/buy cosmon">
-              <a>Buy cosmon</a>
+            <Link href="/my-assets">
+              <a>
+                My Assets
+                {cosmons.length > 0 && ` (${cosmons.length})`}
+              </a>
             </Link>
-            <Link href="/gallery">
-              <a>Gallery</a>
-            </Link>
-          </div>
+          </div> */}
         </div>
 
-        <div className="lg:hidden">
+        {/* <div className="lg:hidden">
           <HamburgerMenu />
-        </div>
+        </div> */}
 
-        <div className="hidden items-center lg:flex">
-          <Button className="max-h-[42px]" type="secondary">
-            Connect wallet
-          </Button>
-        </div>
+        {/* MVP - Remove navigation */}
+        {/* <div className="relative hidden items-center lg:flex">
+          {isConnected ? (
+            <div className="flex items-center gap-x-5">
+              <div className="relative">
+                <Button
+                  isLoading={isFetchingData}
+                  className="relative max-h-[42px]"
+                  size="small"
+                  type="secondary"
+                  onClick={() => set_showWalletPopup(true)}
+                >
+                  <span className="font-bold uppercase">
+                    {getAmountFromDenom(
+                      process.env.NEXT_PUBLIC_STAKING_DENOM || '',
+                      coins
+                    )}
+                    {' ' + process.env.NEXT_PUBLIC_DENOM}
+                  </span>
+                </Button>
+                {showWalletPopup && (
+                  <WalletPopup
+                    onClosePopup={() => set_showWalletPopup(false)}
+                  />
+                )}
+              </div>
+
+              <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
+                {coins.find((coin) => coin.denom === 'ATOM')?.amount} ATOM
+                <div
+                  onClick={() =>
+                    set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)
+                  }
+                  className="ml-2 flex h-full cursor-pointer items-center rounded-xl border border-[#9FA4DD] py-2 px-4 text-white"
+                >
+                  {getShortAddress(walletAddress)}
+                  <img className="ml-2 h-6 w-6" src="/avatar.png" alt="" />
+                </div>
+                {showDisconnectOrCopyPopup && (
+                  <DisconnectOrCopyPopup
+                    onClosePopup={() => set_showDisconnectOrCopyPopup(false)}
+                  />
+                )}
+              </div>
+            </div>
+          ) : (
+            <Button
+              className="max-h-[42px]"
+              type="secondary"
+              isLoading={isFetchingData}
+              onClick={() => connect()}
+            >
+              Connect wallet
+            </Button>
+          )}
+        </div> */}
       </header>
 
-      <main>{children}</main>
+      <main className="-mt-4 lg:-mt-6">{children}</main>
       <Footer />
     </div>
   )

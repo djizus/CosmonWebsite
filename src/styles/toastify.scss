@@ -1,0 +1,43 @@
+:root {
+  --toastify-color-dark: #20164f;
+  --toastify-font-family: 'Poppins';
+  --toastify-toast-min-height: 72px;
+  --toastify-toast-width: 392px;
+}
+
+.Toastify {
+  font-family: 'Poppins';
+  font-size: 13px;
+  &__toast {
+    border: 0.5px solid rgba(118, 96, 216, 0.5);
+    box-shadow: 0px 2px 40px rgba(48, 48, 48, 0.5);
+    border-radius: 12px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  &__toast-body {
+    // padding: 0;
+    padding-top: 0px;
+    font-size: 14px;
+    line-height: 24px;
+  }
+  &__close-button {
+  }
+  &__spinner {
+    @apply animate-[spin_2s_linear_infinite];
+    border: none;
+    background-image: url('/icons/loader.svg');
+    background-size: cover;
+  }
+  &__toast-icon {
+    margin-inline-end: 16px;
+    margin-left: 5px;
+    margin-top: 0px;
+    align-self: start;
+  }
+  &__toast-container {
+    &--top-right {
+      top: 5.5rem;
+    }
+  }
+}

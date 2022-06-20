@@ -1,11 +1,15 @@
 @tailwind base;
-
+@tailwind components;
 @tailwind utilities;
 
 html {
-  @apply bg-cosmon-blue-dark font-poppins text-[#d4d4d4];
+  @apply overflow-x-hidden bg-[#0A0733] font-poppins text-[#d4d4d4];
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  @apply overflow-x-hidden;
 }
 
 h1,
@@ -14,19 +18,93 @@ h3,
 h4,
 h5,
 h6,
-div,
 p {
   @apply text-center;
 }
 
 h2 {
   @apply text-[26px] font-bold leading-[45px] lg:text-[40px];
+  background: linear-gradient(180deg, #4b0978 0%, #74107f 100%);
+  background-size: 200% 200%;
+  color: #f8c11f;
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 4px transparent;
+  // border-image-source: linear-gradient(180deg, #4b0978 0%, #74107f 100%);
+}
+
+h4 {
+  @apply text-[26px] font-bold leading-[32px];
+  @screen lg {
+    @apply text-[40px] leading-[45px];
+  }
 }
 
 p {
   @apply text-[16px] leading-[22px];
 }
 
-input[type='text'] {
-  @apply flex w-full rounded-2xl border border-cosmon-main-primary bg-transparent bg-[#4E4B66] py-[18px] pl-6;
+input {
+  &.primary-text {
+    @apply flex w-full rounded-2xl border border-cosmon-main-primary bg-transparent bg-[#4E4B66] py-[18px] pl-6;
+  }
+  &.secondary-text {
+    @apply min-w-[316px] rounded-2xl border border-cosmon-main-primary bg-transparent py-[11px] pl-6;
+  }
+  &.dark-text {
+    @apply rounded-2xl border border-cosmon-main-primary py-4 px-6 text-[14px] font-semibold text-[#D9DBE9];
+    background-color: #0d0531;
+  }
+}
+
+@layer components {
+  .max-w-auto {
+    @apply mx-auto max-w-[1380px];
+  }
+
+  .transfer-card-icon {
+    @apply rounded-full;
+    background: linear-gradient(
+        0deg,
+        rgba(25, 22, 63, 0.8),
+        rgba(25, 22, 63, 0.8)
+      ),
+      #ffffff;
+
+    border: 0.5px solid #413673;
+    box-shadow: 0px 2px 5px rgba(48, 48, 48, 0.05);
+    &:hover {
+      background: linear-gradient(180deg, #a996ff 0%, #4a3d90 100%);
+
+      border: 0.5px solid #413673;
+
+      box-shadow: 0px 2px 5px rgba(48, 48, 48, 0.05);
+    }
+  }
+
+  .border-shiny-gradient {
+    position: relative;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+      margin: -1px;
+      border-radius: inherit;
+      background-image: linear-gradient(
+        180deg,
+        #a996ff 0%,
+        rgba(118, 96, 216, 0.5) 100%
+      );
+    }
+  }
+}
+
+.partners img {
+  @apply max-h-[32px] max-w-[140px];
+  @screen sm {
+    @apply max-h-fit max-w-fit;
+  }
 }
