@@ -6,7 +6,8 @@ import { CosmonType } from '../../types/Cosmon'
 
 const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
 const PUBLIC_NFT_CONTRACT = process.env.NEXT_PUBLIC_NFT_CONTRACT || ''
-
+const PUBLIC_WHITELIST_CONTRACT =
+  process.env.NEXT_PUBLIC_WHITELIST_CONTRACT || ''
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 
 export const executeBuyCosmon = (
@@ -166,6 +167,97 @@ export const queryCosmonAvailableByScarcity = async (
       return resolve(data)
     } else {
       return reject('Scarcity is missing')
+    }
+  })
+}
+
+export const queryCheckAirdropEligibility = async (
+  signingClient: SigningCosmWasmClient,
+  address: string
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    if (address) {
+      const data = await signingClient.queryContractSmart(
+        PUBLIC_WHITELIST_CONTRACT,
+        {
+          check_address_eligibility: { address: address },
+        }
+      )
+      console.log('address', address)
+      console.log('data', data)
+      setTimeout(() => {
+        return resolve(data)
+      }, 2000)
+    } else {
+      return reject('address is missing')
+    }
+  })
+}
+
+export const queryGetClaimData = async (
+  signingClient: SigningCosmWasmClient,
+  address: string
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    if (address) {
+      const data = await signingClient.queryContractSmart(
+        PUBLIC_WHITELIST_CONTRACT,
+        {
+          get_claim_data: { address: address },
+        }
+      )
+      console.log('address', address)
+      console.log('data', data)
+      // setTimeout(() => {
+      //   return resolve(data)
+      // }, 2000)
+      return resolve(data)
+    } else {
+      return reject('address is missing')
+    }
+  })
+}
+
+export const executeClaimAirdrop = async (
+  signingClient: SigningCosmWasmClient,
+  address: string
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (address) {
+        // const tokenId = '1140'
+        const response = await signingClient.execute(
+          address,
+          PUBLIC_SELL_CONTRACT,
+          { claim: {} },
+          'auto',
+          'memo'
+        )
+
+        const tokenId =
+          response.logs[0].events
+            .find((event) => event.type === 'wasm')
+            ?.attributes?.find((attribute) => attribute?.key === 'token_id')
+            ?.value || null
+        console.log('address', address)
+        console.log('tokenId', tokenId)
+
+        if (tokenId) {
+          const cosmonAirdropped: CosmonType = {
+            id: tokenId,
+            data: await queryCosmonInfo(signingClient, tokenId),
+          }
+          console.log('here', cosmonAirdropped)
+          return resolve({
+            message: 'Claimed successfully',
+            token: cosmonAirdropped,
+          })
+        } else {
+          reject(handleTransactionError('No token id received from the cosmon'))
+        }
+      }
+    } catch (e: any) {
+      reject(handleTransactionError(e))
     }
   })
 }

@@ -9,17 +9,25 @@ import { Scarcity } from '../../types/Scarcity'
 import { useWalletStore } from '../store/walletStore'
 import useWindowSize from 'react-use/lib/useWindowSize'
 import { CosmonType } from '../../types/Cosmon'
-import CosmonBoughtModal from '../components/Modal/CosmonBoughtModal'
+import CosmonAcquiredModal from '../components/Modal/CosmonAcquiredModal'
 import CosmonAirdropModal from '../components/Modal/CosmonAirdropModal'
+import { useRouter } from 'next/router'
+import { useAirdropStore } from '../store/airdropStore'
 
 export default function Page() {
   const { buyCosmon, isConnected, connect } = useWalletStore((state) => state)
+
+  const { getAirdropData, airdropData, resetAirdropData } = useAirdropStore(
+    (state) => state
+  )
+
   const [isCurrentlyBuying, set_isCurrentlyBuying] = useState<Scarcity | null>(
     null
   )
 
   const [showCosmonAirdropModal, set_showCosmonAirdropModal] = useState(false)
   const [cosmonBought, set_cosmonBought] = useState<null | CosmonType>()
+  const router = useRouter()
 
   const buy = async (scarcity: Scarcity) => {
     set_isCurrentlyBuying(scarcity)
@@ -38,19 +46,30 @@ export default function Page() {
     }
   }, [cosmonBought])
 
+  useEffect(() => {
+    if (airdropData !== undefined) {
+      set_showCosmonAirdropModal(true)
+    }
+  }, [airdropData])
+
   return (
     <>
       {cosmonBought && (
-        <CosmonBoughtModal
+        <CosmonAcquiredModal
           cosmon={cosmonBought}
+          actions={
+            <div className="flex gap-x-5 pt-[60px] pb-2">
+              <Button size="small" onClick={() => router.push('my-assets')}>
+                See my assets
+              </Button>
+            </div>
+          }
           onCloseModal={() => set_cosmonBought(null)}
         />
       )}
 
-      {showCosmonAirdropModal && (
-        <CosmonAirdropModal
-          onCloseModal={() => set_showCosmonAirdropModal(false)}
-        />
+      {airdropData && (
+        <CosmonAirdropModal onCloseModal={() => resetAirdropData()} />
       )}
 
       <div className="mx-auto max-w-[1120px]">
@@ -72,33 +91,36 @@ export default function Page() {
         </Section>
 
         <Section className=" pt-[72px]">
-          {isConnected && (
-            // Cosmon AIRDROP SECTION
+          {isConnected && airdropData === undefined && (
             <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
               <div className="hidden items-center justify-center py-[24px] lg:flex">
                 <div className="flex items-center gap-x-8 px-10 ">
                   <p className="text-[22px] font-semibold leading-[32px] text-white">
                     Test your eligibility to our Cosmon airdrop!
                   </p>
-                  <Button size="small"> Check</Button>
+                  <Button onClick={() => getAirdropData()} size="small">
+                    {' '}
+                    Check
+                  </Button>
                 </div>
               </div>
             </div>
-
-            // <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
-            //   <div className="hidden items-center justify-center py-[24px] lg:flex">
-            //     <div className="flex items-center gap-x-8 px-10 ">
-            //       <p className="text-[22px] font-semibold leading-[32px] text-white">
-            //         Congrats, you’re eligible to 3 discounted Cosmons!
-            //       </p>
-            //       <Button className="h-[34px]" size="small">
-            //         {' '}
-            //         3 mints left
-            //       </Button>
-            //     </div>
-            //   </div>
-            // </div>
           )}
+
+          {/* <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
+              <div className="hidden items-center justify-center py-[24px] lg:flex">
+                <div className="flex items-center gap-x-8 px-10 ">
+                  <p className="text-[22px] font-semibold leading-[32px] text-white">
+                    Congrats, you’re eligible to 3 discounted Cosmons!
+                  </p>
+                  <Button className="h-[34px]" size="small">
+                    {' '}
+                    3 mints left
+                  </Button>
+                </div>
+              </div>
+            </div> */}
+
           <div className="grid grid-cols-2 gap-y-[60px] lg:grid-cols-4">
             {/* {scarcities.map((scarcity) => (
             <PotionItem

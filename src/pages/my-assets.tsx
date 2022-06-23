@@ -10,13 +10,9 @@ import { getScarcitiesNumberByCosmons } from '../utils/cosmon'
 import { scarcities, Scarcity } from '../../types/Scarcity'
 import { CosmonType } from '../../types/Cosmon'
 import TransferAssetModal from '../components/Modal/TransferAssetModal'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
 import 'react-lazy-load-image-component/src/effects/opacity.css'
-import { LazyLoadComponent } from 'react-lazy-load-image-component'
 import { Transition } from '@headlessui/react'
 import CosmonFullModal from '../components/Modal/CosmonFullModal'
-import Hover from 'react-3d-hover'
-import { queryGetMaxClaimableToken } from '../services/interaction'
 import { getAmountFromDenom } from '../utils/index'
 
 export default function Page() {
