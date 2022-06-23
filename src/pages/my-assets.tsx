@@ -129,7 +129,7 @@ export default function Page() {
                   </th>
                   <th></th>
                   <th className="text-left text-cosmon-main-tertiary">
-                    Transfer
+                    Actions
                   </th>
                 </thead>
                 <tbody className="text-xl text-white">
@@ -159,20 +159,23 @@ export default function Page() {
 
                       className="mr-8 text-right"
                     >
-                      <div className="mr-8 flex justify-end">
-                        <Button type="primary" size="small" className="text-sm">
-                          Claim rewards: 1,238.34 XKI
-                        </Button>
-                      </div>
+                      <div className="mr-8 flex justify-end"></div>
                     </td>
                     <td>
                       <div className="flex gap-x-3">
-                        <Button size="small" type="secondary">
+                        <Button
+                          type="disabled-colored"
+                          size="small"
+                          className="text-sm"
+                        >
+                          Claim rewards (coming soon)
+                        </Button>
+                        {/* <Button size="small" type="secondary">
                           Deposit
                         </Button>
                         <Button size="small" type="secondary">
                           Withdraw
-                        </Button>
+                        </Button> */}
                       </div>
                     </td>
                   </tr>
@@ -192,10 +195,10 @@ export default function Page() {
                     <td></td>
                     <td>
                       <div className="flex gap-x-3">
-                        <Button size="small" type="secondary">
+                        <Button size="small" type="disabled-colored">
                           Deposit
                         </Button>
-                        <Button size="small" type="secondary">
+                        <Button size="small" type="disabled-colored">
                           Withdraw
                         </Button>
                       </div>

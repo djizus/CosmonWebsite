@@ -7,6 +7,7 @@ import Button from '../Button/Button'
 type PotionItemProps = {
   type: Scarcity
   price: string
+  yieldPercent: string
   img: string
   isCurrentlyBuying: boolean
   buy?: () => void
@@ -16,6 +17,7 @@ export default function PotionItem({
   isCurrentlyBuying,
   type,
   price,
+  yieldPercent,
   img,
   buy,
 }: PotionItemProps) {
@@ -46,23 +48,29 @@ export default function PotionItem({
         {type}
       </p>
 
-      <p className="pt-1 text-[16px] font-bold leading-[26px] text-[#B1A8B9]">
-        {price}
+      <div className="mt-2 rounded-lg bg-cosmon-main-primary px-[10px] py-1 text-center text-base font-semibold text-white">
+        {yieldPercent}% Yield*
+      </div>
+      <p className="mt-5 pt-1 text-base font-bold  text-[#B1A8B9] blur-[1.5px]">
+        {/* {price} */}
+        XX ATOM
       </p>
 
       {isConnected && (
-        <div className="pt-8">
+        <div className="pt-3">
           <Button
             isLoading={isCurrentlyBuying || cosmonAvailable === null}
             // type={'secondary'}
-            disabled={!cosmonAvailable}
+            disabled
+            // disabled={!cosmonAvailable}
             size={'small'}
+            type="disabled-colored"
             onClick={buy}
           >
             {cosmonAvailable === null
               ? 'Fetching data'
               : cosmonAvailable > 0
-              ? 'Buy'
+              ? 'Buy (soon)'
               : 'Sold out'}
           </Button>
         </div>

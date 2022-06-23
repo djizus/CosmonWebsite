@@ -85,7 +85,11 @@ export default function Page() {
             <div>
               The rarer your Cosmons are, the more yield you will get from it.
               Your Cosmon's initial characteristics will also be higher with an
-              upper rarity.
+              upper rarity.{' '}
+              <span className="font-semibold">
+                {' '}
+                Public sale planned on the July 4th.
+              </span>
             </div>
           </p>
         </Section>
@@ -138,6 +142,7 @@ export default function Page() {
 
             <PotionItem
               buy={() => buy('Common')}
+              yieldPercent={process.env.NEXT_PUBLIC_YIELD_UNCOMMON || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Common'}
               type="Uncommon"
               price={'10 ATOM'}
@@ -145,6 +150,7 @@ export default function Page() {
             />
             <PotionItem
               buy={() => buy('Rare')}
+              yieldPercent={process.env.NEXT_PUBLIC_YIELD_RARE || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Rare'}
               type="Rare"
               price={'25 ATOM'}
@@ -152,6 +158,7 @@ export default function Page() {
             />
             <PotionItem
               buy={() => buy('Epic')}
+              yieldPercent={process.env.NEXT_PUBLIC_YIELD_EPIC || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Epic'}
               type="Epic"
               price={'100 ATOM'}
@@ -159,12 +166,18 @@ export default function Page() {
             />
             <PotionItem
               buy={() => buy('Legendary')}
+              yieldPercent={process.env.NEXT_PUBLIC_YIELD_LEGENDARY || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Legendary'}
               type="Legendary"
               price={'250 ATOM'}
               img="legendary.png"
             />
           </div>
+
+          <p className="mt-[68px] text-center text-base">
+            *Returns shown represent past performances, and are not guarantees
+            of future performances.
+          </p>
         </Section>
 
         <Section className="pt-20 lg:pt-[42px] ">
@@ -188,13 +201,13 @@ export default function Page() {
           </div>
         </Section>
 
-        <Section className="pt-36 lg:pt-[261px]">
+        <Section className="pt-36 pb-[100px] lg:pt-[120px] lg:pb-[200px]">
           <CommonQuestions />
         </Section>
 
-        <Section className="pt-48 pb-44 lg:pt-[298px]">
+        {/* <Section className="pt-48 pb-44 lg:pt-[298px]">
           <Subscribe />
-        </Section>
+        </Section> */}
       </div>
     </>
   )

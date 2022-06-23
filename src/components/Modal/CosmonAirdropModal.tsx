@@ -10,7 +10,6 @@ import { useAirdropStore } from '../../store/airdropStore'
 
 type CosmonAirdropModalProps = {
   onCloseModal: () => void
-  cosmonClaimed?: CosmonType
 }
 
 export default function CosmonAirdropModal({
@@ -28,7 +27,9 @@ export default function CosmonAirdropModal({
 
   const claim = async () => {
     try {
-      set_cosmonClaimed(await claimAirdrop())
+      const cosmonClaimed = await claimAirdrop()
+      set_cosmonClaimed(undefined)
+      set_cosmonClaimed(cosmonClaimed)
     } catch (e: any) {
       console.log('Error! ', e)
     } finally {
@@ -67,7 +68,7 @@ export default function CosmonAirdropModal({
                 <Button
                   size="small"
                   onClick={() => {
-                    set_cosmonClaimed(undefined)
+                    // set_cosmonClaimed(undefined)
                     claim()
                   }}
                 >

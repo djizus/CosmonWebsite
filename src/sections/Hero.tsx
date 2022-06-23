@@ -91,7 +91,7 @@ export default function Hero({ children }: HeroProps) {
           {children}
         </motion.p>
 
-        <motion.div
+        {/* <motion.div
           initial={{ translateY: 10, opacity: 0 }}
           animate={{ translateY: 0, opacity: 1 }}
           transition={{
@@ -99,10 +99,10 @@ export default function Hero({ children }: HeroProps) {
           }}
         >
           <Subscribe withTitle={false}></Subscribe>
-        </motion.div>
+        </motion.div> */}
 
         {/* MVP - Remove Subscribe and discord */}
-        {/* <div className="flex flex-col gap-y-8 pt-32 lg:flex-row lg:justify-center lg:gap-x-8 lg:pt-[62px]">
+        <div className="flex flex-col gap-y-8 pt-32 lg:flex-row lg:justify-center lg:gap-x-8 lg:pt-[62px]">
           <motion.div
             initial={{ translateY: 10, opacity: 0 }}
             animate={{ translateY: 0, opacity: 1 }}
@@ -111,7 +111,7 @@ export default function Hero({ children }: HeroProps) {
             }}
           >
             <Button onClick={() => router.push('/buy-cosmon')}>
-              Buy Cosmon
+              Claim Airdrop
             </Button>
           </motion.div>
           <motion.div
@@ -127,11 +127,14 @@ export default function Hero({ children }: HeroProps) {
                 position: 'left',
                 direction: 'right',
               }}
+              onClick={() =>
+                window.open(`http://discord.gg/CAvjMPbgBk`, '_blank')
+              }
             >
               Join discord
             </Button>
           </motion.div>
-        </div> */}
+        </div>
       </div>
     </>
   )

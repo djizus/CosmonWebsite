@@ -187,7 +187,7 @@ export const queryCheckAirdropEligibility = async (
       console.log('data', data)
       setTimeout(() => {
         return resolve(data)
-      }, 2000)
+      }, 600)
     } else {
       return reject('address is missing')
     }
@@ -208,9 +208,6 @@ export const queryGetClaimData = async (
       )
       console.log('address', address)
       console.log('data', data)
-      // setTimeout(() => {
-      //   return resolve(data)
-      // }, 2000)
       return resolve(data)
     } else {
       return reject('address is missing')
