@@ -40,7 +40,7 @@ export const chainFetcher = async ({
   memo,
   funds,
 }: FetcherQueryType | FetcherExecuteType) => {
-  const offlineSigner = await (window as any).getOfflineSigner(PUBLIC_CHAIN_ID)
+  const offlineSigner = await (window as any).getOfflineSignerAuto(PUBLIC_CHAIN_ID)
   const signingClient = await makeClient(offlineSigner)
   const [{ address }] = await offlineSigner.getAccounts()
   if (!signingClient) {
