@@ -49,7 +49,7 @@ export default function PotionItem({
       </p>
 
       <div className="mt-2 rounded-lg bg-cosmon-main-primary px-[10px] py-1 text-center text-base font-semibold text-white">
-        {yieldPercent}% Yield*
+        {yieldPercent}% APR*
       </div>
       <p className="mt-5 pt-1 text-base font-bold  text-[#B1A8B9] blur-[1.5px]">
         {/* {price} */}
