@@ -63,11 +63,11 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
             </Button>
           </div>
 
-          <div className="pt-6">
+          {/* <div className="pt-6">
             <Button fullWidth type="secondary" className="max-h-[42px]">
               Prize Pool: $1,000,000.13
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

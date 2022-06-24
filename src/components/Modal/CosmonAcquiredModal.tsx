@@ -5,7 +5,7 @@ import useWindowSize from 'react-use/lib/useWindowSize'
 import Hover from 'react-3d-hover'
 import { Transition } from '@headlessui/react'
 import { useEffect, useState } from 'react'
-import { getScarcityByCosmon } from '../../utils/cosmon'
+import { getScarcityByCosmon, getTrait } from '../../utils/cosmon'
 
 type CosmonAcquiredModalProps = {
   cosmon: CosmonType
@@ -78,7 +78,8 @@ export default function CosmonAcquiredModal({
               <p
                 className="px-10 text-sm font-normal leading-6 "
                 dangerouslySetInnerHTML={{
-                  __html: cosmon.data.extension.description,
+                  // __html: cosmon.data.extension.description,
+                  __html: getTrait(cosmon, 'Short Description') || '',
                 }}
               ></p>
             </Transition.Child>

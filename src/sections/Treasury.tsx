@@ -81,7 +81,7 @@ export default function Treasury() {
             className="list-disc"
           >
             {/* <li className="list-disc text-[8px]"> */}
-            {/* <div className="text-base"> */} Bring a growing fondamental
+            {/* <div className="text-base"> */} Bring a growing fundamental
             value to the Cosmons NFTs
             {/* </div> */}
           </motion.li>

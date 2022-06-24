@@ -119,7 +119,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <table className="mt-12 border-collapse font-semibold">
+              <table className="mt-12  font-semibold">
                 <thead className="border-b border-cosmon-main-primary leading-[80px]">
                   <th className="text-left text-cosmon-main-tertiary">
                     Assets
@@ -128,7 +128,7 @@ export default function Page() {
                     Balance
                   </th>
                   <th></th>
-                  <th className="text-left text-cosmon-main-tertiary">
+                  <th className="w-[261px] text-left text-cosmon-main-tertiary">
                     Actions
                   </th>
                 </thead>
