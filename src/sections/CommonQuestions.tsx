@@ -40,9 +40,8 @@ export default function CommonQuestions() {
 
         <Disclosure title="When will the full gameplay be launched?">
           The gameplay is still under development, with a planned release for
-          early S2 2022. The first phase from March to June 2022 will be
-          dedicated to the release of Cosmon NFTs through different sales
-          operation.
+          late S3 2022. The first phase from S1 to S2 2022 will be dedicated to
+          the release of Cosmon NFTs through different sales operation.
         </Disclosure>
 
         <Disclosure title="On which technology and ecosystem is it based?">

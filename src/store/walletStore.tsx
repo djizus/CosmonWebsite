@@ -12,6 +12,9 @@ import {
   queryCosmonAvailableByScarcity,
   executeTransferNft,
   queryGetMaxClaimableToken,
+  queryCheckAirdropEligibility,
+  queryGetClaimData,
+  executeClaimAirdrop,
 } from '../services/interaction'
 import { toast } from 'react-toastify'
 import { CosmonType } from '../../types/Cosmon'
@@ -22,13 +25,17 @@ import useSWR from 'swr'
 import { chainFetcher } from '../services/fetcher'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
-const PUBLIC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT || ''
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
-const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
 
 interface WalletState {
   address: string
   isFetchingData: boolean
+  airdropData?: {
+    isEligible: boolean
+    address?: string
+    max_claimable?: number
+    num_already_claimed?: number
+  }
   signingClient: SigningCosmWasmClient | null
   maxClaimableToken?: number
   coins: Coin[]
@@ -47,6 +54,10 @@ interface WalletState {
   fetchWalletData: () => void
   getCosmonPrice: (scarcity: Scarcity) => void
   getCosmonScarcityAvailable: (scarcity: Scarcity) => Promise<number>
+  getAirdropData: () => void
+  claimAirdrop: () => any
+  resetClaimData: () => void
+  // checkIfEligibleForAirdrop: (reset?: boolean) => Promise<void>
 }
 
 const useWalletStore = create<WalletState>(
@@ -59,6 +70,7 @@ const useWalletStore = create<WalletState>(
       signingClient: null,
       isConnected: false,
       hasSubscribed: false,
+      isEligibleForAirdrop: null,
       setHasSubscribed: (hasSubscribed) => {
         set({
           hasSubscribed: hasSubscribed,
@@ -76,7 +88,7 @@ const useWalletStore = create<WalletState>(
           await (window as any).keplr.enable(PUBLIC_CHAIN_ID)
 
           // get offline signer for signing txs
-          const offlineSigner = await (window as any).getOfflineSigner(
+          const offlineSigner = await (window as any).getOfflineSignerAuto(
             PUBLIC_CHAIN_ID
           )
           const client = await makeClient(offlineSigner)
@@ -154,12 +166,12 @@ const useWalletStore = create<WalletState>(
         const { fetchCosmons, fetchCoin } = get()
         await fetchCosmons()
         await fetchCoin()
-        if (signingClient) {
-          maxClaimableToken = await queryGetMaxClaimableToken(signingClient)
-        }
+        // if (signingClient) {
+        //   maxClaimableToken = await queryGetMaxClaimableToken(signingClient)
+        // }
 
         set({
-          maxClaimableToken: maxClaimableToken,
+          // maxClaimableToken: maxClaimableToken,
           isFetchingData: false,
         })
       },
@@ -192,16 +204,30 @@ const useWalletStore = create<WalletState>(
         const { signingClient, address } = get()
         if (signingClient && address) {
           try {
-            const { tokens } = await signingClient.queryContractSmart(
-              process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
-              {
-                tokens: {
-                  owner: address,
-                  limit: 5000,
-                },
-              }
-            )
-            // const tokens: any = []
+            const tokens: string[] = [];
+            let start_after = undefined;
+            while (true) {
+                let response = await signingClient.queryContractSmart(
+                    process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
+                    {
+                        tokens: {
+                            owner: address,
+                            start_after,
+                            limit: 10,
+                        },
+                    }
+                );
+
+                for (const token of response.tokens) {
+                    tokens.push(token);
+                }
+
+                if (response.tokens.length < 10) {
+                    break;
+                }
+
+                start_after = tokens[tokens.length - 1];
+            }
 
             // getting cosmon details
             const myCosmons: CosmonType[] = await Promise.all(
@@ -332,6 +358,86 @@ const useWalletStore = create<WalletState>(
       getCosmonPrice: async (scarcity) => {
         const { signingClient } = get()
         signingClient && (await queryCosmonPrice(signingClient, scarcity))
+      },
+
+      resetClaimData: async () => {
+        set({
+          airdropData: undefined,
+        })
+      },
+      getAirdropData: async () => {
+        const { signingClient, address, airdropData } = get()
+        const toastId = toast.loading(
+          airdropData
+            ? 'Refreshing airdrop data, please wait..'
+            : 'Fetching airdrop data, please wait..'
+        )
+
+        const isEligible =
+          signingClient &&
+          (await queryCheckAirdropEligibility(signingClient, address))
+
+        if (!isEligible) {
+          set({
+            airdropData: {
+              isEligible: false,
+            },
+          })
+        } else {
+          const claimData =
+            signingClient && (await queryGetClaimData(signingClient, address))
+          console.log('claimData', claimData)
+          set({
+            airdropData: {
+              isEligible: true,
+              ...claimData,
+            },
+          })
+        }
+        toast.dismiss(toastId)
+      },
+      claimAirdrop: async () => {
+        const { signingClient, fetchCosmons, address, getAirdropData } = get()
+        if (signingClient && address) {
+          console.log('here')
+          const response = await toast
+            .promise(executeClaimAirdrop(signingClient, address), {
+              pending: {
+                render() {
+                  return (
+                    <ToastContainer type="pending">
+                      {`Claiming cosmon airdrop`}
+                    </ToastContainer>
+                  )
+                },
+              },
+              success: {
+                render() {
+                  return (
+                    <ToastContainer type={'success'}>
+                      Cosmon claimed successfully,
+                    </ToastContainer>
+                  )
+                },
+                icon: SuccessIcon,
+              },
+
+              error: {
+                render({ data }: any) {
+                  return (
+                    <ToastContainer type="error">{data.message}</ToastContainer>
+                  )
+                },
+                icon: ErrorIcon,
+              },
+            })
+            .then(async ({ token }: any) => {
+              await getAirdropData()
+              fetchCosmons()
+              return token
+            })
+          return response
+        }
       },
       disconnect: () => {
         get().signingClient?.disconnect()

@@ -10,13 +10,9 @@ import { getScarcitiesNumberByCosmons } from '../utils/cosmon'
 import { scarcities, Scarcity } from '../../types/Scarcity'
 import { CosmonType } from '../../types/Cosmon'
 import TransferAssetModal from '../components/Modal/TransferAssetModal'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
 import 'react-lazy-load-image-component/src/effects/opacity.css'
-import { LazyLoadComponent } from 'react-lazy-load-image-component'
 import { Transition } from '@headlessui/react'
 import CosmonFullModal from '../components/Modal/CosmonFullModal'
-import Hover from 'react-3d-hover'
-import { queryGetMaxClaimableToken } from '../services/interaction'
 import { getAmountFromDenom } from '../utils/index'
 
 export default function Page() {
@@ -123,7 +119,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <table className="mt-12 border-collapse font-semibold">
+              <table className="mt-12  font-semibold">
                 <thead className="border-b border-cosmon-main-primary leading-[80px]">
                   <th className="text-left text-cosmon-main-tertiary">
                     Assets
@@ -132,8 +128,8 @@ export default function Page() {
                     Balance
                   </th>
                   <th></th>
-                  <th className="text-left text-cosmon-main-tertiary">
-                    Transfer
+                  <th className="w-[261px] text-left text-cosmon-main-tertiary">
+                    Actions
                   </th>
                 </thead>
                 <tbody className="text-xl text-white">
@@ -163,20 +159,23 @@ export default function Page() {
 
                       className="mr-8 text-right"
                     >
-                      <div className="mr-8 flex justify-end">
-                        <Button type="primary" size="small" className="text-sm">
-                          Claim rewards: 1,238.34 XKI
-                        </Button>
-                      </div>
+                      <div className="mr-8 flex justify-end"></div>
                     </td>
                     <td>
                       <div className="flex gap-x-3">
-                        <Button size="small" type="secondary">
+                        <Button
+                          type="disabled-colored"
+                          size="small"
+                          className="text-sm"
+                        >
+                          Claim rewards (coming soon)
+                        </Button>
+                        {/* <Button size="small" type="secondary">
                           Deposit
                         </Button>
                         <Button size="small" type="secondary">
                           Withdraw
-                        </Button>
+                        </Button> */}
                       </div>
                     </td>
                   </tr>
@@ -196,10 +195,10 @@ export default function Page() {
                     <td></td>
                     <td>
                       <div className="flex gap-x-3">
-                        <Button size="small" type="secondary">
+                        <Button size="small" type="disabled-colored">
                           Deposit
                         </Button>
-                        <Button size="small" type="secondary">
+                        <Button size="small" type="disabled-colored">
                           Withdraw
                         </Button>
                       </div>

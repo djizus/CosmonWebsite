@@ -14,7 +14,12 @@ export function getScarcityByCosmon(cosmon: CosmonType): Scarcity | null {
 
 export function getTrait(
   cosmon: CosmonType,
-  traitType: 'character_id' | 'Personality' | 'Geographical' | 'Time'
+  traitType:
+    | 'character_id'
+    | 'Personality'
+    | 'Geographical'
+    | 'Time'
+    | 'Short Description'
 ) {
   return cosmon.data.extension.attributes.find(
     (attr) => attr.trait_type === traitType

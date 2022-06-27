@@ -3,21 +3,21 @@ import Modal from './Modal'
 import Confetti from 'react-confetti'
 import useWindowSize from 'react-use/lib/useWindowSize'
 import Hover from 'react-3d-hover'
-import Button from '../Button/Button'
-import { useRouter } from 'next/router'
 import { Transition } from '@headlessui/react'
 import { useEffect, useState } from 'react'
-import { getScarcityByCosmon } from '../../utils/cosmon'
+import { getScarcityByCosmon, getTrait } from '../../utils/cosmon'
 
-type CosmonBoughtModalProps = {
+type CosmonAcquiredModalProps = {
   cosmon: CosmonType
+  actions: React.ReactNode
   onCloseModal: () => void
 }
 
-export default function CosmonBoughtModal({
+export default function CosmonAcquiredModal({
   cosmon,
   onCloseModal,
-}: CosmonBoughtModalProps) {
+  actions,
+}: CosmonAcquiredModalProps) {
   const { width, height } = useWindowSize()
   const [showConfetti, set_showConfetti] = useState<boolean>(false)
 
@@ -26,8 +26,6 @@ export default function CosmonBoughtModal({
       set_showConfetti(true)
     }, 1000)
   })
-
-  const router = useRouter()
 
   return (
     <>
@@ -71,38 +69,32 @@ export default function CosmonBoughtModal({
                   src={cosmon.data.extension.image}
                 />
               </Hover>
-              <h2 className="text-[18px] font-semibold leading-[26px]">
+              <h4 className="text-[18px] font-semibold leading-[26px]">
                 {cosmon.data.extension.name}
-              </h2>
+              </h4>
               <div className="mt-2 mb-4 rounded-lg bg-cosmon-main-primary px-[10px] py-1">
                 {getScarcityByCosmon(cosmon)}
               </div>
               <p
                 className="px-10 text-sm font-normal leading-6 "
                 dangerouslySetInnerHTML={{
-                  __html: cosmon.data.extension.description,
+                  // __html: cosmon.data.extension.description,
+                  __html: getTrait(cosmon, 'Short Description') || '',
                 }}
               ></p>
             </Transition.Child>
-
-            {/* <Transition.Child
-              enter="transition-opacity ease-linear duration-[1000ms] delay-[2000ms]"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-            >
-
-            </Transition.Child> */}
 
             <Transition.Child
               enter="transition-opacity ease-linear duration-[1000ms] delay-[2900ms]"
               enterFrom="opacity-0"
               enterTo="opacity-100"
             >
-              <div className="flex gap-x-5 pt-[60px] pb-2">
-                <Button size="small" onClick={() => router.push('my-assets')}>
-                  See my assets
-                </Button>
-              </div>
+              {actions}
+              {/* {actionType === 'cosmon-bought' ? (
+                <CosmonBoughtActions />
+              ) : (
+                <CosmonClaimedActions onClaimAirdrop={} />
+              )} */}
             </Transition.Child>
           </div>
         </Modal>
