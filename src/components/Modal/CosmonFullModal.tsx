@@ -72,13 +72,11 @@ export default function CosmonFullModal({
               <b className="text-[16px]">Main Data</b>
               <div className="mt-3 flex justify-between">
                 <div className="text-[#D8D1E7]">Type</div>
-                <div>Expansive</div>
+                <div>{getTrait(cosmon, 'Personality')}</div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Type’s preference</div>
-                <div className="capitalize">
-                  {getTrait(cosmon, 'Personality')}
-                </div>
+                  <div>Coming soon</div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Geographical area</div>
