@@ -204,16 +204,30 @@ const useWalletStore = create<WalletState>(
         const { signingClient, address } = get()
         if (signingClient && address) {
           try {
-            const { tokens } = await signingClient.queryContractSmart(
-              process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
-              {
-                tokens: {
-                  owner: address,
-                  limit: 5000,
-                },
-              }
-            )
-            // const tokens: any = []
+            const tokens: string[] = [];
+            let start_after = undefined;
+            while (true) {
+                let response = await signingClient.queryContractSmart(
+                    process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
+                    {
+                        tokens: {
+                            owner: address,
+                            start_after,
+                            limit: 10,
+                        },
+                    }
+                );
+
+                for (const token of response.tokens) {
+                    tokens.push(token);
+                }
+
+                if (response.tokens.length < 10) {
+                    break;
+                }
+
+                start_after = tokens[tokens.length - 1];
+            }
 
             // getting cosmon details
             const myCosmons: CosmonType[] = await Promise.all(
