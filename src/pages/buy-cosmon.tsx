@@ -95,7 +95,7 @@ export default function Page() {
         </Section>
 
         <Section className=" pt-[72px]">
-          {isConnected && airdropData === undefined && (
+          {isConnected && (
             <div className="mb-[70px] rounded-[20px] bg-[#312E5A] bg-opacity-50">
               <div className="hidden items-center justify-center py-[24px] lg:flex">
                 <div className="flex items-center gap-x-8 px-10 ">
