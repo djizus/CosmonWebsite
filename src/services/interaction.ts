@@ -171,7 +171,7 @@ export const queryCosmonAvailableByScarcity = async (
   })
 }
 
-export const queryCheckAirdropEligibility = async (
+export const queryCheckWhitelistEligibility = async (
   signingClient: SigningCosmWasmClient,
   address: string
 ): Promise<any> => {

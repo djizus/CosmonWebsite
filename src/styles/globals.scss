@@ -100,6 +100,10 @@ input {
       );
     }
   }
+
+  .pill {
+    @apply flex h-[34px] items-center justify-center rounded-lg  px-[10px] py-1 text-base font-semibold text-white;
+  }
 }
 
 .partners img {
