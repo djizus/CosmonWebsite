@@ -34,6 +34,53 @@ export const connectKeplr = async () => {
         // If the user rejects it or the suggested chain information doesn't include the required fields, it will throw an error.
         // If the same chain id is already registered, it will resolve and not require the user interactions.
         await window.keplr.experimentalSuggestChain({
+          chainId: "kichain-2",
+          chainName: "Ki",
+          rpc: "https://rpc-mainnet.blockchain.ki/",
+          rest: "https://api-mainnet.blockchain.ki/",
+          bip44: {
+            coinType: 118,
+          },
+          bech32Config: {
+            bech32PrefixAccAddr: "ki",
+            bech32PrefixAccPub: "ki" + "pub",
+            bech32PrefixValAddr: "ki" + "valoper",
+            bech32PrefixValPub: "ki" + "valoperpub",
+            bech32PrefixConsAddr: "ki" + "valcons",
+            bech32PrefixConsPub: "ki" + "valconspub",
+          },
+          currencies: [
+            {
+              coinDenom: "KI",
+              coinMinimalDenom: "uxki",
+              coinDecimals: 6,
+              coinGeckoId: "ki",
+            },
+          ],
+          feeCurrencies: [
+            {
+              coinDenom: "KI",
+              coinMinimalDenom: "uxki",
+              coinDecimals: 6,
+              coinGeckoId: "ki",
+            },
+          ],
+          stakeCurrency: {
+            coinDenom: "KI",
+            coinMinimalDenom: "uxki",
+            coinDecimals: 6,
+            coinGeckoId: "ki",
+          },
+          coinType: 118,
+          gasPriceStep: {
+            low: 0.01,
+            average: 0.25,
+            high: 0.03,
+          },
+          features: ["cosmwasm", "ibc-transfer", "ibc-go", "wasmd_0.24+"],
+        });
+/*
+        await window.keplr.experimentalSuggestChain({
           // Chain-id of the Cosmos SDK chain.
           chainId: process.env.NEXT_PUBLIC_CHAIN_ID,
           // The name of the chain to be displayed to the user.
@@ -117,6 +164,7 @@ export const connectKeplr = async () => {
           },
           features: ['cosmwasm', 'ibc-transfer', 'ibc-go', 'wasmd_0.24+'],
         })
+*/
       } catch (e) {
         alert('Failed to suggest the chain')
         console.log('error details', e)
