@@ -73,7 +73,7 @@ export const connectKeplr = async () => {
           },
           coinType: 118,
           gasPriceStep: {
-            low: 0.01,
+            low: 0.025,
             average: 0.25,
             high: 0.03,
           },
