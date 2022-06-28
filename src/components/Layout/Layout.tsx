@@ -14,6 +14,7 @@ import useSWR from 'swr'
 
 import DisconnectOrCopyPopup from './DisconnectOrCopyPopup'
 import { useCosmonStore } from '../../store/cosmonStore'
+import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -30,6 +31,8 @@ export default function Layout({ children }: LayoutProps) {
     isConnected,
     ibcDenom,
     coins,
+    showWithdrawDepositModal,
+    setShowWithdrawDepositModal,
   } = useWalletStore((state) => state)
 
   const { getWhitelistData } = useCosmonStore((state) => state)
@@ -63,6 +66,7 @@ export default function Layout({ children }: LayoutProps) {
   const handleSwitchAccount = () => {
     setTimeout(() => {
       connect()
+      getWhitelistData()
     }, 250)
   }
 
@@ -83,6 +87,7 @@ export default function Layout({ children }: LayoutProps) {
 
   useEffect(() => {
     if (coins.length > 0) {
+      console.log('coins', coins)
     }
   }, [coins])
 
@@ -90,7 +95,6 @@ export default function Layout({ children }: LayoutProps) {
     const refreshInterval = window.setInterval(() => {
       console.log('Re-fetching data...')
       fetchWalletData()
-      getWhitelistData()
     }, 8000)
     return () => clearInterval(refreshInterval)
   }, [isConnected])
@@ -101,6 +105,12 @@ export default function Layout({ children }: LayoutProps) {
         <title>Cosmon</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      {showWithdrawDepositModal && (
+        <WithdrawDepositModal
+          onCloseModal={() => setShowWithdrawDepositModal()}
+        />
+      )}
 
       <header className=" max-w-auto relative z-10 -mb-[60px] flex w-full items-center justify-between px-5 pt-4 lg:pt-6">
         <div className="flex">
@@ -156,8 +166,12 @@ export default function Layout({ children }: LayoutProps) {
                 )}
               </div>
 
-              <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white uppercase">
-                {getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '', coins)} {ibcDenom}
+              <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold uppercase text-white">
+                {getAmountFromDenom(
+                  process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
+                  coins
+                )}{' '}
+                {ibcDenom}
                 <div
                   onClick={() =>
                     set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)

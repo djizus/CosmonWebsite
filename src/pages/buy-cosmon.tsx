@@ -22,6 +22,8 @@ export default function Page() {
     (state) => state
   )
 
+  const { getWhitelistData } = useCosmonStore((state) => state)
+
   const { whitelistData } = useCosmonStore((state) => state)
 
   const [isCurrentlyBuying, set_isCurrentlyBuying] = useState<Scarcity | null>(
@@ -39,10 +41,11 @@ export default function Page() {
   const [cosmonBought, set_cosmonBought] = useState<null | CosmonType>()
   const router = useRouter()
 
-  const buy = async (scarcity: Scarcity) => {
+  const buy = async (scarcity: Scarcity, price: string) => {
     set_isCurrentlyBuying(scarcity)
     try {
-      set_cosmonBought(await buyCosmon(scarcity))
+      set_cosmonBought(await buyCosmon(scarcity, price))
+      getWhitelistData()
     } catch (e: any) {
       console.log('Error! ', e)
     } finally {
@@ -61,6 +64,10 @@ export default function Page() {
       set_showCosmonAirdropModal(true)
     }
   }, [airdropData])
+
+  useEffect(() => {
+    getWhitelistData()
+  }, [isConnected])
 
   // const fetchCosmonPrices = async () => {
   //   set_cosmonPrices([
@@ -91,9 +98,9 @@ export default function Page() {
     // fetchCosmonPrices()
   }, [])
 
-  useEffect(() => {
-    // console.log('whitelistData', whitelistData)
-  }, [whitelistData])
+  // useEffect(() => {
+  //   console.log('whitelistData', whitelistData)
+  // }, [whitelistData])
 
   return (
     <>
@@ -163,8 +170,14 @@ export default function Page() {
                           Cosmons!
                         </p>
                         <div className="flex gap-x-3">
-                          <div className="pill bg-[#0E9534]">3 mints left</div>
-                          <div className="pill bg-[#0E9534]">15% Discount</div>
+                          <div className="pill bg-[#0E9534]">
+                            {whitelistData.available_slots -
+                              whitelistData.used_slots}{' '}
+                            mints left
+                          </div>
+                          <div className="pill bg-[#0E9534]">
+                            {whitelistData.discount_percent}% Discount
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -223,28 +236,28 @@ export default function Page() {
           ))} */}
 
             <PotionItem
-              buy={() => buy('Uncommon')}
+              buy={(price: string) => buy('Uncommon', price)}
               yieldPercent={process.env.NEXT_PUBLIC_YIELD_UNCOMMON || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Uncommon'}
               type="Uncommon"
               img="uncommon.png"
             />
             <PotionItem
-              buy={() => buy('Rare')}
+              buy={(price) => buy('Rare', price)}
               yieldPercent={process.env.NEXT_PUBLIC_YIELD_RARE || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Rare'}
               type="Rare"
               img="rare.png"
             />
             <PotionItem
-              buy={() => buy('Epic')}
+              buy={(price) => buy('Epic', price)}
               yieldPercent={process.env.NEXT_PUBLIC_YIELD_EPIC || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Epic'}
               type="Epic"
               img="epic.png"
             />
             <PotionItem
-              buy={() => buy('Legendary')}
+              buy={(price) => buy('Legendary', price)}
               yieldPercent={process.env.NEXT_PUBLIC_YIELD_LEGENDARY || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Legendary'}
               type="Legendary"

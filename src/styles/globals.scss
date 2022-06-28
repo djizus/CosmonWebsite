@@ -53,6 +53,10 @@ input {
   &.dark-text {
     @apply rounded-2xl border border-cosmon-main-primary py-4 px-6 text-[14px] font-semibold text-[#D9DBE9];
     background-color: #0d0531;
+    &.amount {
+      font-size: 22px;
+      padding-right: 100px;
+    }
   }
 }
 

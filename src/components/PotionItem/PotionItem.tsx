@@ -11,13 +11,12 @@ type PotionItemProps = {
   yieldPercent: string
   img: string
   isCurrentlyBuying: boolean
-  buy?: () => void
+  buy: (price: string) => void
 }
 
 export default function PotionItem({
   isCurrentlyBuying,
   type,
-  // price,
   yieldPercent,
   img,
   buy,
@@ -61,7 +60,9 @@ export default function PotionItem({
     let price = await fetchCosmonPrice(type)
     if (whitelistData && whitelistData.discount_percent !== 0) {
       set_cosmonDiscountPrice(
-        (Number(price) * 100) / whitelistData.discount_percent + ''
+        Number(price) -
+          (Number(price) * whitelistData.discount_percent) / 100 +
+          ''
       )
     }
     set_cosmonPrice(Number(price).toFixed(2))
@@ -72,7 +73,13 @@ export default function PotionItem({
       getCosmonAvailable()
       getCosmonPrice()
     }
-  }, [isConnected])
+  }, [whitelistData?.used_slots])
+
+  // useEffect(() => {
+  //   console.log('here')
+  //   getCosmonAvailable()
+  //   getCosmonPrice()
+  // }, [whitelistData])
 
   useEffect(() => {
     // console.log('cosmonAvailable', cosmonAvailable)
@@ -90,14 +97,16 @@ export default function PotionItem({
       <div className="mt-2 rounded-lg bg-cosmon-main-primary px-[10px] py-1 text-center text-base font-semibold text-white">
         {yieldPercent}% APR*
       </div>
-      <p className="mt-5 pt-1 text-base font-bold  text-[#B1A8B9] ">
+      <p className="mt-5 flex gap-x-3 pt-1  text-base font-bold text-[#B1A8B9] ">
         {/* {price} */}
 
-        <span className={`${cosmonDiscountPrice && 'line-through'}`}>
-          {cosmonPrice} ATOM
+        <span className={`${cosmonDiscountPrice && 'line-through'} uppercase`}>
+          {cosmonPrice} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
         </span>
         {cosmonDiscountPrice && (
-          <span className={``}>{cosmonDiscountPrice} ATOM</span>
+          <span className={`uppercase`}>
+            {cosmonDiscountPrice} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+          </span>
         )}
       </p>
 
@@ -109,7 +118,9 @@ export default function PotionItem({
             // disabled
             disabled={!cosmonAvailable}
             size={'small'}
-            onClick={buy}
+            onClick={() =>
+              buy(cosmonDiscountPrice ? cosmonDiscountPrice : cosmonPrice)
+            }
           >
             {cosmonAvailable === null
               ? 'Fetching data'

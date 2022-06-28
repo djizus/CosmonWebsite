@@ -36,6 +36,8 @@ export default function Page() {
     }
   }, [cosmons])
 
+  console.log('coins', coins)
+
   return (
     <>
       <Transition
@@ -188,10 +190,19 @@ export default function Page() {
                           src="../icons/cosmos.png"
                           alt=""
                         />
-                        Cosmos Hub - ATOM
+                        Cosmos Hub -{' '}
+                        <span className="uppercase">
+                          {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+                        </span>
                       </div>
                     </td>
-                    <td> {getAmountFromDenom('ATOM', coins)}</td>
+                    <td>
+                      {' '}
+                      {getAmountFromDenom(
+                        process.env.NEXT_PUBLIC_STAKING_IBC_DENOM || 'uatom',
+                        coins
+                      )}
+                    </td>
                     <td></td>
                     <td>
                       <div className="flex gap-x-3">

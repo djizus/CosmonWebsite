@@ -7,9 +7,8 @@ type WalletPopupProps = {
 }
 
 export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
-  const { addMoneyFromFaucet, isFetchingData, coins } = useWalletStore(
-    (state) => state
-  )
+  const { initIbc, isFetchingData, coins, setShowWithdrawDepositModal } =
+    useWalletStore((state) => state)
 
   return (
     <>
@@ -48,14 +47,14 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
           <div className="flex justify-between pt-4">
             <Button
               // isLoading={isWalletLoading}
-              onClick={addMoneyFromFaucet}
+              onClick={() => setShowWithdrawDepositModal('deposit')}
               size="small"
               type="secondary"
             >
               Deposit
             </Button>
             <Button
-              onClick={() => console.log('here')}
+              onClick={() => setShowWithdrawDepositModal('withdraw')}
               size="small"
               type="secondary"
             >

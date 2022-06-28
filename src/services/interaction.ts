@@ -3,21 +3,24 @@ import { Scarcity } from '../../types/Scarcity'
 
 import { FaucetClient } from '@cosmjs/faucet-client'
 import { CosmonType } from '../../types/Cosmon'
+import { convertDenomToMicroDenom } from '../utils/conversion'
 
 const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
 const PUBLIC_NFT_CONTRACT = process.env.NEXT_PUBLIC_NFT_CONTRACT || ''
 const PUBLIC_WHITELIST_CONTRACT =
   process.env.NEXT_PUBLIC_WHITELIST_CONTRACT || ''
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
+const PUBLIC_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
 
 export const executeBuyCosmon = (
   signingClient: SigningCosmWasmClient,
+  price: string,
   address: string,
   scarcity: Scarcity
 ) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const price = await queryCosmonPrice(signingClient, scarcity)
+      // const price = await queryCosmonPrice(signingClient, scarcity)
       const response = await signingClient.execute(
         address,
         PUBLIC_SELL_CONTRACT,
@@ -26,8 +29,8 @@ export const executeBuyCosmon = (
         'memo',
         [
           {
-            amount: price,
-            denom: PUBLIC_STAKING_DENOM,
+            amount: convertDenomToMicroDenom(price),
+            denom: PUBLIC_IBC_DENOM,
           },
         ]
       )
