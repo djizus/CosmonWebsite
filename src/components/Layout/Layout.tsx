@@ -13,6 +13,7 @@ import { chainFetcher } from '../../services/fetcher'
 import useSWR from 'swr'
 
 import DisconnectOrCopyPopup from './DisconnectOrCopyPopup'
+import { useCosmonStore } from '../../store/cosmonStore'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -29,6 +30,8 @@ export default function Layout({ children }: LayoutProps) {
     isConnected,
     coins,
   } = useWalletStore((state) => state)
+
+  const { getWhitelistData } = useCosmonStore((state) => state)
 
   // const { data: tokens, error } = useSWR(
   //   {
@@ -86,6 +89,7 @@ export default function Layout({ children }: LayoutProps) {
     const refreshInterval = window.setInterval(() => {
       console.log('Re-fetching data...')
       fetchWalletData()
+      getWhitelistData()
     }, 8000)
     return () => clearInterval(refreshInterval)
   }, [isConnected])

@@ -91,7 +91,7 @@ export default function CosmonAirdropModal({
                 {!airdropData?.isEligible ? (
                   <div className="px-4">
                     <h4 className="mb-5 text-lg font-semibold leading-[26px]">
-                      Oh... Unfortunatly you’re not eligible
+                      Oh... Unfortunately you’re not eligible
                     </h4>
                     <p className="mb-4 text-sm font-normal">
                       The airdrop snapshot has been taken on Wednesday June 1st

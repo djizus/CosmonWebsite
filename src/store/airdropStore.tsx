@@ -60,7 +60,6 @@ const useAirdropStore = create<AirdropState>((set, get) => ({
     const { getAirdropData } = get()
     const { address, signingClient } = useWalletStore.getState()
     if (signingClient && address) {
-      console.log('here')
       const response = await toast
         .promise(executeClaimAirdrop(signingClient, address), {
           pending: {

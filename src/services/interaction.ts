@@ -101,11 +101,10 @@ export const queryCosmonPrice = async (
   signingClient: SigningCosmWasmClient,
   scarcity: Scarcity
 ): Promise<string> => {
-  // Print divinity_price
   const price = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
     get_price_by_scarcity: { scarcity: scarcity },
   })
-  console.log(`price of ${scarcity}`, price)
+  // console.log(`price of ${scarcity}`, price)
   return price.amount
 }
 
@@ -171,7 +170,45 @@ export const queryCosmonAvailableByScarcity = async (
   })
 }
 
-export const queryCheckWhitelistEligibility = async (
+export const queryPreSellOpen = async (
+  signingClient: SigningCosmWasmClient
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await signingClient.queryContractSmart(
+        PUBLIC_SELL_CONTRACT,
+        {
+          get_pre_sell_open: {},
+        }
+      )
+      return resolve(data)
+    } catch (e) {
+      console.error(`Error while fetching info`, e)
+      return reject(`Error while fetching info`)
+    }
+  })
+}
+
+export const querySellOpen = async (
+  signingClient: SigningCosmWasmClient
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await signingClient.queryContractSmart(
+        PUBLIC_SELL_CONTRACT,
+        {
+          get_sell_open: {},
+        }
+      )
+      return resolve(data)
+    } catch (e) {
+      console.error(`Error while fetching info`, e)
+      return reject(`Error while fetching info`)
+    }
+  })
+}
+
+export const queryCheckAirdropEligibility = async (
   signingClient: SigningCosmWasmClient,
   address: string
 ): Promise<any> => {
@@ -181,6 +218,28 @@ export const queryCheckWhitelistEligibility = async (
         PUBLIC_WHITELIST_CONTRACT,
         {
           check_address_eligibility: { address: address },
+        }
+      )
+
+      setTimeout(() => {
+        return resolve(data)
+      }, 600)
+    } else {
+      return reject('address is missing')
+    }
+  })
+}
+
+export const queryGetWhitelistInfo = async (
+  signingClient: SigningCosmWasmClient,
+  address: string
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    if (address) {
+      const data = await signingClient.queryContractSmart(
+        PUBLIC_SELL_CONTRACT,
+        {
+          get_whitelist_info_for_address: { address: address },
         }
       )
       console.log('address', address)
@@ -272,4 +331,23 @@ export const handleTransactionError = (error: any) => {
       message: error.toString(),
     }
   }
+}
+
+export const initIbc = async (
+  signingClient: SigningCosmWasmClient,
+  address: string
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    if (address) {
+      const data = await signingClient.queryContractSmart(
+        PUBLIC_SELL_CONTRACT,
+        {
+          check_ibc_done: {},
+        }
+      )
+      return resolve(data)
+    } else {
+      return reject('address is missing')
+    }
+  })
 }
