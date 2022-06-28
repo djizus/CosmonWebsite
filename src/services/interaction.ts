@@ -339,12 +339,8 @@ export const initIbc = async (
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     if (address) {
-      const data = await signingClient.queryContractSmart(
-        PUBLIC_SELL_CONTRACT,
-        {
-          check_ibc_done: {},
-        }
-      )
+      // Do stuff async and when you have data, return through resolve
+      const data = 'success'
       return resolve(data)
     } else {
       return reject('address is missing')
