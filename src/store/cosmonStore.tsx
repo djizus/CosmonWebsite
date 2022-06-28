@@ -32,6 +32,7 @@ interface CosmonState {
 const useCosmonStore = create<CosmonState>((set, get) => ({
   getWhitelistData: async () => {
     const { address, signingClient } = useWalletStore.getState()
+
     const response =
       signingClient && (await queryGetWhitelistInfo(signingClient, address))
     set({

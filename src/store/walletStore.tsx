@@ -26,11 +26,12 @@ import { convertDenomToMicroDenom } from '../utils/conversion'
 
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
-const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
+const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 
 interface WalletState {
   address: string
+  ibcAddress: string
   isFetchingData: boolean
   airdropData?: {
     isEligible: boolean
@@ -68,6 +69,7 @@ const useWalletStore = create<WalletState>(
       coins: [],
       cosmons: [],
       address: '',
+      ibcAddress: '',
       isFetchingData: false,
       signingClient: null,
       ibcSigningClient: null,
@@ -96,8 +98,11 @@ const useWalletStore = create<WalletState>(
           const offlineSigner = await (window as any).getOfflineSignerAuto(
             PUBLIC_CHAIN_ID
           )
+          const ibcOfflineSigner = await (window as any).getOfflineSignerAuto(
+              PUBLIC_IBC_CHAIN_ID
+          )
           const client = await makeClient(offlineSigner)
-          const ibcClient = await makeIbcClient(offlineSigner)
+          const ibcClient = await makeIbcClient(ibcOfflineSigner)
 
           set({
             signingClient: client,
@@ -109,9 +114,11 @@ const useWalletStore = create<WalletState>(
 
           // get user address
           const [{ address }] = await offlineSigner.getAccounts()
+          const ibcAddress = (await ibcOfflineSigner.getAccounts())[0].address
 
           set({
             address: address,
+            ibcAddress,
             isConnected: true,
           })
           await get().fetchWalletData()
