@@ -16,9 +16,9 @@ import CosmonFullModal from '../components/Modal/CosmonFullModal'
 import { getAmountFromDenom } from '../utils/index'
 
 export default function Page() {
-  const { connect, isConnected, cosmons, coins } = useWalletStore(
-    (state) => state
-  )
+  const { connect, isConnected, cosmons, coins, setShowWithdrawDepositModal } =
+    useWalletStore((state) => state)
+
   const [assetToTransfer, set_assetToTransfer] = useState<null | CosmonType>()
 
   const [scarcitiesNumberByCosmons, set_scarcitiesNumberByCosmons] = useState<
@@ -35,8 +35,6 @@ export default function Page() {
       set_scarcitiesNumberByCosmons(getScarcitiesNumberByCosmons(cosmons))
     }
   }, [cosmons])
-
-  console.log('coins', coins)
 
   return (
     <>
@@ -172,12 +170,6 @@ export default function Page() {
                         >
                           Claim rewards (coming soon)
                         </Button>
-                        {/* <Button size="small" type="secondary">
-                          Deposit
-                        </Button>
-                        <Button size="small" type="secondary">
-                          Withdraw
-                        </Button> */}
                       </div>
                     </td>
                   </tr>
@@ -206,10 +198,18 @@ export default function Page() {
                     <td></td>
                     <td>
                       <div className="flex gap-x-3">
-                        <Button size="small" type="disabled-colored">
+                        <Button
+                          size="small"
+                          onClick={() => setShowWithdrawDepositModal('deposit')}
+                        >
                           Deposit
                         </Button>
-                        <Button size="small" type="disabled-colored">
+                        <Button
+                          size="small"
+                          onClick={() =>
+                            setShowWithdrawDepositModal('withdraw')
+                          }
+                        >
                           Withdraw
                         </Button>
                       </div>
