@@ -34,42 +34,52 @@ export const connectKeplr = async () => {
         // If the user rejects it or the suggested chain information doesn't include the required fields, it will throw an error.
         // If the same chain id is already registered, it will resolve and not require the user interactions.
         await window.keplr.experimentalSuggestChain({
-          chainId: "kichain-2",
-          chainName: "Ki",
-          rpc: "https://rpc-mainnet.blockchain.ki/",
-          rest: "https://api-mainnet.blockchain.ki/",
+          chainId: process.env.NEXT_PUBLIC_CHAIN_ID || 'kichain-2',
+          chainName: process.env.NEXT_PUBLIC_CHAIN_NAME || 'Ki',
+          rpc:
+            process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT ||
+            'https://rpc-mainnet.blockchain.ki/',
+          rest:
+            process.env.NEXT_PUBLIC_CHAIN_REST_ENDPOINT ||
+            'https://api-mainnet.blockchain.ki/',
           bip44: {
-            coinType: 118,
+            coinType: process.env.NEXT_PUBLIC_BIP_COIN_TYPE || 118,
           },
           bech32Config: {
-            bech32PrefixAccAddr: "ki",
-            bech32PrefixAccPub: "ki" + "pub",
-            bech32PrefixValAddr: "ki" + "valoper",
-            bech32PrefixValPub: "ki" + "valoperpub",
-            bech32PrefixConsAddr: "ki" + "valcons",
-            bech32PrefixConsPub: "ki" + "valconspub",
+            bech32PrefixAccAddr:
+              process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX || 'ki',
+            bech32PrefixAccPub:
+              process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX + 'pub',
+            bech32PrefixValAddr:
+              process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX + 'valoper',
+            bech32PrefixValPub:
+              process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX + 'valoperpub',
+            bech32PrefixConsAddr:
+              process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX + 'valcons',
+            bech32PrefixConsPub:
+              process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX + 'valconspub',
           },
           currencies: [
             {
-              coinDenom: "KI",
-              coinMinimalDenom: "uxki",
+              coinDenom: process.env.NEXT_PUBLIC_DENOM || 'KI',
+              coinMinimalDenom: process.env.NEXT_PUBLIC_STAKING_DENOM || 'uxki',
               coinDecimals: 6,
-              coinGeckoId: "ki",
+              coinGeckoId: process.env.NEXT_PUBLIC_CHAIN_GECKO_ID || 'ki',
             },
           ],
           feeCurrencies: [
             {
-              coinDenom: "KI",
-              coinMinimalDenom: "uxki",
+              coinDenom: process.env.NEXT_PUBLIC_DENOM || 'KI',
+              coinMinimalDenom: 'uxki',
               coinDecimals: 6,
-              coinGeckoId: "ki",
+              coinGeckoId: 'ki',
             },
           ],
           stakeCurrency: {
-            coinDenom: "KI",
-            coinMinimalDenom: "uxki",
+            coinDenom: process.env.NEXT_PUBLIC_DENOM || 'KI',
+            coinMinimalDenom: process.env.NEXT_PUBLIC_STAKING_DENOM || 'uxki',
             coinDecimals: 6,
-            coinGeckoId: "ki",
+            coinGeckoId: process.env.NEXT_PUBLIC_CHAIN_GECKO_ID || 'ki',
           },
           coinType: 118,
           gasPriceStep: {
@@ -77,94 +87,8 @@ export const connectKeplr = async () => {
             average: 0.25,
             high: 0.03,
           },
-          features: ["cosmwasm", "ibc-transfer", "ibc-go", "wasmd_0.24+"],
-        });
-/*
-        await window.keplr.experimentalSuggestChain({
-          // Chain-id of the Cosmos SDK chain.
-          chainId: process.env.NEXT_PUBLIC_CHAIN_ID,
-          // The name of the chain to be displayed to the user.
-          chainName: process.env.NEXT_PUBLIC_CHAIN_NAME,
-          // RPC endpoint of the chain.
-          rpc: process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT,
-          // REST endpoint of the chain.
-          rest: process.env.NEXT_PUBLIC_CHAIN_REST_ENDPOINT,
-          // Staking coin information
-          stakeCurrency: {
-            // Coin denomination to be displayed to the user.
-            coinDenom: stakingDenom,
-            // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-            coinMinimalDenom: process.env.NEXT_PUBLIC_STAKING_DENOM,
-            // # of decimal points to convert minimal denomination to user-facing denomination.
-            coinDecimals: 6,
-            // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
-            // You can get id from https://api.coingecko.com/api/v3/coins/list if it is listed.
-            coinGeckoId: process.env.NEXT_PUBLIC_CHAIN_GECKO_ID,
-          },
-          // (Optional) If you have a wallet webpage used to stake the coin then provide the url to the website in `walletUrlForStaking`.
-          // The 'stake' button in Keplr extension will link to the webpage.
-          // walletUrlForStaking: "",
-          // The BIP44 path.
-          bip44: {
-            // You can only set the coin type of BIP44.
-            // 'Purpose' is fixed to 44.
-            coinType: process.env.NEXT_PUBLIC_BIP_COIN_TYPE,
-          },
-          // Bech32 configuration to show the address to user.
-          bech32Config: {
-            bech32PrefixAccAddr: process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX,
-            bech32PrefixAccPub: `${process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX}pub`,
-            bech32PrefixValAddr: `${process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX}valoper`,
-            bech32PrefixValPub: `${process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX}valoperpub`,
-            bech32PrefixConsAddr: `${process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX}valcons`,
-            bech32PrefixConsPub: `${process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX}valconspub`,
-          },
-          // List of all coin/tokens used in this chain.
-          currencies: [
-            {
-              // Coin denomination to be displayed to the user.
-              coinDenom: stakingDenom,
-              // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-              coinMinimalDenom: process.env.NEXT_PUBLIC_STAKING_DENOM,
-              // # of decimal points to convert minimal denomination to user-facing denomination.
-              coinDecimals: 6,
-              // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
-              // You can get id from https://api.coingecko.com/api/v3/coins/list if it is listed.
-              coinGeckoId: "ki"
-            },
-          ],
-          // List of coin/tokens used as a fee token in this chain.
-          feeCurrencies: [
-            {
-              // Coin denomination to be displayed to the user.
-              coinDenom: stakingDenom,
-              // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-              coinMinimalDenom: process.env.NEXT_PUBLIC_STAKING_DENOM,
-              // # of decimal points to convert minimal denomination to user-facing denomination.
-              coinDecimals: 6,
-              // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
-              // You can get id from https://api.coingecko.com/api/v3/coins/list if it is listed.
-              coinGeckoId: "ki"
-            },
-          ],
-          // (Optional) The number of the coin type.
-          // This field is only used to fetch the address from ENS.
-          // Ideally, it is recommended to be the same with BIP44 path's coin type.
-          // However, some early chains may choose to use the Cosmos Hub BIP44 path of '118'.
-          // So, this is separated to support such chains.
-          coinType: process.env.NEXT_PUBLIC_BIP_COIN_TYPE,
-          // (Optional) This is used to set the fee of the transaction.
-          // If this field is not provided, Keplr extension will set the default gas price as (low: 0.01, average: 0.025, high: 0.04).
-          // Currently, Keplr doesn't support dynamic calculation of the gas prices based on on-chain data.
-          // Make sure that the gas prices are higher than the minimum gas prices accepted by chain validators and RPC/REST endpoint.
-          gasPriceStep: {
-            low: 0.025,
-            average: 0.025,
-            high: 0.03,
-          },
           features: ['cosmwasm', 'ibc-transfer', 'ibc-go', 'wasmd_0.24+'],
         })
-*/
       } catch (e) {
         alert('Failed to suggest the chain')
         console.log('error details', e)
