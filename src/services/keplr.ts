@@ -2,8 +2,10 @@ import { convertFromMicroDenom } from '../utils/conversion'
 import { OfflineSigner } from '@cosmjs/proto-signing/build/signer'
 import { GasPrice } from '@cosmjs/stargate/build/fee'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/signingcosmwasmclient'
+import { SigningStargateClient } from "@cosmjs/stargate";
 
 const PUBLIC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT || ''
+const PUBLIC_IBC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_IBC_CHAIN_RPC_ENDPOINT || ''
 
 // extend window with CosmosJS and Keplr properties
 interface CosmosKeplrWindow extends Window {
@@ -109,5 +111,18 @@ export const makeClient = async (offlineSigner: OfflineSigner) => {
         `0.025${process.env.NEXT_PUBLIC_STAKING_DENOM}`
       ),
     }
+  )
+}
+
+export const makeIbcClient = async (offlineSigner: OfflineSigner) => {
+  return await SigningStargateClient.connectWithSigner(
+      PUBLIC_IBC_RPC_ENDPOINT,
+      offlineSigner,
+      {
+        prefix: process.env.NEXT_PUBLIC_IBC_CHAIN_BECH32_PREFIX,
+        gasPrice: GasPrice.fromString(
+            `0.025${process.env.NEXT_PUBLIC_STAKING_IBC_DENOM}`
+        ),
+      }
   )
 }

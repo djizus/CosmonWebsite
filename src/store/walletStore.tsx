@@ -1,7 +1,8 @@
 import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
-import { connectKeplr, makeClient } from '../services/keplr'
+import { SigningStargateClient } from "@cosmjs/stargate";
+import {connectKeplr, makeClient, makeIbcClient} from '../services/keplr'
 import { Coin } from '@cosmjs/amino/build/coins'
 import { Scarcity } from '../../types/Scarcity'
 import {
@@ -23,7 +24,9 @@ import useSWR from 'swr'
 import { chainFetcher } from '../services/fetcher'
 import { convertDenomToMicroDenom } from '../utils/conversion'
 
+
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
+const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 
 interface WalletState {
@@ -36,6 +39,7 @@ interface WalletState {
     num_already_claimed?: number
   }
   signingClient: SigningCosmWasmClient | null
+  ibcSigningClient: SigningStargateClient | null
   maxClaimableToken?: number
   coins: Coin[]
   cosmons: CosmonType[]
@@ -66,6 +70,8 @@ const useWalletStore = create<WalletState>(
       address: '',
       isFetchingData: false,
       signingClient: null,
+      ibcSigningClient: null,
+
       isConnected: false,
       hasSubscribed: false,
       isEligibleForAirdrop: null,
@@ -84,15 +90,21 @@ const useWalletStore = create<WalletState>(
 
           // enable website to access kepler
           await (window as any).keplr.enable(PUBLIC_CHAIN_ID)
+          await (window as any).keplr.enable(PUBLIC_IBC_CHAIN_ID)
 
           // get offline signer for signing txs
           const offlineSigner = await (window as any).getOfflineSignerAuto(
             PUBLIC_CHAIN_ID
           )
           const client = await makeClient(offlineSigner)
+          const ibcClient = await makeIbcClient(offlineSigner)
 
           set({
             signingClient: client,
+          })
+
+          set( {
+              ibcSigningClient: ibcClient
           })
 
           // get user address
