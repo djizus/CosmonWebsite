@@ -28,10 +28,12 @@ import { convertDenomToMicroDenom } from '../utils/conversion'
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
+const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
 
 interface WalletState {
   address: string
   ibcAddress: string
+  ibcDenom: string
   isFetchingData: boolean
   airdropData?: {
     isEligible: boolean
@@ -43,6 +45,7 @@ interface WalletState {
   ibcSigningClient: SigningStargateClient | null
   maxClaimableToken?: number
   coins: Coin[]
+  ibcCoins: Coin[]
   cosmons: CosmonType[]
   isConnected: boolean
   hasSubscribed: boolean
@@ -67,6 +70,8 @@ const useWalletStore = create<WalletState>(
   persist(
     (set, get) => ({
       coins: [],
+      ibcCoins: [],
+      ibcDenom: process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN || '',
       cosmons: [],
       address: '',
       ibcAddress: '',
@@ -232,14 +237,14 @@ const useWalletStore = create<WalletState>(
       },
 
       fetchCoin: async () => {
-        const { signingClient, address, coins } = get()
+        const { signingClient, address, coins, ibcCoins } = get()
         if (signingClient && address) {
           try {
             const mainCoin = await signingClient.getBalance(
               address,
               PUBLIC_STAKING_DENOM
             )
-            const atomCoin = await signingClient.getBalance(address, 'ATOM')
+            const atomCoin = await signingClient.getBalance(address, PUBLIC_STAKING_IBC_DENOM)
             let newCoins = coins.filter(
               (coin) => coin.denom !== PUBLIC_STAKING_DENOM
             )
