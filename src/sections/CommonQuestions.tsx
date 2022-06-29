@@ -51,7 +51,7 @@ export default function CommonQuestions() {
           described as an “Internet of Blockchain”.
         </Disclosure>
 
-        <Disclosure title="What are the sales proceeds used to?">
+        <Disclosure title="What are the sales proceeds used for?">
           The proceeds from the NFT sales are fueling a decentralized treasury
           used to secure different blockchains in the Cosmos ecosystem,
           providing $XKI returns thanks to their respective inflation. It is

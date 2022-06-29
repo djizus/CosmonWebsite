@@ -29,7 +29,8 @@ const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
-const PUBLIC_STAKING_IBC_DENOM_ON_CHAIN = process.env.NEXT_PUBLIC_IBC_DENOM || ''
+const PUBLIC_STAKING_IBC_DENOM_ON_CHAIN =
+  process.env.NEXT_PUBLIC_IBC_DENOM || ''
 
 interface WalletState {
   address: string
@@ -240,7 +241,14 @@ const useWalletStore = create<WalletState>(
       },
 
       fetchCoin: async () => {
-        const { signingClient, ibcSigningClient, address, ibcAddress, coins, ibcCoins } = get()
+        const {
+          signingClient,
+          ibcSigningClient,
+          address,
+          ibcAddress,
+          coins,
+          ibcCoins,
+        } = get()
         if (signingClient && address) {
           try {
             const mainCoin = await signingClient.getBalance(
@@ -261,27 +269,26 @@ const useWalletStore = create<WalletState>(
               coins: newCoins,
             })
           } catch (e) {
-            console.error('Error while fetching coin', e)
+            console.error(`Error while fetching coin`, e)
           }
         }
 
         if (ibcSigningClient && ibcAddress) {
-            try {
-                const mainCoin = await ibcSigningClient.getBalance(
-                    ibcAddress,
-                    PUBLIC_STAKING_IBC_DENOM_ON_CHAIN
-                )
-                let newCoins = coins.filter(
-                    (coin) =>
-                        coin.denom !== PUBLIC_STAKING_IBC_DENOM_ON_CHAIN
-                )
-                newCoins.push(mainCoin);
-                set({
-                    ibcCoins: newCoins,
-                })
-            } catch (e) {
-                console.error('Error while fetching ibc coin', e)
-            }
+          try {
+            const mainCoin = await ibcSigningClient.getBalance(
+              ibcAddress,
+              PUBLIC_STAKING_IBC_DENOM_ON_CHAIN
+            )
+            let newCoins = coins.filter(
+              (coin) => coin.denom !== PUBLIC_STAKING_IBC_DENOM_ON_CHAIN
+            )
+            newCoins.push(mainCoin)
+            set({
+              ibcCoins: newCoins,
+            })
+          } catch (e) {
+            console.error('Error while fetching ibc coin', e)
+          }
         }
       },
       fetchCosmons: async () => {
