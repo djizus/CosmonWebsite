@@ -8,6 +8,7 @@ import { getAmountFromDenom } from '../../utils/index'
 import { getScarcityByCosmon } from '../../utils/cosmon'
 import Button from '../Button/Button'
 import Modal from './Modal'
+import { Coin } from '@cosmjs/amino/build/coins'
 
 type WithdrawDepositModalProps = {
   onCloseModal: () => void
@@ -19,7 +20,7 @@ export default function WithdrawDepositModal({
   const {
     address,
     ibcAddress,
-    signingClient,
+    initIbc,
     coins,
     ibcCoins,
     showWithdrawDepositModal,
@@ -38,6 +39,14 @@ export default function WithdrawDepositModal({
     )
   }
 
+  const isAmountInvalid = () => {
+    if (showWithdrawDepositModal === 'withdraw') {
+      return getIbcAmount() < parseFloat(amountToTransfer || '0')
+    } else {
+      return getFromChainAmount() < parseFloat(amountToTransfer || '0')
+    }
+  }
+
   const getIbcAmount = () => {
     return getAmountFromDenom(
       process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
@@ -47,6 +56,17 @@ export default function WithdrawDepositModal({
 
   const getFromChainAmount = () => {
     return getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM || '', ibcCoins)
+  }
+
+  const launchInitIbc = () => {
+    const coin: Coin = {
+      amount: amountToTransfer || '0',
+      denom:
+        showWithdrawDepositModal === 'deposit'
+          ? process.env.NEXT_PUBLIC_IBC_DENOM || ''
+          : process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
+    }
+    initIbc(coin, showWithdrawDepositModal === 'deposit')
   }
 
   // const checkIfIsWalletAddressValid = useCallback(async (address) => {
@@ -166,10 +186,7 @@ export default function WithdrawDepositModal({
               </Button>
             </div>
           </div>
-          {((showWithdrawDepositModal === 'withdraw' &&
-            getIbcAmount() < parseFloat(amountToTransfer || '0')) ||
-            (showWithdrawDepositModal === 'deposit' &&
-              getFromChainAmount() < parseFloat(amountToTransfer || '0'))) && (
+          {isAmountInvalid() && (
             <div className="pt-2 text-center font-normal text-[#DF4547]">
               Insufficient amount
             </div>
@@ -178,11 +195,10 @@ export default function WithdrawDepositModal({
         <div className="flex w-full justify-center">
           <Button
             isLoading={isFetchingInfo}
-            disabled={!destinationAddressValid}
-            // onClick={async () => {
-            //   await transferAsset(destinationAddressDebounced, asset)
-            //   onCloseModal()
-            // }}
+            disabled={
+              !amountToTransfer || isAmountInvalid() || amountToTransfer === '0'
+            }
+            onClick={launchInitIbc}
           >
             <span className="capitalize">{showWithdrawDepositModal}</span>
           </Button>
