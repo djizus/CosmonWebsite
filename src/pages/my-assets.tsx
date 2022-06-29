@@ -191,7 +191,7 @@ export default function Page() {
                     <td>
                       {' '}
                       {getAmountFromDenom(
-                        process.env.NEXT_PUBLIC_STAKING_IBC_DENOM || 'uatom',
+                        process.env.NEXT_PUBLIC_IBC_DENOM_RAW || 'uatom',
                         coins
                       )}
                     </td>

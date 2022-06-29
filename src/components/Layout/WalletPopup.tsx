@@ -24,7 +24,7 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
               <div> XKI balance </div>
               <div>
                 {getAmountFromDenom(
-                  process.env.NEXT_PUBLIC_STAKING_DENOM || '',
+                  process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
                   coins
                 )}{' '}
                 XKI
