@@ -2,7 +2,7 @@ import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { SigningStargateClient } from '@cosmjs/stargate'
-import { connectKeplr, makeClient, makeIbcClient } from '../services/keplr'
+import {connectKeplr, makeClient, makeIbcClient, makeStargateClient} from '../services/keplr'
 import { Coin } from '@cosmjs/amino/build/coins'
 import { Scarcity } from '../../types/Scarcity'
 import {
@@ -44,6 +44,7 @@ interface WalletState {
     num_already_claimed?: number
   }
   signingClient: SigningCosmWasmClient | null
+  stargateSigningClient: SigningStargateClient | null
   ibcSigningClient: SigningStargateClient | null
   maxClaimableToken?: number
   coins: Coin[]
@@ -62,7 +63,7 @@ interface WalletState {
   addMoneyFromFaucet: () => void
   fetchCosmons: () => void
   fetchWalletData: () => void
-  initIbc: () => void
+  initIbc: (amount: Coin, deposit: boolean) => void
   getAirdropData: () => void
   claimAirdrop: () => any
   resetClaimData: () => void
@@ -81,6 +82,7 @@ const useWalletStore = create<WalletState>(
       ibcAddress: '',
       isFetchingData: false,
       signingClient: null,
+      stargateSigningClient: null,
       ibcSigningClient: null,
 
       isConnected: false,
@@ -111,13 +113,12 @@ const useWalletStore = create<WalletState>(
             PUBLIC_IBC_CHAIN_ID
           )
           const client = await makeClient(offlineSigner)
+          const stargateClient = await makeStargateClient(offlineSigner);
           const ibcClient = await makeIbcClient(ibcOfflineSigner)
 
           set({
             signingClient: client,
-          })
-
-          set({
+            stargateSigningClient: stargateClient,
             ibcSigningClient: ibcClient,
           })
 
@@ -187,11 +188,11 @@ const useWalletStore = create<WalletState>(
           isFetchingData: false,
         })
       },
-      initIbc: async () => {
-        const { signingClient, fetchCosmons, address, getAirdropData } = get()
-        if (signingClient && address) {
+      initIbc: async (amount: Coin, deposit: boolean) => {
+        const { stargateSigningClient, ibcSigningClient, fetchCosmons, ibcAddress, address, getAirdropData } = get()
+        if (stargateSigningClient && address && ibcSigningClient && ibcAddress) {
           const response = await toast
-            .promise(initIbc(signingClient, address), {
+            .promise(initIbc(stargateSigningClient, ibcSigningClient, address, ibcAddress, deposit, amount), {
               pending: {
                 render() {
                   return (

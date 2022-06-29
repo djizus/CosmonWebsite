@@ -114,6 +114,19 @@ export const makeClient = async (offlineSigner: OfflineSigner) => {
   )
 }
 
+export const makeStargateClient = async (offlineSigner: OfflineSigner) => {
+  return await SigningStargateClient.connectWithSigner(
+      PUBLIC_RPC_ENDPOINT,
+      offlineSigner,
+      {
+        prefix: process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX,
+        gasPrice: GasPrice.fromString(
+            `0.025${process.env.NEXT_PUBLIC_STAKING_DENOM}`
+        ),
+      }
+  )
+}
+
 export const makeIbcClient = async (offlineSigner: OfflineSigner) => {
   return await SigningStargateClient.connectWithSigner(
       PUBLIC_IBC_RPC_ENDPOINT,

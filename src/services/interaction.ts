@@ -4,6 +4,10 @@ import { Scarcity } from '../../types/Scarcity'
 import { FaucetClient } from '@cosmjs/faucet-client'
 import { CosmonType } from '../../types/Cosmon'
 import { convertDenomToMicroDenom } from '../utils/conversion'
+import {SigningStargateClient} from "@cosmjs/stargate";
+import {Coin} from "@cosmjs/amino/build/coins";
+
+const Height = require("long");
 
 const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
 const PUBLIC_NFT_CONTRACT = process.env.NEXT_PUBLIC_NFT_CONTRACT || ''
@@ -337,11 +341,26 @@ export const handleTransactionError = (error: any) => {
 }
 
 export const initIbc = async (
-  signingClient: SigningCosmWasmClient,
-  address: string
+  kiClient: SigningStargateClient,
+  ibcClient: SigningStargateClient,
+  kiAddress: string,
+  ibcAddress: string,
+  deposit: boolean,
+  amount: Coin,
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
-    if (address) {
+    if (kiAddress) {
+      if (deposit) {
+        const height = await ibcClient.getHeight();
+        const stopHeight = Height.Long.fromNumber(height + 500);
+        await ibcClient.sendIbcTokens(ibcAddress, kiAddress, amount, 'transfer', process.env.IBC_TO_KICHAIN_CHANNEL || '', stopHeight, undefined, 'auto' );
+      } else {
+
+        const height = await kiClient.getHeight();
+        const stopHeight = Height.Long.fromNumber(height + 500);
+        await kiClient.sendIbcTokens(ibcAddress, kiAddress, amount, 'transfer', process.env.IBC_TO_KICHAIN_CHANNEL || '', stopHeight, undefined, 'auto' );
+      }
+
       // Do stuff async and when you have data, return through resolve
       const data = 'success'
       return resolve(data)
