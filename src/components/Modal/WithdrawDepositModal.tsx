@@ -46,10 +46,7 @@ export default function WithdrawDepositModal({
   }
 
   const getFromChainAmount = () => {
-    return getAmountFromDenom(
-        process.env.NEXT_PUBLIC_IBC_DENOM || '',
-        ibcCoins
-    )
+    return getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM || '', ibcCoins)
   }
 
   // const checkIfIsWalletAddressValid = useCallback(async (address) => {
@@ -113,7 +110,11 @@ export default function WithdrawDepositModal({
             <input
               className="dark-text w-full"
               type="text"
-              placeholder={'Enter the recipient address'}
+              // placeholder={'Enter the recipient address'}
+              disabled={true}
+              value={
+                showWithdrawDepositModal === 'deposit' ? address : ibcAddress
+              }
               // onChange={(e) => {
               //   set_isFetchingInfo(true)
               //   set_destinationAddress(e.target.value)
@@ -132,7 +133,8 @@ export default function WithdrawDepositModal({
                 </>
               ) : (
                 <>
-                  {getFromChainAmount()} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+                  {getFromChainAmount()}{' '}
+                  {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
                 </>
               )}
             </div>
@@ -167,7 +169,7 @@ export default function WithdrawDepositModal({
           {((showWithdrawDepositModal === 'withdraw' &&
             getIbcAmount() < parseFloat(amountToTransfer || '0')) ||
             (showWithdrawDepositModal === 'deposit' &&
-            getFromChainAmount() < parseFloat(amountToTransfer || '0'))) && (
+              getFromChainAmount() < parseFloat(amountToTransfer || '0'))) && (
             <div className="pt-2 text-center font-normal text-[#DF4547]">
               Insufficient amount
             </div>

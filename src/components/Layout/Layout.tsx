@@ -87,7 +87,7 @@ export default function Layout({ children }: LayoutProps) {
 
   useEffect(() => {
     if (coins.length > 0) {
-      // console.log('coins', coins)
+      console.log('coins', coins)
     }
   }, [coins])
 
