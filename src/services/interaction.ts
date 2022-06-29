@@ -383,7 +383,7 @@ export const initIbc = async (
       }
 
       if (i == nbRetry) {
-        throw Error("Ibc timeout");
+        return reject('Ibc Timeout');
       }
 
       // Do stuff async and when you have data, return through resolve
