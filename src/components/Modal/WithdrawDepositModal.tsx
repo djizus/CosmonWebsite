@@ -9,6 +9,7 @@ import { getScarcityByCosmon } from '../../utils/cosmon'
 import Button from '../Button/Button'
 import Modal from './Modal'
 import { Coin } from '@cosmjs/amino/build/coins'
+import BigNumber from "bignumber.js";
 
 type WithdrawDepositModalProps = {
   onCloseModal: () => void
@@ -60,7 +61,7 @@ export default function WithdrawDepositModal({
 
   const launchInitIbc = () => {
     const coin: Coin = {
-      amount: amountToTransfer || '0',
+      amount: new BigNumber(amountToTransfer || '0').multipliedBy(1_000_000).toString() ,
       denom:
         showWithdrawDepositModal === 'deposit'
           ? process.env.NEXT_PUBLIC_IBC_DENOM || ''

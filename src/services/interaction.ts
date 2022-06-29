@@ -6,6 +6,7 @@ import { CosmonType } from '../../types/Cosmon'
 import { convertDenomToMicroDenom } from '../utils/conversion'
 import {SigningStargateClient} from "@cosmjs/stargate";
 import {Coin} from "@cosmjs/amino/build/coins";
+import {useLogger} from "react-use";
 
 const Height = require("long");
 
@@ -351,14 +352,9 @@ export const initIbc = async (
   return new Promise(async (resolve, reject) => {
     if (kiAddress) {
       if (deposit) {
-        const height = await ibcClient.getHeight();
-        const stopHeight = Height.Long.fromNumber(height + 500);
-        await ibcClient.sendIbcTokens(ibcAddress, kiAddress, amount, 'transfer', process.env.IBC_TO_KICHAIN_CHANNEL || '', stopHeight, undefined, 'auto' );
+        const tx = await ibcClient.sendIbcTokens(ibcAddress, kiAddress, amount, 'transfer', process.env.NEXT_PUBLIC_IBC_TO_KICHAIN_CHANNEL || '', undefined, Date.now()+ 600, 'auto' );
       } else {
-
-        const height = await kiClient.getHeight();
-        const stopHeight = Height.Long.fromNumber(height + 500);
-        await kiClient.sendIbcTokens(ibcAddress, kiAddress, amount, 'transfer', process.env.IBC_TO_KICHAIN_CHANNEL || '', stopHeight, undefined, 'auto' );
+        const tx = await kiClient.sendIbcTokens(kiAddress, ibcAddress, amount, 'transfer', process.env.NEXT_PUBLIC_KICHAIN_TO_IBC_CHANNEL || '', undefined, Date.now()+ 600, 'auto' );
       }
 
       // Do stuff async and when you have data, return through resolve
