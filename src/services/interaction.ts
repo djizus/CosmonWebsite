@@ -4,6 +4,13 @@ import { Scarcity } from '../../types/Scarcity'
 import { FaucetClient } from '@cosmjs/faucet-client'
 import { CosmonType } from '../../types/Cosmon'
 import { convertDenomToMicroDenom } from '../utils/conversion'
+import {SigningStargateClient} from "@cosmjs/stargate";
+import {Coin} from "@cosmjs/amino/build/coins";
+import {useLogger} from "react-use";
+import {sleep} from "@cosmjs/utils";
+import BigNumber from "bignumber.js";
+
+const Height = require("long");
 
 const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
 const PUBLIC_NFT_CONTRACT = process.env.NEXT_PUBLIC_NFT_CONTRACT || ''
@@ -337,11 +344,48 @@ export const handleTransactionError = (error: any) => {
 }
 
 export const initIbc = async (
-  signingClient: SigningCosmWasmClient,
-  address: string
+  kiClient: SigningStargateClient,
+  ibcClient: SigningStargateClient,
+  kiAddress: string,
+  ibcAddress: string,
+  deposit: boolean,
+  amount: Coin,
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
-    if (address) {
+    const recheckInterval = 500;
+    const nbRetry = 600_000 / recheckInterval;
+    let i = 0;
+
+    if (kiAddress) {
+      if (deposit) {
+        let wantedIbcBalanceOnKi =  new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
+        const tx = await ibcClient.sendIbcTokens(ibcAddress, kiAddress, amount, 'transfer', process.env.NEXT_PUBLIC_IBC_TO_KICHAIN_CHANNEL || '', undefined, Date.now()+ 600, 'auto' );
+        wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.plus(new BigNumber(amount.amount));
+
+        let balance = new BigNumber(0);
+        do {
+          i++;
+          await sleep(recheckInterval);
+          balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
+        } while (balance.isLessThan(wantedIbcBalanceOnKi) && i < nbRetry);
+
+      } else {
+        let wantedIbcBalanceOnKi =  new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
+        const tx = await kiClient.sendIbcTokens(kiAddress, ibcAddress, amount, 'transfer', process.env.NEXT_PUBLIC_KICHAIN_TO_IBC_CHANNEL || '', undefined, Date.now()+ 600, 'auto' );
+        wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.minus(new BigNumber(amount.amount));
+
+
+        let balance = new BigNumber(0);
+        do {
+          await sleep(recheckInterval);
+          balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
+        } while (balance.isGreaterThan(wantedIbcBalanceOnKi) && i < nbRetry);
+      }
+
+      if (i == nbRetry) {
+        return reject('Ibc Timeout');
+      }
+
       // Do stuff async and when you have data, return through resolve
       const data = 'success'
       return resolve(data)

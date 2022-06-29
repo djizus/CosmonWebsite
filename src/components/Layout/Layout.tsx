@@ -63,11 +63,13 @@ export default function Layout({ children }: LayoutProps) {
 
   // useEffect(() => {}, [tokens])
 
-  const handleSwitchAccount = () => {
-    setTimeout(() => {
-      connect()
-      getWhitelistData()
-    }, 250)
+  const handleSwitchAccount = async () => {
+    // setTimeout(() => {
+    // await disconnect()
+    // await connect()
+    await fetchWalletData()
+    // await getWhitelistData()
+    // }, 100)
   }
 
   useEffect(() => {
@@ -166,12 +168,13 @@ export default function Layout({ children }: LayoutProps) {
                 )}
               </div>
 
-              <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold uppercase text-white">
+              <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
                 {getAmountFromDenom(
                   process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
                   coins
-                )}{' '}
-                {ibcDenom}
+                )}
+
+                <div className="ml-1 uppercase"> {ibcDenom}</div>
                 <div
                   onClick={() =>
                     set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)

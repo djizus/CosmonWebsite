@@ -2,7 +2,12 @@ import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { SigningStargateClient } from '@cosmjs/stargate'
-import { connectKeplr, makeClient, makeIbcClient } from '../services/keplr'
+import {
+  connectKeplr,
+  makeClient,
+  makeIbcClient,
+  makeStargateClient,
+} from '../services/keplr'
 import { Coin } from '@cosmjs/amino/build/coins'
 import { Scarcity } from '../../types/Scarcity'
 import {
@@ -44,11 +49,13 @@ interface WalletState {
     num_already_claimed?: number
   }
   signingClient: SigningCosmWasmClient | null
+  stargateSigningClient: SigningStargateClient | null
   ibcSigningClient: SigningStargateClient | null
   maxClaimableToken?: number
   coins: Coin[]
   ibcCoins: Coin[]
   cosmons: CosmonType[]
+  isCurrentlyIbcTransferring: boolean
   isConnected: boolean
   hasSubscribed: boolean
   showWithdrawDepositModal?: 'withdraw' | 'deposit'
@@ -62,7 +69,7 @@ interface WalletState {
   addMoneyFromFaucet: () => void
   fetchCosmons: () => void
   fetchWalletData: () => void
-  initIbc: () => void
+  initIbc: (amount: Coin, deposit: boolean) => void
   getAirdropData: () => void
   claimAirdrop: () => any
   resetClaimData: () => void
@@ -80,9 +87,10 @@ const useWalletStore = create<WalletState>(
       address: '',
       ibcAddress: '',
       isFetchingData: false,
+      isCurrentlyIbcTransferring: false,
       signingClient: null,
+      stargateSigningClient: null,
       ibcSigningClient: null,
-
       isConnected: false,
       hasSubscribed: false,
       isEligibleForAirdrop: null,
@@ -111,13 +119,12 @@ const useWalletStore = create<WalletState>(
             PUBLIC_IBC_CHAIN_ID
           )
           const client = await makeClient(offlineSigner)
+          const stargateClient = await makeStargateClient(offlineSigner)
           const ibcClient = await makeIbcClient(ibcOfflineSigner)
 
           set({
             signingClient: client,
-          })
-
-          set({
+            stargateSigningClient: stargateClient,
             ibcSigningClient: ibcClient,
           })
 
@@ -187,46 +194,76 @@ const useWalletStore = create<WalletState>(
           isFetchingData: false,
         })
       },
-      initIbc: async () => {
-        const { signingClient, fetchCosmons, address, getAirdropData } = get()
-        if (signingClient && address) {
+      initIbc: async (amount: Coin, deposit: boolean) => {
+        const {
+          stargateSigningClient,
+          ibcSigningClient,
+          fetchWalletData,
+          ibcAddress,
+          address,
+        } = get()
+        if (
+          stargateSigningClient &&
+          address &&
+          ibcSigningClient &&
+          ibcAddress
+        ) {
+          set({
+            isCurrentlyIbcTransferring: true,
+          })
           const response = await toast
-            .promise(initIbc(signingClient, address), {
-              pending: {
-                render() {
-                  return (
-                    <ToastContainer type="pending">
-                      {`IBC transfer initalized`}
-                    </ToastContainer>
-                  )
+            .promise(
+              initIbc(
+                stargateSigningClient,
+                ibcSigningClient,
+                address,
+                ibcAddress,
+                deposit,
+                amount
+              ),
+              {
+                pending: {
+                  render() {
+                    return (
+                      <ToastContainer type="pending">
+                        {`IBC transfer initalized`}
+                      </ToastContainer>
+                    )
+                  },
                 },
-              },
-              success: {
-                render() {
-                  return (
-                    <ToastContainer type={'success'}>
-                      IBC transfer done successfully
-                    </ToastContainer>
-                  )
+                success: {
+                  render() {
+                    return (
+                      <ToastContainer type={'success'}>
+                        IBC transfer done successfully
+                      </ToastContainer>
+                    )
+                  },
+                  icon: SuccessIcon,
                 },
-                icon: SuccessIcon,
-              },
 
-              error: {
-                render({ data }: any) {
-                  return (
-                    <ToastContainer type="error">{data.message}</ToastContainer>
-                  )
+                error: {
+                  render({ data }: any) {
+                    return (
+                      <ToastContainer type="error">
+                        {data.message}
+                      </ToastContainer>
+                    )
+                  },
+                  icon: ErrorIcon,
                 },
-                icon: ErrorIcon,
-              },
+              }
+            )
+            .then(async ({ token }: any) => {
+              set({
+                isCurrentlyIbcTransferring: false,
+              })
+              fetchWalletData()
             })
-            .then(async ({ token }: any) => {})
           // return response
         }
       },
       fetchWalletData: async () => {
-        const { signingClient } = get()
         set({
           isFetchingData: true,
         })

@@ -1,13 +1,12 @@
-import { coin, coins } from '@cosmjs/proto-signing'
 import { Transition } from '@headlessui/react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
-import { CosmonType } from '../../../types/Cosmon'
 import { useWalletStore } from '../../store/walletStore'
 import { getAmountFromDenom } from '../../utils/index'
-import { getScarcityByCosmon } from '../../utils/cosmon'
 import Button from '../Button/Button'
 import Modal from './Modal'
+import { Coin } from '@cosmjs/amino/build/coins'
+import BigNumber from 'bignumber.js'
 
 type WithdrawDepositModalProps = {
   onCloseModal: () => void
@@ -19,7 +18,8 @@ export default function WithdrawDepositModal({
   const {
     address,
     ibcAddress,
-    signingClient,
+    initIbc,
+    isCurrentlyIbcTransferring,
     coins,
     ibcCoins,
     showWithdrawDepositModal,
@@ -38,6 +38,14 @@ export default function WithdrawDepositModal({
     )
   }
 
+  const isAmountInvalid = () => {
+    if (showWithdrawDepositModal === 'withdraw') {
+      return getIbcAmount() < parseFloat(amountToTransfer || '0')
+    } else {
+      return getFromChainAmount() < parseFloat(amountToTransfer || '0')
+    }
+  }
+
   const getIbcAmount = () => {
     return getAmountFromDenom(
       process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
@@ -49,27 +57,19 @@ export default function WithdrawDepositModal({
     return getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM || '', ibcCoins)
   }
 
-  // const checkIfIsWalletAddressValid = useCallback(async (address) => {
-  //   if (signingClient) {
-  //     try {
-  //       await signingClient.getBalance(address, 'UST')
-  //       set_destinationAddressValid(true)
-  //     } catch (e) {
-  //       set_destinationAddressValid(false)
-  //     } finally {
-  //       set_isFetchingInfo(false)
-  //     }
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   set_destinationAddressValid(false)
-  //   if (destinationAddressDebounced.length > 8) {
-  //     checkIfIsWalletAddressValid(destinationAddressDebounced)
-  //   } else {
-  //     set_isFetchingInfo(false)
-  //   }
-  // }, [destinationAddressDebounced])
+  const launchInitIbc = async () => {
+    const coin: Coin = {
+      amount: new BigNumber(amountToTransfer || '0')
+        .multipliedBy(1_000_000)
+        .toString(),
+      denom:
+        showWithdrawDepositModal === 'deposit'
+          ? process.env.NEXT_PUBLIC_IBC_DENOM || ''
+          : process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
+    }
+    await initIbc(coin, showWithdrawDepositModal === 'deposit')
+    onCloseModal()
+  }
 
   return (
     <Modal onCloseModal={onCloseModal}>
@@ -166,10 +166,7 @@ export default function WithdrawDepositModal({
               </Button>
             </div>
           </div>
-          {((showWithdrawDepositModal === 'withdraw' &&
-            getIbcAmount() < parseFloat(amountToTransfer || '0')) ||
-            (showWithdrawDepositModal === 'deposit' &&
-              getFromChainAmount() < parseFloat(amountToTransfer || '0'))) && (
+          {isAmountInvalid() && (
             <div className="pt-2 text-center font-normal text-[#DF4547]">
               Insufficient amount
             </div>
@@ -177,12 +174,14 @@ export default function WithdrawDepositModal({
         </div>
         <div className="flex w-full justify-center">
           <Button
-            isLoading={isFetchingInfo}
-            disabled={!destinationAddressValid}
-            // onClick={async () => {
-            //   await transferAsset(destinationAddressDebounced, asset)
-            //   onCloseModal()
-            // }}
+            isLoading={isCurrentlyIbcTransferring}
+            disabled={
+              !amountToTransfer ||
+              isAmountInvalid() ||
+              amountToTransfer === '0' ||
+              isCurrentlyIbcTransferring
+            }
+            onClick={launchInitIbc}
           >
             <span className="capitalize">{showWithdrawDepositModal}</span>
           </Button>
