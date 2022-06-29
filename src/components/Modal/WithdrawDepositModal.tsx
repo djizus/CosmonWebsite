@@ -21,6 +21,7 @@ export default function WithdrawDepositModal({
     ibcAddress,
     signingClient,
     coins,
+    ibcCoins,
     showWithdrawDepositModal,
   } = useWalletStore((state) => state)
 
@@ -41,6 +42,13 @@ export default function WithdrawDepositModal({
     return getAmountFromDenom(
       process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
       coins
+    )
+  }
+
+  const getFromChainAmount = () => {
+    return getAmountFromDenom(
+        process.env.NEXT_PUBLIC_IBC_DENOM || '',
+        ibcCoins
     )
   }
 
@@ -120,11 +128,11 @@ export default function WithdrawDepositModal({
             <div className="flex uppercase">
               {showWithdrawDepositModal === 'withdraw' ? (
                 <>
-                  {getChainAmount()} {process.env.NEXT_PUBLIC_DENOM}
+                  {getIbcAmount()} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
                 </>
               ) : (
                 <>
-                  {getIbcAmount()} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+                  {getFromChainAmount()} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
                 </>
               )}
             </div>
@@ -145,8 +153,8 @@ export default function WithdrawDepositModal({
               <Button
                 onClick={() => {
                   showWithdrawDepositModal === 'withdraw'
-                    ? set_amountToTransfer(getChainAmount().toString())
-                    : set_amountToTransfer(getIbcAmount().toString())
+                    ? set_amountToTransfer(getIbcAmount().toString())
+                    : set_amountToTransfer(getFromChainAmount().toString())
                 }}
                 className="h-[28px]"
                 size="small"
@@ -157,9 +165,9 @@ export default function WithdrawDepositModal({
             </div>
           </div>
           {((showWithdrawDepositModal === 'withdraw' &&
-            getChainAmount() < parseFloat(amountToTransfer || '0')) ||
+            getIbcAmount() < parseFloat(amountToTransfer || '0')) ||
             (showWithdrawDepositModal === 'deposit' &&
-              getIbcAmount() < parseFloat(amountToTransfer || '0'))) && (
+            getFromChainAmount() < parseFloat(amountToTransfer || '0'))) && (
             <div className="pt-2 text-center font-normal text-[#DF4547]">
               Insufficient amount
             </div>
