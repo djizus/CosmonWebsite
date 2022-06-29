@@ -66,9 +66,9 @@ export default function Layout({ children }: LayoutProps) {
   const handleSwitchAccount = async () => {
     // setTimeout(() => {
     // await disconnect()
-    // await connect()
+    await connect()
     await fetchWalletData()
-    // await getWhitelistData()
+    await getWhitelistData()
     // }, 100)
   }
 
