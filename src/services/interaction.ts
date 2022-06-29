@@ -352,6 +352,9 @@ export const initIbc = async (
   amount: Coin,
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
+    const recheckInterval = 500;
+    const nbRetry = 600_000 / recheckInterval;
+    let i = 0;
 
     if (kiAddress) {
       if (deposit) {
@@ -361,9 +364,10 @@ export const initIbc = async (
 
         let balance = new BigNumber(0);
         do {
-          await sleep(3_000);
+          i++;
+          await sleep(recheckInterval);
           balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
-        } while (balance.isLessThan(wantedIbcBalanceOnKi));
+        } while (balance.isLessThan(wantedIbcBalanceOnKi) && i < nbRetry);
 
       } else {
         let wantedIbcBalanceOnKi =  new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
@@ -373,9 +377,13 @@ export const initIbc = async (
 
         let balance = new BigNumber(0);
         do {
-          await sleep(3_000);
+          await sleep(recheckInterval);
           balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
-        } while (balance.isGreaterThan(wantedIbcBalanceOnKi));
+        } while (balance.isGreaterThan(wantedIbcBalanceOnKi) && i < nbRetry);
+      }
+
+      if (i == nbRetry) {
+        throw Error("Ibc timeout");
       }
 
       // Do stuff async and when you have data, return through resolve
