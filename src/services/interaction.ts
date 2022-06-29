@@ -7,6 +7,8 @@ import { convertDenomToMicroDenom } from '../utils/conversion'
 import {SigningStargateClient} from "@cosmjs/stargate";
 import {Coin} from "@cosmjs/amino/build/coins";
 import {useLogger} from "react-use";
+import {sleep} from "@cosmjs/utils";
+import BigNumber from "bignumber.js";
 
 const Height = require("long");
 
@@ -350,11 +352,30 @@ export const initIbc = async (
   amount: Coin,
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
+
     if (kiAddress) {
       if (deposit) {
+        let wantedIbcBalanceOnKi =  new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
         const tx = await ibcClient.sendIbcTokens(ibcAddress, kiAddress, amount, 'transfer', process.env.NEXT_PUBLIC_IBC_TO_KICHAIN_CHANNEL || '', undefined, Date.now()+ 600, 'auto' );
+        wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.plus(new BigNumber(amount.amount));
+
+        let balance = new BigNumber(0);
+        do {
+          await sleep(3_000);
+          balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
+        } while (balance.isLessThan(wantedIbcBalanceOnKi));
+
       } else {
+        let wantedIbcBalanceOnKi =  new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
         const tx = await kiClient.sendIbcTokens(kiAddress, ibcAddress, amount, 'transfer', process.env.NEXT_PUBLIC_KICHAIN_TO_IBC_CHANNEL || '', undefined, Date.now()+ 600, 'auto' );
+        wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.minus(new BigNumber(amount.amount));
+
+
+        let balance = new BigNumber(0);
+        do {
+          await sleep(3_000);
+          balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
+        } while (balance.isGreaterThan(wantedIbcBalanceOnKi));
       }
 
       // Do stuff async and when you have data, return through resolve
