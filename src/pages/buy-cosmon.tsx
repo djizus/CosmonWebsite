@@ -191,7 +191,7 @@ export default function Page() {
                         Unfortunetly this wallet is not whitelisted, let’s see
                         you for the{' '}
                         <span className="font-semibold">
-                          public sale on 01.07.2022
+                          public sale on 04.07.2022
                         </span>
                       </p>
                     </div>
@@ -207,7 +207,7 @@ export default function Page() {
                         <p className="text-[22px] font-normal leading-[32px] text-white">
                           All discounted cosmon has been bought, see you for the{' '}
                           <span className="font-semibold">
-                            public sale on 01.07.2022
+                            public sale on 04.07.2022
                           </span>
                         </p>
                         <div className="flex min-w-[140px]">

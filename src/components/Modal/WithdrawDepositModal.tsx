@@ -1,15 +1,12 @@
-import { coin, coins } from '@cosmjs/proto-signing'
 import { Transition } from '@headlessui/react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
-import { CosmonType } from '../../../types/Cosmon'
 import { useWalletStore } from '../../store/walletStore'
 import { getAmountFromDenom } from '../../utils/index'
-import { getScarcityByCosmon } from '../../utils/cosmon'
 import Button from '../Button/Button'
 import Modal from './Modal'
 import { Coin } from '@cosmjs/amino/build/coins'
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js'
 
 type WithdrawDepositModalProps = {
   onCloseModal: () => void
@@ -22,6 +19,7 @@ export default function WithdrawDepositModal({
     address,
     ibcAddress,
     initIbc,
+    isCurrentlyIbcTransferring,
     coins,
     ibcCoins,
     showWithdrawDepositModal,
@@ -59,38 +57,19 @@ export default function WithdrawDepositModal({
     return getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM || '', ibcCoins)
   }
 
-  const launchInitIbc = () => {
+  const launchInitIbc = async () => {
     const coin: Coin = {
-      amount: new BigNumber(amountToTransfer || '0').multipliedBy(1_000_000).toString() ,
+      amount: new BigNumber(amountToTransfer || '0')
+        .multipliedBy(1_000_000)
+        .toString(),
       denom:
         showWithdrawDepositModal === 'deposit'
           ? process.env.NEXT_PUBLIC_IBC_DENOM || ''
           : process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
     }
-    initIbc(coin, showWithdrawDepositModal === 'deposit')
+    await initIbc(coin, showWithdrawDepositModal === 'deposit')
+    onCloseModal()
   }
-
-  // const checkIfIsWalletAddressValid = useCallback(async (address) => {
-  //   if (signingClient) {
-  //     try {
-  //       await signingClient.getBalance(address, 'UST')
-  //       set_destinationAddressValid(true)
-  //     } catch (e) {
-  //       set_destinationAddressValid(false)
-  //     } finally {
-  //       set_isFetchingInfo(false)
-  //     }
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   set_destinationAddressValid(false)
-  //   if (destinationAddressDebounced.length > 8) {
-  //     checkIfIsWalletAddressValid(destinationAddressDebounced)
-  //   } else {
-  //     set_isFetchingInfo(false)
-  //   }
-  // }, [destinationAddressDebounced])
 
   return (
     <Modal onCloseModal={onCloseModal}>
@@ -195,9 +174,12 @@ export default function WithdrawDepositModal({
         </div>
         <div className="flex w-full justify-center">
           <Button
-            isLoading={isFetchingInfo}
+            isLoading={isCurrentlyIbcTransferring}
             disabled={
-              !amountToTransfer || isAmountInvalid() || amountToTransfer === '0'
+              !amountToTransfer ||
+              isAmountInvalid() ||
+              amountToTransfer === '0' ||
+              isCurrentlyIbcTransferring
             }
             onClick={launchInitIbc}
           >
