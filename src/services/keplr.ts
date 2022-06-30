@@ -72,7 +72,7 @@ export const connectKeplr = async () => {
           feeCurrencies: [
             {
               coinDenom: process.env.NEXT_PUBLIC_DENOM || 'KI',
-              coinMinimalDenom: 'uxki',
+              coinMinimalDenom: process.env.NEXT_PUBLIC_STAKING_DENOM || 'uxki',
               coinDecimals: 6,
               coinGeckoId: 'ki',
             },
@@ -87,7 +87,7 @@ export const connectKeplr = async () => {
           gasPriceStep: {
             low: 0.025,
             average: 0.25,
-            high: 0.3,
+            high: 0.03,
           },
           features: ['cosmwasm', 'ibc-transfer', 'ibc-go', 'wasmd_0.24+'],
         })
