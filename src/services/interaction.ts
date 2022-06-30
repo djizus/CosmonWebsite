@@ -356,41 +356,48 @@ export const initIbc = async (
     const nbRetry = 600_000 / recheckInterval;
     let i = 0;
 
-    if (kiAddress) {
-      if (deposit) {
-        let wantedIbcBalanceOnKi =  new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
-        const tx = await ibcClient.sendIbcTokens(ibcAddress, kiAddress, amount, 'transfer', process.env.NEXT_PUBLIC_IBC_TO_KICHAIN_CHANNEL || '', undefined, Date.now()+ 600, 'auto' );
-        wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.plus(new BigNumber(amount.amount));
+    try {
+        if (kiAddress) {
+            if (deposit) {
+                let wantedIbcBalanceOnKi = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
+                const tx = await ibcClient.sendIbcTokens(ibcAddress, kiAddress, amount, 'transfer', process.env.NEXT_PUBLIC_IBC_TO_KICHAIN_CHANNEL || '', undefined, Date.now() + 600, 'auto');
+                wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.plus(new BigNumber(amount.amount));
 
-        let balance = new BigNumber(0);
-        do {
-          i++;
-          await sleep(recheckInterval);
-          balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
-        } while (balance.isLessThan(wantedIbcBalanceOnKi) && i < nbRetry);
+                let balance = new BigNumber(0);
+                do {
+                    i++;
+                    await sleep(recheckInterval);
+                    balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
+                } while (balance.isLessThan(wantedIbcBalanceOnKi) && i < nbRetry);
 
-      } else {
-        let wantedIbcBalanceOnKi =  new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
-        const tx = await kiClient.sendIbcTokens(kiAddress, ibcAddress, amount, 'transfer', process.env.NEXT_PUBLIC_KICHAIN_TO_IBC_CHANNEL || '', undefined, Date.now()+ 600, 'auto' );
-        wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.minus(new BigNumber(amount.amount));
+            } else {
+                let wantedIbcBalanceOnKi = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
+                const tx = await kiClient.sendIbcTokens(kiAddress, ibcAddress, amount, 'transfer', process.env.NEXT_PUBLIC_KICHAIN_TO_IBC_CHANNEL || '', undefined, Date.now() + 600, 'auto');
+                wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.minus(new BigNumber(amount.amount));
 
 
-        let balance = new BigNumber(0);
-        do {
-          await sleep(recheckInterval);
-          balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
-        } while (balance.isGreaterThan(wantedIbcBalanceOnKi) && i < nbRetry);
-      }
+                let balance = new BigNumber(0);
+                do {
+                    await sleep(recheckInterval);
+                    balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
+                } while (balance.isGreaterThan(wantedIbcBalanceOnKi) && i < nbRetry);
+            }
 
-      if (i == nbRetry) {
-        return reject('Ibc Timeout');
-      }
+            if (i == nbRetry) {
+                return reject('Ibc Timeout');
+            }
 
-      // Do stuff async and when you have data, return through resolve
-      const data = 'success'
-      return resolve(data)
-    } else {
-      return reject('address is missing')
+            // Do stuff async and when you have data, return through resolve
+            const data = 'success'
+            return resolve(data)
+        } else {
+            return reject('address is missing')
+        }
+    } catch (e: any) {
+        return reject({
+            title: 'Ibc Error',
+            message: e.toString()
+        })
     }
   })
 }

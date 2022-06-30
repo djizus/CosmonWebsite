@@ -260,6 +260,11 @@ const useWalletStore = create<WalletState>(
               })
               fetchWalletData()
             })
+              .finally( () => {
+                set({
+                  isCurrentlyIbcTransferring: false,
+                })
+              })
           // return response
         }
       },
