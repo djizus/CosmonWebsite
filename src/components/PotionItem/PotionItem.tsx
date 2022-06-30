@@ -59,7 +59,11 @@ export default function PotionItem({
 
   const getCosmonPrice = async () => {
     let price = await fetchCosmonPrice(type)
-    if (whitelistData && whitelistData.discount_percent !== 0) {
+    if (
+        whitelistData &&
+        whitelistData.discount_percent !== 0 &&
+        whitelistData.used_slots < whitelistData.available_slots
+    ) {
       set_cosmonDiscountPrice(
           (new BigNumber(price)).minus(
           ((new BigNumber(price)).multipliedBy(whitelistData.discount_percent).dividedBy(100))).plus(0.01).toFixed(2).toString()
