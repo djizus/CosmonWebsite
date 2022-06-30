@@ -28,7 +28,6 @@ export default function TransferAssetModal({
   const checkIfIsWalletAddressValid = useCallback(async (address) => {
     if (signingClient) {
       try {
-        console.log('here')
         await signingClient.getBalance(address, 'UST')
         set_destinationAddressValid(true)
       } catch (e) {

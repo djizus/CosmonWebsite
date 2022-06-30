@@ -3,21 +3,31 @@ import { Scarcity } from '../../types/Scarcity'
 
 import { FaucetClient } from '@cosmjs/faucet-client'
 import { CosmonType } from '../../types/Cosmon'
+import { convertDenomToMicroDenom } from '../utils/conversion'
+import {SigningStargateClient} from "@cosmjs/stargate";
+import {Coin} from "@cosmjs/amino/build/coins";
+import {useLogger} from "react-use";
+import {sleep} from "@cosmjs/utils";
+import BigNumber from "bignumber.js";
+
+const Height = require("long");
 
 const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
 const PUBLIC_NFT_CONTRACT = process.env.NEXT_PUBLIC_NFT_CONTRACT || ''
 const PUBLIC_WHITELIST_CONTRACT =
   process.env.NEXT_PUBLIC_WHITELIST_CONTRACT || ''
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
+const PUBLIC_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
 
 export const executeBuyCosmon = (
   signingClient: SigningCosmWasmClient,
+  price: string,
   address: string,
   scarcity: Scarcity
 ) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const price = await queryCosmonPrice(signingClient, scarcity)
+      // const price = await queryCosmonPrice(signingClient, scarcity)
       const response = await signingClient.execute(
         address,
         PUBLIC_SELL_CONTRACT,
@@ -26,8 +36,8 @@ export const executeBuyCosmon = (
         'memo',
         [
           {
-            amount: price,
-            denom: PUBLIC_STAKING_DENOM,
+            amount: convertDenomToMicroDenom(price),
+            denom: PUBLIC_IBC_DENOM,
           },
         ]
       )
@@ -101,11 +111,10 @@ export const queryCosmonPrice = async (
   signingClient: SigningCosmWasmClient,
   scarcity: Scarcity
 ): Promise<string> => {
-  // Print divinity_price
   const price = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
     get_price_by_scarcity: { scarcity: scarcity },
   })
-  console.log(`price of ${scarcity}`, price)
+  // console.log(`price of ${scarcity}`, price)
   return price.amount
 }
 
@@ -171,6 +180,44 @@ export const queryCosmonAvailableByScarcity = async (
   })
 }
 
+export const queryPreSellOpen = async (
+  signingClient: SigningCosmWasmClient
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await signingClient.queryContractSmart(
+        PUBLIC_SELL_CONTRACT,
+        {
+          get_pre_sell_open: {},
+        }
+      )
+      return resolve(data)
+    } catch (e) {
+      console.error(`Error while fetching info`, e)
+      return reject(`Error while fetching info`)
+    }
+  })
+}
+
+export const querySellOpen = async (
+  signingClient: SigningCosmWasmClient
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await signingClient.queryContractSmart(
+        PUBLIC_SELL_CONTRACT,
+        {
+          get_sell_open: {},
+        }
+      )
+      return resolve(data)
+    } catch (e) {
+      console.error(`Error while fetching info`, e)
+      return reject(`Error while fetching info`)
+    }
+  })
+}
+
 export const queryCheckAirdropEligibility = async (
   signingClient: SigningCosmWasmClient,
   address: string
@@ -181,6 +228,28 @@ export const queryCheckAirdropEligibility = async (
         PUBLIC_WHITELIST_CONTRACT,
         {
           check_address_eligibility: { address: address },
+        }
+      )
+
+      setTimeout(() => {
+        return resolve(data)
+      }, 600)
+    } else {
+      return reject('address is missing')
+    }
+  })
+}
+
+export const queryGetWhitelistInfo = async (
+  signingClient: SigningCosmWasmClient,
+  address: string
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    if (address) {
+      const data = await signingClient.queryContractSmart(
+        PUBLIC_SELL_CONTRACT,
+        {
+          get_whitelist_info_for_address: { address: address },
         }
       )
       console.log('address', address)
@@ -272,4 +341,63 @@ export const handleTransactionError = (error: any) => {
       message: error.toString(),
     }
   }
+}
+
+export const initIbc = async (
+  kiClient: SigningStargateClient,
+  ibcClient: SigningStargateClient,
+  kiAddress: string,
+  ibcAddress: string,
+  deposit: boolean,
+  amount: Coin,
+): Promise<any> => {
+  return new Promise(async (resolve, reject) => {
+    const recheckInterval = 500;
+    const nbRetry = 600_000 / recheckInterval;
+    let i = 0;
+
+    try {
+        if (kiAddress) {
+            if (deposit) {
+                let wantedIbcBalanceOnKi = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
+                const tx = await ibcClient.sendIbcTokens(ibcAddress, kiAddress, amount, 'transfer', process.env.NEXT_PUBLIC_IBC_TO_KICHAIN_CHANNEL || '', undefined, Date.now() + 600, 'auto');
+                wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.plus(new BigNumber(amount.amount));
+
+                let balance = new BigNumber(0);
+                do {
+                    i++;
+                    await sleep(recheckInterval);
+                    balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
+                } while (balance.isLessThan(wantedIbcBalanceOnKi) && i < nbRetry);
+
+            } else {
+                let wantedIbcBalanceOnKi = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount);
+                const tx = await kiClient.sendIbcTokens(kiAddress, ibcAddress, amount, 'transfer', process.env.NEXT_PUBLIC_KICHAIN_TO_IBC_CHANNEL || '', undefined, Date.now() + 600, 'auto');
+                wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.minus(new BigNumber(amount.amount));
+
+
+                let balance = new BigNumber(0);
+                do {
+                    await sleep(recheckInterval);
+                    balance = new BigNumber((await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')).amount)
+                } while (balance.isGreaterThan(wantedIbcBalanceOnKi) && i < nbRetry);
+            }
+
+            if (i == nbRetry) {
+                return reject('Ibc Timeout');
+            }
+
+            // Do stuff async and when you have data, return through resolve
+            const data = 'success'
+            return resolve(data)
+        } else {
+            return reject('address is missing')
+        }
+    } catch (e: any) {
+        return reject({
+            title: 'Ibc Error',
+            message: e.toString()
+        })
+    }
+  })
 }

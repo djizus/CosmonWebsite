@@ -1,39 +1,89 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { Scarcity } from '../../../types/Scarcity'
+import { useCosmonStore } from '../../store/cosmonStore'
 import { useWalletStore } from '../../store/walletStore'
 import Button from '../Button/Button'
+import BigNumber from "bignumber.js";
 
 type PotionItemProps = {
   type: Scarcity
-  price: string
+  // price: string
   yieldPercent: string
   img: string
   isCurrentlyBuying: boolean
-  buy?: () => void
+  buy: (price: string) => void
 }
 
 export default function PotionItem({
   isCurrentlyBuying,
   type,
-  price,
   yieldPercent,
   img,
   buy,
 }: PotionItemProps) {
-  const { isConnected, getCosmonScarcityAvailable } = useWalletStore(
+  const { isConnected } = useWalletStore((state) => state)
+
+  const { isSellOpen, isPreSellOpen, whitelistData } = useCosmonStore(
     (state) => state
   )
 
-  const [cosmonAvailable, set_cosmonAvailable] = useState<number | null>(null)
+  const { getCosmonScarcityAvailable, getCosmonPrice: fetchCosmonPrice } =
+    useCosmonStore((state) => state)
+
+  // console.log('price', price)
+  const [cosmonAvailable, set_cosmonAvailable] = useState<boolean | null>(null)
+  const [cosmonPrice, set_cosmonPrice] = useState<string>('XX')
+  const [cosmonDiscountPrice, set_cosmonDiscountPrice] = useState<
+    string | null
+  >(null)
 
   const getCosmonAvailable = async () => {
-    set_cosmonAvailable(await getCosmonScarcityAvailable(type))
+    let isAvailable = false
+    if (await isPreSellOpen()) {
+      if (
+        whitelistData &&
+        whitelistData?.available_slots > whitelistData?.used_slots
+      ) {
+        if ((await getCosmonScarcityAvailable(type)) > 0) {
+          isAvailable = true
+        }
+      }
+    } else if (await isSellOpen()) {
+      if ((await getCosmonScarcityAvailable(type)) > 0) {
+        isAvailable = true
+      }
+    }
+    set_cosmonAvailable(isAvailable)
+  }
+
+  const getCosmonPrice = async () => {
+    let price = await fetchCosmonPrice(type)
+    if (
+        whitelistData &&
+        whitelistData.discount_percent !== 0 &&
+        whitelistData.used_slots < whitelistData.available_slots
+    ) {
+      set_cosmonDiscountPrice(
+          (new BigNumber(price)).minus(
+          ((new BigNumber(price)).multipliedBy(whitelistData.discount_percent).dividedBy(100))).plus(0.01).toFixed(2).toString()
+      )
+    }
+    set_cosmonPrice(Number(price).toFixed(2))
   }
 
   useEffect(() => {
-    isConnected && getCosmonAvailable()
-  }, [isConnected])
+    if (isConnected) {
+      getCosmonAvailable()
+      getCosmonPrice()
+    }
+  }, [whitelistData?.used_slots])
+
+  // useEffect(() => {
+  //   console.log('here')
+  //   getCosmonAvailable()
+  //   getCosmonPrice()
+  // }, [whitelistData])
 
   useEffect(() => {
     // console.log('cosmonAvailable', cosmonAvailable)
@@ -51,10 +101,17 @@ export default function PotionItem({
       <div className="mt-2 rounded-lg bg-cosmon-main-primary px-[10px] py-1 text-center text-base font-semibold text-white">
         {yieldPercent}% APR*
       </div>
-      <p className="mt-5 pt-1 text-base font-bold  text-[#B1A8B9] ">
+      <p className="mt-5 flex gap-x-3 pt-1  text-base font-bold text-[#B1A8B9] ">
         {/* {price} */}
-        <span className="blur-[3.5px]"> XX</span>
-        ATOM
+
+        <span className={`${cosmonDiscountPrice && 'line-through'} uppercase`}>
+          {cosmonPrice} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+        </span>
+        {cosmonDiscountPrice && (
+          <span className={`uppercase`}>
+            {cosmonDiscountPrice} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+          </span>
+        )}
       </p>
 
       {isConnected && (
@@ -62,17 +119,18 @@ export default function PotionItem({
           <Button
             isLoading={isCurrentlyBuying || cosmonAvailable === null}
             // type={'secondary'}
-            disabled
-            // disabled={!cosmonAvailable}
+            // disabled
+            disabled={!cosmonAvailable}
             size={'small'}
-            type="disabled-colored"
-            onClick={buy}
+            onClick={() =>
+              buy(cosmonDiscountPrice ? cosmonDiscountPrice : cosmonPrice)
+            }
           >
             {cosmonAvailable === null
               ? 'Fetching data'
-              : cosmonAvailable > 0
-              ? 'Buy (soon)'
-              : 'Sold out'}
+              : cosmonAvailable
+              ? 'Buy'
+              : 'Unavailable'}
           </Button>
         </div>
       )}

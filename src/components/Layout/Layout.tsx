@@ -13,6 +13,8 @@ import { chainFetcher } from '../../services/fetcher'
 import useSWR from 'swr'
 
 import DisconnectOrCopyPopup from './DisconnectOrCopyPopup'
+import { useCosmonStore } from '../../store/cosmonStore'
+import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -27,8 +29,13 @@ export default function Layout({ children }: LayoutProps) {
     fetchWalletData,
     cosmons,
     isConnected,
+    ibcDenom,
     coins,
+    showWithdrawDepositModal,
+    setShowWithdrawDepositModal,
   } = useWalletStore((state) => state)
+
+  const { getWhitelistData } = useCosmonStore((state) => state)
 
   // const { data: tokens, error } = useSWR(
   //   {
@@ -56,10 +63,13 @@ export default function Layout({ children }: LayoutProps) {
 
   // useEffect(() => {}, [tokens])
 
-  const handleSwitchAccount = () => {
-    setTimeout(() => {
-      connect()
-    }, 250)
+  const handleSwitchAccount = async () => {
+    // setTimeout(() => {
+    // await disconnect()
+    await connect()
+    await fetchWalletData()
+    await getWhitelistData()
+    // }, 100)
   }
 
   useEffect(() => {
@@ -79,6 +89,7 @@ export default function Layout({ children }: LayoutProps) {
 
   useEffect(() => {
     if (coins.length > 0) {
+      // console.log('coins', coins)
     }
   }, [coins])
 
@@ -96,6 +107,12 @@ export default function Layout({ children }: LayoutProps) {
         <title>Cosmon</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      {showWithdrawDepositModal && (
+        <WithdrawDepositModal
+          onCloseModal={() => setShowWithdrawDepositModal()}
+        />
+      )}
 
       <header className=" max-w-auto relative z-10 -mb-[60px] flex w-full items-center justify-between px-5 pt-4 lg:pt-6">
         <div className="flex">
@@ -152,7 +169,12 @@ export default function Layout({ children }: LayoutProps) {
               </div>
 
               <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
-                {coins.find((coin) => coin.denom === 'ATOM')?.amount} ATOM
+                {getAmountFromDenom(
+                  process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
+                  coins
+                )}
+
+                <div className="ml-1 uppercase"> {ibcDenom}</div>
                 <div
                   onClick={() =>
                     set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)

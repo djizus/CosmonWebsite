@@ -16,9 +16,9 @@ import CosmonFullModal from '../components/Modal/CosmonFullModal'
 import { getAmountFromDenom } from '../utils/index'
 
 export default function Page() {
-  const { connect, isConnected, cosmons, coins } = useWalletStore(
-    (state) => state
-  )
+  const { connect, isConnected, cosmons, coins, setShowWithdrawDepositModal } =
+    useWalletStore((state) => state)
+
   const [assetToTransfer, set_assetToTransfer] = useState<null | CosmonType>()
 
   const [scarcitiesNumberByCosmons, set_scarcitiesNumberByCosmons] = useState<
@@ -170,12 +170,6 @@ export default function Page() {
                         >
                           Claim rewards (coming soon)
                         </Button>
-                        {/* <Button size="small" type="secondary">
-                          Deposit
-                        </Button>
-                        <Button size="small" type="secondary">
-                          Withdraw
-                        </Button> */}
                       </div>
                     </td>
                   </tr>
@@ -188,17 +182,34 @@ export default function Page() {
                           src="../icons/cosmos.png"
                           alt=""
                         />
-                        Cosmos Hub - ATOM
+                        Cosmos Hub -{' '}
+                        <span className="uppercase">
+                          {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+                        </span>
                       </div>
                     </td>
-                    <td> {getAmountFromDenom('ATOM', coins)}</td>
+                    <td>
+                      {' '}
+                      {getAmountFromDenom(
+                        process.env.NEXT_PUBLIC_IBC_DENOM_RAW || 'uatom',
+                        coins
+                      )}
+                    </td>
                     <td></td>
                     <td>
                       <div className="flex gap-x-3">
-                        <Button size="small" type="disabled-colored">
+                        <Button
+                          size="small"
+                          onClick={() => setShowWithdrawDepositModal('deposit')}
+                        >
                           Deposit
                         </Button>
-                        <Button size="small" type="disabled-colored">
+                        <Button
+                          size="small"
+                          onClick={() =>
+                            setShowWithdrawDepositModal('withdraw')
+                          }
+                        >
                           Withdraw
                         </Button>
                       </div>
@@ -216,83 +227,34 @@ export default function Page() {
                 }}
                 className="mx-auto mt-40 grid max-w-[1180px] gap-[60px]  px-8"
               >
-                {cosmons.map((cosmon, index) => (
-                  <Transition.Child
+                {cosmons.map((cosmon) => (
+                  <div
                     key={cosmon.id}
-                    className={`relative flex cursor-pointer flex-col items-center gap-y-5 `}
-                    enter={`transition-opacity ease-linear duration-800`}
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="transition-opacity ease-linear duration-800"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
+                    className="group  transition-all hover:scale-[104%] hover:shadow-2xl"
                   >
-                    {/* <img
-                      src={cosmon.data.extension.image}
-                      alt=""
-                      width={167}
-                      height={280}
-                    /> */}
-                    {/* <Hover scale={1.05} perspective={300} speed={10}> */}
-
-                    <div className="group  transition-all hover:scale-[104%] hover:shadow-2xl">
-                      <div
-                        onClick={() => {
-                          set_assetToTransfer(cosmon)
-                        }}
-                        className="transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 rounded-full p-2 transition-all group-hover:scale-100"
-                      >
-                        <img
-                          width="16px"
-                          height="16px"
-                          src="../icons/transfer-card.svg"
-                          alt=""
-                        />
-                      </div>
-                      <Image
-                        src={cosmon.data.extension.image}
-                        onClick={() => set_showCosmonDetail(cosmon)}
-                        height={280}
-                        width={167}
-                        placeholder="blur"
-                        blurDataURL="/cosmon-placeholder.svg"
-                      />
-                    </div>
-
-                    {/* <LazyLoadImage
-                      onClick={() => set_showCosmonDetail(cosmon)}
-                      height={280}
-                      width={167}
-                      // effect="opacity"
-                      // className="hover:animate-"
-                      // src={cosmon.data.extension.image}
-                      src={
-                        'https://unsplash.com/photos/tBRkEnznjJ4/download?ixid=MnwxMjA3fDB8MXx0b3BpY3x8dG93SlpGc2twR2d8fHx8fDJ8fDE2NTM4NTMyODI&force=true'
-                      }
-                      placeholder={
-                        <div
-                          className=" h-[167px] w-[280px]"
-                          style={{
-                            background:
-                              'linear-gradient(180deg, #A996FF 0%, rgba(118, 96, 216, 0.5) 100%)',
-                            opacity: '0.2',
-                            borderRadius: '8px',
-                          }}
-                        ></div>
-                      }
-                    /> */}
-                    {/* </Hover> */}
-
-                    {/* <Button
-                      type="secondary"
-                      size="small"
+                    <div
                       onClick={() => {
                         set_assetToTransfer(cosmon)
                       }}
+                      className="transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 rounded-full p-2 transition-all group-hover:scale-100"
                     >
-                      Transfer
-                    </Button> */}
-                  </Transition.Child>
+                      <img
+                        width="16px"
+                        height="16px"
+                        src="../icons/transfer-card.svg"
+                        alt=""
+                      />
+                    </div>
+                    <Image
+                      src={cosmon.data.extension.image}
+                      onClick={() => set_showCosmonDetail(cosmon)}
+                      height={280}
+                      width={167}
+                      placeholder="blur"
+                      blurDataURL="/cosmon-placeholder.svg"
+                    />
+                  </div>
+                  // </Transition.Child>
                 ))}
               </div>
             </Transition>

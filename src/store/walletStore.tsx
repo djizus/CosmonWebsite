@@ -1,20 +1,24 @@
 import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
-import { connectKeplr, makeClient } from '../services/keplr'
+import { SigningStargateClient } from '@cosmjs/stargate'
+import {
+  connectKeplr,
+  makeClient,
+  makeIbcClient,
+  makeStargateClient,
+} from '../services/keplr'
 import { Coin } from '@cosmjs/amino/build/coins'
 import { Scarcity } from '../../types/Scarcity'
 import {
   executeBuyCosmon,
   executeCreditWalletWithFaucet,
   queryCosmonInfo,
-  queryCosmonPrice,
-  queryCosmonAvailableByScarcity,
   executeTransferNft,
-  queryGetMaxClaimableToken,
   queryCheckAirdropEligibility,
   queryGetClaimData,
   executeClaimAirdrop,
+  initIbc,
 } from '../services/interaction'
 import { toast } from 'react-toastify'
 import { CosmonType } from '../../types/Cosmon'
@@ -23,12 +27,20 @@ import ErrorIcon from '/public/icons/error.svg'
 import SuccessIcon from '/public/icons/success.svg'
 import useSWR from 'swr'
 import { chainFetcher } from '../services/fetcher'
+import { convertDenomToMicroDenom } from '../utils/conversion'
+import { useCosmonStore } from './cosmonStore'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
+const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
+const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
+const PUBLIC_STAKING_IBC_DENOM_ON_CHAIN =
+  process.env.NEXT_PUBLIC_IBC_DENOM || ''
 
 interface WalletState {
   address: string
+  ibcAddress: string
+  ibcDenom: string
   isFetchingData: boolean
   airdropData?: {
     isEligible: boolean
@@ -37,13 +49,18 @@ interface WalletState {
     num_already_claimed?: number
   }
   signingClient: SigningCosmWasmClient | null
+  stargateSigningClient: SigningStargateClient | null
+  ibcSigningClient: SigningStargateClient | null
   maxClaimableToken?: number
   coins: Coin[]
+  ibcCoins: Coin[]
   cosmons: CosmonType[]
+  isCurrentlyIbcTransferring: boolean
   isConnected: boolean
   hasSubscribed: boolean
+  showWithdrawDepositModal?: 'withdraw' | 'deposit'
   setCosmons: (cosmons: CosmonType[]) => void
-  buyCosmon: (scarcity: Scarcity) => any
+  buyCosmon: (scarcity: Scarcity, price: string) => any
   transferAsset: (recipient: string, asset: CosmonType) => void
   connect: () => void
   disconnect: () => void
@@ -52,11 +69,11 @@ interface WalletState {
   addMoneyFromFaucet: () => void
   fetchCosmons: () => void
   fetchWalletData: () => void
-  getCosmonPrice: (scarcity: Scarcity) => void
-  getCosmonScarcityAvailable: (scarcity: Scarcity) => Promise<number>
+  initIbc: (amount: Coin, deposit: boolean) => void
   getAirdropData: () => void
   claimAirdrop: () => any
   resetClaimData: () => void
+  setShowWithdrawDepositModal: (type?: 'withdraw' | 'deposit') => void
   // checkIfEligibleForAirdrop: (reset?: boolean) => Promise<void>
 }
 
@@ -64,10 +81,16 @@ const useWalletStore = create<WalletState>(
   persist(
     (set, get) => ({
       coins: [],
+      ibcCoins: [],
+      ibcDenom: process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN || '',
       cosmons: [],
       address: '',
+      ibcAddress: '',
       isFetchingData: false,
+      isCurrentlyIbcTransferring: false,
       signingClient: null,
+      stargateSigningClient: null,
+      ibcSigningClient: null,
       isConnected: false,
       hasSubscribed: false,
       isEligibleForAirdrop: null,
@@ -86,22 +109,36 @@ const useWalletStore = create<WalletState>(
 
           // enable website to access kepler
           await (window as any).keplr.enable(PUBLIC_CHAIN_ID)
+          await (window as any).keplr.enable(PUBLIC_IBC_CHAIN_ID)
 
           // get offline signer for signing txs
           const offlineSigner = await (window as any).getOfflineSignerAuto(
             PUBLIC_CHAIN_ID
           )
+          const ibcOfflineSigner = await (window as any).getOfflineSignerAuto(
+            PUBLIC_IBC_CHAIN_ID
+          )
           const client = await makeClient(offlineSigner)
+          const stargateClient = await makeStargateClient(offlineSigner)
+          const ibcClient = await makeIbcClient(ibcOfflineSigner)
 
           set({
             signingClient: client,
+            stargateSigningClient: stargateClient,
+            ibcSigningClient: ibcClient,
           })
 
           // get user address
+          console.log(
+            'await offlineSigner.getAccounts()',
+            await offlineSigner.getAccounts()
+          )
           const [{ address }] = await offlineSigner.getAccounts()
+          const ibcAddress = (await ibcOfflineSigner.getAccounts())[0].address
 
           set({
             address: address,
+            ibcAddress,
             isConnected: true,
           })
           await get().fetchWalletData()
@@ -157,18 +194,87 @@ const useWalletStore = create<WalletState>(
           isFetchingData: false,
         })
       },
+      initIbc: async (amount: Coin, deposit: boolean) => {
+        const {
+          stargateSigningClient,
+          ibcSigningClient,
+          fetchWalletData,
+          ibcAddress,
+          address,
+        } = get()
+        if (
+          stargateSigningClient &&
+          address &&
+          ibcSigningClient &&
+          ibcAddress
+        ) {
+          set({
+            isCurrentlyIbcTransferring: true,
+          })
+          const response = await toast
+            .promise(
+              initIbc(
+                stargateSigningClient,
+                ibcSigningClient,
+                address,
+                ibcAddress,
+                deposit,
+                amount
+              ),
+              {
+                pending: {
+                  render() {
+                    return (
+                      <ToastContainer type="pending">
+                        {`IBC transfer initalized`}
+                      </ToastContainer>
+                    )
+                  },
+                },
+                success: {
+                  render() {
+                    return (
+                      <ToastContainer type={'success'}>
+                        IBC transfer done successfully
+                      </ToastContainer>
+                    )
+                  },
+                  icon: SuccessIcon,
+                },
+
+                error: {
+                  render({ data }: any) {
+                    return (
+                      <ToastContainer type="error">
+                        {data.message}
+                      </ToastContainer>
+                    )
+                  },
+                  icon: ErrorIcon,
+                },
+              }
+            )
+            .then(async ({ token }: any) => {
+              set({
+                isCurrentlyIbcTransferring: false,
+              })
+              fetchWalletData()
+            })
+              .finally( () => {
+                set({
+                  isCurrentlyIbcTransferring: false,
+                })
+              })
+          // return response
+        }
+      },
       fetchWalletData: async () => {
-        const { signingClient } = get()
-        let maxClaimableToken
         set({
           isFetchingData: true,
         })
         const { fetchCosmons, fetchCoin } = get()
         await fetchCosmons()
         await fetchCoin()
-        // if (signingClient) {
-        //   maxClaimableToken = await queryGetMaxClaimableToken(signingClient)
-        // }
 
         set({
           // maxClaimableToken: maxClaimableToken,
@@ -177,23 +283,53 @@ const useWalletStore = create<WalletState>(
       },
 
       fetchCoin: async () => {
-        const { signingClient, address, coins } = get()
+        const {
+          signingClient,
+          ibcSigningClient,
+          address,
+          ibcAddress,
+          coins,
+          ibcCoins,
+        } = get()
         if (signingClient && address) {
           try {
             const mainCoin = await signingClient.getBalance(
               address,
               PUBLIC_STAKING_DENOM
             )
-            const atomCoin = await signingClient.getBalance(address, 'ATOM')
+            const atomCoin = await signingClient.getBalance(
+              address,
+              PUBLIC_STAKING_IBC_DENOM
+            )
             let newCoins = coins.filter(
-              (coin) => coin.denom !== PUBLIC_STAKING_DENOM
+              (coin) =>
+                coin.denom !== PUBLIC_STAKING_DENOM &&
+                coin.denom !== PUBLIC_STAKING_IBC_DENOM
             )
             newCoins.push(mainCoin, atomCoin)
             set({
               coins: newCoins,
             })
           } catch (e) {
-            console.error('Error while fetching coin', e)
+            console.error(`Error while fetching coin`, e)
+          }
+        }
+
+        if (ibcSigningClient && ibcAddress) {
+          try {
+            const mainCoin = await ibcSigningClient.getBalance(
+              ibcAddress,
+              PUBLIC_STAKING_IBC_DENOM_ON_CHAIN
+            )
+            let newCoins = coins.filter(
+              (coin) => coin.denom !== PUBLIC_STAKING_IBC_DENOM_ON_CHAIN
+            )
+            newCoins.push(mainCoin)
+            set({
+              ibcCoins: newCoins,
+            })
+          } catch (e) {
+            console.error('Error while fetching ibc coin', e)
           }
         }
       },
@@ -204,29 +340,29 @@ const useWalletStore = create<WalletState>(
         const { signingClient, address } = get()
         if (signingClient && address) {
           try {
-            const tokens: string[] = [];
-            let start_after = undefined;
+            const tokens: string[] = []
+            let start_after = undefined
             while (true) {
-                let response = await signingClient.queryContractSmart(
-                    process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
-                    {
-                        tokens: {
-                            owner: address,
-                            start_after,
-                            limit: 10,
-                        },
-                    }
-                );
-
-                for (const token of response.tokens) {
-                    tokens.push(token);
+              let response = await signingClient.queryContractSmart(
+                process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
+                {
+                  tokens: {
+                    owner: address,
+                    start_after,
+                    limit: 10,
+                  },
                 }
+              )
 
-                if (response.tokens.length < 10) {
-                    break;
-                }
+              for (const token of response.tokens) {
+                tokens.push(token)
+              }
 
-                start_after = tokens[tokens.length - 1];
+              if (response.tokens.length < 10) {
+                break
+              }
+
+              start_after = tokens[tokens.length - 1]
             }
 
             // getting cosmon details
@@ -255,40 +391,45 @@ const useWalletStore = create<WalletState>(
           }
         }
       },
-      buyCosmon: async (scarcity) => {
+      buyCosmon: async (scarcity, price) => {
         const { signingClient, fetchCosmons, address } = get()
         if (signingClient && address) {
           const response = await toast
-            .promise(executeBuyCosmon(signingClient, address, scarcity), {
-              pending: {
-                render() {
-                  return (
-                    <ToastContainer type="pending">
-                      {`Buying ${scarcity.toLowerCase()} cosmon`}
-                    </ToastContainer>
-                  )
+            .promise(
+              executeBuyCosmon(signingClient, price, address, scarcity),
+              {
+                pending: {
+                  render() {
+                    return (
+                      <ToastContainer type="pending">
+                        {`Buying ${scarcity.toLowerCase()} cosmon`}
+                      </ToastContainer>
+                    )
+                  },
                 },
-              },
-              success: {
-                render() {
-                  return (
-                    <ToastContainer type={'success'}>
-                      {scarcity} bought successfully,
-                    </ToastContainer>
-                  )
+                success: {
+                  render() {
+                    return (
+                      <ToastContainer type={'success'}>
+                        {scarcity} bought successfully,
+                      </ToastContainer>
+                    )
+                  },
+                  icon: SuccessIcon,
                 },
-                icon: SuccessIcon,
-              },
 
-              error: {
-                render({ data }: any) {
-                  return (
-                    <ToastContainer type="error">{data.message}</ToastContainer>
-                  )
+                error: {
+                  render({ data }: any) {
+                    return (
+                      <ToastContainer type="error">
+                        {data.message}
+                      </ToastContainer>
+                    )
+                  },
+                  icon: ErrorIcon,
                 },
-                icon: ErrorIcon,
-              },
-            })
+              }
+            )
             .then(({ token }: any) => {
               fetchCosmons()
               return token
@@ -340,24 +481,6 @@ const useWalletStore = create<WalletState>(
               fetchCosmons()
             })
         }
-      },
-      getCosmonScarcityAvailable: async (scarcity): Promise<number> => {
-        const { signingClient } = get()
-        if (signingClient) {
-          const result = await queryCosmonAvailableByScarcity(
-            signingClient,
-            scarcity
-          )
-          // if (scarcity === 'Epic') {
-          //   return 0
-          // }
-          return result?.count || 0
-        }
-        return 0
-      },
-      getCosmonPrice: async (scarcity) => {
-        const { signingClient } = get()
-        signingClient && (await queryCosmonPrice(signingClient, scarcity))
       },
 
       resetClaimData: async () => {
@@ -438,6 +561,11 @@ const useWalletStore = create<WalletState>(
             })
           return response
         }
+      },
+      setShowWithdrawDepositModal: (value?: 'withdraw' | 'deposit') => {
+        set({
+          showWithdrawDepositModal: value,
+        })
       },
       disconnect: () => {
         get().signingClient?.disconnect()
