@@ -18,29 +18,29 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
       ></div>
       <div className="absolute top-14 right-0 z-[50] w-[327px] rounded-xl border-[0.5px] border-[#A996FF] border-opacity-50 bg-cosmon-main-secondary p-5">
         <div className="font-[14px]  text-white">
-          <div className="font-semibold">Your {process.env.NEXT_PUBLIC_STAKING_DENOM || ''} Breakdown</div>
+          <div className="font-semibold">Your {process.env.NEXT_PUBLIC_DENOM || ''} Breakdown</div>
           <div className="flex flex-col gap-y-1 pt-4">
             <div className="flex justify-between">
-              <div> XKI balance </div>
+              <div> {process.env.NEXT_PUBLIC_DENOM || ''} balance </div>
               <div>
                 {getAmountFromDenom(
                   process.env.NEXT_PUBLIC_STAKING_DENOM || '',
                   coins
                 )}{' '}
-                XKI
+                {process.env.NEXT_PUBLIC_DENOM || ''}
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <div>{process.env.NEXT_PUBLIC_STAKING_DENOM || ''} to claim</div>
+              <div>{process.env.NEXT_PUBLIC_DENOM || ''} to claim</div>
               <div className="flex gap-x-[10px]">
                 {/* <div className="font-semibold text-cosmon-main-tertiary"> */}
                 <Button type="ghost">Claim</Button>
-                {/* </div> */}0 {process.env.NEXT_PUBLIC_STAKING_DENOM || ''}
+                {/* </div> */}0 {process.env.NEXT_PUBLIC_DENOM || ''}
               </div>
             </div>
             <div className="flex justify-between">
-              <div> {process.env.NEXT_PUBLIC_STAKING_DENOM || ''} earned </div>
-              <div> 0 {process.env.NEXT_PUBLIC_STAKING_DENOM || ''} </div>
+              <div> {process.env.NEXT_PUBLIC_DENOM || ''} earned </div>
+              <div> 0 {process.env.NEXT_PUBLIC_DENOM || ''} </div>
             </div>
           </div>
 
