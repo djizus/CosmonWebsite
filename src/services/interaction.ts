@@ -9,6 +9,7 @@ import { Coin } from '@cosmjs/amino/build/coins'
 import { useLogger } from 'react-use'
 import { sleep } from '@cosmjs/utils'
 import BigNumber from 'bignumber.js'
+import {CosmWasmClient} from "@cosmjs/cosmwasm-stargate/build/cosmwasmclient";
 
 const Height = require('long')
 
@@ -108,7 +109,7 @@ export const executeTransferNft = (
 }
 
 export const queryCosmonPrice = async (
-  signingClient: SigningCosmWasmClient,
+  signingClient: SigningCosmWasmClient | CosmWasmClient,
   scarcity: Scarcity
 ): Promise<string> => {
   const price = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
