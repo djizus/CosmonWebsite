@@ -202,7 +202,6 @@ export const queryPreSellOpen = async (
 export const querySellOpen = async (
   signingClient: SigningCosmWasmClient
 ): Promise<any> => {
-  console.log('here')
   return new Promise(async (resolve, reject) => {
     try {
       const data = await signingClient.queryContractSmart(
@@ -211,7 +210,6 @@ export const querySellOpen = async (
           get_sell_open: {},
         }
       )
-      console.log('data is sell open', data)
       return resolve(data)
     } catch (e) {
       console.error(`Error while fetching info`, e)
@@ -307,15 +305,13 @@ export const executeClaimAirdrop = async (
             .find((event) => event.type === 'wasm')
             ?.attributes?.find((attribute) => attribute?.key === 'token_id')
             ?.value || null
-        console.log('address', address)
-        console.log('tokenId', tokenId)
 
         if (tokenId) {
           const cosmonAirdropped: CosmonType = {
             id: tokenId,
             data: await queryCosmonInfo(signingClient, tokenId),
           }
-          console.log('here', cosmonAirdropped)
+
           return resolve({
             message: 'Claimed successfully',
             token: cosmonAirdropped,

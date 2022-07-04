@@ -43,9 +43,9 @@ export default function PotionItem({
     const cosmonLeftByScarcity = await getCosmonScarcityAvailable(type) > 0;
     const cosmonWhitelistLeft = whitelistData &&  whitelistData?.available_slots > whitelistData?.used_slots;
 
-    if (await isSellOpen() && cosmonLeftByScarcity) {
+    if (isSellOpen && cosmonLeftByScarcity) {
       isAvailable = true;
-    } else if (await isPreSellOpen() && cosmonWhitelistLeft && cosmonLeftByScarcity) {
+    } else if (isPreSellOpen && cosmonWhitelistLeft && cosmonLeftByScarcity) {
       isAvailable = true;
     }
 
@@ -80,12 +80,6 @@ export default function PotionItem({
       getCosmonPrice()
     }
   }, [whitelistData?.used_slots])
-
-  // useEffect(() => {
-  //   console.log('here')
-  //   getCosmonAvailable()
-  //   getCosmonPrice()
-  // }, [whitelistData])
 
   useEffect(() => {
     // console.log('cosmonAvailable', cosmonAvailable)

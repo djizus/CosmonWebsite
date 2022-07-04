@@ -52,7 +52,7 @@ const useCosmonStore = create<CosmonState>((set, get) => ({
   fetchSellData: async () => {
     const { signingClient } = useWalletStore.getState()
     set({
-      isSellOpen: signingClient && (await queryPreSellOpen(signingClient)),
+      isSellOpen: signingClient && (await querySellOpen(signingClient)),
       isPreSellOpen: signingClient && (await queryPreSellOpen(signingClient)),
     })
 

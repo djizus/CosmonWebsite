@@ -273,10 +273,10 @@ const useWalletStore = create<WalletState>(
           isFetchingData: true,
         })
         const { fetchSellData } = useCosmonStore.getState()
+        await fetchSellData()
         const { fetchCosmons, fetchCoin } = get()
         await fetchCosmons()
         await fetchCoin()
-        await fetchSellData()
 
         set({
           // maxClaimableToken: maxClaimableToken,
@@ -524,7 +524,6 @@ const useWalletStore = create<WalletState>(
       claimAirdrop: async () => {
         const { signingClient, fetchCosmons, address, getAirdropData } = get()
         if (signingClient && address) {
-          console.log('here')
           const response = await toast
             .promise(executeClaimAirdrop(signingClient, address), {
               pending: {
