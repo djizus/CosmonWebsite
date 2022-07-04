@@ -129,10 +129,6 @@ const useWalletStore = create<WalletState>(
           })
 
           // get user address
-          console.log(
-            'await offlineSigner.getAccounts()',
-            await offlineSigner.getAccounts()
-          )
           const [{ address }] = await offlineSigner.getAccounts()
           const ibcAddress = (await ibcOfflineSigner.getAccounts())[0].address
 
@@ -260,11 +256,11 @@ const useWalletStore = create<WalletState>(
               })
               fetchWalletData()
             })
-              .finally( () => {
-                set({
-                  isCurrentlyIbcTransferring: false,
-                })
+            .finally(() => {
+              set({
+                isCurrentlyIbcTransferring: false,
               })
+            })
           // return response
         }
       },
@@ -272,6 +268,8 @@ const useWalletStore = create<WalletState>(
         set({
           isFetchingData: true,
         })
+        const { fetchSellData } = useCosmonStore.getState()
+        await fetchSellData()
         const { fetchCosmons, fetchCoin } = get()
         await fetchCosmons()
         await fetchCoin()
@@ -509,7 +507,6 @@ const useWalletStore = create<WalletState>(
         } else {
           const claimData =
             signingClient && (await queryGetClaimData(signingClient, address))
-          console.log('claimData', claimData)
           set({
             airdropData: {
               isEligible: true,
@@ -522,7 +519,6 @@ const useWalletStore = create<WalletState>(
       claimAirdrop: async () => {
         const { signingClient, fetchCosmons, address, getAirdropData } = get()
         if (signingClient && address) {
-          console.log('here')
           const response = await toast
             .promise(executeClaimAirdrop(signingClient, address), {
               pending: {

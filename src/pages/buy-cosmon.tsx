@@ -16,7 +16,9 @@ import { useAirdropStore } from '../store/airdropStore'
 import { useCosmonStore } from '../store/cosmonStore'
 
 export default function Page() {
-  const { buyCosmon, isConnected, connect } = useWalletStore((state) => state)
+  const { buyCosmon, isConnected, connect, address } = useWalletStore(
+    (state) => state
+  )
 
   const { getAirdropData, airdropData, resetAirdropData } = useAirdropStore(
     (state) => state
@@ -24,7 +26,7 @@ export default function Page() {
 
   const { getWhitelistData } = useCosmonStore((state) => state)
 
-  const { whitelistData } = useCosmonStore((state) => state)
+  const { whitelistData, isSellOpen } = useCosmonStore((state) => state)
 
   const [isCurrentlyBuying, set_isCurrentlyBuying] = useState<Scarcity | null>(
     null
@@ -55,7 +57,6 @@ export default function Page() {
 
   useEffect(() => {
     if (cosmonBought) {
-      console.log('cosmonBought', cosmonBought)
     }
   }, [cosmonBought])
 
@@ -68,39 +69,6 @@ export default function Page() {
   useEffect(() => {
     getWhitelistData()
   }, [isConnected])
-
-  // const fetchCosmonPrices = async () => {
-  //   set_cosmonPrices([
-  //     {
-  //       scarcity: 'Uncommon',
-  //       amount: (await getCosmonPrice('Uncommon')) || 'XX',
-  //     },
-  //     {
-  //       scarcity: 'Rare',
-  //       amount: (await getCosmonPrice('Rare')) || 'XX',
-  //     },
-  //     {
-  //       scarcity: 'Epic',
-  //       amount: (await getCosmonPrice('Epic')) || 'XX',
-  //     },
-  //     {
-  //       scarcity: 'Legendary',
-  //       amount: (await getCosmonPrice('Legendary')) || 'XX',
-  //     },
-  //   ])
-  // }
-
-  useEffect(() => {
-    // const uncommonCosmonPrice = getCosmonPrice('Common')
-    // const rareCosmonPrice = getCosmonPrice('Rare')
-    // const epicCosmonPrice = getCosmonPrice('Epic')
-    // const legendaryCosmonPrice = getCosmonPrice('Legendary')
-    // fetchCosmonPrices()
-  }, [])
-
-  // useEffect(() => {
-  //   console.log('whitelistData', whitelistData)
-  // }, [whitelistData])
 
   return (
     <>
@@ -183,24 +151,27 @@ export default function Page() {
                     </div>
                   </div>
                 )}
-              {whitelistData && whitelistData.available_slots === 0 && (
-                <div className="rounded-[20px] bg-[#312E5A] bg-opacity-50">
-                  <div className="hidden items-center justify-center py-[24px] lg:flex">
-                    <div className="flex items-center gap-x-8 px-10 ">
-                      <p className="text-[22px] font-normal leading-[32px] text-white">
-                        Unfortunetly this wallet is not whitelisted, let’s see
-                        you for the{' '}
-                        <span className="font-semibold">
-                          public sale on 04.07.2022
-                        </span>
-                      </p>
+              {whitelistData &&
+                whitelistData.available_slots === 0 &&
+                !isSellOpen && (
+                  <div className="rounded-[20px] bg-[#312E5A] bg-opacity-50">
+                    <div className="hidden items-center justify-center py-[24px] lg:flex">
+                      <div className="flex items-center gap-x-8 px-10 ">
+                        <p className="text-[22px] font-normal leading-[32px] text-white">
+                          Unfortunatly this wallet is not whitelisted, let’s see
+                          you for the{' '}
+                          <span className="font-semibold">
+                            public sale on 04.07.2022
+                          </span>
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
               {whitelistData &&
                 whitelistData.available_slots !== 0 &&
-                whitelistData.available_slots === whitelistData.used_slots && (
+                whitelistData.available_slots === whitelistData.used_slots &&
+                !isSellOpen && (
                   <div className="rounded-[20px] bg-[#312E5A] bg-opacity-50">
                     <div className="hidden items-center justify-center py-[24px] lg:flex">
                       <div className="flex items-center gap-x-8 px-10 ">
