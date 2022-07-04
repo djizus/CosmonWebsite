@@ -4,7 +4,7 @@ import { Scarcity } from '../../../types/Scarcity'
 import { useCosmonStore } from '../../store/cosmonStore'
 import { useWalletStore } from '../../store/walletStore'
 import Button from '../Button/Button'
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js'
 
 type PotionItemProps = {
   type: Scarcity
@@ -22,7 +22,7 @@ export default function PotionItem({
   img,
   buy,
 }: PotionItemProps) {
-  const { isConnected } = useWalletStore((state) => state)
+  const { isConnected, isFetchingData } = useWalletStore((state) => state)
 
   const { isSellOpen, isPreSellOpen, whitelistData } = useCosmonStore(
     (state) => state
@@ -39,14 +39,15 @@ export default function PotionItem({
   >(null)
 
   const getCosmonAvailable = async () => {
-    let isAvailable = false;
-    const cosmonLeftByScarcity = await getCosmonScarcityAvailable(type) > 0;
-    const cosmonWhitelistLeft = whitelistData &&  whitelistData?.available_slots > whitelistData?.used_slots;
-
-    if (await isSellOpen() && cosmonLeftByScarcity) {
-      isAvailable = true;
-    } else if (await isPreSellOpen() && cosmonWhitelistLeft && cosmonLeftByScarcity) {
-      isAvailable = true;
+    let isAvailable = false
+    const cosmonLeftByScarcity = (await getCosmonScarcityAvailable(type)) > 0
+    const cosmonWhitelistLeft =
+      whitelistData &&
+      whitelistData?.available_slots > whitelistData?.used_slots
+    if (isSellOpen && cosmonLeftByScarcity) {
+      isAvailable = true
+    } else if (isPreSellOpen && cosmonWhitelistLeft && cosmonLeftByScarcity) {
+      isAvailable = true
     }
 
     set_cosmonAvailable(isAvailable)
@@ -55,14 +56,23 @@ export default function PotionItem({
   const getCosmonPrice = async () => {
     let price = await fetchCosmonPrice(type)
     if (
-        whitelistData &&
-        whitelistData.discount_percent !== 0 &&
-        whitelistData.used_slots < whitelistData.available_slots
+      whitelistData &&
+      whitelistData.discount_percent !== 0 &&
+      whitelistData.used_slots < whitelistData.available_slots
     ) {
       set_cosmonDiscountPrice(
-          (new BigNumber(price)).minus(
-          ((new BigNumber(price)).multipliedBy(whitelistData.discount_percent).dividedBy(100))).plus(0.01).toFixed(2).toString()
+        new BigNumber(price)
+          .minus(
+            new BigNumber(price)
+              .multipliedBy(whitelistData.discount_percent)
+              .dividedBy(100)
+          )
+          .plus(0.01)
+          .toFixed(2)
+          .toString()
       )
+    } else {
+      set_cosmonDiscountPrice(null)
     }
     set_cosmonPrice(Number(price).toFixed(2))
   }
@@ -72,17 +82,7 @@ export default function PotionItem({
       getCosmonAvailable()
       getCosmonPrice()
     }
-  }, [whitelistData?.used_slots])
-
-  // useEffect(() => {
-  //   console.log('here')
-  //   getCosmonAvailable()
-  //   getCosmonPrice()
-  // }, [whitelistData])
-
-  useEffect(() => {
-    // console.log('cosmonAvailable', cosmonAvailable)
-  }, [cosmonAvailable])
+  }, [whitelistData?.used_slots, isFetchingData])
 
   return (
     <div className="flex flex-col items-center">

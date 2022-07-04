@@ -25,6 +25,7 @@ export default function Layout({ children }: LayoutProps) {
     address: walletAddress,
     connect,
     disconnect,
+    signingClient,
     isFetchingData,
     fetchWalletData,
     cosmons,
@@ -66,9 +67,11 @@ export default function Layout({ children }: LayoutProps) {
   const handleSwitchAccount = async () => {
     // setTimeout(() => {
     // await disconnect()
+
     await connect()
-    await fetchWalletData()
-    await getWhitelistData()
+    fetchWalletData()
+    getWhitelistData()
+
     // }, 100)
   }
 
@@ -83,7 +86,7 @@ export default function Layout({ children }: LayoutProps) {
 
     // cleanup this component
     return () => {
-      window.removeEventListener('keydown', handleSwitchAccount)
+      window.removeEventListener('keplr_keystorechange', handleSwitchAccount)
     }
   }, [])
 
@@ -95,11 +98,16 @@ export default function Layout({ children }: LayoutProps) {
 
   useEffect(() => {
     const refreshInterval = window.setInterval(() => {
-      console.log('Re-fetching data...')
       fetchWalletData()
     }, 8000)
     return () => clearInterval(refreshInterval)
   }, [isConnected])
+
+  // useEffect(() => {
+  //   connect()
+  //   fetchWalletData()
+  //   getWhitelistData()
+  // }, [signingClient])
 
   return (
     <div className="flex flex-col">

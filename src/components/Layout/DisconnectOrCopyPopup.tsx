@@ -15,7 +15,6 @@ export default function DisconnectOrCopyPopup({
 
   const copyAddressToClipboard = () => {
     navigator.clipboard.writeText(walletAddress).then(() => {
-      console.log('Text copied to clipboard...')
     })
   }
   return (
