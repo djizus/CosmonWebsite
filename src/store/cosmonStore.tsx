@@ -55,17 +55,7 @@ const useCosmonStore = create<CosmonState>((set, get) => ({
       isSellOpen: signingClient && (await querySellOpen(signingClient)),
       isPreSellOpen: signingClient && (await queryPreSellOpen(signingClient)),
     })
-
-    // return signingClient && (await queryPreSellOpen(signingClient))
-    // return signingClient && (await querySellOpen(signingClient))
   },
-  // isPreSellOpen: async () => {
-
-  // },
-  // isSellOpen: async () => {
-  //   const { signingClient } = useWalletStore.getState()
-
-  // },
 
   getCosmonScarcityAvailable: async (scarcity): Promise<number> => {
     const { signingClient } = useWalletStore.getState()

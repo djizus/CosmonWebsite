@@ -40,7 +40,6 @@ export default function Page() {
   >()
 
   const [showCosmonAirdropModal, set_showCosmonAirdropModal] = useState(false)
-  const [isPublicSaleOpen, set_isPublicSaleOpen] = useState<boolean>(true)
   const [cosmonBought, set_cosmonBought] = useState<null | CosmonType>()
   const router = useRouter()
 
@@ -70,18 +69,6 @@ export default function Page() {
   useEffect(() => {
     getWhitelistData()
   }, [isConnected])
-
-  // const getIsPublicSaleOpen = async () => {
-  //   set_isPublicSaleOpen(isSellOpen)
-  // }
-
-  // useEffect(() => {
-  //   getIsPublicSaleOpen()
-  // }, [])
-
-  useEffect(() => {
-    console.log('isPublicsale', isPublicSaleOpen)
-  }, [isPublicSaleOpen, address])
 
   return (
     <>
@@ -171,7 +158,7 @@ export default function Page() {
                     <div className="hidden items-center justify-center py-[24px] lg:flex">
                       <div className="flex items-center gap-x-8 px-10 ">
                         <p className="text-[22px] font-normal leading-[32px] text-white">
-                          Unfortunetly this wallet is not whitelisted, let’s see
+                          Unfortunatly this wallet is not whitelisted, let’s see
                           you for the{' '}
                           <span className="font-semibold">
                             public sale on 04.07.2022

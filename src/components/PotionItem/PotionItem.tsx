@@ -22,7 +22,7 @@ export default function PotionItem({
   img,
   buy,
 }: PotionItemProps) {
-  const { isConnected } = useWalletStore((state) => state)
+  const { isConnected, isFetchingData } = useWalletStore((state) => state)
 
   const { isSellOpen, isPreSellOpen, whitelistData } = useCosmonStore(
     (state) => state
@@ -39,14 +39,15 @@ export default function PotionItem({
   >(null)
 
   const getCosmonAvailable = async () => {
-    let isAvailable = false;
-    const cosmonLeftByScarcity = await getCosmonScarcityAvailable(type) > 0;
-    const cosmonWhitelistLeft = whitelistData &&  whitelistData?.available_slots > whitelistData?.used_slots;
-
+    let isAvailable = false
+    const cosmonLeftByScarcity = (await getCosmonScarcityAvailable(type)) > 0
+    const cosmonWhitelistLeft =
+      whitelistData &&
+      whitelistData?.available_slots > whitelistData?.used_slots
     if (isSellOpen && cosmonLeftByScarcity) {
-      isAvailable = true;
+      isAvailable = true
     } else if (isPreSellOpen && cosmonWhitelistLeft && cosmonLeftByScarcity) {
-      isAvailable = true;
+      isAvailable = true
     }
 
     set_cosmonAvailable(isAvailable)
@@ -70,6 +71,8 @@ export default function PotionItem({
           .toFixed(2)
           .toString()
       )
+    } else {
+      set_cosmonDiscountPrice(null)
     }
     set_cosmonPrice(Number(price).toFixed(2))
   }
@@ -79,11 +82,7 @@ export default function PotionItem({
       getCosmonAvailable()
       getCosmonPrice()
     }
-  }, [whitelistData?.used_slots])
-
-  useEffect(() => {
-    // console.log('cosmonAvailable', cosmonAvailable)
-  }, [cosmonAvailable])
+  }, [whitelistData?.used_slots, isFetchingData])
 
   return (
     <div className="flex flex-col items-center">
