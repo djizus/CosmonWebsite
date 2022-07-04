@@ -39,21 +39,16 @@ export default function PotionItem({
   >(null)
 
   const getCosmonAvailable = async () => {
-    let isAvailable = false
-    if (await isPreSellOpen()) {
-      if (
-        whitelistData &&
-        whitelistData?.available_slots > whitelistData?.used_slots
-      ) {
-        if ((await getCosmonScarcityAvailable(type)) > 0) {
-          isAvailable = true
-        }
-      }
-    } else if (await isSellOpen()) {
-      if ((await getCosmonScarcityAvailable(type)) > 0) {
-        isAvailable = true
-      }
+    let isAvailable = false;
+    const cosmonLeftByScarcity = await getCosmonScarcityAvailable(type) > 0;
+    const cosmonWhitelistLeft = whitelistData &&  whitelistData?.available_slots > whitelistData?.used_slots;
+
+    if (await isSellOpen() && cosmonLeftByScarcity) {
+      isAvailable = true;
+    } else if (await isPreSellOpen() && cosmonWhitelistLeft && cosmonLeftByScarcity) {
+      isAvailable = true;
     }
+
     set_cosmonAvailable(isAvailable)
   }
 
