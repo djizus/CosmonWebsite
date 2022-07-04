@@ -66,17 +66,13 @@ export default function HoldAndEarn() {
           >
             <div className="relative flex flex-col items-center  gap-x-8 gap-y-5 lg:flex-row">
               {/* MVP  */}
-              <Button
-                type="disabled-colored"
-                // onClick={
-                //   () => router.push('/buy-cosmon')}
-              >
+              <Button type="primary" onClick={() => router.push('/buy-cosmon')}>
                 Buy Cosmon
               </Button>
-
+              {/* 
               <div className="italic text-cosmon-main-tertiary">
                 (Coming soon)
-              </div>
+              </div> */}
             </div>
           </motion.div>
         </div>

@@ -37,14 +37,12 @@ export default function Footer() {
             <div className="flex lg:ml-20 lg:mr-[96px]">
               <div className={style['link-group']}>
                 <div className={style.title}>About</div>
-                {/* <Link 
-                  href={'/buy-cosmon'}
-                  > */}
-                <a className={`${style.link} ${style.inactive}`}>Buy Cosmon</a>
-                {/* </Link> */}
-                {/* <Link href={'/my-assets'}> */}
-                <a className={`${style.link} ${style.inactive}`}>My Assets</a>
-                {/* </Link> */}
+                <Link href={'/buy-cosmon'}>
+                  <a className={`${style.link}`}>Buy Cosmon</a>
+                </Link>
+                <Link href={'/my-assets'}>
+                  <a className={`${style.link} `}>My Assets</a>
+                </Link>
                 {/* <Link href={'/about'}>
                   <a className={style.link}>Storyline</a>
                 </Link> */}

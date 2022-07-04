@@ -65,13 +65,10 @@ export default function ChooseYourLeaders() {
         >
           {/* MVP - Button disabled */}
           {/* <div className="absolute left-0 z-50 h-full w-full"></div> */}
-          <Button
-            type="disabled-colored"
-            // onClick={() => router.push('/buy-cosmon')}
-          >
+          <Button type="primary" onClick={() => router.push('/buy-cosmon')}>
             Buy cosmon
           </Button>
-          <div className="italic text-cosmon-main-tertiary">(Coming soon)</div>
+          {/* <div className="italic text-cosmon-main-tertiary">(Coming soon)</div> */}
         </motion.div>
       </div>
 
