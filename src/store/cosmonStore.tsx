@@ -20,16 +20,21 @@ interface CosmonState {
     available_slots: number
     used_slots: number
   }
+  isSellOpen: undefined | boolean
+  isPreSellOpen: undefined | boolean
   getCosmonScarcityAvailable: (scarcity: Scarcity) => Promise<number>
   getCosmonPrice: (scarcity: Scarcity) => Promise<string>
   getWhitelistData: () => void
   resetWhitelistData: () => void
-  isPreSellOpen: () => Promise<boolean>
-  isSellOpen: () => Promise<boolean>
+  fetchSellData: () => void
+  // isPreSellOpen: () => Promise<boolean>
+  // isSellOpen: () => Promise<boolean>
   isCosmonBuyable: (scarcity?: Scarcity) => void
 }
 
 const useCosmonStore = create<CosmonState>((set, get) => ({
+  isSellOpen: undefined,
+  isPreSellOpen: undefined,
   getWhitelistData: async () => {
     const { address, signingClient } = useWalletStore.getState()
 
@@ -44,14 +49,23 @@ const useCosmonStore = create<CosmonState>((set, get) => ({
     if (scarcity) {
     }
   },
-  isPreSellOpen: async () => {
+  fetchSellData: async () => {
     const { signingClient } = useWalletStore.getState()
-    return signingClient && (await queryPreSellOpen(signingClient))
+    set({
+      isSellOpen: signingClient && (await queryPreSellOpen(signingClient)),
+      isPreSellOpen: signingClient && (await queryPreSellOpen(signingClient)),
+    })
+
+    // return signingClient && (await queryPreSellOpen(signingClient))
+    // return signingClient && (await querySellOpen(signingClient))
   },
-  isSellOpen: async () => {
-    const { signingClient } = useWalletStore.getState()
-    return signingClient && (await querySellOpen(signingClient))
-  },
+  // isPreSellOpen: async () => {
+
+  // },
+  // isSellOpen: async () => {
+  //   const { signingClient } = useWalletStore.getState()
+
+  // },
 
   getCosmonScarcityAvailable: async (scarcity): Promise<number> => {
     const { signingClient } = useWalletStore.getState()

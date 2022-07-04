@@ -260,11 +260,11 @@ const useWalletStore = create<WalletState>(
               })
               fetchWalletData()
             })
-              .finally( () => {
-                set({
-                  isCurrentlyIbcTransferring: false,
-                })
+            .finally(() => {
+              set({
+                isCurrentlyIbcTransferring: false,
               })
+            })
           // return response
         }
       },
@@ -272,9 +272,11 @@ const useWalletStore = create<WalletState>(
         set({
           isFetchingData: true,
         })
+        const { fetchSellData } = useCosmonStore.getState()
         const { fetchCosmons, fetchCoin } = get()
         await fetchCosmons()
         await fetchCoin()
+        await fetchSellData()
 
         set({
           // maxClaimableToken: maxClaimableToken,

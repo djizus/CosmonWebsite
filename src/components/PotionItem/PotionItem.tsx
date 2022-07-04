@@ -4,7 +4,7 @@ import { Scarcity } from '../../../types/Scarcity'
 import { useCosmonStore } from '../../store/cosmonStore'
 import { useWalletStore } from '../../store/walletStore'
 import Button from '../Button/Button'
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js'
 
 type PotionItemProps = {
   type: Scarcity
@@ -55,13 +55,20 @@ export default function PotionItem({
   const getCosmonPrice = async () => {
     let price = await fetchCosmonPrice(type)
     if (
-        whitelistData &&
-        whitelistData.discount_percent !== 0 &&
-        whitelistData.used_slots < whitelistData.available_slots
+      whitelistData &&
+      whitelistData.discount_percent !== 0 &&
+      whitelistData.used_slots < whitelistData.available_slots
     ) {
       set_cosmonDiscountPrice(
-          (new BigNumber(price)).minus(
-          ((new BigNumber(price)).multipliedBy(whitelistData.discount_percent).dividedBy(100))).plus(0.01).toFixed(2).toString()
+        new BigNumber(price)
+          .minus(
+            new BigNumber(price)
+              .multipliedBy(whitelistData.discount_percent)
+              .dividedBy(100)
+          )
+          .plus(0.01)
+          .toFixed(2)
+          .toString()
       )
     }
     set_cosmonPrice(Number(price).toFixed(2))
