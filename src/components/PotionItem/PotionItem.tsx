@@ -54,7 +54,6 @@ export default function PotionItem({
   }
 
   const getCosmonPrice = async () => {
-    console.log('here')
     let price = await fetchCosmonPrice(type)
     if (
       whitelistData &&
