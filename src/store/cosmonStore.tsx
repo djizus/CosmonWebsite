@@ -1,7 +1,6 @@
-import { toast } from 'react-toastify'
+import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/cosmwasmclient'
 import create from 'zustand'
 import { Scarcity } from '../../types/Scarcity'
-import { ToastContainer } from '../components/ToastContainer/ToastContainer'
 import {
   queryCosmonAvailableByScarcity,
   queryCosmonPrice,
@@ -11,8 +10,6 @@ import {
 } from '../services/interaction'
 import { convertMicroDenomToDenom } from '../utils/conversion'
 import { useWalletStore } from './walletStore'
-import ErrorIcon from '/public/icons/error.svg'
-import SuccessIcon from '/public/icons/success.svg'
 
 interface CosmonState {
   whitelistData?: {
@@ -73,9 +70,24 @@ const useCosmonStore = create<CosmonState>((set, get) => ({
   },
   getCosmonPrice: async (scarcity: Scarcity) => {
     const { signingClient } = useWalletStore.getState()
+    let generatedClient
+    let amount
+    console.log('signingCLient', signingClient)
+    if (!signingClient) {
+      generatedClient = await CosmWasmClient.connect(
+        process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT || ''
+      )
+    }
+    if (signingClient) {
+      amount =
+        signingClient && (await queryCosmonPrice(signingClient, scarcity))
+    } else if (generatedClient) {
+      amount =
+        generatedClient && (await queryCosmonPrice(generatedClient, scarcity))
 
-    const amount =
-      signingClient && (await queryCosmonPrice(signingClient, scarcity))
+      console.log('amount', amount)
+    }
+
     if (amount) {
       return convertMicroDenomToDenom(amount) + ''
     } else {
