@@ -84,6 +84,10 @@ export default function PotionItem({
     }
   }, [whitelistData?.used_slots, isFetchingData])
 
+  useEffect(() => {
+    getCosmonPrice()
+  }, [])
+
   return (
     <div className="flex flex-col items-center">
       <div className="relative flex h-[140px] w-full">
