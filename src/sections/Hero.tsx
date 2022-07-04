@@ -111,7 +111,7 @@ export default function Hero({ children }: HeroProps) {
             }}
           >
             <Button onClick={() => router.push('/buy-cosmon')}>
-              Claim Airdrop
+              Buy Cosmon
             </Button>
           </motion.div>
           <motion.div
