@@ -46,7 +46,6 @@ const useAirdropStore = create<AirdropState>((set, get) => ({
     } else {
       const claimData =
         signingClient && (await queryGetClaimData(signingClient, address))
-      console.log('claimData', claimData)
       set({
         airdropData: {
           isEligible: true,

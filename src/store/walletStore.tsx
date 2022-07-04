@@ -129,10 +129,6 @@ const useWalletStore = create<WalletState>(
           })
 
           // get user address
-          console.log(
-            'await offlineSigner.getAccounts()',
-            await offlineSigner.getAccounts()
-          )
           const [{ address }] = await offlineSigner.getAccounts()
           const ibcAddress = (await ibcOfflineSigner.getAccounts())[0].address
 
@@ -511,7 +507,6 @@ const useWalletStore = create<WalletState>(
         } else {
           const claimData =
             signingClient && (await queryGetClaimData(signingClient, address))
-          console.log('claimData', claimData)
           set({
             airdropData: {
               isEligible: true,

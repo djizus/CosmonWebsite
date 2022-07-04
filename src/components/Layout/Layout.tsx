@@ -95,7 +95,6 @@ export default function Layout({ children }: LayoutProps) {
 
   useEffect(() => {
     const refreshInterval = window.setInterval(() => {
-      console.log('Re-fetching data...')
       fetchWalletData()
     }, 8000)
     return () => clearInterval(refreshInterval)

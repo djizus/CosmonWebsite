@@ -252,8 +252,6 @@ export const queryGetWhitelistInfo = async (
           get_whitelist_info_for_address: { address: address },
         }
       )
-      console.log('address', address)
-      console.log('data', data)
       setTimeout(() => {
         return resolve(data)
       }, 600)
@@ -275,8 +273,6 @@ export const queryGetClaimData = async (
           get_claim_data: { address: address },
         }
       )
-      console.log('address', address)
-      console.log('data', data)
       return resolve(data)
     } else {
       return reject('address is missing')

@@ -60,7 +60,6 @@ export const chainFetcher = async ({
         funds
       )
     }
-    console.log('response', response)
     return response
   }
 }

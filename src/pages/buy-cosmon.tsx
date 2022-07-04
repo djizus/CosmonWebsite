@@ -58,7 +58,6 @@ export default function Page() {
 
   useEffect(() => {
     if (cosmonBought) {
-      console.log('cosmonBought', cosmonBought)
     }
   }, [cosmonBought])
 
