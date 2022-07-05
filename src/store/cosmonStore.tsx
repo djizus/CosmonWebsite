@@ -72,7 +72,6 @@ const useCosmonStore = create<CosmonState>((set, get) => ({
     const { signingClient } = useWalletStore.getState()
     let generatedClient
     let amount
-    console.log('signingCLient', signingClient)
     if (!signingClient) {
       generatedClient = await CosmWasmClient.connect(
         process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT || ''
