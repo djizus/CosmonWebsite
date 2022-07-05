@@ -4,16 +4,18 @@ import { Scarcity } from '../../types/Scarcity'
 import { FaucetClient } from '@cosmjs/faucet-client'
 import { CosmonType } from '../../types/Cosmon'
 import { convertDenomToMicroDenom } from '../utils/conversion'
-import { SigningStargateClient } from '@cosmjs/stargate'
+import {coin, SigningStargateClient} from '@cosmjs/stargate'
 import { Coin } from '@cosmjs/amino/build/coins'
 import { useLogger } from 'react-use'
 import { sleep } from '@cosmjs/utils'
 import BigNumber from 'bignumber.js'
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/cosmwasmclient'
+import {add} from "@noble/hashes/_u64";
 
 const Height = require('long')
 
 const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
+const PUBLIC_REWARDS_CONTRACT = process.env.NEXT_PUBLIC_REWARDS_CONTRACT || ''
 const PUBLIC_NFT_CONTRACT = process.env.NEXT_PUBLIC_NFT_CONTRACT || ''
 const PUBLIC_WHITELIST_CONTRACT =
   process.env.NEXT_PUBLIC_WHITELIST_CONTRACT || ''
@@ -451,36 +453,89 @@ export const claimReward = async (
   address: string
 ): Promise<string | boolean> => {
   const hasBeenClaimed = await signingClient.queryContractSmart(
-    PUBLIC_SELL_CONTRACT,
+    PUBLIC_REWARDS_CONTRACT,
     {
-      claim_reward: { address: address },
+      claim_rewards: {},
     }
   )
   return hasBeenClaimed
+}
+
+export async function fetch_tokens(signingClient: SigningCosmWasmClient, address: string) {
+  const tokens: string[] = []
+  let start_after = undefined
+  while (true) {
+    let response = await signingClient.queryContractSmart(
+        process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
+        {
+          tokens: {
+            owner: address,
+            start_after,
+            limit: 10,
+          },
+        }
+    )
+
+    for (const token of response.tokens) {
+      tokens.push(token)
+    }
+
+    if (response.tokens.length < 10) {
+      break
+    }
+
+    start_after = tokens[tokens.length - 1]
+  }
+
+  return tokens;
 }
 
 export const getCurrentRewards = async (
   signingClient: SigningCosmWasmClient,
   address: string
 ): Promise<string> => {
-  const currentRewards = await signingClient.queryContractSmart(
-    PUBLIC_SELL_CONTRACT,
-    {
-      get_current_rewards: { address: address },
-    }
-  )
-  return currentRewards
+  const tokens: string[] = await fetch_tokens(signingClient, address);
+
+  let total = undefined;
+  for (const nft_id of tokens) {
+    const currentRewards = await signingClient.queryContractSmart(
+        PUBLIC_REWARDS_CONTRACT,
+        {
+          available_rewards: { nft_id },
+        });
+
+      if (total === undefined) {
+        total = currentRewards.current_rewards;
+      } else {
+        total.amount = new BigNumber(total.amount).plus(currentRewards.current_rewards.amount).toString();
+      }
+  }
+
+
+  return total;
 }
 
 export const getTotalRewards = async (
   signingClient: SigningCosmWasmClient,
   address: string
 ): Promise<string> => {
-  const totalRewards = await signingClient.queryContractSmart(
-    PUBLIC_SELL_CONTRACT,
-    {
-      get_total_rewards: { address: address },
+  const tokens: string[] = await fetch_tokens(signingClient, address);
+
+  let total = undefined;
+  for (const nft_id of tokens) {
+    const currentRewards = await signingClient.queryContractSmart(
+        PUBLIC_REWARDS_CONTRACT,
+        {
+          available_rewards: { nft_id },
+        });
+
+    if (total === undefined) {
+      total = currentRewards.current_rewards;
+    } else {
+      total.amount = new BigNumber(total.amount).plus(currentRewards.total_rewards.amount).toString();
     }
-  )
-  return totalRewards
+  }
+
+
+  return total;
 }
