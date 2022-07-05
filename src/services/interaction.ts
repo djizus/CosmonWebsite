@@ -9,7 +9,7 @@ import { Coin } from '@cosmjs/amino/build/coins'
 import { useLogger } from 'react-use'
 import { sleep } from '@cosmjs/utils'
 import BigNumber from 'bignumber.js'
-import {CosmWasmClient} from "@cosmjs/cosmwasm-stargate/build/cosmwasmclient";
+import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/cosmwasmclient'
 
 const Height = require('long')
 
@@ -443,4 +443,44 @@ export const initIbc = async (
       })
     }
   })
+}
+
+// TODO Sylvestre
+export const claimReward = async (
+  signingClient: SigningCosmWasmClient,
+  address: string
+): Promise<string | boolean> => {
+  const hasBeenClaimed = await signingClient.queryContractSmart(
+    PUBLIC_SELL_CONTRACT,
+    {
+      claim_reward: { address: address },
+    }
+  )
+  return hasBeenClaimed
+}
+
+export const getCurrentRewards = async (
+  signingClient: SigningCosmWasmClient,
+  address: string
+): Promise<string> => {
+  const currentRewards = await signingClient.queryContractSmart(
+    PUBLIC_SELL_CONTRACT,
+    {
+      get_current_rewards: { address: address },
+    }
+  )
+  return currentRewards
+}
+
+export const getTotalRewards = async (
+  signingClient: SigningCosmWasmClient,
+  address: string
+): Promise<string> => {
+  const totalRewards = await signingClient.queryContractSmart(
+    PUBLIC_SELL_CONTRACT,
+    {
+      get_total_rewards: { address: address },
+    }
+  )
+  return totalRewards
 }
