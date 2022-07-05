@@ -14,10 +14,13 @@ import 'react-lazy-load-image-component/src/effects/opacity.css'
 import { Transition } from '@headlessui/react'
 import CosmonFullModal from '../components/Modal/CosmonFullModal'
 import { getAmountFromDenom } from '../utils/index'
+import { useRewardStore } from '../store/rewardStore'
 
 export default function Page() {
   const { connect, isConnected, cosmons, coins, setShowWithdrawDepositModal } =
     useWalletStore((state) => state)
+
+  const { rewardsData, claimRewards } = useRewardStore((state) => state)
 
   const [assetToTransfer, set_assetToTransfer] = useState<null | CosmonType>()
 
@@ -164,11 +167,12 @@ export default function Page() {
                     <td>
                       <div className="flex gap-x-3">
                         <Button
-                          type="disabled-colored"
+                          onClick={claimRewards}
+                          type="primary"
                           size="small"
                           className="text-sm"
                         >
-                          Claim rewards (coming soon)
+                          Claim rewards
                         </Button>
                       </div>
                     </td>

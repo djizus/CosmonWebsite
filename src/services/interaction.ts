@@ -4,13 +4,13 @@ import { Scarcity } from '../../types/Scarcity'
 import { FaucetClient } from '@cosmjs/faucet-client'
 import { CosmonType } from '../../types/Cosmon'
 import { convertDenomToMicroDenom } from '../utils/conversion'
-import {coin, SigningStargateClient} from '@cosmjs/stargate'
+import { coin, SigningStargateClient } from '@cosmjs/stargate'
 import { Coin } from '@cosmjs/amino/build/coins'
 import { useLogger } from 'react-use'
 import { sleep } from '@cosmjs/utils'
 import BigNumber from 'bignumber.js'
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/cosmwasmclient'
-import {add} from "@noble/hashes/_u64";
+import { add } from '@noble/hashes/_u64'
 
 const Height = require('long')
 
@@ -451,29 +451,33 @@ export const initIbc = async (
 export const claimReward = async (
   signingClient: SigningCosmWasmClient,
   address: string
-): Promise<string | boolean> => {
-  const hasBeenClaimed = await signingClient.queryContractSmart(
+): Promise<boolean> => {
+  await signingClient.execute(
+    address,
     PUBLIC_REWARDS_CONTRACT,
-    {
-      claim_rewards: {},
-    }
+    { claim_rewards: {} },
+    'auto',
+    'memo'
   )
-  return hasBeenClaimed
+  return true
 }
 
-export async function fetch_tokens(signingClient: SigningCosmWasmClient, address: string) {
+export async function fetch_tokens(
+  signingClient: SigningCosmWasmClient,
+  address: string
+) {
   const tokens: string[] = []
   let start_after = undefined
   while (true) {
     let response = await signingClient.queryContractSmart(
-        process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
-        {
-          tokens: {
-            owner: address,
-            start_after,
-            limit: 10,
-          },
-        }
+      process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
+      {
+        tokens: {
+          owner: address,
+          start_after,
+          limit: 10,
+        },
+      }
     )
 
     for (const token of response.tokens) {
@@ -487,55 +491,82 @@ export async function fetch_tokens(signingClient: SigningCosmWasmClient, address
     start_after = tokens[tokens.length - 1]
   }
 
-  return tokens;
+  return tokens
 }
 
 export const getCurrentRewards = async (
   signingClient: SigningCosmWasmClient,
   address: string
-): Promise<string> => {
-  const tokens: string[] = await fetch_tokens(signingClient, address);
+): Promise<{
+  amount: string
+  denom: string
+}> => {
+  const tokens: string[] = await fetch_tokens(signingClient, address)
 
-  let total = undefined;
+  let total
   for (const nft_id of tokens) {
-    const currentRewards = await signingClient.queryContractSmart(
+    let currentRewards
+    try {
+      currentRewards = await signingClient.queryContractSmart(
         PUBLIC_REWARDS_CONTRACT,
         {
           available_rewards: { nft_id },
-        });
-
-      if (total === undefined) {
-        total = currentRewards.current_rewards;
-      } else {
-        total.amount = new BigNumber(total.amount).plus(currentRewards.current_rewards.amount).toString();
+        }
+      )
+    } catch (e: any) {
+      if (!e.toString().includes('no rewards')) {
+        console.error('error', e)
       }
+    }
+
+    if (currentRewards) {
+      if (!total) {
+        total = currentRewards.current_reward
+      } else {
+        total.amount = new BigNumber(total.amount)
+          .plus(currentRewards.current_reward.amount)
+          .toString()
+      }
+    }
   }
 
-
-  return total;
+  return total
 }
 
 export const getTotalRewards = async (
   signingClient: SigningCosmWasmClient,
   address: string
-): Promise<string> => {
-  const tokens: string[] = await fetch_tokens(signingClient, address);
-
-  let total = undefined;
+): Promise<{
+  amount: string
+  denom: string
+}> => {
+  const tokens: string[] = await fetch_tokens(signingClient, address)
+  let total
+  let currentRewards
   for (const nft_id of tokens) {
-    const currentRewards = await signingClient.queryContractSmart(
+    try {
+      currentRewards = await signingClient.queryContractSmart(
         PUBLIC_REWARDS_CONTRACT,
         {
           available_rewards: { nft_id },
-        });
+        }
+      )
+    } catch (e: any) {
+      if (!e.toString().includes('no rewards')) {
+        console.error('error', e)
+      }
+    }
 
-    if (total === undefined) {
-      total = currentRewards.current_rewards;
-    } else {
-      total.amount = new BigNumber(total.amount).plus(currentRewards.total_rewards.amount).toString();
+    if (currentRewards) {
+      if (!total) {
+        total = currentRewards.total_rewards
+      } else {
+        total.amount = new BigNumber(total.amount)
+          .plus(currentRewards.total_rewards.amount)
+          .toString()
+      }
     }
   }
 
-
-  return total;
+  return total
 }

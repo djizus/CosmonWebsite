@@ -1,6 +1,8 @@
 import { useWalletStore } from '../../store/walletStore'
+import { useRewardStore } from '../../store/rewardStore'
 import { getAmountFromDenom } from '../../utils/index'
 import Button from '../Button/Button'
+import { convertMicroDenomToDenom } from '../../utils/conversion'
 
 type WalletPopupProps = {
   onClosePopup: () => void
@@ -10,6 +12,8 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
   const { initIbc, isFetchingData, coins, setShowWithdrawDepositModal } =
     useWalletStore((state) => state)
 
+  const { rewardsData, claimRewards } = useRewardStore((state) => state)
+
   return (
     <>
       <div
@@ -18,7 +22,9 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
       ></div>
       <div className="absolute top-14 right-0 z-[50] w-[327px] rounded-xl border-[0.5px] border-[#A996FF] border-opacity-50 bg-cosmon-main-secondary p-5">
         <div className="font-[14px]  text-white">
-          <div className="font-semibold">Your {process.env.NEXT_PUBLIC_DENOM || ''} Breakdown</div>
+          <div className="font-semibold">
+            Your {process.env.NEXT_PUBLIC_DENOM || ''} Breakdown
+          </div>
           <div className="flex flex-col gap-y-1 pt-4">
             <div className="flex justify-between">
               <div> {process.env.NEXT_PUBLIC_DENOM || ''} balance </div>
@@ -34,13 +40,19 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
               <div>{process.env.NEXT_PUBLIC_DENOM || ''} to claim</div>
               <div className="flex gap-x-[10px]">
                 {/* <div className="font-semibold text-cosmon-main-tertiary"> */}
-                <Button type="ghost">Claim</Button>
-                {/* </div> */}0 {process.env.NEXT_PUBLIC_DENOM || ''}
+                <Button onClick={claimRewards} type="ghost">
+                  Claim
+                </Button>
+                {convertMicroDenomToDenom(rewardsData?.current.amount || 0)}{' '}
+                {process.env.NEXT_PUBLIC_DENOM || ''}
               </div>
             </div>
             <div className="flex justify-between">
               <div> {process.env.NEXT_PUBLIC_DENOM || ''} earned </div>
-              <div> 0 {process.env.NEXT_PUBLIC_DENOM || ''} </div>
+              <div>
+                {convertMicroDenomToDenom(rewardsData?.total.amount || 0)}{' '}
+                {process.env.NEXT_PUBLIC_DENOM || ''}{' '}
+              </div>
             </div>
           </div>
 
