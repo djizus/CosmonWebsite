@@ -530,6 +530,9 @@ export const getCurrentRewards = async (
     }
   }
 
+  if (!total) {
+    return coin('0', PUBLIC_STAKING_DENOM);
+  }
   return total
 }
 
@@ -566,6 +569,10 @@ export const getTotalRewards = async (
           .toString()
       }
     }
+  }
+
+  if (!total) {
+    return coin('0', PUBLIC_STAKING_DENOM);
   }
 
   return total
