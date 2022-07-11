@@ -517,6 +517,7 @@ export const getCurrentRewards = async (
       if (!e.toString().includes('no rewards')) {
         console.error('error', e)
       }
+      continue;
     }
 
     if (currentRewards) {
@@ -558,6 +559,7 @@ export const getTotalRewards = async (
       if (!e.toString().includes('no rewards')) {
         console.error('error', e)
       }
+      continue;
     }
 
     if (currentRewards) {
