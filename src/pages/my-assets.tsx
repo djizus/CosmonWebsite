@@ -33,6 +33,13 @@ export default function Page() {
 
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
 
+  const hasRewards = () => {
+    return (
+      getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins) !==
+      0
+    )
+  }
+
   useEffect(() => {
     if (cosmons.length > 0) {
       set_scarcitiesNumberByCosmons(getScarcitiesNumberByCosmons(cosmons))
@@ -167,12 +174,16 @@ export default function Page() {
                     <td>
                       <div className="flex gap-x-3">
                         <Button
-                          onClick={claimRewards}
-                          type="primary"
+                          onClick={() => {
+                            hasRewards() && claimRewards()
+                          }}
+                          type={hasRewards() ? 'primary' : 'disabled-colored'}
                           size="small"
                           className="text-sm"
                         >
-                          Claim rewards
+                          {hasRewards()
+                            ? 'Claim rewards'
+                            : 'No rewards to claim'}
                         </Button>
                       </div>
                     </td>
