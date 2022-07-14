@@ -34,10 +34,10 @@ export default function Page() {
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
 
   const hasRewards = () => {
-    return (
-      getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins) !==
-      0
-    )
+      if (rewardsData && +rewardsData.current.amount !== 0) {
+          return true;
+      }
+      return false;
   }
 
   useEffect(() => {
