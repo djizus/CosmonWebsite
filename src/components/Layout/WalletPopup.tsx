@@ -14,6 +14,13 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
 
   const { rewardsData, claimRewards } = useRewardStore((state) => state)
 
+  const hasRewards = () => {
+    return (
+      getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins) !==
+      0
+    )
+  }
+
   return (
     <>
       <div
@@ -39,10 +46,11 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
             <div className="flex items-center justify-between">
               <div>{process.env.NEXT_PUBLIC_DENOM || ''} to claim</div>
               <div className="flex gap-x-[10px]">
-                {/* <div className="font-semibold text-cosmon-main-tertiary"> */}
-                <Button onClick={claimRewards} type="ghost">
-                  Claim
-                </Button>
+                {hasRewards() && (
+                  <Button onClick={claimRewards} type="ghost">
+                    Claim
+                  </Button>
+                )}
                 {convertMicroDenomToDenom(rewardsData?.current.amount || 0)}{' '}
                 {process.env.NEXT_PUBLIC_DENOM || ''}
               </div>
