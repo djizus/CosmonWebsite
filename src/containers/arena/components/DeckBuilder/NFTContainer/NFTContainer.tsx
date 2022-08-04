@@ -119,7 +119,7 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
               <p className="text-sm font-semibold text-cosmon-main-secondary">
                 Lvl.{' '}
                 <span className="">
-                  {getCosmonStat(nft.stats, 'Level')?.value}
+                  {nft.stats && getCosmonStat(nft.stats, 'Level')?.value}
                 </span>
               </p>
             </div>
