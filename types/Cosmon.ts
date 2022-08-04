@@ -24,7 +24,7 @@ export type CosmonStatType = {
 
 export type CosmonType = {
   id: string
-  isInDeck: boolean
+  isInDeck?: boolean
   data: {
     extension: {
       animation_url: null
@@ -44,5 +44,5 @@ export type CosmonType = {
 
     token_uri: null
   }
-  stats: CosmonStatType[]
+  stats?: CosmonStatType[]
 }
