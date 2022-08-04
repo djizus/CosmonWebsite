@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import { Scarcity } from '../../../types/Scarcity'
-import Button from '../Button/Button'
 
 export type RarityLevelProps = {
   type: Scarcity
@@ -9,7 +8,7 @@ export type RarityLevelProps = {
 
 export default function RarityLevel({ type, comingSoon }: RarityLevelProps) {
   return (
-    <div className="">
+    <div className="flex flex-col items-center">
       <Image
         height="112px"
         width="112px"
@@ -21,7 +20,7 @@ export default function RarityLevel({ type, comingSoon }: RarityLevelProps) {
         </div>
       </div>
       {comingSoon && (
-        <div className="absolute -ml-[18px] mt-3">
+        <div className="mt-3">
           <div className="flex h-[42px] w-[143px] items-center justify-center rounded-lg bg-white bg-opacity-20">
             <div
               style={{

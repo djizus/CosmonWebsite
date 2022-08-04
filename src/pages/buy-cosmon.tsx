@@ -5,7 +5,7 @@ import Subscribe from '../sections/Subscribe'
 import Section from '../components/Section/Section'
 import PotionItem from '../components/PotionItem/PotionItem'
 import Button from '../components/Button/Button'
-import { Scarcity } from '../../types/Scarcity'
+import { SCARCITIES, Scarcity } from '../../types/Scarcity'
 import { useWalletStore } from '../store/walletStore'
 import useWindowSize from 'react-use/lib/useWindowSize'
 import { CosmonType } from '../../types/Cosmon'
@@ -207,31 +207,31 @@ export default function Page() {
           ))} */}
 
             <PotionItem
-              buy={(price: string) => buy('Uncommon', price)}
+              buy={(price: string) => buy(SCARCITIES.UNCOMMON, price)}
               yieldPercent={process.env.NEXT_PUBLIC_YIELD_UNCOMMON || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Uncommon'}
-              type="Uncommon"
+              type={SCARCITIES.UNCOMMON}
               img="uncommon.png"
             />
             <PotionItem
-              buy={(price) => buy('Rare', price)}
+              buy={(price) => buy(SCARCITIES.RARE, price)}
               yieldPercent={process.env.NEXT_PUBLIC_YIELD_RARE || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Rare'}
-              type="Rare"
+              type={SCARCITIES.RARE}
               img="rare.png"
             />
             <PotionItem
-              buy={(price) => buy('Epic', price)}
+              buy={(price) => buy(SCARCITIES.EPIC, price)}
               yieldPercent={process.env.NEXT_PUBLIC_YIELD_EPIC || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Epic'}
-              type="Epic"
+              type={SCARCITIES.EPIC}
               img="epic.png"
             />
             <PotionItem
-              buy={(price) => buy('Legendary', price)}
+              buy={(price) => buy(SCARCITIES.LEGENDARY, price)}
               yieldPercent={process.env.NEXT_PUBLIC_YIELD_LEGENDARY || 'xx'}
               isCurrentlyBuying={isCurrentlyBuying === 'Legendary'}
-              type="Legendary"
+              type={SCARCITIES.LEGENDARY}
               img="legendary.png"
             />
           </div>

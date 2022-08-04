@@ -19,6 +19,7 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
+        <div id="tooltips"></div>
       </body>
     </Html>
   )

@@ -63,6 +63,13 @@
       );
       opacity: 0.8;
     }
+
+    &:disabled {
+      background: #2e3736;
+      opacity: 0.4;
+      cursor: not-allowed;
+      color: #999;
+    }
   }
 
   &.secondary {
@@ -130,6 +137,19 @@
     // }
   }
 
+  &.quaternary {
+    background: theme('colors.cosmon.main.primary');
+    box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    padding: 13px 16px;
+
+    &:disabled {
+      background: theme('colors.cosmon.main.secondary');
+      box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.4);
+      color: rgba(white, 0.5);
+    }
+  }
+
   &.ghost {
     background: transparent;
     font-size: 16px;
@@ -145,13 +165,6 @@
       color: #9fa4dd;
       opacity: 0.7;
     }
-  }
-
-  &.disabled {
-    // @apply bg-cosmon-gray-1 font-normal text-cosmon-gray-6;
-    // background-color: #2e3736;
-    // opacity: 0.4;
-    background: linear-gradient(180deg, #9194a3 0%, #545454 100%);
   }
 
   &.disabled-colored {

@@ -153,6 +153,7 @@ export const queryCosmonInfo = async (
             nft_info: { token_id: cosmonId },
           }
         )
+        console.log('queryCosmonInfo ::', cosmonId, data)
         return resolve(data)
       } catch (e) {
         console.error(`Error while fetching cosmon ${cosmonId}`, e)
@@ -517,7 +518,7 @@ export const getCurrentRewards = async (
       if (!e.toString().includes('no rewards')) {
         console.error('error', e)
       }
-      continue;
+      continue
     }
 
     if (currentRewards) {
@@ -532,7 +533,7 @@ export const getCurrentRewards = async (
   }
 
   if (!total) {
-    return coin('0', PUBLIC_STAKING_DENOM);
+    return coin('0', PUBLIC_STAKING_DENOM)
   }
   return total
 }
@@ -559,7 +560,7 @@ export const getTotalRewards = async (
       if (!e.toString().includes('no rewards')) {
         console.error('error', e)
       }
-      continue;
+      continue
     }
 
     if (currentRewards) {
@@ -574,7 +575,7 @@ export const getTotalRewards = async (
   }
 
   if (!total) {
-    return coin('0', PUBLIC_STAKING_DENOM);
+    return coin('0', PUBLIC_STAKING_DENOM)
   }
 
   return total

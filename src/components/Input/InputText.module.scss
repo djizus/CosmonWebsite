@@ -1,0 +1,53 @@
+$primary: theme('colors.cosmon.main.primary');
+$borderRadius: 16px;
+
+.inputText {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  input {
+    border: 0.5px solid $primary;
+    color: $primary;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 24px;
+    height: 46px;
+    border-radius: $borderRadius;
+    background: transparent;
+
+    &::placeholder {
+      color: $primary;
+      opacity: 0.6;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 24px;
+    }
+
+    &:focus-visible {
+      outline: 0;
+    }
+  }
+
+  .inputLeftIcon {
+    height: 46px;
+    border: 0.5px solid $primary;
+    border-right: 0;
+    border-top-left-radius: $borderRadius;
+    border-bottom-left-radius: $borderRadius;
+    display: flex;
+    align-items: center;
+    padding: 0 10px 0 15px;
+  }
+
+  .inputRightIcon {
+    height: 46px;
+    border: 0.5px solid $primary;
+    border-left: 0;
+    border-top-right-radius: $borderRadius;
+    border-bottom-right-radius: $borderRadius;
+    display: flex;
+    align-items: center;
+    padding: 0 15px 0 10px;
+  }
+}
