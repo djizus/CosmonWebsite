@@ -11,7 +11,14 @@ module.exports = {
             dark: '#0A0733',
             darker: '#08062B',
           },
-          black: '#050505',
+          black: {
+            10: '#191A20',
+            9: '#21232C',
+            8: '#444444',
+            6: '#696969',
+            4: '#8E8E8E',
+            2: '#B2B2B2',
+          },
           gray: {
             10: '#F2F2F2',
             9: '#E5E5E5',
@@ -28,6 +35,8 @@ module.exports = {
             primary: '#413673',
             secondary: '#20164F',
             tertiary: '#9FA4DD',
+            quaternary: '#39365A',
+            quinary: '#222047',
             // gradient:
             //   'linear-gradient(180deg, #a996ff 0%,rgba(118, 96, 216, 0.5) 100%)',
           },

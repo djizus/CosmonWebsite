@@ -1,4 +1,9 @@
-import { CosmonType } from '../../types/Cosmon'
+import {
+  CosmonStatKeyType,
+  CosmonStatType,
+  CosmonTraitType,
+  CosmonType,
+} from '../../types/Cosmon'
 import { scarcities, Scarcity } from '../../types/Scarcity'
 
 export function getScarcityByCosmon(cosmon: CosmonType): Scarcity | null {
@@ -12,15 +17,14 @@ export function getScarcityByCosmon(cosmon: CosmonType): Scarcity | null {
   return scarcity
 }
 
-export function getTrait(
-  cosmon: CosmonType,
-  traitType:
-    | 'character_id'
-    | 'Personality'
-    | 'Geographical'
-    | 'Time'
-    | 'Short Description'
-) {
+export function getCosmonStat(
+  stats: CosmonStatType[],
+  keyType: CosmonStatKeyType
+): CosmonStatType | undefined {
+  return stats.find((stat) => stat.key === keyType)
+}
+
+export function getTrait(cosmon: CosmonType, traitType: CosmonTraitType) {
   return cosmon.data.extension.attributes.find(
     (attr) => attr.trait_type === traitType
   )?.value
@@ -40,4 +44,16 @@ export function getScarcitiesNumberByCosmons(cosmons: CosmonType[]): {
     ([key, count]) => ({ key, count })
   )
   return cosmonScarcityCounter
+}
+
+export function sortCosmonsByScarcity(cosmonsList: CosmonType[]) {
+  let r: CosmonType[] = []
+  for (const scarcity of [...scarcities].reverse()) {
+    for (const cosmon of cosmonsList) {
+      if (getScarcityByCosmon(cosmon) === scarcity) {
+        r = [...r, cosmon]
+      }
+    }
+  }
+  return r
 }

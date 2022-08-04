@@ -15,10 +15,12 @@ import { Transition } from '@headlessui/react'
 import CosmonFullModal from '../components/Modal/CosmonFullModal'
 import { getAmountFromDenom } from '../utils/index'
 import { useRewardStore } from '../store/rewardStore'
+import ConnectionNeededContent from '../components/ConnectionNeededContent/ConnectionNeededContent'
 
 export default function Page() {
-  const { connect, isConnected, cosmons, coins, setShowWithdrawDepositModal } =
-    useWalletStore((state) => state)
+  const { cosmons, coins, setShowWithdrawDepositModal } = useWalletStore(
+    (state) => state
+  )
 
   const { rewardsData, claimRewards } = useRewardStore((state) => state)
 
@@ -34,10 +36,10 @@ export default function Page() {
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
 
   const hasRewards = () => {
-      if (rewardsData && +rewardsData.current.amount !== 0) {
-          return true;
-      }
-      return false;
+    if (rewardsData && +rewardsData.current.amount !== 0) {
+      return true
+    }
+    return false
   }
 
   useEffect(() => {
@@ -72,29 +74,7 @@ export default function Page() {
         ></TransferAssetModal>
       )}
       <div className="max-w-auto px-2 pt-[100px] lg:pt-[158px]">
-        {!isConnected ? (
-          <div className="relative flex h-[500px] w-full items-center justify-center">
-            <Image
-              objectFit="fill"
-              layout="fill"
-              src="../blurry-bg-connect-wallet.png"
-            ></Image>
-
-            <div className="relative px-6">
-              <p className="rounded-[20px] bg-[#312E5A] bg-opacity-50 px-6 py-10 text-[22px] font-semibold leading-8 text-white lg:hidden">
-                Go to the desktop version to see your Cosmon assets
-              </p>
-              <div className="hidden items-center justify-center py-[24px] lg:flex">
-                <p className="px-10 text-[22px] font-semibold leading-[32px] text-white">
-                  Connect your wallet to see your assets
-                </p>
-                <Button onClick={connect} className="max-h-[42px]">
-                  Connect Wallet{' '}
-                </Button>
-              </div>
-            </div>
-          </div>
-        ) : (
+        <ConnectionNeededContent>
           <>
             <div className="mx-auto hidden max-w-[1120px] flex-col rounded-[20px] bg-[#312E5A] bg-opacity-50 p-10 lg:flex">
               <div className="flex">
@@ -245,7 +225,7 @@ export default function Page() {
                 {cosmons.map((cosmon) => (
                   <div
                     key={cosmon.id}
-                    className="group  transition-all hover:scale-[104%] hover:shadow-2xl"
+                    className="group transition-all hover:scale-[104%] hover:shadow-2xl"
                   >
                     <div
                       onClick={() => {
@@ -267,6 +247,7 @@ export default function Page() {
                       width={167}
                       placeholder="blur"
                       blurDataURL="/cosmon-placeholder.svg"
+                      className="cursor-pointer"
                     />
                   </div>
                   // </Transition.Child>
@@ -274,7 +255,7 @@ export default function Page() {
               </div>
             </Transition>
           </>
-        )}
+        </ConnectionNeededContent>
 
         <Section className="hidden pt-[173px] pb-[162px] lg:flex">
           <CommonQuestions />

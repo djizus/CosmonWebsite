@@ -4,7 +4,13 @@ import style from './Button.module.scss'
 import LoadingIcon from '../LoadingIcon/LoadingIcon'
 
 type ButtonProps = {
-  type?: 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'disabled-colored'
+  type?:
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'quaternary'
+    | 'ghost'
+    | 'disabled-colored'
   size?: 'small' | 'normal'
   icon?: {
     position: 'left' | 'right'
@@ -42,10 +48,11 @@ export default function Button({
         className={clsx(
           `${style.btn}`,
           `${style[size]}`,
-          fullWidth && 'w-full',
-          !disabled ? style[type] : style.disabled,
+          fullWidth && 'w-full justify-center',
+          style[type],
           `${className}`
         )}
+        style={{ ...(isLoading ? { pointerEvents: 'none' } : null) }}
       >
         {isLoading && <LoadingIcon />}
         {icon && icon.position === 'left' && (
