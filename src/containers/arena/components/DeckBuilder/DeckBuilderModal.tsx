@@ -41,7 +41,9 @@ const DeckBuilderModal: React.FC<DeckBuilderModalProps> = ({
   deckToEdit,
   handleCloseModal,
 }) => {
-  const { cosmons } = useWalletStore((state) => state)
+  const { cosmons, resetAllCosmonsTemporaryFree } = useWalletStore(
+    (state) => state
+  )
   const [affinities, setAffinities] = useState<any>([])
   const [deckName, setDeckName] = useState(deckToEdit?.name || '')
   const [nfts, setNfts] = useState<CosmonType[]>(cosmons)
@@ -78,6 +80,16 @@ const DeckBuilderModal: React.FC<DeckBuilderModalProps> = ({
     [handleCloseModal]
   )
 
+  const closeModal = () => {
+    handleCloseModal()
+    setAffinities([])
+    setDeckName('')
+    setDeck([undefined, undefined, undefined])
+    if (deckToEdit) {
+      resetAllCosmonsTemporaryFree()
+    }
+  }
+
   return (
     <DeckBuilderContext.Provider
       value={{
@@ -92,7 +104,7 @@ const DeckBuilderModal: React.FC<DeckBuilderModalProps> = ({
         deck,
         setDeck,
         deckToEdit,
-        handleCloseModal,
+        handleCloseModal: closeModal,
       }}
     >
       <DndProvider backend={HTML5Backend}>

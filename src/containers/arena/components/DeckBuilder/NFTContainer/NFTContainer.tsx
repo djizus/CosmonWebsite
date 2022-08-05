@@ -20,14 +20,11 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
 
   const [{ isDragging }, drag, dragPreview] = useDrag(
     () => ({
-      // "type" is required. It is used by the "accept" specification of drop targets.
       type: 'COSMON',
       item: nft,
       canDrag: () => {
-        return nft.isInDeck === false
+        return nft.isInDeck === false || nft.temporaryFree === true
       },
-      // The collect function utilizes a "monitor" instance (see the Overview for what this is)
-      // to pull important pieces of state from the DnD system.
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
@@ -64,10 +61,11 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
       <div
         className={styles.container}
         style={{
-          ...(deck.includes(nft) || nft.isInDeck === true
+          ...(deck.includes(nft) ||
+          (nft.isInDeck === true && !nft.temporaryFree)
             ? { opacity: 0.7 }
             : null),
-          ...(nft.isInDeck === true
+          ...(nft.isInDeck === true && !nft.temporaryFree
             ? { background: 'rgba(159, 164, 221, 0.1)', cursor: 'pointer' }
             : null),
         }}

@@ -29,7 +29,7 @@ import SuccessIcon from '/public/icons/success.svg'
 import { useCosmonStore } from './cosmonStore'
 import { useRewardStore } from './rewardStore'
 import { sortCosmonsByScarcity } from '@utils/cosmon'
-import { DeckService } from '@services/deck'
+import { DeckService, NFTId } from '@services/deck'
 import { XPRegistryService } from '@services/xp-registry'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
@@ -72,6 +72,8 @@ interface WalletState {
   addMoneyFromFaucet: () => void
   fetchCosmons: () => void
   updateCosmonsAreInDeck: () => void
+  markCosmonAsTemporaryFree: (nftId: NFTId) => void
+  resetAllCosmonsTemporaryFree: () => void
   fetchWalletData: () => void
   initIbc: (amount: Coin, deposit: boolean) => void
   getAirdropData: () => void
@@ -404,6 +406,32 @@ const useWalletStore = create<WalletState>(
 
         set({
           cosmons: [...sortCosmonsByScarcity(myCosmons)],
+        })
+      },
+      markCosmonAsTemporaryFree: async (nftIdToMark: NFTId) => {
+        const { cosmons } = get()
+        let myCosmons = [...cosmons]
+        let cosmonToUpdate = myCosmons.find((c) => c.id === nftIdToMark)
+        if (cosmonToUpdate) {
+          cosmonToUpdate = { ...cosmonToUpdate, temporaryFree: true }
+        }
+        set({
+          cosmons: [
+            ...sortCosmonsByScarcity(
+              cosmons.filter((c) => c.id !== nftIdToMark)
+            ),
+            cosmonToUpdate!,
+          ],
+        })
+      },
+      resetAllCosmonsTemporaryFree: () => {
+        const { cosmons } = get()
+        set({
+          cosmons: [
+            ...sortCosmonsByScarcity(
+              cosmons.map((c) => ({ ...c, temporaryFree: undefined }))
+            ),
+          ],
         })
       },
       buyCosmon: async (scarcity, price) => {
