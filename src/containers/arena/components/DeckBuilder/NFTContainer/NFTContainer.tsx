@@ -57,7 +57,7 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
         },
       }}
     >
-      <DragPreviewImage connect={dragPreview} src={nft.data.extension.image} />
+      <DragPreviewImage connect={dragPreview} src={'/dragging-preview.png'} />
       <div
         className={styles.container}
         style={{
