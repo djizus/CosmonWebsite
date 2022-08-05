@@ -25,6 +25,7 @@ export type CosmonStatType = {
 export type CosmonType = {
   id: string
   isInDeck?: boolean
+  temporaryFree?: boolean // useful during the edition of deck, when we remove an nft from the deck before saving
   data: {
     extension: {
       animation_url: null

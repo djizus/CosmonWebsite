@@ -56,6 +56,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   }, [view])
 
   const handleCloseDeckBuilderModal = useCallback(() => {
+    setDeckToEdit(undefined)
     setDeckBuilderVisible(false)
   }, [])
 

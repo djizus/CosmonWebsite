@@ -1,5 +1,5 @@
 import { useWalletStore } from '@store/walletStore'
-import { getScarcityByCosmon } from '@utils/cosmon'
+import { getScarcityByCosmon, sortCosmonsByScarcity } from '@utils/cosmon'
 import { AnimatePresence } from 'framer-motion'
 import React, { useMemo } from 'react'
 import { useContext } from 'react'
@@ -29,10 +29,14 @@ const NFTsList: React.FC<NFTsListProps> = ({}) => {
     }
 
     if (listFilter.showUnused === true) {
-      nftsList = [...nftsList.filter((nft) => nft.isInDeck === false)]
+      nftsList = [
+        ...nftsList.filter(
+          (nft) => nft.isInDeck === false || nft.temporaryFree === true
+        ),
+      ]
     } else {
       nftsList = [
-        ...nftsList,
+        ...nftsList.filter((nft) => nft.isInDeck === false),
         ...nftsList.filter((nft) => nft.isInDeck === true),
       ]
     }
@@ -48,7 +52,7 @@ const NFTsList: React.FC<NFTsListProps> = ({}) => {
       }
     }
 
-    return nftsList
+    return sortCosmonsByScarcity(nftsList)
   }, [listFilter, nfts, cosmons])
 
   return (
