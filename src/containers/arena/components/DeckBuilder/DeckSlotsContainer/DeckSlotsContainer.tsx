@@ -1,6 +1,8 @@
+import Alert from '@components/Alert/Alert'
 import Button from '@components/Button/Button'
 import { AFFINITY_TYPES, NFTId } from '@services/deck'
 import { useDeckStore } from '@store/deckStore'
+import { AnimatePresence } from 'framer-motion'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { CosmonType } from 'types/Cosmon'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
@@ -12,6 +14,9 @@ interface DeckSlotsContainerProps {}
 const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
   const { deck, deckName, setDeck, setDeckName, handleCloseModal, deckToEdit } =
     useContext(DeckBuilderContext)
+
+  const [errors, setErrors] = useState<string[]>([])
+
   const {
     createDeck,
     creatingDeck,
@@ -25,6 +30,10 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
 
   const handleClickSaveDeck = useCallback(async () => {
     try {
+      if (checkDeckErrors(deck, deckName) === false) {
+        return
+      }
+
       if (deckToEdit === undefined) {
         await createDeck(
           deckName,
@@ -44,7 +53,22 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
     } catch (error) {
       console.error(error)
     }
-  }, [deck, deckName, handleCloseModal, deckToEdit])
+  }, [deck, deckName, handleCloseModal, deckToEdit, errors])
+
+  const checkDeckErrors = (
+    deck: (CosmonType | undefined)[],
+    deckName: string
+  ) => {
+    let es = []
+    if (!deckName || deckName === '') {
+      es.push('Please choose your team name before saving')
+    }
+    if (!deck || deck.findIndex((d) => d === undefined) !== -1) {
+      es.push('Please add 3 Cosmons to your deck before saving')
+    }
+    setErrors(es)
+    return es.length > 0 ? false : true
+  }
 
   const affinities = useMemo(() => {
     return deck?.filter((d) => d !== undefined).length > 1
@@ -109,11 +133,29 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
           </p>
         </div>
       </div>
-      <div className="mb-[4em] flex justify-center">
+      <div className="relative mb-[4em] flex flex-col items-center">
+        <div
+          className="absolute flex flex-col gap-[20px]"
+          style={{ bottom: 'calc(100% + 34px)' }}
+        >
+          <AnimatePresence>
+            {errors?.length > 0
+              ? errors.map((error, i) => (
+                  <Alert
+                    key={i}
+                    onHide={() => {
+                      setErrors([])
+                    }}
+                  >
+                    {error}
+                  </Alert>
+                ))
+              : null}
+          </AnimatePresence>
+        </div>
         <Button
           type="primary"
           size="small"
-          disabled={deck.some((v) => v === undefined) || deckName === ''}
           onClick={handleClickSaveDeck}
           isLoading={creatingDeck || updatingDeck}
         >

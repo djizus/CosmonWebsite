@@ -1,12 +1,13 @@
 import Button from '@components/Button/Button'
 import { Deck } from '@services/deck'
 import { useDeckStore } from '@store/deckStore'
-import { motion } from 'framer-motion'
-import React, { useCallback, useMemo } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import React, { useCallback, useMemo, useState } from 'react'
 import DeckDropdownMenu from './DeckDropdownMenu'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Hover from 'react-3d-hover'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
+import CosmonFullModal from '@components/Modal/CosmonFullModal'
+import { CosmonType } from 'types/Cosmon'
 
 interface DeckContainerProps {
   deck: Deck
@@ -20,6 +21,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   onClickDelete,
 }) => {
   const { computeDeckAffinities } = useDeckStore()
+  const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
 
   const affinities = useMemo(() => {
     return computeDeckAffinities(deck.cosmons)
@@ -61,10 +63,14 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
               >
                 <img
                   src={cosmon.data.extension.image}
+                  onClick={() => {
+                    set_showCosmonDetail(cosmon)
+                  }}
                   style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'contain',
+                    cursor: 'pointer',
                   }}
                 />
               </Hover>
@@ -89,8 +95,57 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
           </div>
         </div>
       </div>
+      <AnimatePresence
+        initial={false}
+        exitBeforeEnter={true}
+        onExitComplete={() => null}
+      >
+        {showCosmonDetail && (
+          <motion.div
+            onClick={(e) => e.stopPropagation()}
+            variants={dropIn}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            style={{
+              position: 'fixed',
+              width: '100vw',
+              height: '100vh',
+              top: 0,
+              left: 0,
+              zIndex: 1000,
+            }}
+          >
+            <CosmonFullModal
+              onCloseModal={() => set_showCosmonDetail(null)}
+              cosmon={showCosmonDetail && showCosmonDetail}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }
 
 export default DeckContainer
+
+const dropIn = {
+  hidden: {
+    y: '100vh',
+    opacity: 0,
+  },
+  visible: {
+    y: '0',
+    opacity: 1,
+    transition: {
+      duration: 0.2,
+    },
+  },
+  exit: {
+    y: '100vh',
+    opacity: 0,
+    transition: {
+      duration: 0.2,
+    },
+  },
+}

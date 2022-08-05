@@ -77,7 +77,6 @@ export const useDeckStore = create<DeckState>((set, get) => ({
   },
   createDeck: async (name: string, nftIds: NFTId[]) => {
     try {
-      const { fetchDecksList } = get()
       const { updateCosmonsAreInDeck } = useWalletStore.getState()
       set({ creatingDeck: true })
       const response = await toast

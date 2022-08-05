@@ -46,6 +46,9 @@ module.exports = {
             // gradient:
             //   'linear-gradient(51.24deg, #89969E 15.25%, #4C606C 84.15%)',
           },
+          contextual: {
+            danger: '#DF4547',
+          },
         },
       },
     },

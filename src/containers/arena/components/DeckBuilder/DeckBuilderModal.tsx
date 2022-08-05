@@ -64,10 +64,14 @@ const DeckBuilderModal: React.FC<DeckBuilderModalProps> = ({
   })
 
   useEffect(() => {
+    document.getElementsByTagName('html')[0].className = 'overflow-hidden'
+    document.getElementsByTagName('body')[0].className = 'overflow-hidden'
     document.addEventListener('keydown', handleKeyDown)
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
+      document.getElementsByTagName('html')[0].className = ''
+      document.getElementsByTagName('body')[0].className = ''
     }
   }, [])
 

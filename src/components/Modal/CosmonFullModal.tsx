@@ -15,10 +15,8 @@ export default function CosmonFullModal({
   onCloseModal,
 }: CosmonFullModalProps) {
   useEffect(() => {
-    document.getElementsByTagName('html')[0].className =
-      'overflow-hidden h-full'
-    document.getElementsByTagName('body')[0].className =
-      'overflow-hidden h-full'
+    document.getElementsByTagName('html')[0].className = 'overflow-hidden'
+    document.getElementsByTagName('body')[0].className = 'overflow-hidden'
     return function cleanup() {
       document.getElementsByTagName('html')[0].className = ''
       document.getElementsByTagName('body')[0].className = ''
@@ -76,7 +74,7 @@ export default function CosmonFullModal({
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Type’s preference</div>
-                  <div>Coming soon</div>
+                <div>Coming soon</div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Geographical area</div>
