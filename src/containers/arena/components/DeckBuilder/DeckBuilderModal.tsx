@@ -120,7 +120,6 @@ const DeckBuilderModal: React.FC<DeckBuilderModalProps> = ({
               height: '100%',
               margin: 'auto',
               overflowY: 'hidden',
-              background: '#f6f6fc',
             }}
           >
             <DeckBuilderContainer />

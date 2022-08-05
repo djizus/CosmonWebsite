@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react'
 import { CosmonType } from 'types/Cosmon'
-import { useDrag, useDrop } from 'react-dnd'
+import { DragPreviewImage, useDrag, useDrop } from 'react-dnd'
 import { DeckBuilderContext } from '../DeckBuilderContext'
 import clsx from 'clsx'
 import styles from './DeckSlot.module.scss'
@@ -29,9 +29,7 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight }) => {
         let deckTemp = [...deck]
         // If already in deck => swap
         if (deck.findIndex((d) => d?.id === item.id) !== -1) {
-          if (deck[slotIdx] !== undefined) {
-            deckTemp[deck.findIndex((d) => d?.id === item.id)] = deck[slotIdx]
-          }
+          deckTemp[deck.findIndex((d) => d?.id === item.id)] = deck[slotIdx]
         } else {
           // If we replace a cosmon by a new one, we mark the one we replaced as temporary free
           if (deckToEdit && deck[slotIdx] !== undefined) {
@@ -49,7 +47,7 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight }) => {
     [slotIdx, deck, data, deckToEdit]
   )
 
-  const [{ isDragging }, drag] = useDrag(
+  const [{ isDragging }, drag, dragPreview] = useDrag(
     () => ({
       type: 'SWAPPING_COSMON',
       item: data,
@@ -103,6 +101,10 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight }) => {
                 className="h-full"
               >
                 <div className="group h-full transition-all">
+                  <DragPreviewImage
+                    connect={dragPreview}
+                    src={'/dragging-preview.png'}
+                  />
                   <div
                     onClick={handleRemoveNftFromDeck}
                     className="transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 cursor-pointer rounded-full p-2 transition-all group-hover:scale-100"
