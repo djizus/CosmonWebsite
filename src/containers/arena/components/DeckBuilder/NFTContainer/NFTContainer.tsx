@@ -1,5 +1,5 @@
 import { CosmonType } from 'types/Cosmon'
-import React, { useContext } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import styles from './NFTContainer.module.scss'
 import NFTName from './NFTName'
 import Badge from '@components/Badge/Badge'
@@ -16,7 +16,7 @@ interface NFTContainerProps {
 }
 
 const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
-  const { listFilter, deck } = useContext(DeckBuilderContext)
+  const { listFilter, deck, setDeck } = useContext(DeckBuilderContext)
 
   const [{ isDragging }, drag, dragPreview] = useDrag(
     () => ({
@@ -31,6 +31,23 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
     }),
     [nft]
   )
+
+  const firstFreeSlotIdx = useMemo(() => {
+    return deck.findIndex((d) => d === undefined)
+  }, [deck])
+
+  // Add an NFT to a deck on double click
+  const handleDoubleClick = useCallback(() => {
+    if (
+      firstFreeSlotIdx !== -1 &&
+      nft.isInDeck === false &&
+      deck.findIndex((d) => d?.id === nft.id) === -1
+    ) {
+      let deckTemp = [...deck]
+      deckTemp[firstFreeSlotIdx] = nft
+      setDeck(deckTemp as CosmonType[])
+    }
+  }, [nft, firstFreeSlotIdx])
 
   return (
     <motion.div
@@ -71,8 +88,11 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
         }}
         ref={drag}
       >
-        <div className="flex flex-1 justify-between">
-          <div className="felx-col flex">
+        <div
+          className="flex flex-1 justify-between"
+          onDoubleClick={handleDoubleClick}
+        >
+          <div className="flex">
             <div>
               <img
                 src={nft.data.extension.image}

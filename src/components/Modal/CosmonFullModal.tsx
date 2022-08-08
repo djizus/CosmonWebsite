@@ -1,5 +1,5 @@
 import { CosmonType } from '../../../types/Cosmon'
-import { getTrait } from '../../utils/cosmon'
+import { getCosmonStat, getTrait } from '../../utils/cosmon'
 import Close from '/public/icons/close.svg'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Hover from 'react-3d-hover'
@@ -91,11 +91,19 @@ export default function CosmonFullModal({
               <b className="text-[16px]">Caracteristics</b>
               <div className="mt-3 flex justify-between">
                 <div className="text-[#D8D1E7]">Level</div>
-                <div className="capitalize">1</div>
+                <div className="capitalize">
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Level')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Health Point</div>
-                <div>Coming soon</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Hp')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Action Point</div>
@@ -103,7 +111,11 @@ export default function CosmonFullModal({
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Experience Point</div>
-                <div>Coming soon</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Xp')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Boost</div>
@@ -116,27 +128,51 @@ export default function CosmonFullModal({
               <b className="text-[16px]">Caracteristics</b>
               <div className="mt-3 flex justify-between">
                 <div className="text-[#D8D1E7]">Attack (ATQ)</div>
-                <div>Coming soon</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Atq')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Speed (SPE)</div>
-                <div>Coming soon</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Spe')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Chance (LUK)</div>
-                <div>Coming soon</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Luk')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Defense (DEF)</div>
-                <div>Coming soon</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Def')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Psychology (PSY)</div>
-                <div>Coming soon</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Psy')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Intelligence (INT)</div>
-                <div>Coming soon</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Int')?.value
+                    : '-'}
+                </div>
               </div>
             </div>
           </div>

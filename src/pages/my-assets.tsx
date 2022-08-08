@@ -1,4 +1,4 @@
-import { ReactElement, ReactEventHandler, useEffect, useState } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Layout from '../components/Layout/Layout'
 import CommonQuestions from '../sections/CommonQuestions'
 import Subscribe from '../sections/Subscribe'
@@ -16,6 +16,8 @@ import CosmonFullModal from '../components/Modal/CosmonFullModal'
 import { getAmountFromDenom } from '../utils/index'
 import { useRewardStore } from '../store/rewardStore'
 import ConnectionNeededContent from '../components/ConnectionNeededContent/ConnectionNeededContent'
+import Tooltip from '@components/Tooltip/Tooltip'
+import clsx from 'clsx'
 
 export default function Page() {
   const { cosmons, coins, setShowWithdrawDepositModal } = useWalletStore(
@@ -35,12 +37,12 @@ export default function Page() {
 
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
 
-  const hasRewards = () => {
+  const hasRewards = useMemo(() => {
     if (rewardsData && +rewardsData.current.amount !== 0) {
       return true
     }
     return false
-  }
+  }, [rewardsData?.current])
 
   useEffect(() => {
     if (cosmons.length > 0) {
@@ -155,15 +157,13 @@ export default function Page() {
                       <div className="flex gap-x-3">
                         <Button
                           onClick={() => {
-                            hasRewards() && claimRewards()
+                            hasRewards && claimRewards()
                           }}
-                          type={hasRewards() ? 'primary' : 'disabled-colored'}
+                          type={hasRewards ? 'primary' : 'disabled-colored'}
                           size="small"
                           className="text-sm"
                         >
-                          {hasRewards()
-                            ? 'Claim rewards'
-                            : 'No rewards to claim'}
+                          {hasRewards ? 'Claim rewards' : 'No rewards to claim'}
                         </Button>
                       </div>
                     </td>
@@ -225,13 +225,22 @@ export default function Page() {
                 {cosmons.map((cosmon) => (
                   <div
                     key={cosmon.id}
-                    className="group transition-all hover:scale-[104%] hover:shadow-2xl"
+                    className="group overflow-visible transition-all hover:scale-[104%] hover:shadow-2xl"
                   >
                     <div
                       onClick={() => {
-                        set_assetToTransfer(cosmon)
+                        if (cosmon.isInDeck === false) {
+                          set_assetToTransfer(cosmon)
+                        }
                       }}
-                      className="transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 rounded-full p-2 transition-all group-hover:scale-100"
+                      data-tip="tootlip"
+                      data-for={`${cosmon.id}-transfer`}
+                      className={clsx(
+                        'transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 rounded-full p-2 transition-all group-hover:scale-100',
+                        cosmon.isInDeck === false
+                          ? 'cursor-pointer'
+                          : 'disabled cursor-not-allowed'
+                      )}
                     >
                       <img
                         width="16px"
@@ -240,6 +249,13 @@ export default function Page() {
                         alt=""
                       />
                     </div>
+                    <Tooltip id={`${cosmon.id}-transfer`} place="top">
+                      <p style={{ whiteSpace: 'pre' }}>
+                        {cosmon.isInDeck === false
+                          ? 'Transfer your cosmon'
+                          : 'Transfer impossible\nYour cosmon is already in a deck'}
+                      </p>
+                    </Tooltip>
                     <Image
                       src={cosmon.data.extension.image}
                       onClick={() => set_showCosmonDetail(cosmon)}

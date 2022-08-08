@@ -1,0 +1,25 @@
+.default {
+  &.masked {
+    .content {
+      opacity: 0%;
+    }
+  }
+}
+
+.rise {
+  &.masked {
+    perspective: 1000px;
+
+    .wrapper {
+      opacity: 40%;
+      overflow: hidden;
+      transition: all 2500ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .content {
+      opacity: 40%;
+      transition: all 2500ms cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(100%);
+    }
+  }
+}

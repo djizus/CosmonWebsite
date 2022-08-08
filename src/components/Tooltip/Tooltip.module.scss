@@ -5,8 +5,9 @@
   background-color: #413673 !important;
   background-clip: padding-box !important;
   border: solid 0.5px #a996ff !important;
-  z-index: 1001 !important;
+  z-index: 9000 !important;
   opacity: 1 !important;
+  min-width: max-content;
 
   & > * {
     color: white;

@@ -1,5 +1,8 @@
 import Button from '@components/Button/Button'
 import ConnectionNeededContent from '@components/ConnectionNeededContent/ConnectionNeededContent'
+import UnmaskOnReach from '@components/UnmaskOnReach/UnmaskOnReach'
+import { AnimationType } from '@components/UnmaskOnReach/UnmaskOnReach.types'
+import { getMEAs } from '@containers/arena/data'
 import { Deck } from '@services/deck'
 import { useDeckStore } from '@store/deckStore'
 import { AnimatePresence } from 'framer-motion'
@@ -82,21 +85,15 @@ const Arena: React.FC<ArenaProps> = ({}) => {
     <div className="pt-[100px] lg:pt-[132px]">
       <div className="relative h-[380px] bg-cosmon-main-quaternary">
         <div className="flex h-full items-center justify-center gap-x-[54px]">
-          <MEA
-            imgSrc="/arena/bg-cosmon.png"
-            title="Announcement 1"
-            subtitle="Subtitle"
-          />
-          <MEA
-            imgSrc="/arena/bg-article-trainings.png"
-            title="Announcement 2"
-            subtitle="Subtitle"
-          />
-          <MEA
-            imgSrc="/arena/bg-article-tournament.png"
-            title="Announcement 3"
-            subtitle="Subtitle"
-          />
+          {getMEAs().map((mea, i) => (
+            <UnmaskOnReach
+              key={`mea-${i}`}
+              animation={AnimationType.rise}
+              delay={`${(i + 1) * 180}ms`}
+            >
+              <MEA {...mea} />
+            </UnmaskOnReach>
+          ))}
         </div>
       </div>
 
