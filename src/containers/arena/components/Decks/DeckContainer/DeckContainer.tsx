@@ -8,6 +8,7 @@ import Hover from 'react-3d-hover'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import CosmonFullModal from '@components/Modal/CosmonFullModal'
 import { CosmonType } from 'types/Cosmon'
+import CosmonFightPointsBar from '@components/Cosmon/CosmonFightPointsBar'
 
 interface DeckContainerProps {
   deck: Deck
@@ -54,33 +55,35 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
           </div>
         </div>
         <div className="mt-[30px] flex">
-          <div className="shadow-orange grid grid-cols-3 gap-[30px]">
+          <div className="grid grid-cols-3 gap-[30px]">
             {deck.cosmons.map((cosmon) => (
-              <Hover
+              <div
                 key={`image-${deck.id}-${cosmon.id}`}
-                perspective={300}
-                speed={5}
+                className="flex flex-col"
               >
-                <img
-                  src={cosmon.data.extension.image}
-                  onClick={() => {
-                    set_showCosmonDetail(cosmon)
-                  }}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                    cursor: 'pointer',
-                  }}
-                />
-              </Hover>
+                <Hover perspective={300} speed={5}>
+                  <img
+                    src={cosmon.data.extension.image}
+                    onClick={() => {
+                      set_showCosmonDetail(cosmon)
+                    }}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </Hover>
+                <CosmonFightPointsBar className="mt-[16px]" cosmon={cosmon} />
+              </div>
             ))}
           </div>
         </div>
         <div className="mt-[30px] flex flex-1 gap-[12px]">
           <div className="w-3/4">
             <Button disabled type="primary" size="small" fullWidth>
-              Fight (Coming soon)
+              Fight
             </Button>
           </div>
           <div className="w-1/4">
