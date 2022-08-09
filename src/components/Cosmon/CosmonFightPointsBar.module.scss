@@ -1,0 +1,33 @@
+$primaryBarColor: #ffb901;
+$secondaryBarColor: #5d5a78;
+
+.zapContainer {
+  border: 1px solid $primaryBarColor;
+  border-radius: 3px;
+  background: rgba($primaryBarColor, 0.1);
+
+  .zapSvg {
+    & > * {
+      fill: $primaryBarColor;
+    }
+  }
+}
+
+.fightPointsContainer {
+  background-color: $secondaryBarColor;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.fightPointContainer {
+  //   background-color: $primaryBarColor;
+  background-image: linear-gradient($primaryBarColor, #ffd856);
+  &:first-child {
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+  }
+  &:last-child {
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+  }
+}
