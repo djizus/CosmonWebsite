@@ -1,11 +1,7 @@
 import { toast } from 'react-toastify'
 import create from 'zustand'
 import { ToastContainer } from '../components/ToastContainer/ToastContainer'
-import {
-  claimReward,
-  getCurrentRewards,
-  getTotalRewards,
-} from '../services/interaction'
+import { claimReward, getRewards } from '../services/interaction'
 import { useWalletStore } from './walletStore'
 import ErrorIcon from '/public/icons/error.svg'
 import SuccessIcon from '/public/icons/success.svg'
@@ -30,10 +26,11 @@ const useRewardStore = create<RewardState>((set, get) => ({
     const { address, signingClient } = useWalletStore.getState()
 
     if (signingClient && address) {
+      const { current, total } = await getRewards(signingClient, address)
       set({
         rewardsData: {
-          current: await getCurrentRewards(signingClient, address),
-          total: await getTotalRewards(signingClient, address),
+          current,
+          total,
         },
       })
     }

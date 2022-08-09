@@ -1,10 +1,10 @@
+import { Transition } from 'framer-motion'
 import { ReactNode } from 'react'
 
 export interface UnmaskOnReachProps {
   children: string | JSX.Element | JSX.Element[] | ReactNode
-  animation?: string
-  delay?: string
-  disableRotation?: boolean
+  animation?: AnimationType
+  delay?: number // in seconds
   className?: string
   reach?: number
 }

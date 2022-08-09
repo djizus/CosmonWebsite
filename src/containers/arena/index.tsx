@@ -86,11 +86,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
       <div className="relative h-[380px] bg-cosmon-main-quaternary">
         <div className="flex h-full items-center justify-center gap-x-[54px]">
           {getMEAs().map((mea, i) => (
-            <UnmaskOnReach
-              key={`mea-${i}`}
-              animation={AnimationType.rise}
-              delay={`${(i + 1) * 180}ms`}
-            >
+            <UnmaskOnReach key={`mea-${i}`} delay={(i + 1) * 0.18}>
               <MEA {...mea} />
             </UnmaskOnReach>
           ))}
