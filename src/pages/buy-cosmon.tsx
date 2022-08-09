@@ -14,6 +14,7 @@ import { useAirdropStore } from '../store/airdropStore'
 import { useCosmonStore } from '../store/cosmonStore'
 import UnmaskOnReach from '@components/UnmaskOnReach/UnmaskOnReach'
 import { AnimationType } from '@components/UnmaskOnReach/UnmaskOnReach.types'
+import { motion } from 'framer-motion'
 
 export default function Page() {
   const { buyCosmon, isConnected, connect, address } = useWalletStore(
@@ -115,7 +116,7 @@ export default function Page() {
         <Section className=" pt-[72px]">
           {isConnected && (
             <div className="flex flex-col gap-y-8">
-              <UnmaskOnReach animation={AnimationType.rise}>
+              <UnmaskOnReach>
                 <div className="rounded-[20px] bg-[#312E5A] bg-opacity-50">
                   <div className="hidden items-center justify-center py-[24px] lg:flex">
                     <div className="flex items-center gap-x-8 px-10 ">
@@ -207,7 +208,7 @@ export default function Page() {
               }
             />
           ))} */}
-            <UnmaskOnReach animation={AnimationType.rise}>
+            <UnmaskOnReach delay={0.2}>
               <PotionItem
                 buy={(price: string) => buy(SCARCITIES.UNCOMMON, price)}
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_UNCOMMON || 'xx'}
@@ -216,7 +217,7 @@ export default function Page() {
                 img="uncommon.png"
               />
             </UnmaskOnReach>
-            <UnmaskOnReach animation={AnimationType.rise} delay={`${280}ms`}>
+            <UnmaskOnReach delay={0.4}>
               <PotionItem
                 buy={(price) => buy(SCARCITIES.RARE, price)}
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_RARE || 'xx'}
@@ -225,7 +226,7 @@ export default function Page() {
                 img="rare.png"
               />
             </UnmaskOnReach>
-            <UnmaskOnReach animation={AnimationType.rise} delay={`${560}ms`}>
+            <UnmaskOnReach delay={0.6}>
               <PotionItem
                 buy={(price) => buy(SCARCITIES.EPIC, price)}
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_EPIC || 'xx'}
@@ -234,7 +235,7 @@ export default function Page() {
                 img="epic.png"
               />
             </UnmaskOnReach>
-            <UnmaskOnReach animation={AnimationType.rise} delay={`${720}ms`}>
+            <UnmaskOnReach delay={0.8}>
               <PotionItem
                 buy={(price) => buy(SCARCITIES.LEGENDARY, price)}
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_LEGENDARY || 'xx'}

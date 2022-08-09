@@ -106,8 +106,12 @@ export default function CosmonFullModal({
                 </div>
               </div>
               <div className="flex justify-between">
-                <div className="text-[#D8D1E7]">Action Point</div>
-                <div>Coming soon</div>
+                <div className="text-[#D8D1E7]">Fight Point</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Fp')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Experience Point</div>

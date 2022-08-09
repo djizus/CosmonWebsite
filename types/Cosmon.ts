@@ -16,6 +16,7 @@ export type CosmonStatKeyType =
   | 'Psy'
   | 'Luk'
   | 'Int'
+  | 'Fp'
 
 export type CosmonStatType = {
   key: CosmonStatKeyType

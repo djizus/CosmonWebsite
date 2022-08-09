@@ -297,7 +297,7 @@ export const executeClaimAirdrop = async (
           PUBLIC_SELL_CONTRACT,
           { claim: {} },
           'auto',
-          'memo'
+          '[COSMON] claim airdrop'
         )
 
         const tokenId =
@@ -448,7 +448,6 @@ export const initIbc = async (
   })
 }
 
-// TODO Sylvestre
 export const claimReward = async (
   signingClient: SigningCosmWasmClient,
   address: string
@@ -458,7 +457,7 @@ export const claimReward = async (
     PUBLIC_REWARDS_CONTRACT,
     { claim_rewards: {} },
     'auto',
-    'memo'
+    '[COSMON] claim reward'
   )
   return true
 }
@@ -495,88 +494,21 @@ export async function fetch_tokens(
   return tokens
 }
 
-export const getCurrentRewards = async (
+export const getRewards = async (
   signingClient: SigningCosmWasmClient,
   address: string
 ): Promise<{
-  amount: string
-  denom: string
+  current: Coin
+  total: Coin
 }> => {
   const tokens: string[] = await fetch_tokens(signingClient, address)
+  const rewards = await signingClient.queryContractSmart(
+    PUBLIC_REWARDS_CONTRACT,
+    { available_rewards_for_nfts: { nfts: tokens } }
+  )
 
-  let total
-  for (const nft_id of tokens) {
-    let currentRewards
-    try {
-      currentRewards = await signingClient.queryContractSmart(
-        PUBLIC_REWARDS_CONTRACT,
-        {
-          available_rewards: { nft_id },
-        }
-      )
-    } catch (e: any) {
-      if (!e.toString().includes('no rewards')) {
-        console.error('error', e)
-      }
-      continue
-    }
-
-    if (currentRewards) {
-      if (!total) {
-        total = currentRewards.current_reward
-      } else {
-        total.amount = new BigNumber(total.amount)
-          .plus(currentRewards.current_reward.amount)
-          .toString()
-      }
-    }
+  return {
+    current: rewards.current_reward || coin('0', PUBLIC_STAKING_DENOM),
+    total: rewards.total_rewards || coin('0', PUBLIC_STAKING_DENOM),
   }
-
-  if (!total) {
-    return coin('0', PUBLIC_STAKING_DENOM)
-  }
-  return total
-}
-
-export const getTotalRewards = async (
-  signingClient: SigningCosmWasmClient,
-  address: string
-): Promise<{
-  amount: string
-  denom: string
-}> => {
-  const tokens: string[] = await fetch_tokens(signingClient, address)
-  let total
-  let currentRewards
-  for (const nft_id of tokens) {
-    try {
-      currentRewards = await signingClient.queryContractSmart(
-        PUBLIC_REWARDS_CONTRACT,
-        {
-          available_rewards: { nft_id },
-        }
-      )
-    } catch (e: any) {
-      if (!e.toString().includes('no rewards')) {
-        console.error('error', e)
-      }
-      continue
-    }
-
-    if (currentRewards) {
-      if (!total) {
-        total = currentRewards.total_rewards
-      } else {
-        total.amount = new BigNumber(total.amount)
-          .plus(currentRewards.total_rewards.amount)
-          .toString()
-      }
-    }
-  }
-
-  if (!total) {
-    return coin('0', PUBLIC_STAKING_DENOM)
-  }
-
-  return total
 }
