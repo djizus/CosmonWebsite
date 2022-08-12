@@ -1,16 +1,15 @@
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { Scarcity } from '../../types/Scarcity'
-
 import { FaucetClient } from '@cosmjs/faucet-client'
 import { CosmonType } from '../../types/Cosmon'
 import { convertDenomToMicroDenom } from '../utils/conversion'
 import { coin, SigningStargateClient } from '@cosmjs/stargate'
 import { Coin } from '@cosmjs/amino/build/coins'
-import { useLogger } from 'react-use'
 import { sleep } from '@cosmjs/utils'
 import BigNumber from 'bignumber.js'
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/cosmwasmclient'
-import { add } from '@noble/hashes/_u64'
+import { useWalletStore } from '@store/walletStore'
+import chunk from 'lodash/chunk'
 
 const Height = require('long')
 
@@ -153,7 +152,6 @@ export const queryCosmonInfo = async (
             nft_info: { token_id: cosmonId },
           }
         )
-        console.log('queryCosmonInfo ::', cosmonId, data)
         return resolve(data)
       } catch (e) {
         console.error(`Error while fetching cosmon ${cosmonId}`, e)
@@ -501,14 +499,45 @@ export const getRewards = async (
   current: Coin
   total: Coin
 }> => {
-  const tokens: string[] = await fetch_tokens(signingClient, address)
-  const rewards = await signingClient.queryContractSmart(
-    PUBLIC_REWARDS_CONTRACT,
-    { available_rewards_for_nfts: { nfts: tokens } }
-  )
+  const { cosmons } = useWalletStore.getState()
 
-  return {
-    current: rewards.current_reward || coin('0', PUBLIC_STAKING_DENOM),
-    total: rewards.total_rewards || coin('0', PUBLIC_STAKING_DENOM),
+  const CHUNK_SIZE = 20
+
+  const chunks = chunk(cosmons, CHUNK_SIZE)
+
+  let tempRewards: { current_reward: Coin; total_rewards: Coin }[] = []
+
+  for (const chunkOfCosmons of chunks) {
+    const fetchedRewards = await signingClient.queryContractSmart(
+      PUBLIC_REWARDS_CONTRACT,
+      {
+        available_rewards_for_nfts: { nfts: chunkOfCosmons.map((c) => c.id) },
+      }
+    )
+    tempRewards.push(fetchedRewards)
   }
+
+  const rewards = tempRewards.reduce(
+    (prev, curr) => {
+      return {
+        current: {
+          amount: (
+            +prev?.current?.amount + +curr.current_reward.amount
+          ).toString(),
+          denom: curr.current_reward.denom,
+        } as Coin,
+        total: {
+          amount: (
+            +prev?.total?.amount + +curr.total_rewards.amount
+          ).toString(),
+          denom: curr.total_rewards.denom,
+        } as Coin,
+      }
+    },
+    {
+      current: coin('0', PUBLIC_STAKING_DENOM),
+      total: coin('0', PUBLIC_STAKING_DENOM),
+    }
+  )
+  return rewards
 }

@@ -16,11 +16,11 @@ export const createDeck = async (name: string, nftIds: NFTId[]) => {
       PUBLIC_DECK_CONTRACT,
       { create_deck: { name, nfts: nftIds } },
       'auto',
-      'memo'
+      '[COSMON] create deck'
     )
     return response
-  } catch (e) {
-    console.error(`Error while creating a deck`, e)
+  } catch (e: any) {
+    throw new Error(`Error while creating a deck`)
   }
 }
 
@@ -41,11 +41,11 @@ export const updateDeck = async (
       PUBLIC_DECK_CONTRACT,
       { update_deck: { deck: deckId, name, nfts: nftIds } },
       'auto',
-      'memo'
+      `[COSMON] update deck ${deckId}`
     )
     return response
   } catch (e) {
-    console.error(`Error while creating a deck`, e)
+    throw new Error(`Error while updating a deck`)
   }
 }
 
@@ -61,11 +61,11 @@ export const removeDeck = async (deckId: DeckId) => {
       PUBLIC_DECK_CONTRACT,
       { remove_deck: { deck: deckId } },
       'auto',
-      'memo'
+      `[COSMON] remove deck ${deckId}`
     )
     return response
   } catch (e) {
-    console.error(`Error while removing a deck`, e)
+    throw new Error(`Error while removing a deck`)
   }
 }
 
@@ -82,11 +82,11 @@ export const removeNfts = async (deckId: DeckId, nftIds: DeckId[]) => {
       PUBLIC_DECK_CONTRACT,
       { remove_nfts: { deckId, nfts: nftIds } },
       'auto',
-      'memo'
+      `[COSMON] remove nfts of deck ${deckId}`
     )
     return response
   } catch (e) {
-    console.error(`Error while removing nfts to a deck`, e)
+    throw new Error(`Error while removing nfts from the deck`)
   }
 }
 
@@ -103,7 +103,7 @@ export const addNfts = async (deckId: DeckId, nftIds: NFTId[]) => {
       PUBLIC_DECK_CONTRACT,
       { add_nfts: { deckId, nfts: nftIds } },
       'auto',
-      'memo'
+      `[COSMON] add nfts to deck ${deckId}`
     )
     return response
   } catch (e) {
@@ -142,7 +142,7 @@ export const setName = async (deckId: DeckId, name: string) => {
       PUBLIC_DECK_CONTRACT,
       { set_name: { deckId, name } },
       'auto',
-      'memo'
+      `[COSMON] set name of deck ${deckId}`
     )
     return response
   } catch (e) {

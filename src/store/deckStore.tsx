@@ -13,7 +13,7 @@ import { toast } from 'react-toastify'
 import { ToastContainer } from '../components/ToastContainer/ToastContainer'
 import ErrorIcon from '@public/icons/error.svg'
 import SuccessIcon from '@public/icons/success.svg'
-import { getTrait } from '@utils/cosmon'
+import { getCosmonPersonalityAffinity, getTrait } from '@utils/cosmon'
 
 interface DeckState {
   decksList: any[]
@@ -100,7 +100,6 @@ export const useDeckStore = create<DeckState>((set, get) => ({
             },
             icon: SuccessIcon,
           },
-
           error: {
             render({ data }: any) {
               return (
@@ -178,7 +177,6 @@ export const useDeckStore = create<DeckState>((set, get) => ({
   },
   computeDeckAffinities: (nfts: CosmonType[]) => {
     const cosmons = nfts?.filter((c) => c !== undefined)
-    const { personalityAffinities } = get()
 
     // Geographical
     let geoAffinity: Set<NFTId> = new Set()
@@ -212,18 +210,13 @@ export const useDeckStore = create<DeckState>((set, get) => ({
     let personalityAffinity: Set<NFTId[]> = new Set()
     for (let i = 0; i < cosmons.length; i++) {
       const cosmon = cosmons[i]
-      const persoTrait = getTrait(cosmon, 'Personality')
-      const matchingPersonality = personalityAffinities
-        ?.filter(([lookingForPersonality, _matching]: [string, string]) => {
-          return persoTrait === lookingForPersonality
-        })
-        .flat()[1]
+      const cosmonPersonalityAffinity = getCosmonPersonalityAffinity(cosmon)
 
       for (let j = 0; j < cosmons.length; j++) {
         const cosmon2 = cosmons[j]
         if (
           i !== j &&
-          matchingPersonality === getTrait(cosmon2, 'Personality')
+          cosmonPersonalityAffinity === getTrait(cosmon2, 'Personality')
         ) {
           personalityAffinity.add([cosmon.id, cosmon2.id])
         }

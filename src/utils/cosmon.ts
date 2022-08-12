@@ -1,3 +1,4 @@
+import { useDeckStore } from '@store/deckStore'
 import {
   CosmonStatKeyType,
   CosmonStatType,
@@ -56,4 +57,17 @@ export function sortCosmonsByScarcity(cosmonsList: CosmonType[]) {
     }
   }
   return r
+}
+
+export function getCosmonPersonalityAffinity(cosmon: CosmonType) {
+  const { personalityAffinities } = useDeckStore.getState()
+  const cosmonPersonality = getTrait(cosmon, 'Personality')
+
+  const matchingPersonality = personalityAffinities
+    ?.filter(([lookingForPersonality, _matching]: [string, string]) => {
+      return cosmonPersonality === lookingForPersonality
+    })
+    .flat()[1]
+
+  return matchingPersonality
 }
