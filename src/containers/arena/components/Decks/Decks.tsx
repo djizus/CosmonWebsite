@@ -1,8 +1,11 @@
 import { Deck } from '@services/deck'
 import { useDeckStore } from '@store/deckStore'
 import { useWalletStore } from '@store/walletStore'
-import React from 'react'
+import { AnimatePresence } from 'framer-motion'
+import React, { useCallback, useState } from 'react'
 import { useEffect } from 'react'
+import { FightModeType, FightRequestType } from 'types/FightMode'
+import TrainingModeDescriptionModal from '../TrainingModeDescriptionModal'
 import DecksEmptyList from './DecksEmptyList'
 import DecksList from './DecksList'
 
@@ -16,6 +19,10 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
   const { decksList, fetchDecksList, fetchPersonalityAffinities } =
     useDeckStore((state) => state)
 
+  const [fightRequest, setFightRequest] = useState<
+    FightRequestType | undefined
+  >()
+
   useEffect(() => {
     if (isConnected) {
       fetchPersonalityAffinities()
@@ -28,6 +35,15 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
     }
   }, [cosmons])
 
+  const handleLaunchFight = useCallback(
+    (deck: Deck, fightMode: FightModeType) => {
+      setFightRequest({ deck, fightMode })
+    },
+    []
+  )
+
+  const handleStartFight = useCallback(() => {}, [])
+
   return (
     <div className="min-h-[400px]">
       {decksList?.length > 0 ? (
@@ -36,11 +52,22 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
             decksList={decksList}
             onEditDeck={onEditDeck}
             onDeleteDeck={onDeleteDeck}
+            onLaunchFight={handleLaunchFight}
           />
         </div>
       ) : (
         <DecksEmptyList />
       )}
+      <AnimatePresence>
+        {fightRequest?.fightMode === 'training' ? (
+          <TrainingModeDescriptionModal
+            onCloseModal={() => {
+              setFightRequest(undefined)
+            }}
+            onSliderEndReached={handleStartFight}
+          />
+        ) : null}
+      </AnimatePresence>
     </div>
   )
 }

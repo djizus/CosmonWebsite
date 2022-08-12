@@ -1,7 +1,6 @@
 import Button from '@components/Button/Button'
 import ConnectionNeededContent from '@components/ConnectionNeededContent/ConnectionNeededContent'
 import UnmaskOnReach from '@components/UnmaskOnReach/UnmaskOnReach'
-import { AnimationType } from '@components/UnmaskOnReach/UnmaskOnReach.types'
 import { getMEAs } from '@containers/arena/data'
 import { Deck } from '@services/deck'
 import { useDeckStore } from '@store/deckStore'

@@ -1,3 +1,4 @@
+import { FightModeRequestType } from 'types/FightMode'
 import { MEAType } from 'types/MEA'
 
 const MEA_BASE_PATH = '/mea/'
@@ -20,5 +21,16 @@ export const getMEAs = (): MEAType[] => [
     title: 'Cosmon Leaders',
     link: 'https://medium.com/ki-foundation/an-unidentified-threat-is-approaching-and-wosmongton-knows-there-is-very-little-if-any-time-left-8f532d614a8a',
     subtitle: 'Rarity traits and evolution system',
+  },
+]
+
+export const getFightRequestModes = (): FightModeRequestType[] => [
+  {
+    active: true,
+    fightMode: 'training',
+  },
+  {
+    active: false,
+    fightMode: 'league',
   },
 ]
