@@ -1,5 +1,9 @@
 import { CosmonType } from '../../../types/Cosmon'
-import { getCosmonStat, getTrait } from '../../utils/cosmon'
+import {
+  getCosmonPersonalityAffinity,
+  getCosmonStat,
+  getTrait,
+} from '../../utils/cosmon'
 import Close from '/public/icons/close.svg'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Hover from 'react-3d-hover'
@@ -74,11 +78,13 @@ export default function CosmonFullModal({
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Type’s preference</div>
-                <div>Coming soon</div>
+                <div>{getCosmonPersonalityAffinity(cosmon)}</div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Geographical area</div>
-                <div>{getTrait(cosmon, 'Geographical')}</div>
+                <div className="text-right">
+                  {getTrait(cosmon, 'Geographical')}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Time Period</div>
@@ -88,12 +94,20 @@ export default function CosmonFullModal({
 
             {/* Section 2 */}
             <div className="flex flex-col gap-y-1">
-              <b className="text-[16px]">Caracteristics</b>
+              <b className="text-[16px]">Key caracteristics</b>
               <div className="mt-3 flex justify-between">
                 <div className="text-[#D8D1E7]">Level</div>
                 <div className="capitalize">
                   {cosmon.stats
                     ? getCosmonStat(cosmon.stats, 'Level')?.value
+                    : '-'}
+                </div>
+              </div>
+              <div className="flex justify-between">
+                <div className="text-[#D8D1E7]">Experience Point</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Xp')?.value
                     : '-'}
                 </div>
               </div>
@@ -114,14 +128,6 @@ export default function CosmonFullModal({
                 </div>
               </div>
               <div className="flex justify-between">
-                <div className="text-[#D8D1E7]">Experience Point</div>
-                <div>
-                  {cosmon.stats
-                    ? getCosmonStat(cosmon.stats, 'Xp')?.value
-                    : '-'}
-                </div>
-              </div>
-              <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Boost</div>
                 <div>Coming soon</div>
               </div>
@@ -129,12 +135,28 @@ export default function CosmonFullModal({
 
             {/* Section 3 */}
             <div className="flex flex-col gap-y-1">
-              <b className="text-[16px]">Caracteristics</b>
+              <b className="text-[16px]">Secondary caracteristics</b>
               <div className="mt-3 flex justify-between">
                 <div className="text-[#D8D1E7]">Attack (ATQ)</div>
                 <div>
                   {cosmon.stats
                     ? getCosmonStat(cosmon.stats, 'Atq')?.value
+                    : '-'}
+                </div>
+              </div>
+              <div className="flex justify-between">
+                <div className="text-[#D8D1E7]">Defense (DEF)</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Def')?.value
+                    : '-'}
+                </div>
+              </div>
+              <div className="flex justify-between">
+                <div className="text-[#D8D1E7]">Intelligence (INT)</div>
+                <div>
+                  {cosmon.stats
+                    ? getCosmonStat(cosmon.stats, 'Int')?.value
                     : '-'}
                 </div>
               </div>
@@ -151,30 +173,6 @@ export default function CosmonFullModal({
                 <div>
                   {cosmon.stats
                     ? getCosmonStat(cosmon.stats, 'Luk')?.value
-                    : '-'}
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div className="text-[#D8D1E7]">Defense (DEF)</div>
-                <div>
-                  {cosmon.stats
-                    ? getCosmonStat(cosmon.stats, 'Def')?.value
-                    : '-'}
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div className="text-[#D8D1E7]">Psychology (PSY)</div>
-                <div>
-                  {cosmon.stats
-                    ? getCosmonStat(cosmon.stats, 'Psy')?.value
-                    : '-'}
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div className="text-[#D8D1E7]">Intelligence (INT)</div>
-                <div>
-                  {cosmon.stats
-                    ? getCosmonStat(cosmon.stats, 'Int')?.value
                     : '-'}
                 </div>
               </div>
