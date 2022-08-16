@@ -1,16 +1,15 @@
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { Scarcity } from '../../types/Scarcity'
-
 import { FaucetClient } from '@cosmjs/faucet-client'
 import { CosmonType } from '../../types/Cosmon'
 import { convertDenomToMicroDenom } from '../utils/conversion'
 import { coin, SigningStargateClient } from '@cosmjs/stargate'
 import { Coin } from '@cosmjs/amino/build/coins'
-import { useLogger } from 'react-use'
 import { sleep } from '@cosmjs/utils'
 import BigNumber from 'bignumber.js'
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/cosmwasmclient'
-import { add } from '@noble/hashes/_u64'
+import { useWalletStore } from '@store/walletStore'
+import chunk from 'lodash/chunk'
 
 const Height = require('long')
 
@@ -296,7 +295,7 @@ export const executeClaimAirdrop = async (
           PUBLIC_SELL_CONTRACT,
           { claim: {} },
           'auto',
-          'memo'
+          '[COSMON] claim airdrop'
         )
 
         const tokenId =
@@ -447,7 +446,6 @@ export const initIbc = async (
   })
 }
 
-// TODO Sylvestre
 export const claimReward = async (
   signingClient: SigningCosmWasmClient,
   address: string
@@ -457,7 +455,7 @@ export const claimReward = async (
     PUBLIC_REWARDS_CONTRACT,
     { claim_rewards: {} },
     'auto',
-    'memo'
+    '[COSMON] claim reward'
   )
   return true
 }
@@ -494,88 +492,52 @@ export async function fetch_tokens(
   return tokens
 }
 
-export const getCurrentRewards = async (
+export const getRewards = async (
   signingClient: SigningCosmWasmClient,
   address: string
 ): Promise<{
-  amount: string
-  denom: string
+  current: Coin
+  total: Coin
 }> => {
-  const tokens: string[] = await fetch_tokens(signingClient, address)
+  const { cosmons } = useWalletStore.getState()
 
-  let total
-  for (const nft_id of tokens) {
-    let currentRewards
-    try {
-      currentRewards = await signingClient.queryContractSmart(
-        PUBLIC_REWARDS_CONTRACT,
-        {
-          available_rewards: { nft_id },
-        }
-      )
-    } catch (e: any) {
-      if (!e.toString().includes('no rewards')) {
-        console.error('error', e)
-      }
-      continue;
-    }
+  const CHUNK_SIZE = 20
 
-    if (currentRewards) {
-      if (!total) {
-        total = currentRewards.current_reward
-      } else {
-        total.amount = new BigNumber(total.amount)
-          .plus(currentRewards.current_reward.amount)
-          .toString()
+  const chunks = chunk(cosmons, CHUNK_SIZE)
+
+  let tempRewards: { current_reward: Coin; total_rewards: Coin }[] = []
+
+  for (const chunkOfCosmons of chunks) {
+    const fetchedRewards = await signingClient.queryContractSmart(
+      PUBLIC_REWARDS_CONTRACT,
+      {
+        available_rewards_for_nfts: { nfts: chunkOfCosmons.map((c) => c.id) },
       }
-    }
+    )
+    tempRewards.push(fetchedRewards)
   }
 
-  if (!total) {
-    return coin('0', PUBLIC_STAKING_DENOM);
-  }
-  return total
-}
-
-export const getTotalRewards = async (
-  signingClient: SigningCosmWasmClient,
-  address: string
-): Promise<{
-  amount: string
-  denom: string
-}> => {
-  const tokens: string[] = await fetch_tokens(signingClient, address)
-  let total
-  let currentRewards
-  for (const nft_id of tokens) {
-    try {
-      currentRewards = await signingClient.queryContractSmart(
-        PUBLIC_REWARDS_CONTRACT,
-        {
-          available_rewards: { nft_id },
-        }
-      )
-    } catch (e: any) {
-      if (!e.toString().includes('no rewards')) {
-        console.error('error', e)
+  const rewards = tempRewards.reduce(
+    (prev, curr) => {
+      return {
+        current: {
+          amount: (
+            +prev?.current?.amount + +curr.current_reward.amount
+          ).toString(),
+          denom: curr.current_reward.denom,
+        } as Coin,
+        total: {
+          amount: (
+            +prev?.total?.amount + +curr.total_rewards.amount
+          ).toString(),
+          denom: curr.total_rewards.denom,
+        } as Coin,
       }
-      continue;
+    },
+    {
+      current: coin('0', PUBLIC_STAKING_DENOM),
+      total: coin('0', PUBLIC_STAKING_DENOM),
     }
-
-    if (currentRewards) {
-      if (!total) {
-        total = currentRewards.total_rewards
-      } else {
-        total.amount = new BigNumber(total.amount)
-          .plus(currentRewards.total_rewards.amount)
-          .toString()
-      }
-    }
-  }
-
-  if (!total) {
-    return coin('0', PUBLIC_STAKING_DENOM);
-  }
-
-  return total
+  )
+  return rewards
 }

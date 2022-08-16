@@ -20,6 +20,8 @@ type LayoutProps = {
   children: React.ReactNode
 }
 
+const ARENA_IS_ACTIVE = Boolean(process.env.NEXT_PUBLIC_ARENA_IS_ACTIVE)
+
 export default function Layout({ children }: LayoutProps) {
   const {
     address: walletAddress,
@@ -32,47 +34,21 @@ export default function Layout({ children }: LayoutProps) {
     isConnected,
     ibcDenom,
     coins,
+    ibcCoins,
     showWithdrawDepositModal,
     setShowWithdrawDepositModal,
   } = useWalletStore((state) => state)
 
   const { getWhitelistData } = useCosmonStore((state) => state)
 
-  // const { data: tokens, error } = useSWR(
-  //   {
-  //     type: 'query',
-  //     contractAddress: process.env.NEXT_PUBLIC_NFT_CONTRACT,
-  //     payload: {
-  //       tokens: {
-  //         owner: walletAddress,
-  //         limit: 5000,
-  //       },
-  //     },
-  //   },
-  //   chainFetcher
-  // )
-
-  // console.log('data', tokens)
-  // console.log('error', error)
-
   const [showWalletPopup, set_showWalletPopup] = useState(false)
   const [showDisconnectOrCopyPopup, set_showDisconnectOrCopyPopup] =
     useState(false)
-  // const [refreshWalletDataInterval, set_refreshWalletDataInterval] = useState<
-  //   number | null
-  // >()
-
-  // useEffect(() => {}, [tokens])
 
   const handleSwitchAccount = async () => {
-    // setTimeout(() => {
-    // await disconnect()
-
     await connect()
     fetchWalletData()
     getWhitelistData()
-
-    // }, 100)
   }
 
   useEffect(() => {
@@ -97,17 +73,14 @@ export default function Layout({ children }: LayoutProps) {
   }, [coins])
 
   useEffect(() => {
-    const refreshInterval = window.setInterval(() => {
+    if (isConnected) {
+      fetchWalletData()
+    }
+    /* const refreshInterval = window.setInterval(() => {
       fetchWalletData()
     }, 8000)
-    return () => clearInterval(refreshInterval)
+    return () => clearInterval(refreshInterval) */
   }, [isConnected])
-
-  // useEffect(() => {
-  //   connect()
-  //   fetchWalletData()
-  //   getWhitelistData()
-  // }, [signingClient])
 
   return (
     <div className="flex flex-col">
@@ -143,6 +116,11 @@ export default function Layout({ children }: LayoutProps) {
                 {cosmons.length > 0 && ` (${cosmons.length})`}
               </a>
             </Link>
+            {ARENA_IS_ACTIVE ? (
+              <Link href="/arena">
+                <a>Arena</a>
+              </Link>
+            ) : null}
           </div>
         </div>
 

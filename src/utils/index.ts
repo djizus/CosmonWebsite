@@ -10,5 +10,6 @@ export const getAmountFromDenom = (denom: string, coins: Coin[]) => {
     convertMicroDenomToDenom(
       coins.find((coin) => coin.denom === denom)?.amount || 0
     ) || 0
+
   return Number(amount.toFixed(3))
 }

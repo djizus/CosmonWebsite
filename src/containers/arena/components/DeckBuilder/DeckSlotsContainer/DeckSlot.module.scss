@@ -1,0 +1,45 @@
+.deckSlotWrapper {
+  position: relative;
+  background: transparent;
+  width: 152px;
+  height: 242px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.deckSlotCorners {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  animation: scaleUpAndDown 1s ease infinite;
+}
+
+.deckSlotContainer {
+  position: absolute;
+  width: 90%;
+  height: 94%;
+  border: double 4px transparent;
+  border-radius: 8px;
+  background-image: linear-gradient(white, white),
+    radial-gradient(circle at top left, #a996ff, #7660d880);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  z-index: 2;
+}
+
+@keyframes scaleUpAndDown {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+  }
+}

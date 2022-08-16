@@ -1,4 +1,4 @@
-import { ReactElement, ReactEventHandler, useEffect, useState } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import Layout from '../components/Layout/Layout'
 import CommonQuestions from '../sections/CommonQuestions'
 import Subscribe from '../sections/Subscribe'
@@ -15,10 +15,14 @@ import { Transition } from '@headlessui/react'
 import CosmonFullModal from '../components/Modal/CosmonFullModal'
 import { getAmountFromDenom } from '../utils/index'
 import { useRewardStore } from '../store/rewardStore'
+import ConnectionNeededContent from '../components/ConnectionNeededContent/ConnectionNeededContent'
+import Tooltip from '@components/Tooltip/Tooltip'
+import clsx from 'clsx'
 
 export default function Page() {
-  const { connect, isConnected, cosmons, coins, setShowWithdrawDepositModal } =
-    useWalletStore((state) => state)
+  const { cosmons, coins, setShowWithdrawDepositModal } = useWalletStore(
+    (state) => state
+  )
 
   const { rewardsData, claimRewards } = useRewardStore((state) => state)
 
@@ -33,12 +37,12 @@ export default function Page() {
 
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
 
-  const hasRewards = () => {
-      if (rewardsData && +rewardsData.current.amount !== 0) {
-          return true;
-      }
-      return false;
-  }
+  const hasRewards = useMemo(() => {
+    if (rewardsData && +rewardsData.current.amount !== 0) {
+      return true
+    }
+    return false
+  }, [rewardsData?.current])
 
   useEffect(() => {
     if (cosmons.length > 0) {
@@ -72,29 +76,7 @@ export default function Page() {
         ></TransferAssetModal>
       )}
       <div className="max-w-auto px-2 pt-[100px] lg:pt-[158px]">
-        {!isConnected ? (
-          <div className="relative flex h-[500px] w-full items-center justify-center">
-            <Image
-              objectFit="fill"
-              layout="fill"
-              src="../blurry-bg-connect-wallet.png"
-            ></Image>
-
-            <div className="relative px-6">
-              <p className="rounded-[20px] bg-[#312E5A] bg-opacity-50 px-6 py-10 text-[22px] font-semibold leading-8 text-white lg:hidden">
-                Go to the desktop version to see your Cosmon assets
-              </p>
-              <div className="hidden items-center justify-center py-[24px] lg:flex">
-                <p className="px-10 text-[22px] font-semibold leading-[32px] text-white">
-                  Connect your wallet to see your assets
-                </p>
-                <Button onClick={connect} className="max-h-[42px]">
-                  Connect Wallet{' '}
-                </Button>
-              </div>
-            </div>
-          </div>
-        ) : (
+        <ConnectionNeededContent>
           <>
             <div className="mx-auto hidden max-w-[1120px] flex-col rounded-[20px] bg-[#312E5A] bg-opacity-50 p-10 lg:flex">
               <div className="flex">
@@ -175,15 +157,13 @@ export default function Page() {
                       <div className="flex gap-x-3">
                         <Button
                           onClick={() => {
-                            hasRewards() && claimRewards()
+                            hasRewards && claimRewards()
                           }}
-                          type={hasRewards() ? 'primary' : 'disabled-colored'}
+                          type={hasRewards ? 'primary' : 'disabled-colored'}
                           size="small"
                           className="text-sm"
                         >
-                          {hasRewards()
-                            ? 'Claim rewards'
-                            : 'No rewards to claim'}
+                          {hasRewards ? 'Claim rewards' : 'No rewards to claim'}
                         </Button>
                       </div>
                     </td>
@@ -245,13 +225,22 @@ export default function Page() {
                 {cosmons.map((cosmon) => (
                   <div
                     key={cosmon.id}
-                    className="group  transition-all hover:scale-[104%] hover:shadow-2xl"
+                    className="group overflow-visible transition-all hover:scale-[104%] hover:shadow-2xl"
                   >
                     <div
                       onClick={() => {
-                        set_assetToTransfer(cosmon)
+                        if (cosmon.isInDeck === false) {
+                          set_assetToTransfer(cosmon)
+                        }
                       }}
-                      className="transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 rounded-full p-2 transition-all group-hover:scale-100"
+                      data-tip="tootlip"
+                      data-for={`${cosmon.id}-transfer`}
+                      className={clsx(
+                        'transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 rounded-full p-2 transition-all group-hover:scale-100',
+                        cosmon.isInDeck === false
+                          ? 'cursor-pointer'
+                          : 'disabled cursor-not-allowed'
+                      )}
                     >
                       <img
                         width="16px"
@@ -260,6 +249,13 @@ export default function Page() {
                         alt=""
                       />
                     </div>
+                    <Tooltip id={`${cosmon.id}-transfer`} place="top">
+                      <p style={{ whiteSpace: 'pre' }}>
+                        {cosmon.isInDeck === false
+                          ? 'Transfer your cosmon'
+                          : 'Transfer impossible\nYour cosmon is already in a deck'}
+                      </p>
+                    </Tooltip>
                     <Image
                       src={cosmon.data.extension.image}
                       onClick={() => set_showCosmonDetail(cosmon)}
@@ -267,6 +263,7 @@ export default function Page() {
                       width={167}
                       placeholder="blur"
                       blurDataURL="/cosmon-placeholder.svg"
+                      className="cursor-pointer"
                     />
                   </div>
                   // </Transition.Child>
@@ -274,7 +271,7 @@ export default function Page() {
               </div>
             </Transition>
           </>
-        )}
+        </ConnectionNeededContent>
 
         <Section className="hidden pt-[173px] pb-[162px] lg:flex">
           <CommonQuestions />

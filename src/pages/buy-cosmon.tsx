@@ -1,19 +1,20 @@
 import { ReactElement, useEffect, useState } from 'react'
 import Layout from '../components/Layout/Layout'
 import CommonQuestions from '../sections/CommonQuestions'
-import Subscribe from '../sections/Subscribe'
 import Section from '../components/Section/Section'
 import PotionItem from '../components/PotionItem/PotionItem'
 import Button from '../components/Button/Button'
-import { Scarcity } from '../../types/Scarcity'
+import { SCARCITIES, Scarcity } from '../../types/Scarcity'
 import { useWalletStore } from '../store/walletStore'
-import useWindowSize from 'react-use/lib/useWindowSize'
 import { CosmonType } from '../../types/Cosmon'
 import CosmonAcquiredModal from '../components/Modal/CosmonAcquiredModal'
 import CosmonAirdropModal from '../components/Modal/CosmonAirdropModal'
 import { useRouter } from 'next/router'
 import { useAirdropStore } from '../store/airdropStore'
 import { useCosmonStore } from '../store/cosmonStore'
+import UnmaskOnReach from '@components/UnmaskOnReach/UnmaskOnReach'
+import { AnimationType } from '@components/UnmaskOnReach/UnmaskOnReach.types'
+import { motion } from 'framer-motion'
 
 export default function Page() {
   const { buyCosmon, isConnected, connect, address } = useWalletStore(
@@ -114,20 +115,22 @@ export default function Page() {
 
         <Section className=" pt-[72px]">
           {isConnected && (
-            <div className="flex flex-col gap-y-8 ">
-              <div className="rounded-[20px] bg-[#312E5A] bg-opacity-50">
-                <div className="hidden items-center justify-center py-[24px] lg:flex">
-                  <div className="flex items-center gap-x-8 px-10 ">
-                    <p className="text-[22px] font-semibold leading-[32px] text-white">
-                      Test your eligibility to our Cosmon airdrop!
-                    </p>
-                    <Button onClick={() => getAirdropData()} size="small">
-                      {' '}
-                      Check
-                    </Button>
+            <div className="flex flex-col gap-y-8">
+              <UnmaskOnReach>
+                <div className="rounded-[20px] bg-[#312E5A] bg-opacity-50">
+                  <div className="hidden items-center justify-center py-[24px] lg:flex">
+                    <div className="flex items-center gap-x-8 px-10 ">
+                      <p className="text-[22px] font-semibold leading-[32px] text-white">
+                        Test your eligibility to our Cosmon airdrop!
+                      </p>
+                      <Button onClick={() => getAirdropData()} size="small">
+                        {' '}
+                        Check
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </UnmaskOnReach>
               {whitelistData &&
                 whitelistData.available_slots > whitelistData.used_slots && (
                   <div className="rounded-[20px] bg-[#5EC640] bg-opacity-50">
@@ -205,35 +208,42 @@ export default function Page() {
               }
             />
           ))} */}
-
-            <PotionItem
-              buy={(price: string) => buy('Uncommon', price)}
-              yieldPercent={process.env.NEXT_PUBLIC_YIELD_UNCOMMON || 'xx'}
-              isCurrentlyBuying={isCurrentlyBuying === 'Uncommon'}
-              type="Uncommon"
-              img="uncommon.png"
-            />
-            <PotionItem
-              buy={(price) => buy('Rare', price)}
-              yieldPercent={process.env.NEXT_PUBLIC_YIELD_RARE || 'xx'}
-              isCurrentlyBuying={isCurrentlyBuying === 'Rare'}
-              type="Rare"
-              img="rare.png"
-            />
-            <PotionItem
-              buy={(price) => buy('Epic', price)}
-              yieldPercent={process.env.NEXT_PUBLIC_YIELD_EPIC || 'xx'}
-              isCurrentlyBuying={isCurrentlyBuying === 'Epic'}
-              type="Epic"
-              img="epic.png"
-            />
-            <PotionItem
-              buy={(price) => buy('Legendary', price)}
-              yieldPercent={process.env.NEXT_PUBLIC_YIELD_LEGENDARY || 'xx'}
-              isCurrentlyBuying={isCurrentlyBuying === 'Legendary'}
-              type="Legendary"
-              img="legendary.png"
-            />
+            <UnmaskOnReach delay={0.2}>
+              <PotionItem
+                buy={(price: string) => buy(SCARCITIES.UNCOMMON, price)}
+                yieldPercent={process.env.NEXT_PUBLIC_YIELD_UNCOMMON || 'xx'}
+                isCurrentlyBuying={isCurrentlyBuying === 'Uncommon'}
+                type={SCARCITIES.UNCOMMON}
+                img="uncommon.png"
+              />
+            </UnmaskOnReach>
+            <UnmaskOnReach delay={0.4}>
+              <PotionItem
+                buy={(price) => buy(SCARCITIES.RARE, price)}
+                yieldPercent={process.env.NEXT_PUBLIC_YIELD_RARE || 'xx'}
+                isCurrentlyBuying={isCurrentlyBuying === 'Rare'}
+                type={SCARCITIES.RARE}
+                img="rare.png"
+              />
+            </UnmaskOnReach>
+            <UnmaskOnReach delay={0.6}>
+              <PotionItem
+                buy={(price) => buy(SCARCITIES.EPIC, price)}
+                yieldPercent={process.env.NEXT_PUBLIC_YIELD_EPIC || 'xx'}
+                isCurrentlyBuying={isCurrentlyBuying === 'Epic'}
+                type={SCARCITIES.EPIC}
+                img="epic.png"
+              />
+            </UnmaskOnReach>
+            <UnmaskOnReach delay={0.8}>
+              <PotionItem
+                buy={(price) => buy(SCARCITIES.LEGENDARY, price)}
+                yieldPercent={process.env.NEXT_PUBLIC_YIELD_LEGENDARY || 'xx'}
+                isCurrentlyBuying={isCurrentlyBuying === 'Legendary'}
+                type={SCARCITIES.LEGENDARY}
+                img="legendary.png"
+              />
+            </UnmaskOnReach>
           </div>
 
           <p className="mt-[68px] text-center text-base">

@@ -22,12 +22,15 @@ import {
   fetch_tokens,
 } from '../services/interaction'
 import { toast } from 'react-toastify'
-import { CosmonType } from '../../types/Cosmon'
 import { ToastContainer } from '../components/ToastContainer/ToastContainer'
+import { CosmonType } from '../../types/Cosmon'
 import ErrorIcon from '/public/icons/error.svg'
 import SuccessIcon from '/public/icons/success.svg'
 import { useCosmonStore } from './cosmonStore'
 import { useRewardStore } from './rewardStore'
+import { sortCosmonsByScarcity } from '@utils/cosmon'
+import { DeckService, NFTId } from '@services/deck'
+import { XPRegistryService } from '@services/xp-registry'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
@@ -41,6 +44,7 @@ interface WalletState {
   ibcAddress: string
   ibcDenom: string
   isFetchingData: boolean
+  isFetchingCosmons: boolean
   airdropData?: {
     isEligible: boolean
     address?: string
@@ -67,6 +71,9 @@ interface WalletState {
   fetchCoin: () => void
   addMoneyFromFaucet: () => void
   fetchCosmons: () => void
+  updateCosmonsAreInDeck: () => void
+  markCosmonAsTemporaryFree: (nftId: NFTId) => void
+  resetAllCosmonsTemporaryFree: () => void
   fetchWalletData: () => void
   initIbc: (amount: Coin, deposit: boolean) => void
   getAirdropData: () => void
@@ -86,6 +93,7 @@ const useWalletStore = create<WalletState>(
       address: '',
       ibcAddress: '',
       isFetchingData: false,
+      isFetchingCosmons: false,
       isCurrentlyIbcTransferring: false,
       signingClient: null,
       stargateSigningClient: null,
@@ -118,6 +126,7 @@ const useWalletStore = create<WalletState>(
           const ibcOfflineSigner = await (window as any).getOfflineSignerAuto(
             PUBLIC_IBC_CHAIN_ID
           )
+
           const client = await makeClient(offlineSigner)
           const stargateClient = await makeStargateClient(offlineSigner)
           const ibcClient = await makeIbcClient(ibcOfflineSigner)
@@ -137,7 +146,6 @@ const useWalletStore = create<WalletState>(
             ibcAddress,
             isConnected: true,
           })
-          await get().fetchWalletData()
         } catch (error: any) {
           console.error('error while connecting', error)
         } finally {
@@ -174,7 +182,6 @@ const useWalletStore = create<WalletState>(
               },
               error: {
                 render({ data }: any) {
-                  console.log('my data', data)
                   return (
                     <ToastContainer type="error">{data.message}</ToastContainer>
                   )
@@ -301,6 +308,7 @@ const useWalletStore = create<WalletState>(
               address,
               PUBLIC_STAKING_IBC_DENOM
             )
+
             let newCoins = coins.filter(
               (coin) =>
                 coin.denom !== PUBLIC_STAKING_DENOM &&
@@ -321,6 +329,7 @@ const useWalletStore = create<WalletState>(
               ibcAddress,
               PUBLIC_STAKING_IBC_DENOM_ON_CHAIN
             )
+
             let newCoins = coins.filter(
               (coin) => coin.denom !== PUBLIC_STAKING_IBC_DENOM_ON_CHAIN
             )
@@ -335,7 +344,7 @@ const useWalletStore = create<WalletState>(
       },
       fetchCosmons: async () => {
         set({
-          isFetchingData: true,
+          isFetchingCosmons: true,
         })
         const { signingClient, address } = get()
         if (signingClient && address) {
@@ -343,18 +352,33 @@ const useWalletStore = create<WalletState>(
             const tokens: string[] = await fetch_tokens(signingClient, address)
 
             // getting cosmon details
-            const myCosmons: CosmonType[] = await Promise.all(
+            let myCosmons: CosmonType[] = await Promise.all(
               tokens.map(async (token: string) => {
                 const cosmon = await queryCosmonInfo(signingClient, token)
+                const stats = await XPRegistryService.queries().getCosmonStats(
+                  token
+                )
                 return {
                   id: token,
                   data: cosmon,
+                  isInDeck: false,
+                  stats,
                 }
               })
             )
-            // console.log('myCosmons', myCosmons)
+
+            const cosmonIdsAlreadyInDecks =
+              await DeckService.queries().isNftsInADeck(
+                myCosmons.map((c) => c.id)
+              )
+
+            myCosmons = myCosmons.map((c, i) => ({
+              ...c,
+              isInDeck: cosmonIdsAlreadyInDecks[i],
+            }))
+
             set({
-              cosmons: myCosmons.map(
+              cosmons: sortCosmonsByScarcity(myCosmons).map(
                 (cosmon) =>
                   get().cosmons.find((c) => c.id === cosmon.id) || cosmon
               ),
@@ -363,13 +387,55 @@ const useWalletStore = create<WalletState>(
             console.error('Error while fetching cosmons', e)
           } finally {
             set({
-              isFetchingData: false,
+              isFetchingCosmons: false,
             })
           }
         }
       },
+      updateCosmonsAreInDeck: async () => {
+        const { cosmons } = get()
+
+        let myCosmons = [...cosmons]
+        const cosmonIdsAlreadyInDecks =
+          await DeckService.queries().isNftsInADeck(cosmons.map((c) => c.id))
+
+        myCosmons = myCosmons.map((c, i) => ({
+          ...c,
+          isInDeck: cosmonIdsAlreadyInDecks[i],
+        }))
+
+        set({
+          cosmons: [...sortCosmonsByScarcity(myCosmons)],
+        })
+      },
+      markCosmonAsTemporaryFree: async (nftIdToMark: NFTId) => {
+        const { cosmons } = get()
+        let myCosmons = [...cosmons]
+        let cosmonToUpdate = myCosmons.find((c) => c.id === nftIdToMark)
+        if (cosmonToUpdate) {
+          cosmonToUpdate = { ...cosmonToUpdate, temporaryFree: true }
+        }
+        set({
+          cosmons: [
+            ...sortCosmonsByScarcity(
+              cosmons.filter((c) => c.id !== nftIdToMark)
+            ),
+            cosmonToUpdate!,
+          ],
+        })
+      },
+      resetAllCosmonsTemporaryFree: () => {
+        const { cosmons } = get()
+        set({
+          cosmons: [
+            ...sortCosmonsByScarcity(
+              cosmons.map((c) => ({ ...c, temporaryFree: undefined }))
+            ),
+          ],
+        })
+      },
       buyCosmon: async (scarcity, price) => {
-        const { signingClient, fetchCosmons, address } = get()
+        const { signingClient, fetchCosmons, address, fetchCoin } = get()
         if (signingClient && address) {
           const response = await toast
             .promise(
@@ -409,6 +475,8 @@ const useWalletStore = create<WalletState>(
             )
             .then(({ token }: any) => {
               fetchCosmons()
+              // update wallet available balance
+              fetchCoin()
               return token
             })
           return response
@@ -459,7 +527,6 @@ const useWalletStore = create<WalletState>(
             })
         }
       },
-
       resetClaimData: async () => {
         set({
           airdropData: undefined,

@@ -1,0 +1,21 @@
+.dropdownContainer {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  .dropdownTogglerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .dropdownMenuContainer {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    z-index: 1000;
+    padding: 20px;
+    min-width: 200px;
+  }
+}

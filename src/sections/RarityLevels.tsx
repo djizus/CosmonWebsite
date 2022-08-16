@@ -1,5 +1,6 @@
 import RarityLevel from '../components/RarityLevel/RarityLevel'
 import { motion } from 'framer-motion'
+import { SCARCITIES } from 'types/Scarcity'
 
 export default function RarityLevels() {
   const rarityListAnimation = {
@@ -56,26 +57,26 @@ export default function RarityLevels() {
         whileInView={'visible'}
         variants={rarityListAnimation}
         viewport={{ once: true }}
-        className="rarity-levels flex flex-col items-center gap-y-9 gap-x-[45px] pt-6 lg:flex-row lg:justify-center lg:pt-[123px] xl:gap-x-[60px]"
+        className="rarity-levels flex flex-col items-center gap-y-9  gap-x-[45px] pt-6 lg:flex-row lg:items-start lg:justify-center lg:pt-[123px] xl:gap-x-[60px]"
       >
         <motion.div variants={rarityItemAnimation}>
-          <RarityLevel type="Common" />
+          <RarityLevel type={SCARCITIES.COMMON} />
         </motion.div>
 
         <motion.div variants={rarityItemAnimation}>
-          <RarityLevel type="Uncommon" />
+          <RarityLevel type={SCARCITIES.UNCOMMON} />
         </motion.div>
         <motion.div variants={rarityItemAnimation}>
-          <RarityLevel type="Rare" />
+          <RarityLevel type={SCARCITIES.RARE} />
         </motion.div>
         <motion.div variants={rarityItemAnimation}>
-          <RarityLevel type="Epic" />
+          <RarityLevel type={SCARCITIES.EPIC} />
         </motion.div>
         <motion.div variants={rarityItemAnimation}>
-          <RarityLevel type="Legendary" />
+          <RarityLevel type={SCARCITIES.LEGENDARY} />
         </motion.div>
         <motion.div variants={rarityItemAnimation}>
-          <RarityLevel comingSoon type="Divinity" />
+          <RarityLevel comingSoon type={SCARCITIES.DIVINITY} />
         </motion.div>
       </motion.div>
     </>

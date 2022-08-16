@@ -1,16 +1,18 @@
 import { Transition } from '@headlessui/react'
-import { useState } from 'react'
-import { useDebounce } from 'use-debounce'
+import { useMemo, useState } from 'react'
 import { useWalletStore } from '../../store/walletStore'
 import { getAmountFromDenom } from '../../utils/index'
 import Button from '../Button/Button'
 import Modal from './Modal'
 import { Coin } from '@cosmjs/amino/build/coins'
 import BigNumber from 'bignumber.js'
+import Tooltip from '@components/Tooltip/Tooltip'
 
 type WithdrawDepositModalProps = {
   onCloseModal: () => void
 }
+
+const PUBLIC_IBC_TX_FEES = parseFloat(process.env.NEXT_PUBLIC_IBC_TX_FEES!)
 
 export default function WithdrawDepositModal({
   onCloseModal,
@@ -25,37 +27,29 @@ export default function WithdrawDepositModal({
     showWithdrawDepositModal,
   } = useWalletStore((state) => state)
 
-  const [destinationAddress, set_destinationAddress] = useState<string>('')
-  const [destinationAddressDebounced] = useDebounce(destinationAddress, 500)
-  const [destinationAddressValid, set_destinationAddressValid] = useState(false)
-  const [isFetchingInfo, set_isFetchingInfo] = useState<boolean>(false)
   const [amountToTransfer, set_amountToTransfer] = useState<string>()
 
-  const getChainAmount = () => {
-    return getAmountFromDenom(
-      process.env.NEXT_PUBLIC_STAKING_DENOM || '',
-      coins
-    )
-  }
-
-  const isAmountInvalid = () => {
-    if (showWithdrawDepositModal === 'withdraw') {
-      return getIbcAmount() < parseFloat(amountToTransfer || '0')
-    } else {
-      return getFromChainAmount() < parseFloat(amountToTransfer || '0')
-    }
-  }
-
-  const getIbcAmount = () => {
+  const getIbcAmount = useMemo(() => {
     return getAmountFromDenom(
       process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
       coins
     )
-  }
+  }, [coins])
 
-  const getFromChainAmount = () => {
+  const getFromChainAmount = useMemo(() => {
     return getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM || '', ibcCoins)
-  }
+  }, [ibcCoins])
+
+  const isAmountInvalid = useMemo(() => {
+    if (showWithdrawDepositModal === 'withdraw') {
+      return getIbcAmount < parseFloat(amountToTransfer || '0')
+    } else {
+      return (
+        getFromChainAmount - PUBLIC_IBC_TX_FEES <
+        parseFloat(amountToTransfer || '0')
+      )
+    }
+  }, [showWithdrawDepositModal, amountToTransfer])
 
   const launchInitIbc = async () => {
     const coin: Coin = {
@@ -124,19 +118,45 @@ export default function WithdrawDepositModal({
         </div>
 
         <div className="mb-[60px] rounded-[14px] border border-cosmon-main-tertiary p-3">
-          <div className="flex gap-x-1 pb-1">
-            Available balance:{' '}
-            <div className="flex uppercase">
-              {showWithdrawDepositModal === 'withdraw' ? (
+          <div className="flex justify-between pb-1">
+            <div className="flex gap-x-1">
+              Available balance:{' '}
+              <div className="flex uppercase">
+                {showWithdrawDepositModal === 'withdraw' ? (
+                  <>
+                    {getIbcAmount} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+                  </>
+                ) : (
+                  <>
+                    {getFromChainAmount}{' '}
+                    {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="flex">
+              {showWithdrawDepositModal === 'deposit' ? (
                 <>
-                  {getIbcAmount()} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+                  <img
+                    src="/icons/info.svg"
+                    alt="Deposit info"
+                    data-tip="tootlip"
+                    data-for={`deposit-info`}
+                    className="h-[24px] w-[24px] cursor-help"
+                  />
+                  <Tooltip id={`deposit-info`} place="top">
+                    <p style={{ whiteSpace: 'pre' }}>
+                      The maximum deposit corresponds to your ATOM balance minus
+                      {'\n'}
+                      <strong>
+                        {PUBLIC_IBC_TX_FEES}{' '}
+                        {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN?.toUpperCase()}
+                      </strong>{' '}
+                      to guarantee the fulfillment of the transaction fee
+                    </p>
+                  </Tooltip>
                 </>
-              ) : (
-                <>
-                  {getFromChainAmount()}{' '}
-                  {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
-                </>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -154,9 +174,12 @@ export default function WithdrawDepositModal({
             <div className="absolute top-[19px] right-[15px]">
               <Button
                 onClick={() => {
+                  console.log(getFromChainAmount)
                   showWithdrawDepositModal === 'withdraw'
-                    ? set_amountToTransfer(getIbcAmount().toString())
-                    : set_amountToTransfer(getFromChainAmount().toString())
+                    ? set_amountToTransfer(getIbcAmount.toString())
+                    : set_amountToTransfer(
+                        (getFromChainAmount - PUBLIC_IBC_TX_FEES).toString() // we remove 0.1 for the transaction fees
+                      )
                 }}
                 className="h-[28px]"
                 size="small"
@@ -166,7 +189,7 @@ export default function WithdrawDepositModal({
               </Button>
             </div>
           </div>
-          {isAmountInvalid() && (
+          {isAmountInvalid && (
             <div className="pt-2 text-center font-normal text-[#DF4547]">
               Insufficient amount
             </div>
@@ -177,7 +200,7 @@ export default function WithdrawDepositModal({
             isLoading={isCurrentlyIbcTransferring}
             disabled={
               !amountToTransfer ||
-              isAmountInvalid() ||
+              isAmountInvalid ||
               amountToTransfer === '0' ||
               isCurrentlyIbcTransferring
             }

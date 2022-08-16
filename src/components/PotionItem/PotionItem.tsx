@@ -1,10 +1,12 @@
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Scarcity } from '../../../types/Scarcity'
 import { useCosmonStore } from '../../store/cosmonStore'
 import { useWalletStore } from '../../store/walletStore'
 import Button from '../Button/Button'
 import BigNumber from 'bignumber.js'
+import { getAmountFromDenom } from '@utils/index'
+import Tooltip from '@components/Tooltip/Tooltip'
 
 type PotionItemProps = {
   type: Scarcity
@@ -22,7 +24,9 @@ export default function PotionItem({
   img,
   buy,
 }: PotionItemProps) {
-  const { isConnected, isFetchingData } = useWalletStore((state) => state)
+  const { isConnected, isFetchingData, coins } = useWalletStore(
+    (state) => state
+  )
 
   const { isSellOpen, isPreSellOpen, whitelistData } = useCosmonStore(
     (state) => state
@@ -52,6 +56,16 @@ export default function PotionItem({
 
     set_cosmonAvailable(isAvailable)
   }
+
+  const hasEnoughCoinsToBuy = useMemo(() => {
+    if (cosmonPrice !== 'XX') {
+      const availableBalance = getAmountFromDenom(
+        process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
+        coins
+      )
+      return availableBalance > +cosmonPrice
+    }
+  }, [cosmonPrice, coins])
 
   const getCosmonPrice = async () => {
     let price = await fetchCosmonPrice(type)
@@ -114,24 +128,30 @@ export default function PotionItem({
       </p>
 
       {isConnected && (
-        <div className="pt-3">
-          <Button
-            isLoading={isCurrentlyBuying || cosmonAvailable === null}
-            // type={'secondary'}
-            // disabled
-            disabled={!cosmonAvailable}
-            size={'small'}
-            onClick={() =>
-              buy(cosmonDiscountPrice ? cosmonDiscountPrice : cosmonPrice)
-            }
-          >
-            {cosmonAvailable === null
-              ? 'Fetching data'
-              : cosmonAvailable
-              ? 'Buy'
-              : 'Unavailable'}
-          </Button>
-        </div>
+        <>
+          <div className="pt-3" data-tip="tootlip" data-for={`buy-${type}`}>
+            <Button
+              isLoading={isCurrentlyBuying || cosmonAvailable === null}
+              // type={'secondary'}
+              disabled={!cosmonAvailable || !hasEnoughCoinsToBuy}
+              size={'small'}
+              onClick={() =>
+                buy(cosmonDiscountPrice ? cosmonDiscountPrice : cosmonPrice)
+              }
+            >
+              {cosmonAvailable === null
+                ? 'Fetching data'
+                : cosmonAvailable
+                ? 'Buy'
+                : 'Unavailable'}
+            </Button>
+          </div>
+          {!hasEnoughCoinsToBuy ? (
+            <Tooltip id={`buy-${type}`} place="top">
+              <p>Not enough money</p>
+            </Tooltip>
+          ) : null}
+        </>
       )}
     </div>
   )
