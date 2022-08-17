@@ -7,10 +7,10 @@
     "start": "next start"
   },
   "dependencies": {
-    "@cosmjs/cosmwasm-stargate": "^0.28.10",
-    "@cosmjs/faucet-client": "^0.28.10",
-    "@cosmjs/proto-signing": "^0.28.10",
-    "@cosmjs/stargate": "^0.28.10",
+    "@cosmjs/cosmwasm-stargate": "^0.28.11",
+    "@cosmjs/faucet-client": "^0.28.11",
+    "@cosmjs/proto-signing": "^0.28.11",
+    "@cosmjs/stargate": "^0.28.11",
     "@headlessui/react": "^1.5.0",
     "@svgr/webpack": "^6.2.1",
     "bignumber.js": "^9.0.2",
