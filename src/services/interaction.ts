@@ -370,7 +370,7 @@ export const initIbc = async (
             'transfer',
             process.env.NEXT_PUBLIC_IBC_TO_KICHAIN_CHANNEL || '',
             undefined,
-            Date.now() + 600,
+            Math.floor(Date.now() / 1000) + 60,
             'auto'
           )
           wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.plus(
@@ -406,7 +406,7 @@ export const initIbc = async (
             'transfer',
             process.env.NEXT_PUBLIC_KICHAIN_TO_IBC_CHANNEL || '',
             undefined,
-            Date.now() + 600,
+            Math.floor(Date.now() / 1000) + 60,
             'auto'
           )
           wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.minus(
