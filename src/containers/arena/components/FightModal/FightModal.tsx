@@ -229,8 +229,8 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
           </section>
 
           <section
-            className=" mb-[45px] flex h-full w-full max-w-[30%] grow justify-center"
-            style={{ transform: 'perspective(100px) rotateX(2deg)' }}
+            className=" mb-[15px] flex h-full w-full max-w-[30%] grow justify-center"
+            style={{ transform: 'perspective(150vw) rotateX(20deg)' }}
           >
             <div className="grid h-full w-full grid-cols-3 gap-3 gap-y-6 rounded-md border-[0.5px] border-[#6d77db] p-3">
               {internBattle.opponent.cosmons.map((opponentCosmon) => (
