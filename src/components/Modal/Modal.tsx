@@ -1,20 +1,39 @@
+import clsx from 'clsx'
 import { motion } from 'framer-motion'
+import { useEffect } from 'react'
 import Close from '/public/icons/close.svg'
 
 type ModalProps = {
-  onCloseModal: () => void
   children: React.ReactNode
+  fullScreen?: boolean
   hasCloseButton?: boolean
+  onCloseModal: () => void
 }
 
 export default function Modal({
-  onCloseModal,
   children,
+  fullScreen = false,
   hasCloseButton = true,
+  onCloseModal,
 }: ModalProps) {
+  useEffect(() => {
+    if (fullScreen) {
+      document.getElementsByTagName('html')[0].className = 'overflow-hidden'
+      document.getElementsByTagName('body')[0].className = 'overflow-hidden'
+      return function cleanup() {
+        document.getElementsByTagName('html')[0].className = ''
+        document.getElementsByTagName('body')[0].className = ''
+      }
+    }
+  }, [])
+
   return (
     <>
-      <div className="flex justify-center">
+      <div
+        className={clsx('flex justify-center', {
+          'h-screen w-screen': fullScreen,
+        })}
+      >
         <div
           onClick={onCloseModal}
           className="fixed left-0 top-0 z-40 h-full w-full  bg-[rgba(27,27,27,0.5)]"
@@ -29,9 +48,17 @@ export default function Modal({
             y: '-50%',
             opacity: 1,
           }}
-          className="fixed left-1/2 top-1/2 z-50 flex h-fit max-w-[533px] font-semibold"
+          className={clsx(
+            'fixed left-1/2 top-1/2 z-50 flex h-fit max-w-[533px] font-semibold',
+            { 'top-0 left-0 h-screen w-screen max-w-[100vw]': fullScreen }
+          )}
         >
-          <div className="border-shiny-gradient h-auto rounded-xl bg-cosmon-main-secondary py-8 px-5">
+          <div
+            className={clsx(
+              'border-shiny-gradient h-auto rounded-xl bg-cosmon-main-secondary py-8 px-5',
+              { 'h-screen w-screen py-0 px-0': fullScreen }
+            )}
+          >
             {hasCloseButton && (
               <div
                 onClick={onCloseModal}

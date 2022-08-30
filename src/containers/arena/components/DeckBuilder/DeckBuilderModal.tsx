@@ -1,15 +1,12 @@
 import { motion } from 'framer-motion'
-import React, { useCallback } from 'react'
-import { useState } from 'react'
-import { CosmonType } from 'types/Cosmon'
+import React, { useCallback, useState, useEffect } from 'react'
+import { CosmonType, Deck } from 'types'
 import DeckBuilderContainer from './DeckBuilderContainer'
 import { DeckBuilderContext, NftsListFilter } from './DeckBuilderContext'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { DndProvider } from 'react-dnd'
-import { useEffect } from 'react'
 import { SCARCITIES } from 'types/Scarcity'
 import { useWalletStore } from '@store/walletStore'
-import { Deck } from '@services/deck'
 
 const dropIn = {
   hidden: {

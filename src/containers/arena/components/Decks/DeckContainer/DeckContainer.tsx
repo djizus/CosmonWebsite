@@ -1,5 +1,5 @@
 import Button from '@components/Button/Button'
-import { Deck } from '@services/deck'
+import { Deck, CosmonType } from 'types'
 import { useDeckStore } from '@store/deckStore'
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { useCallback, useMemo, useState } from 'react'
@@ -7,19 +7,20 @@ import DeckDropdownMenu from './DeckDropdownMenu'
 import Hover from 'react-3d-hover'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import CosmonFullModal from '@components/Modal/CosmonFullModal'
-import { CosmonType } from 'types/Cosmon'
 import CosmonFightPointsBar from '@components/Cosmon/CosmonFightPointsBar'
 
 interface DeckContainerProps {
   deck: Deck
   onEditDeck: (deck: Deck) => void
   onClickDelete: (deck: Deck) => void
+  onClickFight: (deck: Deck) => void
 }
 
 const DeckContainer: React.FC<DeckContainerProps> = ({
   deck,
   onEditDeck,
   onClickDelete,
+  onClickFight,
 }) => {
   const { computeDeckAffinities } = useDeckStore()
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
@@ -35,6 +36,10 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   const onClickDeleteDeck = useCallback(() => {
     onClickDelete(deck)
   }, [deck, onClickDelete])
+
+  const handleClickOnFight = useCallback(() => {
+    onClickFight(deck)
+  }, [deck, onClickFight])
 
   return (
     <motion.div
@@ -55,11 +60,11 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
           </div>
         </div>
         <div className="mt-[30px] flex">
-          <div className="grid grid-cols-3 gap-[30px]">
+          <div className="grid w-full grid-cols-3 gap-[30px]">
             {deck.cosmons.map((cosmon) => (
               <div
                 key={`image-${deck.id}-${cosmon.id}`}
-                className="flex flex-col"
+                className="flex h-full w-full flex-col"
               >
                 <Hover perspective={300} speed={5}>
                   <img
@@ -82,7 +87,12 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
         </div>
         <div className="mt-[30px] flex flex-1 gap-[12px]">
           <div className="w-3/4">
-            <Button disabled type="primary" size="small" fullWidth>
+            <Button
+              onClick={handleClickOnFight}
+              type="primary"
+              size="small"
+              fullWidth
+            >
               Fight
             </Button>
           </div>

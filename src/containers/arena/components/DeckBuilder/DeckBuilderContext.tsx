@@ -1,7 +1,5 @@
-import { Deck } from '@services/deck'
+import { Deck, CosmonType, Scarcity } from 'types'
 import React from 'react'
-import { CosmonType } from 'types/Cosmon'
-import { Scarcity } from 'types/Scarcity'
 
 export type NftsListFilter = {
   search: string

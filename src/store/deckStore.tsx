@@ -1,19 +1,13 @@
 import { CosmonType } from 'types/Cosmon'
 import create from 'zustand'
-import {
-  AFFINITY_TYPES,
-  Deck,
-  DeckAffinities,
-  DeckId,
-  DeckService,
-  NFTId,
-} from '../services/deck'
+import { AFFINITY_TYPES, Deck, DeckAffinitiesType, DeckId, NFTId } from 'types'
 import { useWalletStore } from './walletStore'
 import { toast } from 'react-toastify'
 import { ToastContainer } from '../components/ToastContainer/ToastContainer'
 import ErrorIcon from '@public/icons/error.svg'
 import SuccessIcon from '@public/icons/success.svg'
 import { getCosmonPersonalityAffinity, getTrait } from '@utils/cosmon'
+import { DeckService } from '@services/deck'
 
 interface DeckState {
   decksList: any[]
@@ -27,7 +21,8 @@ interface DeckState {
   updatingDeck: boolean
   removeDeck: (deckId: DeckId) => any
   isRemovingDeck: boolean
-  computeDeckAffinities: (nfts: CosmonType[]) => DeckAffinities
+  computeDeckAffinities: (nfts: CosmonType[]) => DeckAffinitiesType
+  refreshCosmonsAndDecksList: () => Promise<void>
 }
 
 export const useDeckStore = create<DeckState>((set, get) => ({
@@ -48,9 +43,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
 
         if (deckIdsList && deckIdsList.length) {
           for (const deckId of deckIdsList) {
-            const nftIdsList = await DeckService.queries().getNftsByDeckId(
-              deckId
-            )
+            const nftIdsList = await DeckService.queries().getNftsByDeckId(deckId)
 
             const deckName = await DeckService.queries().getName(deckId)
 
@@ -83,28 +76,20 @@ export const useDeckStore = create<DeckState>((set, get) => ({
         .promise(DeckService.executes().createDeck(name, nftIds), {
           pending: {
             render() {
-              return (
-                <ToastContainer type="pending">
-                  {`Creating "${name}"`}
-                </ToastContainer>
-              )
+              return <ToastContainer type="pending">{`Creating "${name}"`}</ToastContainer>
             },
           },
           success: {
             render() {
               return (
-                <ToastContainer type={'success'}>
-                  "{name}" created successfully,
-                </ToastContainer>
+                <ToastContainer type={'success'}>"{name}" created successfully,</ToastContainer>
               )
             },
             icon: SuccessIcon,
           },
           error: {
             render({ data }: any) {
-              return (
-                <ToastContainer type="error">{data.message}</ToastContainer>
-              )
+              return <ToastContainer type="error">{data.message}</ToastContainer>
             },
             icon: ErrorIcon,
           },
@@ -126,19 +111,13 @@ export const useDeckStore = create<DeckState>((set, get) => ({
         .promise(DeckService.executes().updateDeck(deckId, name, nftIds), {
           pending: {
             render() {
-              return (
-                <ToastContainer type="pending">
-                  {`Updating "${name}"`}
-                </ToastContainer>
-              )
+              return <ToastContainer type="pending">{`Updating "${name}"`}</ToastContainer>
             },
           },
           success: {
             render() {
               return (
-                <ToastContainer type={'success'}>
-                  "{name}" updated successfully,
-                </ToastContainer>
+                <ToastContainer type={'success'}>"{name}" updated successfully,</ToastContainer>
               )
             },
             icon: SuccessIcon,
@@ -146,9 +125,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
 
           error: {
             render({ data }: any) {
-              return (
-                <ToastContainer type="error">{data.message}</ToastContainer>
-              )
+              return <ToastContainer type="error">{data.message}</ToastContainer>
             },
             icon: ErrorIcon,
           },
@@ -168,8 +145,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
   },
   fetchPersonalityAffinities: async () => {
     try {
-      const personalityAffinities =
-        await DeckService.queries().getPersonalityAffinities()
+      const personalityAffinities = await DeckService.queries().getPersonalityAffinities()
       set({ personalityAffinities })
     } catch (error) {
       console.error(error)
@@ -214,10 +190,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
 
       for (let j = 0; j < cosmons.length; j++) {
         const cosmon2 = cosmons[j]
-        if (
-          i !== j &&
-          cosmonPersonalityAffinity === getTrait(cosmon2, 'Personality')
-        ) {
+        if (i !== j && cosmonPersonalityAffinity === getTrait(cosmon2, 'Personality')) {
           personalityAffinity.add([cosmon.id, cosmon2.id])
         }
       }
@@ -237,19 +210,13 @@ export const useDeckStore = create<DeckState>((set, get) => ({
         .promise(DeckService.executes().removeDeck(deckId), {
           pending: {
             render() {
-              return (
-                <ToastContainer type="pending">
-                  {`Deleting the deck`}
-                </ToastContainer>
-              )
+              return <ToastContainer type="pending">{`Deleting the deck`}</ToastContainer>
             },
           },
           success: {
             render() {
               return (
-                <ToastContainer type={'success'}>
-                  Deck was deleted successfully,
-                </ToastContainer>
+                <ToastContainer type={'success'}>Deck was deleted successfully,</ToastContainer>
               )
             },
             icon: SuccessIcon,
@@ -257,9 +224,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
 
           error: {
             render({ data }: any) {
-              return (
-                <ToastContainer type="error">{data.message}</ToastContainer>
-              )
+              return <ToastContainer type="error">{data.message}</ToastContainer>
             },
             icon: ErrorIcon,
           },
@@ -275,6 +240,18 @@ export const useDeckStore = create<DeckState>((set, get) => ({
           }
         })
       return response
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  refreshCosmonsAndDecksList: async () => {
+    try {
+      const { fetchCosmons, setCosmons } = useWalletStore.getState()
+      setCosmons([])
+      await fetchCosmons()
+      set({ decksList: [] })
+      const { fetchDecksList } = get()
+      await fetchDecksList()
     } catch (error) {
       console.error(error)
     }

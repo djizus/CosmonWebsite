@@ -1,13 +1,11 @@
-import { AFFINITY_TYPES, DeckAffinities, NFTId } from '@services/deck'
+import { AFFINITY_TYPES, DeckAffinitiesType, NFTId } from 'types'
 import React, { useCallback, useMemo } from 'react'
 import Geographical from '@public/icons/geographical.svg'
 import Time from '@public/icons/time.svg'
 import Personality from '@public/icons/personality.svg'
-import styles from './DeckAffinities.module.scss'
-import clsx from 'clsx'
 
 interface DeckAffinitiesProps {
-  deckAffinities: DeckAffinities
+  deckAffinities: DeckAffinitiesType
   variant: 'pills' | 'short'
   onHoverAffinity?: (affinityData: Set<NFTId>, affinity: AFFINITY_TYPES) => void
   onStopHoverAffinity?: () => void

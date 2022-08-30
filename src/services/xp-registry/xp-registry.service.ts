@@ -1,14 +1,14 @@
-import deckQueries from './xp-registry.queries'
-import deckExecutes from './xp-registry.executes'
+import queries from './xp-registry.queries'
+import executes from './xp-registry.executes'
 
 export class XPRegistryService {
   constructor() {}
 
   static queries() {
-    return deckQueries
+    return queries
   }
 
   static executes() {
-    return deckExecutes
+    return executes
   }
 }

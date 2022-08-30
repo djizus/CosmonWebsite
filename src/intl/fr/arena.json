@@ -1,0 +1,8 @@
+{
+  "selectArenaModal": {
+    "title": "Fight Request",
+    "ctaSelectArena": "Select an arena",
+    "ctaRegister": "Register",
+    "ctaFight": "Let's fight!"
+  }
+}
