@@ -1,7 +1,7 @@
 import Button from '@components/Button/Button'
 import Modal from '@components/Modal/Modal'
-import { Deck } from '@services/deck'
 import React from 'react'
+import { Deck } from 'types'
 
 interface DeleteDeckModalProps {
   deck: Deck

@@ -18,6 +18,8 @@
       "@hooks/*": ["./src/hooks/*"],
       "@utils": ["./src/utils"],
       "@utils/*": ["./src/utils/*"],
+      "@intl": ["./src/intl"],
+      "@intl/*": ["./src/intl/*"],
       "@pages": ["./src/pages"],
       "@pages/*": ["./src/pages/*"],
       "types": ["./types"],

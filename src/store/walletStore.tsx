@@ -2,14 +2,8 @@ import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { SigningStargateClient } from '@cosmjs/stargate'
-import {
-  connectKeplr,
-  makeClient,
-  makeIbcClient,
-  makeStargateClient,
-} from '../services/keplr'
+import { connectKeplr, makeClient, makeIbcClient, makeStargateClient } from '../services/keplr'
 import { Coin } from '@cosmjs/amino/build/coins'
-import { Scarcity } from '../../types/Scarcity'
 import {
   executeBuyCosmon,
   executeCreditWalletWithFaucet,
@@ -20,24 +14,23 @@ import {
   executeClaimAirdrop,
   initIbc,
   fetch_tokens,
-} from '../services/interaction'
+} from '@services/interaction'
 import { toast } from 'react-toastify'
 import { ToastContainer } from '../components/ToastContainer/ToastContainer'
-import { CosmonType } from '../../types/Cosmon'
 import ErrorIcon from '/public/icons/error.svg'
 import SuccessIcon from '/public/icons/success.svg'
 import { useCosmonStore } from './cosmonStore'
 import { useRewardStore } from './rewardStore'
 import { sortCosmonsByScarcity } from '@utils/cosmon'
-import { DeckService, NFTId } from '@services/deck'
+import { NFTId, CosmonType, Scarcity } from 'types'
 import { XPRegistryService } from '@services/xp-registry'
+import { DeckService } from '@services/deck'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
-const PUBLIC_STAKING_IBC_DENOM_ON_CHAIN =
-  process.env.NEXT_PUBLIC_IBC_DENOM || ''
+const PUBLIC_STAKING_IBC_DENOM_ON_CHAIN = process.env.NEXT_PUBLIC_IBC_DENOM || ''
 
 interface WalletState {
   address: string
@@ -120,12 +113,8 @@ const useWalletStore = create<WalletState>(
           await (window as any).keplr.enable(PUBLIC_IBC_CHAIN_ID)
 
           // get offline signer for signing txs
-          const offlineSigner = await (window as any).getOfflineSignerAuto(
-            PUBLIC_CHAIN_ID
-          )
-          const ibcOfflineSigner = await (window as any).getOfflineSignerAuto(
-            PUBLIC_IBC_CHAIN_ID
-          )
+          const offlineSigner = await (window as any).getOfflineSignerAuto(PUBLIC_CHAIN_ID)
+          const ibcOfflineSigner = await (window as any).getOfflineSignerAuto(PUBLIC_IBC_CHAIN_ID)
 
           const client = await makeClient(offlineSigner)
           const stargateClient = await makeStargateClient(offlineSigner)
@@ -155,9 +144,7 @@ const useWalletStore = create<WalletState>(
         }
       },
       setCosmons: (cosmons) => {
-        set({
-          cosmons: cosmons,
-        })
+        set({ cosmons })
       },
       addMoneyFromFaucet: async () => {
         set({
@@ -173,18 +160,14 @@ const useWalletStore = create<WalletState>(
               success: {
                 render() {
                   return (
-                    <ToastContainer type="success">
-                      Wallet credited successfully
-                    </ToastContainer>
+                    <ToastContainer type="success">Wallet credited successfully</ToastContainer>
                   )
                 },
                 icon: SuccessIcon,
               },
               error: {
                 render({ data }: any) {
-                  return (
-                    <ToastContainer type="error">{data.message}</ToastContainer>
-                  )
+                  return <ToastContainer type="error">{data.message}</ToastContainer>
                 },
                 icon: ErrorIcon,
               },
@@ -198,19 +181,9 @@ const useWalletStore = create<WalletState>(
         })
       },
       initIbc: async (amount: Coin, deposit: boolean) => {
-        const {
-          stargateSigningClient,
-          ibcSigningClient,
-          fetchWalletData,
-          ibcAddress,
-          address,
-        } = get()
-        if (
-          stargateSigningClient &&
-          address &&
-          ibcSigningClient &&
-          ibcAddress
-        ) {
+        const { stargateSigningClient, ibcSigningClient, fetchWalletData, ibcAddress, address } =
+          get()
+        if (stargateSigningClient && address && ibcSigningClient && ibcAddress) {
           set({
             isCurrentlyIbcTransferring: true,
           })
@@ -228,9 +201,7 @@ const useWalletStore = create<WalletState>(
                 pending: {
                   render() {
                     return (
-                      <ToastContainer type="pending">
-                        {`IBC transfer initalized`}
-                      </ToastContainer>
+                      <ToastContainer type="pending">{`IBC transfer initalized`}</ToastContainer>
                     )
                   },
                 },
@@ -247,11 +218,7 @@ const useWalletStore = create<WalletState>(
 
                 error: {
                   render({ data }: any) {
-                    return (
-                      <ToastContainer type="error">
-                        {data.message}
-                      </ToastContainer>
-                    )
+                    return <ToastContainer type="error">{data.message}</ToastContainer>
                   },
                   icon: ErrorIcon,
                 },
@@ -290,29 +257,15 @@ const useWalletStore = create<WalletState>(
         })
       },
       fetchCoin: async () => {
-        const {
-          signingClient,
-          ibcSigningClient,
-          address,
-          ibcAddress,
-          coins,
-          ibcCoins,
-        } = get()
+        const { signingClient, ibcSigningClient, address, ibcAddress, coins, ibcCoins } = get()
         if (signingClient && address) {
           try {
-            const mainCoin = await signingClient.getBalance(
-              address,
-              PUBLIC_STAKING_DENOM
-            )
-            const atomCoin = await signingClient.getBalance(
-              address,
-              PUBLIC_STAKING_IBC_DENOM
-            )
+            const mainCoin = await signingClient.getBalance(address, PUBLIC_STAKING_DENOM)
+            const atomCoin = await signingClient.getBalance(address, PUBLIC_STAKING_IBC_DENOM)
 
             let newCoins = coins.filter(
               (coin) =>
-                coin.denom !== PUBLIC_STAKING_DENOM &&
-                coin.denom !== PUBLIC_STAKING_IBC_DENOM
+                coin.denom !== PUBLIC_STAKING_DENOM && coin.denom !== PUBLIC_STAKING_IBC_DENOM
             )
             newCoins.push(mainCoin, atomCoin)
             set({
@@ -330,9 +283,7 @@ const useWalletStore = create<WalletState>(
               PUBLIC_STAKING_IBC_DENOM_ON_CHAIN
             )
 
-            let newCoins = coins.filter(
-              (coin) => coin.denom !== PUBLIC_STAKING_IBC_DENOM_ON_CHAIN
-            )
+            let newCoins = coins.filter((coin) => coin.denom !== PUBLIC_STAKING_IBC_DENOM_ON_CHAIN)
             newCoins.push(mainCoin)
             set({
               ibcCoins: newCoins,
@@ -355,9 +306,7 @@ const useWalletStore = create<WalletState>(
             let myCosmons: CosmonType[] = await Promise.all(
               tokens.map(async (token: string) => {
                 const cosmon = await queryCosmonInfo(signingClient, token)
-                const stats = await XPRegistryService.queries().getCosmonStats(
-                  token
-                )
+                const stats = await XPRegistryService.queries().getCosmonStats(token)
                 return {
                   id: token,
                   data: cosmon,
@@ -367,22 +316,23 @@ const useWalletStore = create<WalletState>(
               })
             )
 
-            const cosmonIdsAlreadyInDecks =
-              await DeckService.queries().isNftsInADeck(
-                myCosmons.map((c) => c.id)
-              )
+            const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(
+              myCosmons.map((c) => c.id)
+            )
 
             myCosmons = myCosmons.map((c, i) => ({
               ...c,
               isInDeck: cosmonIdsAlreadyInDecks[i],
             }))
-
+            console.log(myCosmons)
             set({
               cosmons: sortCosmonsByScarcity(myCosmons).map(
-                (cosmon) =>
-                  get().cosmons.find((c) => c.id === cosmon.id) || cosmon
+                (cosmon) => get().cosmons.find((c) => c.id === cosmon.id) || cosmon
               ),
             })
+            return sortCosmonsByScarcity(myCosmons).map(
+              (cosmon) => get().cosmons.find((c) => c.id === cosmon.id) || cosmon
+            )
           } catch (e) {
             console.error('Error while fetching cosmons', e)
           } finally {
@@ -396,8 +346,9 @@ const useWalletStore = create<WalletState>(
         const { cosmons } = get()
 
         let myCosmons = [...cosmons]
-        const cosmonIdsAlreadyInDecks =
-          await DeckService.queries().isNftsInADeck(cosmons.map((c) => c.id))
+        const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(
+          cosmons.map((c) => c.id)
+        )
 
         myCosmons = myCosmons.map((c, i) => ({
           ...c,
@@ -417,9 +368,7 @@ const useWalletStore = create<WalletState>(
         }
         set({
           cosmons: [
-            ...sortCosmonsByScarcity(
-              cosmons.filter((c) => c.id !== nftIdToMark)
-            ),
+            ...sortCosmonsByScarcity(cosmons.filter((c) => c.id !== nftIdToMark)),
             cosmonToUpdate!,
           ],
         })
@@ -428,9 +377,7 @@ const useWalletStore = create<WalletState>(
         const { cosmons } = get()
         set({
           cosmons: [
-            ...sortCosmonsByScarcity(
-              cosmons.map((c) => ({ ...c, temporaryFree: undefined }))
-            ),
+            ...sortCosmonsByScarcity(cosmons.map((c) => ({ ...c, temporaryFree: undefined }))),
           ],
         })
       },
@@ -438,41 +385,34 @@ const useWalletStore = create<WalletState>(
         const { signingClient, fetchCosmons, address, fetchCoin } = get()
         if (signingClient && address) {
           const response = await toast
-            .promise(
-              executeBuyCosmon(signingClient, price, address, scarcity),
-              {
-                pending: {
-                  render() {
-                    return (
-                      <ToastContainer type="pending">
-                        {`Buying ${scarcity.toLowerCase()} cosmon`}
-                      </ToastContainer>
-                    )
-                  },
+            .promise(executeBuyCosmon(signingClient, price, address, scarcity), {
+              pending: {
+                render() {
+                  return (
+                    <ToastContainer type="pending">
+                      {`Buying ${scarcity.toLowerCase()} cosmon`}
+                    </ToastContainer>
+                  )
                 },
-                success: {
-                  render() {
-                    return (
-                      <ToastContainer type={'success'}>
-                        {scarcity} bought successfully,
-                      </ToastContainer>
-                    )
-                  },
-                  icon: SuccessIcon,
+              },
+              success: {
+                render() {
+                  return (
+                    <ToastContainer type={'success'}>
+                      {scarcity} bought successfully,
+                    </ToastContainer>
+                  )
                 },
+                icon: SuccessIcon,
+              },
 
-                error: {
-                  render({ data }: any) {
-                    return (
-                      <ToastContainer type="error">
-                        {data.message}
-                      </ToastContainer>
-                    )
-                  },
-                  icon: ErrorIcon,
+              error: {
+                render({ data }: any) {
+                  return <ToastContainer type="error">{data.message}</ToastContainer>
                 },
-              }
-            )
+                icon: ErrorIcon,
+              },
+            })
             .then(({ token }: any) => {
               fetchCosmons()
               // update wallet available balance
@@ -486,42 +426,34 @@ const useWalletStore = create<WalletState>(
         const { signingClient, fetchCosmons, address } = get()
         if (signingClient && address) {
           toast
-            .promise(
-              executeTransferNft(signingClient, address, recipient, asset.id),
-              {
-                pending: {
-                  render() {
-                    return (
-                      <ToastContainer type="pending">
-                        {`Transferring ${asset.data.extension.name}`}
-                      </ToastContainer>
-                    )
-                  },
+            .promise(executeTransferNft(signingClient, address, recipient, asset.id), {
+              pending: {
+                render() {
+                  return (
+                    <ToastContainer type="pending">
+                      {`Transferring ${asset.data.extension.name}`}
+                    </ToastContainer>
+                  )
                 },
-                success: {
-                  render() {
-                    return (
-                      <ToastContainer type={'success'}>
-                        {`${asset.data.extension.name}`} transferred
-                        successfully,
-                      </ToastContainer>
-                    )
-                  },
-                  icon: SuccessIcon,
+              },
+              success: {
+                render() {
+                  return (
+                    <ToastContainer type={'success'}>
+                      {`${asset.data.extension.name}`} transferred successfully,
+                    </ToastContainer>
+                  )
                 },
+                icon: SuccessIcon,
+              },
 
-                error: {
-                  render({ data }: any) {
-                    return (
-                      <ToastContainer type="error">
-                        {data.message}
-                      </ToastContainer>
-                    )
-                  },
-                  icon: ErrorIcon,
+              error: {
+                render({ data }: any) {
+                  return <ToastContainer type="error">{data.message}</ToastContainer>
                 },
-              }
-            )
+                icon: ErrorIcon,
+              },
+            })
             .then(() => {
               fetchCosmons()
             })
@@ -541,8 +473,7 @@ const useWalletStore = create<WalletState>(
         )
 
         const isEligible =
-          signingClient &&
-          (await queryCheckAirdropEligibility(signingClient, address))
+          signingClient && (await queryCheckAirdropEligibility(signingClient, address))
 
         if (!isEligible) {
           set({
@@ -551,8 +482,7 @@ const useWalletStore = create<WalletState>(
             },
           })
         } else {
-          const claimData =
-            signingClient && (await queryGetClaimData(signingClient, address))
+          const claimData = signingClient && (await queryGetClaimData(signingClient, address))
           set({
             airdropData: {
               isEligible: true,
@@ -569,19 +499,13 @@ const useWalletStore = create<WalletState>(
             .promise(executeClaimAirdrop(signingClient, address), {
               pending: {
                 render() {
-                  return (
-                    <ToastContainer type="pending">
-                      {`Claiming cosmon airdrop`}
-                    </ToastContainer>
-                  )
+                  return <ToastContainer type="pending">{`Claiming cosmon airdrop`}</ToastContainer>
                 },
               },
               success: {
                 render() {
                   return (
-                    <ToastContainer type={'success'}>
-                      Cosmon claimed successfully,
-                    </ToastContainer>
+                    <ToastContainer type={'success'}>Cosmon claimed successfully,</ToastContainer>
                   )
                 },
                 icon: SuccessIcon,
@@ -589,9 +513,7 @@ const useWalletStore = create<WalletState>(
 
               error: {
                 render({ data }: any) {
-                  return (
-                    <ToastContainer type="error">{data.message}</ToastContainer>
-                  )
+                  return <ToastContainer type="error">{data.message}</ToastContainer>
                 },
                 icon: ErrorIcon,
               },

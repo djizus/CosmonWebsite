@@ -1,5 +1,5 @@
 import { useWalletStore } from '@store/walletStore'
-import { DeckId, NFTId } from './deck.types'
+import { DeckId, NFTId } from 'types'
 
 const PUBLIC_DECK_CONTRACT = process.env.NEXT_PUBLIC_DECK_CONTRACT!
 

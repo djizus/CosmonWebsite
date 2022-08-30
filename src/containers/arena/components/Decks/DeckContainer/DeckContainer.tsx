@@ -1,35 +1,29 @@
 import Button from '@components/Button/Button'
-import { Deck } from '@services/deck'
+import { Deck, CosmonType } from 'types'
 import { useDeckStore } from '@store/deckStore'
-import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import React, { useCallback, useMemo, useState } from 'react'
 import DeckDropdownMenu from './DeckDropdownMenu'
 import Hover from 'react-3d-hover'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import CosmonFullModal from '@components/Modal/CosmonFullModal'
-import { CosmonType } from 'types/Cosmon'
 import CosmonFightPointsBar from '@components/Cosmon/CosmonFightPointsBar'
-import FightRequestModal from '../../FightRequestModal'
-import { FightModeType } from 'types/FightMode'
-import FlipCard from '@components/FlipCard/FlipCard'
 
 interface DeckContainerProps {
   deck: Deck
   onEditDeck: (deck: Deck) => void
   onClickDelete: (deck: Deck) => void
-  onLaunchFight: (deck: Deck, fightMode: FightModeType) => void
+  onClickFight: (deck: Deck) => void
 }
 
 const DeckContainer: React.FC<DeckContainerProps> = ({
   deck,
   onEditDeck,
   onClickDelete,
-  onLaunchFight,
+  onClickFight,
 }) => {
   const { computeDeckAffinities } = useDeckStore()
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
-  const [showFightRequest, setShowFightRequest] = useState(false)
-  const [cardRevealed, setCardRevealed] = useState(false)
 
   const affinities = useMemo(() => {
     return computeDeckAffinities(deck.cosmons)
@@ -44,8 +38,8 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   }, [deck, onClickDelete])
 
   const handleClickOnFight = useCallback(() => {
-    setShowFightRequest(true)
-  }, [deck, onClickDelete])
+    onClickFight(deck)
+  }, [deck, onClickFight])
 
   return (
     <motion.div
@@ -141,23 +135,6 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
             />
           </motion.div>
         )}
-      </AnimatePresence>
-      <AnimatePresence
-        initial={false}
-        exitBeforeEnter={true}
-        onExitComplete={() => null}
-      >
-        {showFightRequest ? (
-          <FightRequestModal
-            loading={false}
-            onConfirmFight={(fightMode: FightModeType) => {
-              onLaunchFight(deck, fightMode)
-            }}
-            onCloseModal={() => {
-              setShowFightRequest(false)
-            }}
-          />
-        ) : null}
       </AnimatePresence>
     </motion.div>
   )

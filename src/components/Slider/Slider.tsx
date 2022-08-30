@@ -6,6 +6,7 @@ import React, { ReactNode, useMemo, useState } from 'react'
 interface SliderProps {
   children: ReactNode[]
   containerClassName?: string
+  showPagination?: boolean
   onEndReached: {
     btnLabel: string
     onClick: () => void
@@ -32,6 +33,7 @@ const variants = {
 const Slider: React.FC<SliderProps> = ({
   containerClassName,
   children,
+  showPagination = true,
   onEndReached,
 }) => {
   const [[page, direction], setPage] = useState([0, 0])
@@ -78,7 +80,7 @@ const Slider: React.FC<SliderProps> = ({
           {children[page]}
         </motion.div>
       </AnimatePresence>
-      <div className="mt-[60px] flex justify-between">
+      <div className={clsx('mt-[60px] flex justify-between')}>
         {page > 0 ? (
           <div className="flex flex-1">
             <Button
@@ -94,24 +96,27 @@ const Slider: React.FC<SliderProps> = ({
         ) : (
           <div className="flex flex-1" />
         )}
-        <div className="flex flex-1 items-center justify-center gap-[8px]">
-          {Array.from(Array(nbChildren).keys()).map((i) => (
-            <div
-              key={i}
-              onClick={() => {
-                setPage([i, 0])
-                setActiveBullet(i)
-              }}
-              style={{
-                width: 8,
-                height: 8,
-                background:
-                  activeBullet === i ? '#D9D9D9' : 'rgba(217, 217, 217, 0.3)',
-                borderRadius: '100%',
-              }}
-            ></div>
-          ))}
-        </div>
+        {showPagination === true ? (
+          <div className="flex flex-1 items-center justify-center gap-[8px]">
+            {nbChildren > 1 &&
+              Array.from(Array(nbChildren).keys()).map((i) => (
+                <div
+                  key={i}
+                  onClick={() => {
+                    setPage([i, 0])
+                    setActiveBullet(i)
+                  }}
+                  style={{
+                    width: 8,
+                    height: 8,
+                    background: activeBullet === i ? '#D9D9D9' : 'rgba(217, 217, 217, 0.3)',
+                    borderRadius: '100%',
+                  }}
+                />
+              ))}
+          </div>
+        ) : null}
+
         <div className="flex flex-1 justify-end">
           <Button
             type="primary"

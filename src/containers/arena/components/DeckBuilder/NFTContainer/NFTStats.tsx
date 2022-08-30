@@ -3,12 +3,11 @@ import React from 'react'
 import Light from '@public/cosmons/stats/light.svg'
 import Shield from '@public/cosmons/stats/shield.svg'
 import Sparkles from '@public/cosmons/stats/sparkles.svg'
-import Spiral from '@public/cosmons/stats/spiral.svg'
 import Sword from '@public/cosmons/stats/sword.svg'
 import Zap from '@public/cosmons/stats/zap.svg'
 import Heart from '@public/cosmons/stats/heart.svg'
 import { getCosmonStat } from '@utils/cosmon'
-import { NFTId } from '@services/deck'
+import { NFTId } from 'types'
 import Tooltip from '@components/Tooltip/Tooltip'
 
 interface NFTStatsProps {

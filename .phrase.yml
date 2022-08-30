@@ -1,0 +1,39 @@
+# See https://help.phrase.com/help/structuring-translations-how-to-keep-the-original-files
+# for configuration
+phrase:
+  access_token: a4647e2fa1296d4fee49d6dfd1cebe6815e7e04b0c966390248c2af04ed79899
+  project_id: 19809bc1713e94eda88ca15a5f071f8a
+  push:
+    sources:
+      - file: ./src/intl/en/<tag>.json
+        params:
+          file_format: i18next
+          locale_id: fd4bb8483b3e517aff8c3faeee55bf30
+          update_translations: true
+      - file: ./src/intl/fr/<tag>.json
+        params:
+          file_format: i18next
+          locale_id: 6e052e9d4789b7f7a3a4ea9122689f65
+          update_translations: true
+  pull:
+    targets:
+      - file: ./src/intl/<locale_name>/common.json
+        params:
+          file_format: i18next
+          tags: common
+      - file: ./src/intl/<locale_name>/home.json
+        params:
+          file_format: i18next
+          tags: home
+      - file: ./src/intl/<locale_name>/arena.json
+        params:
+          file_format: i18next
+          tags: arena
+      - file: ./src/intl/<locale_name>/arenas.json
+        params:
+          file_format: i18next
+          tags: arenas
+      - file: ./src/intl/<locale_name>/fight.json
+        params:
+          file_format: i18next
+          tags: fight

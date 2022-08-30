@@ -11,18 +11,12 @@ interface CosmonFightPointsBarProps {
 
 const CosmonFightPointsBar: React.FC<
   CosmonFightPointsBarProps &
-    React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLDivElement>,
-      HTMLDivElement
-    >
+    React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 > = ({ cosmon, ...props }) => {
   return (
     <div {...props} className={clsx('flex items-center', props.className)}>
       <div
-        className={clsx(
-          'flex items-center justify-center py-[6px] px-[3px]',
-          styles.zapContainer
-        )}
+        className={clsx('flex items-center justify-center py-[6px] px-[3px]', styles.zapContainer)}
       >
         <Zap className={styles.zapSvg} />
       </div>
@@ -32,9 +26,7 @@ const CosmonFightPointsBar: React.FC<
           styles.fightPointsContainer
         )}
       >
-        {Array.from(
-          Array(getCosmonStat(cosmon.stats!, 'Fp')?.value).keys()
-        ).map((i) => (
+        {Array.from(Array(+getCosmonStat(cosmon.stats!, 'Fp')?.value!).keys()).map((i) => (
           <div
             key={`${cosmon.id}-fp-${i}`}
             className={clsx('h-full w-full', styles.fightPointContainer)}

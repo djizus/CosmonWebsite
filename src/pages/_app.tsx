@@ -1,6 +1,7 @@
 import 'react-toastify/dist/ReactToastify.min.css'
 import '../styles/globals.scss'
 import '../styles/toastify.scss'
+import '@services/translations'
 import Close from '/public/icons/close.svg'
 
 import type { ReactElement, ReactNode } from 'react'

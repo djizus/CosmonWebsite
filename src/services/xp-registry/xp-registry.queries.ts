@@ -1,5 +1,5 @@
-import { NFTId } from '@services/deck'
-import { useWalletStore } from '../../store/walletStore'
+import { NFTId } from 'types'
+import { useWalletStore } from '@store/walletStore'
 
 const PUBLIC_XP_REGISTRY_CONTRACT =
   process.env.NEXT_PUBLIC_XP_REGISTRY_CONTRACT!
