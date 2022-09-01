@@ -28,6 +28,7 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
   const [showLearnMoreModal, setShowLearnMoreModal] = useState(false)
   const [showFightReportModal, setShowFightReportModal] = useState(false)
   const [battle, setBattle] = useState<FightType>()
+  const [finalBattle, setFinalBattle] = useState<FightType>()
   const [selectedArena, setSelectedArena] = useState<ArenaType>()
   const [selectedDeck, setSelectedDeck] = useState<Deck>()
 
@@ -88,9 +89,12 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
     setShowSelectArenaModal(true)
   }, [])
 
-  const handleFightEnd = useCallback(async () => {
+  const handleFightEnd = useCallback(async (finalBattleState?: FightType) => {
     await refreshCosmonsAndDecksList()
-    // setShowFightReportModal(true)
+    if (finalBattleState) {
+      setFinalBattle(finalBattleState)
+    }
+    setShowFightReportModal(true)
   }, [])
 
   return (
@@ -154,9 +158,10 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showFightReportModal && battle ? (
+        {showFightReportModal && battle && finalBattle ? (
           <FightReportModal
             battle={battle}
+            finalBattle={finalBattle}
             onCloseModal={() => {
               setShowFightReportModal(false)
               setBattle(undefined)

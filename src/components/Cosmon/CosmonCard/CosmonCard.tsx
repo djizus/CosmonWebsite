@@ -15,16 +15,18 @@ const CosmonCard: React.FC<CosmonCardProps> = ({ cosmon }) => {
     <div
       className="relative flex h-full w-full rounded-[3px]"
       style={{
-        backgroundImage: `url(/cosmons/bg-card/${scarcity?.toLowerCase()}.png)`,
+        backgroundImage: `url("https://static.foundation.ki/klub/images/cosmon/${indexByCharacter(
+          cosmon.data.extension.name
+        )}/evo-0/${scarcity?.toLowerCase()}.png")`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center center',
       }}
     >
-      <img
+      {/* <img
         src={`https://static.foundation.ki/klub/images/cosmon/${indexByCharacter(
           cosmon.data.extension.name
-        )}/fixed/evo-0.png`}
+        )}/evo/evo-0.png`}
         style={{
           height: '80%',
           width: '100%',
@@ -44,10 +46,10 @@ const CosmonCard: React.FC<CosmonCardProps> = ({ cosmon }) => {
           width: '100%',
         }}
       >
-        <p className="text-[0.7rem] text-white" style={{ lineHeight: '14px' }}>
+        <p className="text-[0.8rem] text-white" style={{ lineHeight: '14px' }}>
           {cosmon.data.extension.name}
         </p>
-      </div>
+      </div> */}
     </div>
   )
 }

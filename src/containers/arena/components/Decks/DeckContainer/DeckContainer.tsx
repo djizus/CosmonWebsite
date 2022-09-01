@@ -8,6 +8,7 @@ import Hover from 'react-3d-hover'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import CosmonFullModal from '@components/Modal/CosmonFullModal'
 import CosmonFightPointsBar from '@components/Cosmon/CosmonFightPointsBar'
+import { getCosmonStat } from '@utils/cosmon'
 
 interface DeckContainerProps {
   deck: Deck
@@ -62,10 +63,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
         <div className="mt-[30px] flex">
           <div className="grid w-full grid-cols-3 gap-[30px]">
             {deck.cosmons.map((cosmon) => (
-              <div
-                key={`image-${deck.id}-${cosmon.id}`}
-                className="flex h-full w-full flex-col"
-              >
+              <div key={`image-${deck.id}-${cosmon.id}`} className="flex h-full w-full flex-col">
                 <Hover perspective={300} speed={5}>
                   <img
                     src={cosmon.data.extension.image}
@@ -89,30 +87,24 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
           <div className="w-3/4">
             <Button
               onClick={handleClickOnFight}
+              disabled={deck.cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0)}
               type="primary"
               size="small"
               fullWidth
             >
-              Fight
+              {deck.cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0)
+                ? 'Not enough Fight Points'
+                : 'Fight'}
             </Button>
           </div>
           <div className="w-1/4">
-            <Button
-              type="secondary"
-              size="small"
-              fullWidth
-              onClick={onClickEditDeck}
-            >
+            <Button type="secondary" size="small" fullWidth onClick={onClickEditDeck}>
               Edit
             </Button>
           </div>
         </div>
       </div>
-      <AnimatePresence
-        initial={false}
-        exitBeforeEnter={true}
-        onExitComplete={() => null}
-      >
+      <AnimatePresence initial={false} exitBeforeEnter={true} onExitComplete={() => null}>
         {showCosmonDetail && (
           <motion.div
             onClick={(e) => e.stopPropagation()}

@@ -1,3 +1,4 @@
+import { DeckService } from '@services/deck'
 import { queryCosmonInfo } from '@services/interaction'
 import { XPRegistryService } from '@services/xp-registry'
 import { useWalletStore } from '@store/walletStore'
@@ -95,13 +96,17 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
 
     const battle: FightType = {
       arena,
-      me: {
-        identity: getAttrValue('my_address') || '',
-        cosmons: [cosmonsToUpdate[3], cosmonsToUpdate[4], cosmonsToUpdate[5]] || [],
-      },
       opponent: {
         identity: getAttrValue('opponent') || '',
+        deckName: await DeckService.queries().getName(+getAttrValue('opponent_deck_id')),
         cosmons: [cosmonsToUpdate[0], cosmonsToUpdate[1], cosmonsToUpdate[2]] || [],
+        cosmonsWithoutBonus: opponentCosmonsList || [],
+      },
+      me: {
+        identity: getAttrValue('my_address') || '',
+        deckName: deck.name,
+        cosmons: [cosmonsToUpdate[3], cosmonsToUpdate[4], cosmonsToUpdate[5]] || [],
+        cosmonsWithoutBonus: deck.cosmons || [],
       },
       winner: {
         identity: getAttrValue('winner') || '',

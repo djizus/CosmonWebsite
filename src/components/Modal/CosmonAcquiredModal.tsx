@@ -41,7 +41,7 @@ export default function CosmonAcquiredModal({
             />
           </div>
         )}
-        <Modal onCloseModal={onCloseModal}>
+        <Modal onCloseModal={onCloseModal} width={600}>
           <div className="flex flex-col items-center justify-center text-white">
             <Transition.Child
               enter="transition-opacity ease-linear duration-[2000ms] "
@@ -60,8 +60,7 @@ export default function CosmonAcquiredModal({
               <Hover scale={1.05} perspective={300} speed={10}>
                 <img
                   style={{
-                    filter:
-                      'drop-shadow(0px 4px 10px rgba(107, 107, 107, 0.7))',
+                    filter: 'drop-shadow(0px 4px 10px rgba(107, 107, 107, 0.7))',
                   }}
                   className="mb-4"
                   height={235}

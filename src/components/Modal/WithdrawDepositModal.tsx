@@ -14,9 +14,7 @@ type WithdrawDepositModalProps = {
 
 const PUBLIC_IBC_TX_FEES = parseFloat(process.env.NEXT_PUBLIC_IBC_TX_FEES!)
 
-export default function WithdrawDepositModal({
-  onCloseModal,
-}: WithdrawDepositModalProps) {
+export default function WithdrawDepositModal({ onCloseModal }: WithdrawDepositModalProps) {
   const {
     address,
     ibcAddress,
@@ -30,10 +28,7 @@ export default function WithdrawDepositModal({
   const [amountToTransfer, set_amountToTransfer] = useState<string>()
 
   const getIbcAmount = useMemo(() => {
-    return getAmountFromDenom(
-      process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
-      coins
-    )
+    return getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '', coins)
   }, [coins])
 
   const getFromChainAmount = useMemo(() => {
@@ -44,18 +39,13 @@ export default function WithdrawDepositModal({
     if (showWithdrawDepositModal === 'withdraw') {
       return getIbcAmount < parseFloat(amountToTransfer || '0')
     } else {
-      return (
-        getFromChainAmount - PUBLIC_IBC_TX_FEES <
-        parseFloat(amountToTransfer || '0')
-      )
+      return getFromChainAmount - PUBLIC_IBC_TX_FEES < parseFloat(amountToTransfer || '0')
     }
   }, [showWithdrawDepositModal, amountToTransfer])
 
   const launchInitIbc = async () => {
     const coin: Coin = {
-      amount: new BigNumber(amountToTransfer || '0')
-        .multipliedBy(1_000_000)
-        .toString(),
+      amount: new BigNumber(amountToTransfer || '0').multipliedBy(1_000_000).toString(),
       denom:
         showWithdrawDepositModal === 'deposit'
           ? process.env.NEXT_PUBLIC_IBC_DENOM || ''
@@ -66,7 +56,7 @@ export default function WithdrawDepositModal({
   }
 
   return (
-    <Modal onCloseModal={onCloseModal}>
+    <Modal onCloseModal={onCloseModal} width={600}>
       <Transition
         show={true}
         appear={true}
@@ -76,7 +66,6 @@ export default function WithdrawDepositModal({
         leave="transition-opacity duration-[.5s]"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        className="min-w-[533px]"
       >
         <h3 className="pb-8 text-[22px] capitalize">
           {' '}
@@ -93,9 +82,7 @@ export default function WithdrawDepositModal({
               className="dark-text w-full"
               type="text"
               disabled={true}
-              value={
-                showWithdrawDepositModal === 'deposit' ? ibcAddress : address
-              }
+              value={showWithdrawDepositModal === 'deposit' ? ibcAddress : address}
             />
           </div>
 
@@ -106,9 +93,7 @@ export default function WithdrawDepositModal({
               type="text"
               // placeholder={'Enter the recipient address'}
               disabled={true}
-              value={
-                showWithdrawDepositModal === 'deposit' ? address : ibcAddress
-              }
+              value={showWithdrawDepositModal === 'deposit' ? address : ibcAddress}
               // onChange={(e) => {
               //   set_isFetchingInfo(true)
               //   set_destinationAddress(e.target.value)
@@ -128,8 +113,7 @@ export default function WithdrawDepositModal({
                   </>
                 ) : (
                   <>
-                    {getFromChainAmount}{' '}
-                    {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
+                    {getFromChainAmount} {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
                   </>
                 )}
               </div>
@@ -190,9 +174,7 @@ export default function WithdrawDepositModal({
             </div>
           </div>
           {isAmountInvalid && (
-            <div className="pt-2 text-center font-normal text-[#DF4547]">
-              Insufficient amount
-            </div>
+            <div className="pt-2 text-center font-normal text-[#DF4547]">Insufficient amount</div>
           )}
         </div>
         <div className="flex w-full justify-center">
