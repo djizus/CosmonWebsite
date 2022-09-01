@@ -15,8 +15,11 @@ const CosmonHealthBar: React.FC<
     React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 > = ({ hp, hpMax, ...props }) => {
   const nbPortionsByHp = useMemo(() => {
-    return Math.min(Math.max(Math.ceil(hp / NB_HEALTH_PORTIONS), 0), NB_HEALTH_PORTIONS)
-  }, [hp])
+    const l = Array.from(Array(NB_HEALTH_PORTIONS).keys()).map(
+      (i) => hp > (hpMax / NB_HEALTH_PORTIONS) * i
+    )
+    return l.filter((i) => i === true).length
+  }, [hp, hpMax])
 
   const getColorByNbPortions = useMemo(() => {
     switch (nbPortionsByHp) {
@@ -44,22 +47,18 @@ const CosmonHealthBar: React.FC<
         {hp}
       </div>
       <div className={clsx('relative flex h-[16px] w-full flex-1', styles.hpPortionsContainer)}>
-        <div className="absolute top-0 left-0 flex h-full w-full overflow-hidden py-[2px] px-[3px]">
-          <AnimatePresence>
-            {Array.from(Array(nbPortionsByHp).keys()).map((i) => (
-              <motion.div
-                key={`hp-range-${i}`}
-                className={clsx('h-full', styles.hpPortionContainer)}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.2 } }}
-                style={{
-                  backgroundColor: getColorByNbPortions,
-                  width: 'calc(100% / 3)',
-                  ...(i === 1 && { marginLeft: 4, marginRight: 4 }),
-                }}
-              />
-            ))}
-          </AnimatePresence>
+        <div className="absolute top-0 left-0 flex h-full w-full gap-[4px] overflow-hidden py-[2px] px-[3px]">
+          {Array.from(Array(NB_HEALTH_PORTIONS).keys()).map((i) => (
+            <div
+              key={`hp-range-${i}`}
+              className={clsx('h-full transition-all', styles.hpPortionContainer)}
+              style={{
+                backgroundColor:
+                  hp > (hpMax / NB_HEALTH_PORTIONS) * i ? getColorByNbPortions : 'transparent',
+                width: 'calc(100% / 3)',
+              }}
+            />
+          ))}
         </div>
       </div>
     </div>

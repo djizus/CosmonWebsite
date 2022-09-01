@@ -17,6 +17,8 @@ export type CosmonStatKeyType =
   | 'Luk'
   | 'Int'
   | 'Fp'
+  | 'Next Level'
+  | 'Ap'
 
 export type CosmonStatType = {
   key: CosmonStatKeyType

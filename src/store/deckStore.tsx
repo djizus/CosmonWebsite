@@ -134,10 +134,11 @@ export const useDeckStore = create<DeckState>((set, get) => ({
           try {
             set({ decksList: [] })
             await updateCosmonsAreInDeck()
-            set({ updatingDeck: false })
             return resp
           } catch (error) {
             console.error(error)
+          } finally {
+            set({ updatingDeck: false })
           }
         })
       return response

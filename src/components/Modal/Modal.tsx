@@ -7,6 +7,8 @@ type ModalProps = {
   children: React.ReactNode
   fullScreen?: boolean
   hasCloseButton?: boolean
+  containerClassname?: string
+  width?: number
   onCloseModal: () => void
 }
 
@@ -14,6 +16,8 @@ export default function Modal({
   children,
   fullScreen = false,
   hasCloseButton = true,
+  containerClassname,
+  width,
   onCloseModal,
 }: ModalProps) {
   useEffect(() => {
@@ -36,7 +40,7 @@ export default function Modal({
       >
         <div
           onClick={onCloseModal}
-          className="fixed left-0 top-0 z-40 h-full w-full  bg-[rgba(27,27,27,0.5)]"
+          className="fixed left-0 top-0 z-40 h-full w-full bg-[rgba(27,27,27,0.5)]"
         ></div>
         <motion.div
           initial={{
@@ -49,13 +53,16 @@ export default function Modal({
             opacity: 1,
           }}
           className={clsx(
-            'fixed left-1/2 top-1/2 z-50 flex h-fit max-w-[533px] font-semibold',
-            { 'top-0 left-0 h-screen w-screen max-w-[100vw]': fullScreen }
+            'fixed left-1/2 top-1/2 z-50 flex h-fit font-semibold',
+            { [`max-w-[533px]`]: width === undefined && !fullScreen },
+            { 'top-0 left-0 h-screen w-screen max-w-[100vw]': fullScreen },
+            containerClassname
           )}
+          style={{ ...(width !== undefined && { width }) }}
         >
           <div
             className={clsx(
-              'border-shiny-gradient h-auto rounded-xl bg-cosmon-main-secondary py-8 px-5',
+              'border-shiny-gradient h-auto w-full rounded-xl bg-cosmon-main-secondary py-8 px-5',
               { 'h-screen w-screen py-0 px-0': fullScreen }
             )}
           >

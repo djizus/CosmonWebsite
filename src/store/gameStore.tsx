@@ -26,8 +26,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     try {
       const arenasListTemp = await GameService.queries().getArenas()
 
-      const registeredArenasList =
-        await GameService.queries().getRegistredArenasForWallet()
+      const registeredArenasList = await GameService.queries().getRegistredArenasForWallet()
 
       const arenasList =
         arenasListTemp?.map((arena) => ({
@@ -72,9 +71,7 @@ export const useGameStore = create<GameState>((set, get) => ({
           },
           error: {
             render({ data }: any) {
-              return (
-                <ToastContainer type="error">{data.message}</ToastContainer>
-              )
+              return <ToastContainer type="error">{data.message}</ToastContainer>
             },
             icon: ErrorIcon,
           },
@@ -114,9 +111,7 @@ export const useGameStore = create<GameState>((set, get) => ({
           },
           error: {
             render({ data }: any) {
-              return (
-                <ToastContainer type="error">{data.message}</ToastContainer>
-              )
+              return <ToastContainer type="error">{data.message}</ToastContainer>
             },
             icon: ErrorIcon,
           },
@@ -124,7 +119,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         .then(async (resp: any) => {
           return resp
         })
-      set({ generatingBattle: false })
+      set({ generatingBattle: false, battle })
       return battle
     } catch (error) {}
   },

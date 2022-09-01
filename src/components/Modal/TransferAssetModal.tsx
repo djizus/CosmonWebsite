@@ -12,13 +12,8 @@ type TransferAssetModalProps = {
   asset: CosmonType
 }
 
-export default function TransferAssetModal({
-  onCloseModal,
-  asset,
-}: TransferAssetModalProps) {
-  const { transferAsset, address, signingClient } = useWalletStore(
-    (state) => state
-  )
+export default function TransferAssetModal({ onCloseModal, asset }: TransferAssetModalProps) {
+  const { transferAsset, address, signingClient } = useWalletStore((state) => state)
 
   const [destinationAddress, set_destinationAddress] = useState<string>('')
   const [destinationAddressDebounced] = useDebounce(destinationAddress, 500)
@@ -48,7 +43,7 @@ export default function TransferAssetModal({
   }, [destinationAddressDebounced])
 
   return (
-    <Modal onCloseModal={onCloseModal}>
+    <Modal onCloseModal={onCloseModal} width={550}>
       <Transition
         show={true}
         appear={true}
@@ -83,12 +78,7 @@ export default function TransferAssetModal({
         <div className="mb-[60px] flex flex-col gap-y-5">
           <div>
             <div className="mb-1">From </div>
-            <input
-              className="dark-text w-full"
-              type="text"
-              disabled={true}
-              value={address}
-            />
+            <input className="dark-text w-full" type="text" disabled={true} value={address} />
           </div>
 
           <div>

@@ -12,9 +12,7 @@ type CosmonAirdropModalProps = {
   onCloseModal: () => void
 }
 
-export default function CosmonAirdropModal({
-  onCloseModal,
-}: CosmonAirdropModalProps) {
+export default function CosmonAirdropModal({ onCloseModal }: CosmonAirdropModalProps) {
   const { airdropData, claimAirdrop } = useAirdropStore((state) => state)
   const [cosmonClaimed, set_cosmonClaimed] = useState<undefined | CosmonType>()
   const router = useRouter()
@@ -56,15 +54,10 @@ export default function CosmonAirdropModal({
           cosmon={cosmonClaimed}
           actions={
             <div className="flex gap-x-8 pt-[60px] pb-2">
-              <Button
-                size="small"
-                type="secondary"
-                onClick={() => router.push('my-assets')}
-              >
+              <Button size="small" type="secondary" onClick={() => router.push('my-assets')}>
                 See my assets
               </Button>
-              {airdropData?.num_already_claimed !==
-                airdropData?.max_claimable && (
+              {airdropData?.num_already_claimed !== airdropData?.max_claimable && (
                 <Button
                   size="small"
                   onClick={() => {
@@ -80,11 +73,9 @@ export default function CosmonAirdropModal({
           onCloseModal={() => set_cosmonClaimed(undefined)}
         />
       ) : (
-        <Modal onCloseModal={onCloseModal}>
+        <Modal onCloseModal={onCloseModal} width={600}>
           <div className="flex min-w-[533px] flex-col items-center justify-center text-white">
-            <h3 className="text-[22px] font-semibold leading-8">
-              Cosmon airdrop{' '}
-            </h3>
+            <h3 className="text-[22px] font-semibold leading-8">Cosmon airdrop </h3>
 
             <div className="mt-8 mb-5 px-5">
               <div className="rounded-[20px] bg-[#312E5A] bg-opacity-50 px-[24px] py-6">
@@ -94,14 +85,13 @@ export default function CosmonAirdropModal({
                       Oh... Unfortunately you’re not eligible
                     </h4>
                     <p className="mb-4 text-sm font-normal">
-                      The airdrop snapshot has been taken on Wednesday June 1st
-                      2022. {cosmonEligibilitySection}
+                      The airdrop snapshot has been taken on Wednesday June 1st 2022.{' '}
+                      {cosmonEligibilitySection}
                     </p>
                   </div>
                 ) : (
                   <div className="text-center">
-                    {airdropData.max_claimable !==
-                      airdropData.num_already_claimed && (
+                    {airdropData.max_claimable !== airdropData.num_already_claimed && (
                       <Image
                         layout="fixed"
                         width="387px"
@@ -111,28 +101,23 @@ export default function CosmonAirdropModal({
                     )}
 
                     <h4 className="mb-5 mt-2 text-lg font-semibold leading-[26px]">
-                      {airdropData.max_claimable ===
-                      airdropData.num_already_claimed
+                      {airdropData.max_claimable === airdropData.num_already_claimed
                         ? 'You already claimed all your Cosmon airdrop'
                         : `Congrats, you’re eligible to ${airdropData.max_claimable} Cosmon airdrop!`}
                     </h4>
 
                     <p className="mb-4 text-sm font-normal">
-                      You get 1 Cosmon airdrop for each condition fulfilled as
-                      follows (snapshot taken on June 1st), within the limits of
-                      available stocks (50k Cosmons - first-come, first-served
-                      basis):
+                      You get 1 Cosmon airdrop for each condition fulfilled as follows (snapshot
+                      taken on June 1st), within the limits of available stocks (50k Cosmons -
+                      first-come, first-served basis):
                     </p>
-                    <div className="font-normal">
-                      {cosmonEligibilitySection}
-                    </div>
+                    <div className="font-normal">{cosmonEligibilitySection}</div>
                   </div>
                 )}
               </div>
             </div>
 
-            {airdropData?.max_claimable !==
-              airdropData?.num_already_claimed && (
+            {airdropData?.max_claimable !== airdropData?.num_already_claimed && (
               <div className="flex py-5">
                 {airdropData?.isEligible ? (
                   <Button className="text-base" size="small" onClick={claim}>
