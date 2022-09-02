@@ -200,7 +200,7 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
   )
 
   return (
-    <Modal fullScreen hasCloseButton={isFightEnd === true} onCloseModal={onCloseModal}>
+    <Modal fullScreen hasCloseButton={false} onCloseModal={onCloseModal}>
       {showConfetti && (
         <div className="fixed z-[500]">
           <Confetti
