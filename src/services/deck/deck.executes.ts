@@ -29,11 +29,7 @@ export const createDeck = async (name: string, nftIds: NFTId[]) => {
  * @param name the name of the deck
  * @param nftIds collection of NFT ids
  */
-export const updateDeck = async (
-  deckId: DeckId,
-  name: string,
-  nftIds: NFTId[]
-) => {
+export const updateDeck = async (deckId: DeckId, name: string, nftIds: NFTId[]) => {
   try {
     const { signingClient, address } = useWalletStore.getState()
     const response = await signingClient?.execute(

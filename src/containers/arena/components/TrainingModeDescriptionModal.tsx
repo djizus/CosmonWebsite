@@ -11,7 +11,6 @@ const TrainingModeDescriptionModal: React.FC<TrainingModeDescriptionModalProps> 
   onCloseModal,
   onSliderEndReached,
 }) => {
-  console.log('HALO')
   return (
     <Modal onCloseModal={onCloseModal} hasCloseButton={false}>
       <Slider
@@ -28,9 +27,10 @@ const TrainingModeDescriptionModal: React.FC<TrainingModeDescriptionModalProps> 
             <img src="/mad-doctor.png" />
             <p className="mt-[20px] text-xl font-semibold text-white">Welcome to Training mode</p>
             <p className="mt-[20px] text-sm font-normal text-[#D4D4D4]">
-              Attila, the head of a tribal empire, was ruler of the Huns. During his reign, he was
-              one of the most feared enemies of the Western and Eastern Roman Empires. Hungarians
-              celebrate him as a founding hero.
+              Prof. Wosmongton is here to teach you how to fight! Build your deck to optimize the
+              affinities between your Cosmons. Pay attention to the order of the Cosmons in your
+              deck, and have a close look to the fight report to understand what’s going on during
+              the fight. It may help you to become a competitive contender!
             </p>
           </div>,
         ]}

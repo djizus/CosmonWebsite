@@ -324,7 +324,6 @@ const useWalletStore = create<WalletState>(
               ...c,
               isInDeck: cosmonIdsAlreadyInDecks[i],
             }))
-            console.log(myCosmons)
             set({
               cosmons: sortCosmonsByScarcity(myCosmons).map(
                 (cosmon) => get().cosmons.find((c) => c.id === cosmon.id) || cosmon

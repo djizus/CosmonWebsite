@@ -1,7 +1,6 @@
 import Modal from '@components/Modal/Modal'
 import Slider from '@components/Slider/Slider'
-import React, { useMemo } from 'react'
-import { useMount } from 'react-use'
+import React from 'react'
 import { FightType } from 'types'
 import CosmonsProgression from './CosmonsProgression'
 import MainEvents from './MainEvents'
@@ -17,10 +16,8 @@ const FightReportModal: React.FC<FightReportModalProps> = ({
   finalBattle,
   onCloseModal,
 }) => {
-  console.log(finalBattle, battle)
   return (
     <Modal onCloseModal={onCloseModal} hasCloseButton={false} width={700}>
-      <div></div>
       <Slider
         showPagination={false}
         onEndReached={{
