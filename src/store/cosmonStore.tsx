@@ -35,8 +35,7 @@ const useCosmonStore = create<CosmonState>((set, get) => ({
   getWhitelistData: async () => {
     const { address, signingClient } = useWalletStore.getState()
 
-    const response =
-      signingClient && (await queryGetWhitelistInfo(signingClient, address))
+    const response = signingClient && (await queryGetWhitelistInfo(signingClient, address))
     set({
       whitelistData: response,
     })
@@ -60,10 +59,7 @@ const useCosmonStore = create<CosmonState>((set, get) => ({
     await getWhitelistData()
 
     if (signingClient) {
-      const result = await queryCosmonAvailableByScarcity(
-        signingClient,
-        scarcity
-      )
+      const result = await queryCosmonAvailableByScarcity(signingClient, scarcity)
       return result?.count || 0
     }
     return 0
@@ -78,13 +74,9 @@ const useCosmonStore = create<CosmonState>((set, get) => ({
       )
     }
     if (signingClient) {
-      amount =
-        signingClient && (await queryCosmonPrice(signingClient, scarcity))
+      amount = signingClient && (await queryCosmonPrice(signingClient, scarcity))
     } else if (generatedClient) {
-      amount =
-        generatedClient && (await queryCosmonPrice(generatedClient, scarcity))
-
-      console.log('amount', amount)
+      amount = generatedClient && (await queryCosmonPrice(generatedClient, scarcity))
     }
 
     if (amount) {

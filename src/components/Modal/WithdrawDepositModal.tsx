@@ -158,7 +158,6 @@ export default function WithdrawDepositModal({ onCloseModal }: WithdrawDepositMo
             <div className="absolute top-[19px] right-[15px]">
               <Button
                 onClick={() => {
-                  console.log(getFromChainAmount)
                   showWithdrawDepositModal === 'withdraw'
                     ? set_amountToTransfer(getIbcAmount.toString())
                     : set_amountToTransfer(

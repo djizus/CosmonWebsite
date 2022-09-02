@@ -18,24 +18,25 @@ import { useRewardStore } from '../store/rewardStore'
 import ConnectionNeededContent from '../components/ConnectionNeededContent/ConnectionNeededContent'
 import Tooltip from '@components/Tooltip/Tooltip'
 import clsx from 'clsx'
+import { useDeckStore } from '@store/deckStore'
 
 export default function Page() {
-  const { cosmons, coins, setShowWithdrawDepositModal } = useWalletStore(
+  const { cosmons, coins, setShowWithdrawDepositModal, isConnected } = useWalletStore(
     (state) => state
   )
-
+  const { fetchPersonalityAffinities } = useDeckStore()
   const { rewardsData, claimRewards } = useRewardStore((state) => state)
-
   const [assetToTransfer, set_assetToTransfer] = useState<null | CosmonType>()
-
+  const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
   const [scarcitiesNumberByCosmons, set_scarcitiesNumberByCosmons] = useState<
-    {
-      key: Scarcity
-      count: number
-    }[]
+    { key: Scarcity; count: number }[]
   >([])
 
-  const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
+  useEffect(() => {
+    if (isConnected) {
+      fetchPersonalityAffinities()
+    }
+  }, [isConnected])
 
   const hasRewards = useMemo(() => {
     if (rewardsData && +rewardsData.current.amount !== 0) {
@@ -94,10 +95,7 @@ export default function Page() {
                     {cosmons.length}
                     <div className="h-8 border border-[#989898]"></div>
                     {scarcities.map((scarcity) => (
-                      <div
-                        key={scarcity}
-                        className="flex items-center gap-x-3 text-[22px]"
-                      >
+                      <div key={scarcity} className="flex items-center gap-x-3 text-[22px]">
                         <img
                           width={40}
                           height={40}
@@ -113,36 +111,22 @@ export default function Page() {
               </div>
               <table className="mt-12  font-semibold">
                 <thead className="border-b border-cosmon-main-primary leading-[80px]">
-                  <th className="text-left text-cosmon-main-tertiary">
-                    Assets
-                  </th>
-                  <th className="text-left text-cosmon-main-tertiary">
-                    Balance
-                  </th>
+                  <th className="text-left text-cosmon-main-tertiary">Assets</th>
+                  <th className="text-left text-cosmon-main-tertiary">Balance</th>
                   <th></th>
-                  <th className="w-[261px] text-left text-cosmon-main-tertiary">
-                    Actions
-                  </th>
+                  <th className="w-[261px] text-left text-cosmon-main-tertiary">Actions</th>
                 </thead>
                 <tbody className="text-xl text-white">
                   <tr className="h-4"></tr>
                   <tr className="h-[72px]">
                     <td>
                       <div className="flex items-center gap-x-[10px]  leading-9">
-                        <img
-                          width="32px"
-                          height="32px"
-                          src="../icons/xki.png"
-                          alt=""
-                        />
+                        <img width="32px" height="32px" src="../icons/xki.png" alt="" />
                         Ki - XKI
                       </div>
                     </td>
                     <td>
-                      {getAmountFromDenom(
-                        process.env.NEXT_PUBLIC_STAKING_DENOM || '',
-                        coins
-                      )}
+                      {getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins)}
                     </td>
                     <td
                       // style={{
@@ -171,39 +155,24 @@ export default function Page() {
                   <tr className="h-[72px]">
                     <td>
                       <div className="flex items-center gap-x-[10px]  leading-9">
-                        <img
-                          width="32px"
-                          height="32px"
-                          src="../icons/cosmos.png"
-                          alt=""
-                        />
+                        <img width="32px" height="32px" src="../icons/cosmos.png" alt="" />
                         Cosmos Hub -{' '}
-                        <span className="uppercase">
-                          {process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}
-                        </span>
+                        <span className="uppercase">{process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN}</span>
                       </div>
                     </td>
                     <td>
                       {' '}
-                      {getAmountFromDenom(
-                        process.env.NEXT_PUBLIC_IBC_DENOM_RAW || 'uatom',
-                        coins
-                      )}
+                      {getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM_RAW || 'uatom', coins)}
                     </td>
                     <td></td>
                     <td>
                       <div className="flex gap-x-3">
-                        <Button
-                          size="small"
-                          onClick={() => setShowWithdrawDepositModal('deposit')}
-                        >
+                        <Button size="small" onClick={() => setShowWithdrawDepositModal('deposit')}>
                           Deposit
                         </Button>
                         <Button
                           size="small"
-                          onClick={() =>
-                            setShowWithdrawDepositModal('withdraw')
-                          }
+                          onClick={() => setShowWithdrawDepositModal('withdraw')}
                         >
                           Withdraw
                         </Button>
@@ -217,15 +186,14 @@ export default function Page() {
             <Transition show={true} appear={true}>
               <div
                 style={{
-                  gridTemplateColumns:
-                    'repeat(auto-fit, minmax(167px, max-content))',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(167px, max-content))',
                 }}
-                className="mx-auto mt-40 grid max-w-[1180px] gap-[60px]  px-8"
+                className="mx-auto mt-40 grid max-w-[1180px] gap-[60px] px-8"
               >
                 {cosmons.map((cosmon) => (
                   <div
                     key={cosmon.id}
-                    className="group overflow-visible transition-all hover:scale-[104%] hover:shadow-2xl"
+                    className="group overflow-visible transition-transform hover:scale-[104%]"
                   >
                     <div
                       onClick={() => {
@@ -236,18 +204,11 @@ export default function Page() {
                       data-tip="tootlip"
                       data-for={`${cosmon.id}-transfer`}
                       className={clsx(
-                        'transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 rounded-full p-2 transition-all group-hover:scale-100',
-                        cosmon.isInDeck === false
-                          ? 'cursor-pointer'
-                          : 'disabled cursor-not-allowed'
+                        'transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 rounded-full p-2 transition-transform group-hover:scale-100',
+                        cosmon.isInDeck === false ? 'cursor-pointer' : 'disabled cursor-not-allowed'
                       )}
                     >
-                      <img
-                        width="16px"
-                        height="16px"
-                        src="../icons/transfer-card.svg"
-                        alt=""
-                      />
+                      <img width="16px" height="16px" src="../icons/transfer-card.svg" alt="" />
                     </div>
                     <Tooltip id={`${cosmon.id}-transfer`} place="top">
                       <p style={{ whiteSpace: 'pre' }}>
@@ -266,7 +227,6 @@ export default function Page() {
                       className="cursor-pointer"
                     />
                   </div>
-                  // </Transition.Child>
                 ))}
               </div>
             </Transition>

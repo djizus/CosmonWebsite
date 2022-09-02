@@ -100,6 +100,9 @@ export const useDeckStore = create<DeckState>((set, get) => ({
           set({ creatingDeck: false })
           return resp
         })
+        .catch((e) => {
+          set({ creatingDeck: false })
+        })
       return response
     } catch (error) {}
   },

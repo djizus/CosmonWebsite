@@ -3,9 +3,9 @@ import { useWalletStore } from '@store/walletStore'
 import { getCosmonStat } from '@utils/cosmon'
 import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { ReactNode, useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useMemo, useState } from 'react'
 import { useMount } from 'react-use'
-import { CosmonStatKeyType, CosmonStatType, CosmonType, FightType } from 'types'
+import { CosmonStatKeyType, CosmonStatType, CosmonType } from 'types'
 
 interface CosmonsProgressionProps {}
 
@@ -32,6 +32,7 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = () => {
       <div className="mt-[20px] flex w-full flex-col justify-center gap-[20px] rounded-[20px] bg-[#282255] py-[32px] px-[40px]">
         {cosmonsNonEvolved?.map((cosmonNonEvolved, i) => (
           <CosmonProgression
+            iWin={battle?.winner.identity.includes(battle.me.identity) ?? false}
             key={cosmonNonEvolved.id}
             cosmon={cosmonNonEvolved}
             cosmonEvolved={cosmonsEvolved![i]!}
@@ -47,9 +48,10 @@ export default CosmonsProgression
 interface CosmonProgressionProps {
   cosmon: CosmonType
   cosmonEvolved: CosmonType
+  iWin: boolean
 }
 
-const CosmonProgression: React.FC<CosmonProgressionProps> = ({ cosmon, cosmonEvolved }) => {
+const CosmonProgression: React.FC<CosmonProgressionProps> = ({ cosmon, cosmonEvolved, iWin }) => {
   return (
     <div className="flex">
       <div>
@@ -57,6 +59,7 @@ const CosmonProgression: React.FC<CosmonProgressionProps> = ({ cosmon, cosmonEvo
       </div>
       <div className="ml-[20px] flex flex-1 flex-col justify-center">
         <CosmonXpProgression
+          iWin={iWin}
           levelStat={+getCosmonStat(cosmon.stats!, 'Level')!.value!}
           levelStatEvolved={+getCosmonStat(cosmonEvolved.stats!, 'Level')!.value!}
           xpStat={+getCosmonStat(cosmon.stats!, 'Xp')!.value!}
@@ -109,6 +112,7 @@ const CosmonProgression: React.FC<CosmonProgressionProps> = ({ cosmon, cosmonEvo
 }
 
 interface CosmonXpProgressionProps {
+  iWin: boolean
   levelStat: number
   levelStatEvolved: number
   xpStat: number
@@ -118,6 +122,7 @@ interface CosmonXpProgressionProps {
 }
 
 const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
+  iWin,
   levelStat,
   levelStatEvolved,
   xpStat,
@@ -125,7 +130,9 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
   xpNextLevel,
   xpNextLevelEvolved,
 }) => {
-  const [currentXpPercent, setCurrentXpPercent] = useState<number>(0)
+  const [currentXpPercent, setCurrentXpPercent] = useState<number>(
+    iWin ? (xpStatEvolved / xpNextLevelEvolved) * 100 : (xpStatEvolved / xpNextLevelEvolved) * 100 // will animate from 0 only if i win
+  )
   const [currentXp, setCurrentXp] = useState<number>(0)
   const [currentLevel, setCurrentLevel] = useState(levelStat)
   const [currentXpMax, setCurrentXpMax] = useState(xpNextLevel)
@@ -138,13 +145,11 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
         setCurrentXpPercent((xpStatEvolved / xpNextLevelEvolved) * 100)
       }, 1000)
     } else {
-      // first we animate the bar to 100%
       setLevelUp(true)
       setCurrentXp(xpStatEvolved)
       setCurrentXpPercent((xpStatEvolved / xpNextLevelEvolved) * 100)
       setCurrentXpMax(xpNextLevelEvolved)
       setCurrentLevel(levelStatEvolved)
-      setTimeout(() => {}, 1000)
 
       setTimeout(() => {
         setLevelUp(false)
@@ -157,7 +162,7 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
       <div className="flex w-full items-center justify-between">
         <div className="relative flex">
           <p className="text-sm font-normal text-white">Level {currentLevel}</p>
-          {xpStatEvolved >= xpStat ? (
+          {xpStatEvolved > xpStat ? (
             <CosmonStatProgressionLabel
               className="ml-[12px]"
               label={`+${xpStatEvolved - xpStat}XP`}
@@ -190,11 +195,18 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
         </p>
       </div>
       <div className="relative mt-[8px] h-[6px] w-full overflow-hidden rounded-[6px]">
-        <motion.div
-          className="absolute top-0 left-0 h-full"
-          animate={{ width: `${currentXpPercent}%`, transition: { duration: 2 } }}
-          style={{ background: '#D9D9D9', zIndex: 2 }}
-        />
+        {iWin ? (
+          <motion.div
+            className="absolute top-0 left-0 h-full"
+            animate={{ width: `${currentXpPercent}%`, transition: { duration: 2 } }}
+            style={{ background: '#D9D9D9', zIndex: 2 }}
+          />
+        ) : (
+          <div
+            className="absolute top-0 left-0 h-full"
+            style={{ background: '#D9D9D9', zIndex: 2, width: `${currentXpPercent}%` }}
+          />
+        )}
         <div
           className="absolute top-0 left-0 h-full w-full"
           style={{ background: 'rgba(217, 217, 217, 0.3)', zIndex: 1 }}
