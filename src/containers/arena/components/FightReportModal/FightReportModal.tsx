@@ -8,12 +8,14 @@ import MainEvents from './MainEvents'
 interface FightReportModalProps {
   battle: FightType
   finalBattle: FightType
+  onClickNewFight: () => void
   onCloseModal: () => void
 }
 
 const FightReportModal: React.FC<FightReportModalProps> = ({
   battle,
   finalBattle,
+  onClickNewFight,
   onCloseModal,
 }) => {
   return (
@@ -26,7 +28,7 @@ const FightReportModal: React.FC<FightReportModalProps> = ({
         }}
       >
         <MainEvents battle={finalBattle} />
-        <CosmonsProgression />
+        <CosmonsProgression onClickNewFight={onClickNewFight} />
       </Slider>
     </Modal>
   )

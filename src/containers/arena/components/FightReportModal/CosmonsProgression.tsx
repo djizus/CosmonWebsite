@@ -1,3 +1,5 @@
+import Button from '@components/Button/Button'
+import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import { useGameStore } from '@store/gameStore'
 import { useWalletStore } from '@store/walletStore'
 import { getCosmonStat } from '@utils/cosmon'
@@ -7,9 +9,11 @@ import React, { ReactNode, useMemo, useState } from 'react'
 import { useMount } from 'react-use'
 import { CosmonStatKeyType, CosmonStatType, CosmonType } from 'types'
 
-interface CosmonsProgressionProps {}
+interface CosmonsProgressionProps {
+  onClickNewFight: () => void
+}
 
-const CosmonsProgression: React.FC<CosmonsProgressionProps> = () => {
+const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight }) => {
   const { cosmons } = useWalletStore()
   const { battle } = useGameStore()
 
@@ -39,6 +43,14 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = () => {
           />
         ))}
       </div>
+      <div
+        className="absolute bottom-0 flex justify-center"
+        style={{ bottom: '-17.2%', right: '29%' }}
+      >
+        <Button size="small" type="secondary" onClick={onClickNewFight}>
+          <h2 style={{ fontSize: 14, lineHeight: '26px' }}>New Fight !</h2>
+        </Button>
+      </div>
     </div>
   )
 }
@@ -54,8 +66,8 @@ interface CosmonProgressionProps {
 const CosmonProgression: React.FC<CosmonProgressionProps> = ({ cosmon, cosmonEvolved, iWin }) => {
   return (
     <div className="flex">
-      <div>
-        <img src={cosmon.data.extension.image} width={90} style={{ position: 'relative' }} />
+      <div style={{ border: '1px solid #555', padding: 3, borderRadius: 4 }}>
+        <CosmonCard cosmon={cosmon} style={{ width: 90, height: 151 }} />
       </div>
       <div className="ml-[20px] flex flex-1 flex-col justify-center">
         <CosmonXpProgression

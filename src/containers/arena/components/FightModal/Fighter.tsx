@@ -175,14 +175,13 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
         </AnimatePresence>
 
         <FlipCard
-          // card={cosmon.data.extension.image}
-          card={<CosmonCard cosmon={cosmon} />}
-          imgStyle={{
-            objectFit: 'cover',
-            width: '100%',
-            height: '100%',
-            borderRadius: 4,
-          }}
+          card={
+            <CosmonCard
+              cosmon={cosmon}
+              imgStyle={{ objectFit: 'cover', borderRadius: 4, height: '100%' }}
+            />
+          }
+          imgStyle={{ borderRadius: 4, height: '100%' }}
           revealed={revealCards.includes(cosmon.id)}
           shine={shine}
         />

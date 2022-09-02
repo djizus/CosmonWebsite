@@ -1,7 +1,7 @@
 import Modal from '@components/Modal/Modal'
 import { useTranslation } from '@services/translations'
 import camelCase from 'lodash/camelCase'
-import React, { ReactNode, useCallback, useMemo, useRef, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { Trans } from 'react-i18next'
 import { useMount, useWindowSize } from 'react-use'
 import { CosmonType, FightEventType, FightType } from 'types'
@@ -32,36 +32,40 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
   const [isDodge, setIsDodge] = useState<boolean>(false)
   const [critical, setCritical] = useState<number | undefined>()
   const [isFightEnd, setIsFightEnd] = useState<boolean>()
-  const [internBattle, setInternBattle] = useState<FightType>({ ...battle })
+  const [internBattle, setInternBattle] = useState<FightType>()
   const [currentAttacker, setCurrentAttacker] = useState<CosmonType | undefined>()
   const [currentDefender, setCurrentDefender] = useState<CosmonType | undefined>()
   const [currentFightEvent, setCurrentFightEvent] = useState<FightEventType>()
+  const [fighters, setFighters] = useState<CosmonType[]>()
 
-  const fighters = useMemo(() => {
-    return [...internBattle.me.cosmons, ...internBattle.opponent.cosmons]
-  }, [internBattle])
+  useEffect(() => {
+    if (battle) {
+      console.log('HALLO battle :: ', battle)
+      setFighters([...battle!.me.cosmons, ...battle!.opponent.cosmons])
+      setInternBattle(battle)
+      playBattle(battle)
+    }
+  }, [battle])
 
   const iWin = useMemo(
-    () => internBattle.winner.identity.includes(internBattle.me.identity),
+    () =>
+      (internBattle && internBattle!.winner.identity.includes(internBattle!.me.identity)) || false,
     [internBattle]
   )
 
-  const getFighter = useCallback((id: string) => fighters.find((f) => f.id === id), [fighters])
-
   const iStart = useMemo(
-    () => internBattle.me.cosmons.findIndex((c) => c.id === internBattle.events[0].atk_id) !== -1,
-    []
+    () =>
+      (internBattle &&
+        internBattle?.me.cosmons.findIndex((c) => c.id === internBattle.events[0].atk_id) !== -1) ||
+      false,
+    [internBattle]
   )
 
-  useMount(() => {
+  const playBattle = (battle: FightType) => {
     // will last (3 * 1sec) * 2 decks = 6
     setTimeout(() => {
-      initCardsRevelation(
-        internBattle.opponent.cosmons,
-        setRevealOpponentCards,
-        CARD_REVEAL_INTERVAL
-      )
-      initCardsRevelation(internBattle.me.cosmons, setRevealMyCards, CARD_REVEAL_INTERVAL)
+      initCardsRevelation(battle.opponent.cosmons, setRevealOpponentCards, CARD_REVEAL_INTERVAL)
+      initCardsRevelation(battle.me.cosmons, setRevealMyCards, CARD_REVEAL_INTERVAL)
     }, CARDS_REVEAL_START_AFTER)
     // who start
     setTimeout(() => {
@@ -81,9 +85,10 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
     // fight events
     setTimeout(() => {
       setIsFightEnd(false)
-      for (let i = 0; i < internBattle.events.length; i++) {
+      for (let i = 0; i < battle.events.length; i++) {
+        const sent = displayBattleEventSentence(battle.events[i])
         setTimeout(() => {
-          setSentence(displayBattleEventSentence(internBattle.events[i]))
+          setSentence(sent)
         }, (i + 1) * FIGHT_EVENT_DURATION)
       }
       setTimeout(() => {
@@ -92,10 +97,10 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
           setShowConfetti(true)
         }
         setIsFightEnd(true)
-        onFightEnd(internBattle)
-      }, internBattle.events.length * FIGHT_EVENT_DURATION + 3000)
+        onFightEnd(battle)
+      }, battle.events.length * FIGHT_EVENT_DURATION + 3000)
     }, FIGHT_START_AFTER)
-  })
+  }
 
   const updateFighters = (newHp: number, defenderId: string, fightersTeam: CosmonType[]) => {
     const defPos = fightersTeam.findIndex((c) => c.id === defenderId)
@@ -110,17 +115,19 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
   }
 
   const displayBattleEventSentence = (event: FightEventType) => {
+    console.log('displayBattleEventSentence :: ', internBattle, fighters)
+    const { atk_id, def_id, critical, def_health, miss, damage } = event
     setCurrentFightEvent({ ...event })
-    const attacker = getFighter(event.atk_id)
+    const attacker = fighters?.find((f) => f.id === atk_id)
     setCurrentAttacker(attacker)
-    const defender = getFighter(event.def_id)
+    const defender = fighters?.find((f) => f.id === def_id)
     setCurrentDefender(defender)
     const defenderIsInOpponentTeam =
-      internBattle.opponent.cosmons.findIndex((c) => c.id === event.def_id) !== -1
+      internBattle?.opponent.cosmons.findIndex((c) => c.id === def_id) !== -1
     setIsDodge(false)
     setCritical(undefined)
 
-    if (event.miss) {
+    if (miss) {
       setIsDodge(true)
       return (
         <Trans>
@@ -131,24 +138,26 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
       )
     }
 
-    if (event.critical) {
-      setCritical(event.damage)
+    if (critical) {
+      setCritical(damage)
     }
 
     const keyToUpdate = defenderIsInOpponentTeam ? 'opponent' : 'me'
-    setInternBattle((prevState) => ({
-      ...prevState,
-      [keyToUpdate]: {
-        ...prevState[keyToUpdate],
-        cosmons: updateFighters(event.def_health, event.def_id, internBattle[keyToUpdate].cosmons),
-      },
-    }))
+    if (internBattle) {
+      setInternBattle((prevState) => ({
+        ...prevState,
+        [keyToUpdate]: {
+          ...prevState[keyToUpdate],
+          cosmons: updateFighters(def_health, def_id, internBattle[keyToUpdate].cosmons),
+        },
+      }))
+    }
 
-    if (event.def_health === 0) {
+    if (def_health === 0) {
       if (defenderIsInOpponentTeam) {
-        setRevealOpponentCards((prev) => prev.filter((id) => id !== event.def_id))
+        setRevealOpponentCards((prev) => prev.filter((id) => id !== def_id))
       } else {
-        setRevealMyCards((prev) => prev.filter((id) => id !== event.def_id))
+        setRevealMyCards((prev) => prev.filter((id) => id !== def_id))
       }
 
       return (
@@ -165,7 +174,7 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
       )
     }
 
-    if (event.critical) {
+    if (critical) {
       return (
         <Trans>
           The fight is running hard! <strong>{attacker?.data.extension.name}</strong> performed a
@@ -177,7 +186,7 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
     return (
       <Trans>
         <strong>{{ attackerName: attacker?.data.extension.name }}</strong> inflicted{' '}
-        <strong>{{ damage: event.damage }}</strong> points of damage to{' '}
+        <strong>{{ damage }}</strong> points of damage to{' '}
         <strong>{{ defenderName: defender?.data.extension.name }}</strong>
       </Trans>
     )
@@ -223,21 +232,24 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
       >
         <header className="flex justify-center py-[30px]">
           <p className="text-3xl font-normal text-white">
-            <Trans i18nKey={`${camelCase(internBattle.arena.name)}.name`} t={t} />
+            <Trans
+              i18nKey={`${internBattle && camelCase(internBattle.arena.name)}.name` || ''}
+              t={t}
+            />
           </p>
         </header>
 
         <main className="flex grow flex-col items-center">
           <section>
-            <p className="text-3xl text-white">{internBattle.opponent.deckName}</p>
+            <p className="text-3xl text-white">{internBattle?.opponent.deckName ?? ''}</p>
           </section>
 
           <section
             className=" mb-[15px] flex h-full w-full max-w-[30%] grow justify-center"
-            style={{ transform: 'perspective(150vw) rotateX(20deg)' }}
+            style={{ transform: 'perspective(150vw) rotateX(20deg)', marginBottom: '1.5%' }}
           >
             <div className="grid h-full w-full grid-cols-3 gap-3 gap-y-6 rounded-md border-[0.5px] border-[#6d77db] p-3">
-              {internBattle.opponent.cosmons.map((opponentCosmon) => (
+              {internBattle?.opponent.cosmons.map((opponentCosmon) => (
                 <Fighter
                   key={opponentCosmon.id}
                   cosmon={opponentCosmon}
@@ -256,7 +268,7 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
                   currentFightEvent={currentFightEvent}
                 />
               ))}
-              {internBattle.me.cosmons.map((meCosmon) => (
+              {internBattle?.me.cosmons.map((meCosmon) => (
                 <Fighter
                   key={meCosmon.id}
                   cosmon={meCosmon}
@@ -279,7 +291,7 @@ const FightModal: React.FC<FightModalProps> = ({ battle, onCloseModal, onFightEn
           </section>
 
           <section>
-            <p className="text-3xl text-white">{internBattle.me.deckName}</p>
+            <p className="text-3xl text-white">{internBattle?.me.deckName ?? ''}</p>
           </section>
         </main>
 
