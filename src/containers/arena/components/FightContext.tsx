@@ -5,18 +5,10 @@ export type FightContextType = {
   battle: FightType | undefined
   setBattle: (battle: FightType) => void
   battleOverTime: FightType | undefined
-  setBattleOverTime: (battle: FightType) => void
+  setBattleOverTime: React.Dispatch<React.SetStateAction<FightType | undefined>>
   handleCloseFightModal: () => void
   handleCloseFightReportModal: () => void
   handleClickNewFight: () => void
 }
 
-export const FightContext = React.createContext<FightContextType>({
-  battle: undefined,
-  setBattle: (battle: FightType) => {},
-  battleOverTime: undefined,
-  setBattleOverTime: (battle: FightType) => {},
-  handleCloseFightModal: () => {},
-  handleCloseFightReportModal: () => {},
-  handleClickNewFight: () => {},
-})
+export const FightContext = React.createContext<FightContextType>({} as any)

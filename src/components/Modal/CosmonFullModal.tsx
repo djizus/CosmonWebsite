@@ -4,6 +4,7 @@ import Close from '/public/icons/close.svg'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Hover from 'react-3d-hover'
 import { useEffect } from 'react'
+import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 
 type CosmonFullModalProps = {
   cosmon: CosmonType
@@ -43,11 +44,12 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
         <div className="mt-24 flex items-start gap-x-16">
           <div className="sticky top-0 self-start">
             <Hover perspective={300} speed={10}>
-              <LazyLoadImage
-                height={530}
-                width={315}
-                effect="opacity"
-                src={cosmon.data.extension.image}
+              <CosmonCard
+                cosmon={cosmon}
+                showLevel
+                showPersonality
+                size="lg"
+                containerStyle={{ height: 530, width: 315 }}
               />
             </Hover>
           </div>

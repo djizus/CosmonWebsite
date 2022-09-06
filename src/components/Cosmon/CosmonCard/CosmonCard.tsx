@@ -1,14 +1,17 @@
 import { getCosmonStat, getScarcityByCosmon, getTrait, indexByCharacter } from '@utils/cosmon'
 import clsx from 'clsx'
-import React, { CSSProperties, useCallback, useMemo } from 'react'
+import React, { CSSProperties, useMemo } from 'react'
 import { CosmonType } from 'types'
+import styles from './CosmonCard.module.scss'
 
 interface CosmonCardProps {
   cosmon: CosmonType
   containerStyle?: CSSProperties
   imgStyle?: CSSProperties
   showPersonality?: boolean
+  showScarcity?: boolean
   showLevel?: boolean
+  size?: 'sm' | 'md' | 'lg'
 }
 
 const CosmonCard: React.FC<
@@ -18,7 +21,9 @@ const CosmonCard: React.FC<
   containerStyle,
   imgStyle,
   showPersonality = false,
+  showScarcity = false,
   showLevel = false,
+  size = 'md',
   ...divProps
 }) => {
   const scarcity = useMemo(() => {
@@ -37,7 +42,7 @@ const CosmonCard: React.FC<
     return getTrait(cosmon, 'Geographical')
   }, [cosmon])
 
-  const personaityIconWidth = (perso: string) => {
+  const personalityIconWidth = (perso: string) => {
     switch (perso) {
       case 'agressive':
       case 'creative':
@@ -46,16 +51,20 @@ const CosmonCard: React.FC<
       case 'expansive':
       case 'financial':
       case 'spiritual':
-        return '25%'
+        return '30%'
       case 'tactical':
-        return '15%'
+        return '20%'
     }
   }
 
   return (
     <div
       {...divProps}
-      className={clsx('relative flex h-full w-full rounded-[3px]', divProps.className)}
+      className={clsx(
+        'relative flex h-full w-full rounded-[3px]',
+        styles.cosmonCardContainer,
+        divProps.className
+      )}
       style={{
         ...divProps.style,
         ...containerStyle,
@@ -73,39 +82,34 @@ const CosmonCard: React.FC<
         }}
       />
 
-      <div
-        style={{
-          position: 'absolute',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end',
-          width: '100%',
-          bottom: '2%',
-          paddingLeft: '8%',
-          paddingRight: '8%',
-        }}
-      >
+      <div className={clsx(styles.scarcityContainer, styles[size])}>
+        <img
+          className="m-1"
+          src={`/rarity-levels/${getScarcityByCosmon(cosmon)!.toLowerCase()}.png`}
+        />
+        <p>{getScarcityByCosmon(cosmon)}</p>
+      </div>
+
+      <div className={clsx(styles.attributsContainer, styles[size])}>
         <div className="flex flex-col items-center">
           {showPersonality ? (
             <>
               <img
                 src={`/cosmons/personality-icons/${personality?.toLowerCase()}.svg`}
-                style={{ width: personaityIconWidth(personality?.toLowerCase()!) }}
+                style={{ width: personalityIconWidth(personality?.toLowerCase()!) }}
               />
-              <p className="text-[0.6rem] font-normal text-white">{personality?.toUpperCase()}</p>
+              <p className={clsx(styles.label, styles[size])}>{personality?.toUpperCase()}</p>
             </>
           ) : null}
         </div>
         <div>
-          <p className="text-[0.8rem] text-white">{/* {geo} */}</p>
+          <p className={clsx(`text-white`)}>{/* {geo} */}</p>
         </div>
         <div className="flex flex-col items-center">
           {showLevel ? (
             <>
-              <p className="text-[0.8rem] font-bold text-white" style={{ lineHeight: '10px' }}>
-                {level}
-              </p>
-              <p className="text-[0.6rem] font-normal text-white">LEVEL</p>
+              <p className={clsx(styles.level, styles[size])}>{level}</p>
+              <p className={clsx(styles.label, styles[size])}>LEVEL</p>
             </>
           ) : null}
         </div>

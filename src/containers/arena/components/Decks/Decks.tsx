@@ -29,9 +29,11 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
   const [showSelectArenaModal, setShowSelectArenaModal] = useState(false)
   const [showLearnMoreModal, setShowLearnMoreModal] = useState(false)
   const [showFightReportModal, setShowFightReportModal] = useState(false)
+
   const [battle, setBattle] = useState<FightType | undefined>()
   const [battleOverTime, setBattleOverTime] = useState<FightType | undefined>()
-  const [finalBattle, setFinalBattle] = useState<FightType>()
+
+  const [finalBattle, setFinalBattle] = useState<FightType>() // @deprecated
   const [selectedArena, setSelectedArena] = useState<ArenaType>()
   const [selectedDeck, setSelectedDeck] = useState<Deck>()
 
@@ -62,7 +64,9 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
       }
       try {
         if (selectedDeck) {
-          setBattle(await fight(selectedDeck, arena))
+          const newBattle = await fight(selectedDeck, arena)
+          setBattle({ ...newBattle })
+          setBattleOverTime({ ...newBattle })
           setShowSelectArenaModal(false)
         }
       } catch (error) {
@@ -113,7 +117,10 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
         selectedDeck.cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0) === false
       ) {
         const newBattle = await fight(selectedDeck, selectedArena)
-        setBattle(newBattle)
+        setBattle(undefined)
+        setBattleOverTime(undefined)
+        setBattle({ ...newBattle })
+        setBattleOverTime({ ...newBattle })
         setShowFightReportModal(false)
       }
     } catch (error) {
@@ -193,9 +200,11 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
         }}
       >
         <AnimatePresence>
-          {battle ? (
+          {battle && battleOverTime ? (
             <FightModal
-              battle={battle}
+              key={`${[...battle.me.cosmons.map((c) => c.id)]}_vs_${[
+                ...battle.opponent.cosmons.map((c) => c.id),
+              ]}`}
               onFightEnd={handleFightEnd}
               onCloseModal={handleCloseFightModal}
             />
