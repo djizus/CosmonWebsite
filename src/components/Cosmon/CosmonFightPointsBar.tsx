@@ -26,10 +26,12 @@ const CosmonFightPointsBar: React.FC<
           styles.fightPointsContainer
         )}
       >
-        {Array.from(Array(+getCosmonStat(cosmon.stats!, 'Fp')?.value!).keys()).map((i) => (
+        {Array.from(Array(+getCosmonStat(cosmon.stats!, 'Fp Max')?.value!).keys()).map((i) => (
           <div
             key={`${cosmon.id}-fp-${i}`}
-            className={clsx('h-full w-full', styles.fightPointContainer)}
+            className={clsx('h-full w-full', styles.fightPointContainer, {
+              [styles.fightPointContainerEmpty]: i >= +getCosmonStat(cosmon.stats!, 'Fp')?.value!,
+            })}
           />
         ))}
       </div>

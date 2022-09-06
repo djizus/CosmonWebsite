@@ -17,6 +17,7 @@ export type CosmonStatKeyType =
   | 'Luk'
   | 'Int'
   | 'Fp'
+  | 'Fp Max'
   | 'Next Level'
   | 'Ap'
 
