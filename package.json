@@ -16,6 +16,7 @@
     "axios": "^0.27.2",
     "bignumber.js": "^9.0.2",
     "clsx": "^1.1.1",
+    "country-code-emoji": "^2.3.0",
     "env-cmd": "^10.1.0",
     "framer-motion": "^6.3.11",
     "html-entities": "^2.3.3",

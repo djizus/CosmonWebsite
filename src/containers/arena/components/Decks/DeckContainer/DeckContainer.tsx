@@ -76,6 +76,8 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
                     }}
                     showLevel
                     showPersonality
+                    showNationality
+                    showScarcity
                     onClick={() => {
                       set_showCosmonDetail(cosmon)
                     }}

@@ -23,7 +23,7 @@ $secondaryBarColor: #140653;
   background-image: linear-gradient($primaryBarColor, #ffd856);
 
   &.fightPointContainerEmpty {
-    background: transparent;
+    background: linear-gradient(180deg, rgba(254, 185, 5, 0.3) 0%, rgba(253, 216, 89, 0.3) 100%);
   }
 
   &:first-child {

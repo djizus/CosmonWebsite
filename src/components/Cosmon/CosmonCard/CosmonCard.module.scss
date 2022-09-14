@@ -70,6 +70,21 @@
       padding-right: 10%;
     }
 
+    .flag {
+      &.sm {
+        line-height: 9px;
+        font-size: 11px;
+      }
+      &.md {
+        line-height: 9px;
+        font-size: 11px;
+      }
+      &.lg {
+        line-height: 17px;
+        font-size: 19px;
+      }
+    }
+
     p.level {
       color: white;
       font-weight: 700;

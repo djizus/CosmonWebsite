@@ -1,5 +1,31 @@
-.bonusSvg {
-  & > * {
-    stroke: white;
+$tooltipWidth: 230px;
+
+.affinityTooltip {
+  background: rgba(78, 72, 136, 0.3);
+  padding: 8px 9px;
+  position: absolute;
+  top: 25%;
+  transform: translateY(-50%);
+  width: max-content;
+  display: flex;
+  z-index: 3;
+  border: 1px solid #4e4888;
+
+  p {
+    text-align: left;
+  }
+
+  &.right {
+    left: 100%;
+    border-radius: 0 5px 5px 0;
+    border-left: 0;
+    justify-content: flex-start;
+  }
+
+  &.left {
+    right: 100%;
+    border-radius: 5px 0px 0px 5px;
+    border-right: 0;
+    justify-content: flex-end;
   }
 }

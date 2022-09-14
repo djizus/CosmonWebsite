@@ -1,13 +1,13 @@
 import Button from '@components/Button/Button'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
-import { useGameStore } from '@store/gameStore'
 import { useWalletStore } from '@store/walletStore'
 import { getCosmonStat } from '@utils/cosmon'
 import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { ReactNode, useMemo, useState } from 'react'
+import React, { ReactNode, useContext, useMemo, useState } from 'react'
 import { useMount } from 'react-use'
 import { CosmonStatKeyType, CosmonStatType, CosmonType } from 'types'
+import { FightContext } from '../FightContext'
 
 interface CosmonsProgressionProps {
   onClickNewFight: () => void
@@ -15,10 +15,10 @@ interface CosmonsProgressionProps {
 
 const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight }) => {
   const { cosmons } = useWalletStore()
-  const { battle } = useGameStore()
+  const { battleOverTime } = useContext(FightContext)
 
   const cosmonsEvolved = useMemo(() => {
-    return battle?.me.cosmonsWithoutBonus
+    return battleOverTime?.me.cosmonsWithoutBonus
       .map((c) => {
         const pos = cosmons.findIndex((cosmon) => cosmon.id === c.id)
         if (pos !== -1) {
@@ -26,9 +26,9 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
         }
       })
       .filter(Boolean)
-  }, [battle])
+  }, [battleOverTime])
 
-  const cosmonsNonEvolved = battle?.me.cosmonsWithoutBonus
+  const cosmonsNonEvolved = battleOverTime?.me.cosmonsWithoutBonus
 
   return (
     <div className="flex flex-col items-center">
@@ -36,7 +36,7 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
       <div className="mt-[20px] flex w-full flex-col justify-center gap-[20px] rounded-[20px] bg-[#282255] py-[32px] px-[40px]">
         {cosmonsNonEvolved?.map((cosmonNonEvolved, i) => (
           <CosmonProgression
-            iWin={battle?.winner.identity.includes(battle.me.identity) ?? false}
+            iWin={battleOverTime?.winner.identity.includes(battleOverTime.me.identity) ?? false}
             key={cosmonNonEvolved.id}
             cosmon={cosmonNonEvolved}
             cosmonEvolved={cosmonsEvolved![i]!}

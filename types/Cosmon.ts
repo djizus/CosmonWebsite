@@ -5,6 +5,7 @@ export type CosmonTraitType =
   | 'Time'
   | 'Geographical'
   | 'Personality'
+  | 'Nationality'
 
 export type CosmonStatKeyType =
   | 'Xp'

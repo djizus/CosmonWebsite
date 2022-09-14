@@ -80,15 +80,14 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
       return myCosmons
     }
     const opponentCosmonsList = await getOpponentCosmonsList()
-
-    const cosmonsToUpdate = [...opponentCosmonsList, ...deck.cosmons]
+    const cosmonsWithAffinityBonus = [...opponentCosmonsList, ...deck.cosmons]
     const cosmonsEmpowered = JSON.parse(getAttrValue('cosmons_bonus'))
     for (const c of cosmonsEmpowered) {
-      const defPos = cosmonsToUpdate.findIndex((co) => co.id === c.nft_id)
-      cosmonsToUpdate[defPos] = {
-        ...cosmonsToUpdate[defPos],
+      const defPos = cosmonsWithAffinityBonus.findIndex((co) => co.id === c.nft_id)
+      cosmonsWithAffinityBonus[defPos] = {
+        ...cosmonsWithAffinityBonus[defPos],
         stats: [
-          ...cosmonsToUpdate[defPos]?.stats!.filter((k) => k.key !== 'Hp'),
+          ...cosmonsWithAffinityBonus[defPos]?.stats!.filter((k) => k.key !== 'Hp'),
           { key: 'Hp', value: c.health },
         ],
       }
@@ -99,13 +98,17 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
       opponent: {
         identity: getAttrValue('opponent') || '',
         deckName: await DeckService.queries().getName(+getAttrValue('opponent_deck_id')),
-        cosmons: [cosmonsToUpdate[0], cosmonsToUpdate[1], cosmonsToUpdate[2]] || [],
+        cosmons:
+          [cosmonsWithAffinityBonus[0], cosmonsWithAffinityBonus[1], cosmonsWithAffinityBonus[2]] ||
+          [],
         cosmonsWithoutBonus: opponentCosmonsList || [],
       },
       me: {
         identity: getAttrValue('my_address') || '',
         deckName: deck.name,
-        cosmons: [cosmonsToUpdate[3], cosmonsToUpdate[4], cosmonsToUpdate[5]] || [],
+        cosmons:
+          [cosmonsWithAffinityBonus[3], cosmonsWithAffinityBonus[4], cosmonsWithAffinityBonus[5]] ||
+          [],
         cosmonsWithoutBonus: deck.cosmons || [],
       },
       winner: {

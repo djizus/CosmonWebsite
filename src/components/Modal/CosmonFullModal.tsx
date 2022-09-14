@@ -48,6 +48,8 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
                 cosmon={cosmon}
                 showLevel
                 showPersonality
+                showScarcity
+                showNationality
                 size="lg"
                 containerStyle={{ height: 530, width: 315 }}
               />

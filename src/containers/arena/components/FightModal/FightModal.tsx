@@ -11,23 +11,26 @@ import React, {
   useState,
 } from 'react'
 import { Trans } from 'react-i18next'
-import { useMount, useWindowSize } from 'react-use'
-import { CosmonType, FightEventType, FightType } from 'types'
+import { useWindowSize } from 'react-use'
+import { AFFINITY_TYPES, CosmonType, FightEventType, FightType, NFTId } from 'types'
 import Confetti from 'react-confetti'
 import Fighter from './Fighter'
 import { FightContext } from '../FightContext'
+import { sleep } from '@utils/sleep'
+import ButtonForward from '@components/Button/ButtonForward'
+import ButtonPlay from '@components/Button/ButtonPlay'
+import FightDeckAffinities from './FightDeckAffinities'
 
 interface FightModalProps {
   onCloseModal: () => void
-  onFightEnd: (finalBattle?: FightType) => void
+  onFightEnd: () => void
 }
 
-const FIGHT_EVENT_DURATION = 2000
+const FIGHT_EVENT_DURATION = 1500
 const CARD_REVEAL_INTERVAL = 1000
-// Fight animations chain
 const CARDS_REVEAL_START_AFTER = 2000
-const WHO_STARTS_START_AFTER = 7000
-const FIGHT_START_AFTER = 9000
+const FIGHT_PLAY_SPEED = 1
+const FIGHT_FORWARD_SPEED = 1.5
 
 const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => {
   const { t } = useTranslation(['arenas', 'arena', 'fight'])
@@ -47,12 +50,14 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
   const [currentAttacker, setCurrentAttacker] = useState<CosmonType | undefined>()
   const [currentDefender, setCurrentDefender] = useState<CosmonType | undefined>()
   const [currentFightEvent, setCurrentFightEvent] = useState<FightEventType>()
+  const [fightSpeed, setFightSpeed] = useState(FIGHT_PLAY_SPEED)
+  const [highlightNftsWithAffinity, setHighlightNftsWithAffinity] = useState<string[] | undefined>()
 
   useEffect(() => {
     if (battle) {
       fighters.current = [...battle.opponent.cosmons, ...battle.me.cosmons]
       if (fighters.current.length > 0) {
-        playBattle()
+        // playBattle()
       }
     }
   }, [battle])
@@ -69,53 +74,164 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
     [battleOverTime]
   )
 
-  const playBattle = () => {
+  const initCardsRevelation = useCallback(
+    async (
+      cosmonsList: CosmonType[],
+      set: React.Dispatch<React.SetStateAction<string[]>>,
+      intervalInMs: number
+    ) => {
+      for (let index = 0; index < cosmonsList.length; index++) {
+        const cosmon = cosmonsList[index]
+        set((prevState) => [...prevState, cosmon.id])
+        await sleep(intervalInMs / fightSpeed)
+      }
+    },
+    [fightSpeed]
+  )
+
+  const announceWhoStart = useCallback(async () => {
+    await sleep(1000 / fightSpeed)
+    setSentence(
+      `The fight is starting. ${iStart ? 'Your team' : 'The opponent'} deck is engaging the battle.`
+    )
+  }, [fightSpeed, iStart])
+
+  const highlightStartingDeck = useCallback(async () => {
+    setShineStartingDeck(true)
+    await sleep(1000 / fightSpeed)
+    setShineStartingDeck(false)
+  }, [fightSpeed])
+
+  const announceWinner = useCallback(async () => {
+    setSentence(<Trans>{iWin ? 'You won 💪' : 'You lost 😟'}</Trans>)
+    if (iWin) {
+      setShowConfetti(true)
+    }
+    setIsFightEnd(true)
+    onFightEnd()
+  }, [fightSpeed, iWin])
+
+  const playBattle = useCallback(async () => {
     const { opponent, me, events } = battleOverTime!
 
-    // will last (3 * 1sec) * 2 decks = 6
-    setTimeout(() => {
-      initCardsRevelation(opponent.cosmons, setRevealOpponentCards, CARD_REVEAL_INTERVAL)
-      initCardsRevelation(me.cosmons, setRevealMyCards, CARD_REVEAL_INTERVAL)
-    }, CARDS_REVEAL_START_AFTER)
+    // sleep
+    await sleep(CARDS_REVEAL_START_AFTER / fightSpeed)
+
+    // cards revelation
+    await Promise.all([
+      initCardsRevelation(opponent.cosmons, setRevealOpponentCards, CARD_REVEAL_INTERVAL),
+      initCardsRevelation(me.cosmons, setRevealMyCards, CARD_REVEAL_INTERVAL),
+    ])
 
     // who start
-    setTimeout(() => {
-      setSentence(
-        `The fight is starting. ${
-          iStart ? 'Your team' : 'The opponent'
-        } deck is engaging the battle.`
-      )
-    }, WHO_STARTS_START_AFTER)
+    await announceWhoStart()
 
     // shine starting cards
-    setTimeout(() => {
-      setShineStartingDeck(true)
-      setTimeout(() => {
-        setShineStartingDeck(false)
-      }, 1000)
-    }, WHO_STARTS_START_AFTER)
+    await highlightStartingDeck()
 
-    // fight events
-    setTimeout(() => {
-      setIsFightEnd(false)
+    // sleep
+    await sleep(1700 / fightSpeed)
 
-      for (let i = 0; i < events.length; i++) {
-        setTimeout(() => {
-          const sent = displayBattleEventSentence(events[i])
-          setSentence(sent)
-        }, (i + 1) * FIGHT_EVENT_DURATION)
+    // fight start
+    setIsFightEnd(false)
+
+    // play every events
+    for (const event of events) {
+      const sent = await playEventAndGetCorrespondingSentence(event)
+      setSentence(sent)
+
+      // sleep
+      await sleep(FIGHT_EVENT_DURATION / fightSpeed)
+    }
+
+    // sleep
+    await sleep(1000 / fightSpeed)
+
+    // winner
+    await announceWinner()
+  }, [battleOverTime, fightSpeed, iWin])
+
+  const playEventAndGetCorrespondingSentence = useCallback(
+    async (event: FightEventType) => {
+      const { atk_id, def_id, critical, def_health, miss, damage } = event
+      setCurrentFightEvent({ ...event })
+      const attacker = fighters.current?.find((f) => f.id === atk_id)
+      setCurrentAttacker(attacker)
+      const defender = fighters.current?.find((f) => f.id === def_id)
+      setCurrentDefender(defender)
+      const defenderIsInOpponentTeam =
+        battleOverTime?.opponent.cosmons.findIndex((c) => c.id === def_id) !== -1
+      setIsDodge(false)
+      setCritical(undefined)
+
+      if (miss) {
+        setIsDodge(true)
+
+        return (
+          <Trans>
+            The fight is running hard!{' '}
+            <strong>{{ defenderName: defender?.data.extension.name }}</strong> just dodged the
+            opponent attack!
+          </Trans>
+        )
       }
 
-      setTimeout(() => {
-        setSentence(<Trans>{iWin ? 'You won 💪' : 'You lost 🥹'}</Trans>)
-        if (iWin) {
-          setShowConfetti(true)
+      if (critical) {
+        setCritical(damage)
+      }
+
+      const keyToUpdate = defenderIsInOpponentTeam ? 'opponent' : 'me'
+      setBattleOverTime(
+        (prevState: FightType | undefined) =>
+          ({
+            ...prevState,
+            [keyToUpdate]: {
+              ...prevState![keyToUpdate],
+              cosmons: updateFighters(def_health, def_id, battleOverTime![keyToUpdate].cosmons),
+            },
+          } as FightType)
+      )
+
+      if (def_health === 0) {
+        if (defenderIsInOpponentTeam) {
+          setRevealOpponentCards((prev) => prev.filter((id) => id !== def_id))
+        } else {
+          setRevealMyCards((prev) => prev.filter((id) => id !== def_id))
         }
-        setIsFightEnd(true)
-        onFightEnd(battleOverTime)
-      }, events.length * FIGHT_EVENT_DURATION + 3000)
-    }, FIGHT_START_AFTER)
-  }
+
+        return (
+          <Trans>
+            The fight is running hard!{' '}
+            <strong>{{ defenderName: defender?.data.extension.name }}</strong> is KO... Only{' '}
+            {{
+              nbKeepingCards: defenderIsInOpponentTeam
+                ? revealOpponentCards.length
+                : revealMyCards.length,
+            }}{' '}
+            left in {defenderIsInOpponentTeam ? 'the opponent team' : 'your team'}
+          </Trans>
+        )
+      }
+
+      if (critical) {
+        return (
+          <Trans>
+            The fight is running hard! <strong>{attacker?.data.extension.name}</strong> performed a
+            critical attack!
+          </Trans>
+        )
+      }
+
+      return (
+        <Trans>
+          <strong>{{ attackerName: attacker?.data.extension.name }}</strong> inflicted{' '}
+          <strong>{{ damage }}</strong> points of damage to{' '}
+          <strong>{{ defenderName: defender?.data.extension.name }}</strong>
+        </Trans>
+      )
+    },
+    [fightSpeed, battleOverTime]
+  )
 
   const updateFighters = (newHp: number, defenderId: string, fightersTeam: CosmonType[]) => {
     const defPos = fightersTeam.findIndex((c) => c.id === defenderId)
@@ -129,96 +245,26 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
     return [...fightersTeam]
   }
 
-  const displayBattleEventSentence = (event: FightEventType) => {
-    const { atk_id, def_id, critical, def_health, miss, damage } = event
-    setCurrentFightEvent({ ...event })
-    const attacker = fighters.current?.find((f) => f.id === atk_id)
-    setCurrentAttacker(attacker)
-    const defender = fighters.current?.find((f) => f.id === def_id)
-    setCurrentDefender(defender)
-    const defenderIsInOpponentTeam =
-      battleOverTime?.opponent.cosmons.findIndex((c) => c.id === def_id) !== -1
-    setIsDodge(false)
-    setCritical(undefined)
+  const handleHoverAffinity = useCallback((affinityData: Set<NFTId>, affinity: AFFINITY_TYPES) => {
+    const affinityDatas = Array.from(affinityData)
+    setHighlightNftsWithAffinity(affinityDatas)
+  }, [])
 
-    if (miss) {
-      setIsDodge(true)
-      return (
-        <Trans>
-          The fight is running hard!{' '}
-          <strong>{{ defenderName: defender?.data.extension.name }}</strong> just dodged the
-          opponent attack!
-        </Trans>
-      )
-    }
+  const handleHoverStopAffinity = useCallback(() => {
+    setHighlightNftsWithAffinity(undefined)
+  }, [])
 
-    if (critical) {
-      setCritical(damage)
-    }
-
-    const keyToUpdate = defenderIsInOpponentTeam ? 'opponent' : 'me'
-    setBattleOverTime(
-      (prevState: FightType | undefined) =>
-        ({
-          ...prevState,
-          [keyToUpdate]: {
-            ...prevState![keyToUpdate],
-            cosmons: updateFighters(def_health, def_id, battleOverTime![keyToUpdate].cosmons),
-          },
-        } as FightType)
-    )
-
-    if (def_health === 0) {
-      if (defenderIsInOpponentTeam) {
-        setRevealOpponentCards((prev) => prev.filter((id) => id !== def_id))
-      } else {
-        setRevealMyCards((prev) => prev.filter((id) => id !== def_id))
+  const computeIsDeckSlotHighlighted = useCallback(
+    (cosmon: CosmonType) => {
+      if (!highlightNftsWithAffinity) return
+      const hasChildrenArray = Array.isArray(highlightNftsWithAffinity[0])
+      if (!hasChildrenArray) {
+        return cosmon && highlightNftsWithAffinity.includes(cosmon.id)
       }
-
-      return (
-        <Trans>
-          The fight is running hard!{' '}
-          <strong>{{ defenderName: defender?.data.extension.name }}</strong> is KO... Only{' '}
-          {{
-            nbKeepingCards: defenderIsInOpponentTeam
-              ? revealOpponentCards.length
-              : revealMyCards.length,
-          }}{' '}
-          in {defenderIsInOpponentTeam ? 'the opponent team' : 'your team'}
-        </Trans>
-      )
-    }
-
-    if (critical) {
-      return (
-        <Trans>
-          The fight is running hard! <strong>{attacker?.data.extension.name}</strong> performed a
-          critical attack!
-        </Trans>
-      )
-    }
-
-    return (
-      <Trans>
-        <strong>{{ attackerName: attacker?.data.extension.name }}</strong> inflicted{' '}
-        <strong>{{ damage }}</strong> points of damage to{' '}
-        <strong>{{ defenderName: defender?.data.extension.name }}</strong>
-      </Trans>
-    )
-  }
-
-  const initCardsRevelation = (
-    cosmonsList: CosmonType[],
-    set: React.Dispatch<React.SetStateAction<string[]>>,
-    intervalInMs: number
-  ) => {
-    for (let index = 0; index < cosmonsList.length; index++) {
-      const cosmon = cosmonsList[index]
-      setTimeout(() => {
-        set((prevState) => [...prevState, cosmon.id])
-      }, (index + 1) * intervalInMs)
-    }
-  }
+      return highlightNftsWithAffinity.some((arrayIds) => cosmon && arrayIds.includes(cosmon.id))
+    },
+    [highlightNftsWithAffinity]
+  )
 
   return (
     <Modal fullScreen hasCloseButton={false} onCloseModal={onCloseModal}>
@@ -251,7 +297,28 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
           </p>
         </header>
 
-        <main className="flex grow flex-col items-center">
+        <main className="relative flex grow flex-col items-center">
+          <div className="absolute left-0" style={{ top: '51%' }}>
+            {battle ? (
+              <FightDeckAffinities
+                cosmons={battle?.me.cosmons!}
+                side="me"
+                onHoverAffinity={handleHoverAffinity}
+                onHoverStopAffinity={handleHoverStopAffinity}
+              />
+            ) : null}
+          </div>
+          <div className="absolute right-0 top-0">
+            {battle ? (
+              <FightDeckAffinities
+                cosmons={battle?.opponent.cosmons!}
+                side="opponent"
+                onHoverAffinity={handleHoverAffinity}
+                onHoverStopAffinity={handleHoverStopAffinity}
+              />
+            ) : null}
+          </div>
+
           <section>
             <p className="text-3xl text-white">{battleOverTime?.opponent.deckName ?? ''}</p>
           </section>
@@ -278,6 +345,8 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
                   shine={shineStartingDeck && !iStart}
                   revealCards={revealOpponentCards}
                   currentFightEvent={currentFightEvent}
+                  animationsSpeed={fightSpeed}
+                  highlightSameAffinity={computeIsDeckSlotHighlighted(opponentCosmon)}
                 />
               ))}
 
@@ -298,6 +367,8 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
                   shine={shineStartingDeck && iStart}
                   revealCards={revealMyCards}
                   currentFightEvent={currentFightEvent}
+                  animationsSpeed={fightSpeed}
+                  highlightSameAffinity={computeIsDeckSlotHighlighted(meCosmon)}
                 />
               ))}
             </div>
@@ -308,11 +379,28 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
           </section>
         </main>
 
-        <footer className="mt-[30px] flex w-full justify-center pb-[50px]">
-          <div className="flex w-1/2 items-center justify-center rounded-[10px] bg-[white]/[.2] py-[20px]">
+        <footer className="relative mt-[30px] flex w-full items-center justify-center pb-[50px]">
+          <div className="relative flex w-1/2 items-center justify-center rounded-[10px] bg-[white]/[.2] py-[20px]">
             <p className="text-base font-normal text-white">
               {sentence || 'Fighters are getting ready...'}
             </p>
+            <div
+              className="absolute ml-[40px] flex items-center gap-[16px]"
+              style={{ left: 'calc(100%)' }}
+            >
+              <ButtonPlay
+                isActive={fightSpeed === FIGHT_PLAY_SPEED}
+                onClick={() => {
+                  setFightSpeed(FIGHT_PLAY_SPEED)
+                }}
+              />
+              <ButtonForward
+                isActive={fightSpeed === FIGHT_FORWARD_SPEED}
+                onClick={() => {
+                  setFightSpeed(FIGHT_FORWARD_SPEED)
+                }}
+              />
+            </div>
           </div>
         </footer>
       </div>

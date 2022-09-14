@@ -7,14 +7,25 @@ interface FlipCardProps {
   revealed?: boolean
   imgStyle?: CSSProperties
   shine?: boolean
+  revealedDuration?: number
 }
 
-const FlipCard: React.FC<FlipCardProps> = ({ card, imgStyle, revealed, shine, ...props }) => {
+const FlipCard: React.FC<FlipCardProps> = ({
+  card,
+  imgStyle,
+  revealed,
+  shine,
+  revealedDuration = 1,
+  ...props
+}) => {
   return (
     <div className={clsx(styles.flipCard)}>
       <div
         className={clsx(styles.flipCardInner)}
-        style={revealed ? { transform: 'rotateY(180deg)' } : {}}
+        style={{
+          transitionDuration: `${revealedDuration}s`,
+          ...(revealed ? { transform: 'rotateY(180deg)' } : {}),
+        }}
       >
         <div className={clsx(styles.cardFront, { [styles.shineCard]: shine })}>
           {typeof card === 'string' ? <img src={card} style={imgStyle} /> : card}

@@ -33,7 +33,6 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
   const [battle, setBattle] = useState<FightType | undefined>()
   const [battleOverTime, setBattleOverTime] = useState<FightType | undefined>()
 
-  const [finalBattle, setFinalBattle] = useState<FightType>() // @deprecated
   const [selectedArena, setSelectedArena] = useState<ArenaType>()
   const [selectedDeck, setSelectedDeck] = useState<Deck>()
 
@@ -48,7 +47,6 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
     if (cosmons && cosmons.length) {
       fetchDecksList()
       if (selectedDeck) {
-        console.log('cosmons are updated and so the selected deck')
         updateCosmonsInSelectedDeck(selectedDeck, cosmons)
       }
     }
@@ -65,9 +63,13 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
       try {
         if (selectedDeck) {
           const newBattle = await fight(selectedDeck, arena)
-          setBattle({ ...newBattle })
-          setBattleOverTime({ ...newBattle })
-          setShowSelectArenaModal(false)
+          if (newBattle) {
+            setBattle(undefined)
+            setBattleOverTime(undefined)
+            setBattle({ ...newBattle })
+            setBattleOverTime({ ...newBattle })
+            setShowSelectArenaModal(false)
+          }
         }
       } catch (error) {
         console.error(error)
@@ -77,8 +79,13 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
   )
 
   const updateCosmonsInSelectedDeck = (deck: Deck, cosmons: CosmonType[]) => {
-    const updatedCosmons = cosmons
-      .map((c) => deck.cosmons.findIndex((dc) => dc.id === c.id) !== -1 && c)
+    const updatedCosmons = deck.cosmons
+      .map((c) => {
+        const cosmonPos = cosmons.findIndex((dc) => dc.id === c.id)
+        if (cosmonPos !== -1) {
+          return cosmons[cosmonPos]
+        }
+      })
       .filter(Boolean)
     setSelectedDeck((prevState) => ({ ...prevState, cosmons: updatedCosmons } as Deck))
   }
@@ -101,11 +108,8 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
     setShowSelectArenaModal(true)
   }, [])
 
-  const handleFightEnd = useCallback(async (finalBattleState?: FightType) => {
+  const handleFightEnd = useCallback(async () => {
     await refreshCosmonsAndDecksList()
-    if (finalBattleState) {
-      setFinalBattle(finalBattleState)
-    }
     setShowFightReportModal(true)
   }, [])
 
@@ -117,11 +121,13 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
         selectedDeck.cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0) === false
       ) {
         const newBattle = await fight(selectedDeck, selectedArena)
-        setBattle(undefined)
-        setBattleOverTime(undefined)
-        setBattle({ ...newBattle })
-        setBattleOverTime({ ...newBattle })
-        setShowFightReportModal(false)
+        if (newBattle) {
+          setBattle(undefined)
+          setBattleOverTime(undefined)
+          setBattle({ ...newBattle })
+          setBattleOverTime({ ...newBattle })
+          setShowFightReportModal(false)
+        }
       }
     } catch (error) {
       console.error(error)
@@ -200,10 +206,10 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
         }}
       >
         <AnimatePresence>
-          {battle && battleOverTime ? (
+          {battle !== undefined && battleOverTime !== undefined ? (
             <FightModal
-              key={`${[...battle.me.cosmons.map((c) => c.id)]}_vs_${[
-                ...battle.opponent.cosmons.map((c) => c.id),
+              key={`${[...battle?.me?.cosmons.map((c) => c.id)]}_vs_${[
+                ...battle?.opponent?.cosmons.map((c) => c.id),
               ]}`}
               onFightEnd={handleFightEnd}
               onCloseModal={handleCloseFightModal}
@@ -212,10 +218,8 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
         </AnimatePresence>
 
         <AnimatePresence>
-          {showFightReportModal && battle && finalBattle ? (
+          {showFightReportModal ? (
             <FightReportModal
-              battle={battle}
-              finalBattle={finalBattle}
               onClickNewFight={handleClickNewFight}
               onCloseModal={handleCloseFightReportModal}
             />

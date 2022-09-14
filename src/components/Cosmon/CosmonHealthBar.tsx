@@ -1,5 +1,4 @@
 import clsx from 'clsx'
-import { AnimatePresence, motion } from 'framer-motion'
 import React, { useMemo } from 'react'
 import styles from './CosmonHealthBar.module.scss'
 
@@ -46,8 +45,8 @@ const CosmonHealthBar: React.FC<
       >
         {hp}
       </div>
-      <div className={clsx('relative flex h-[16px] w-full flex-1', styles.hpPortionsContainer)}>
-        <div className="absolute top-0 left-0 flex h-full w-full gap-[4px] overflow-hidden py-[2px] px-[3px]">
+      <div className={clsx('relative flex w-full flex-1', styles.hpPortionsContainer)}>
+        <div className="absolute top-0 left-0 flex h-full w-full gap-[1px] overflow-hidden py-[2px] px-[3px]">
           {Array.from(Array(NB_HEALTH_PORTIONS).keys()).map((i) => (
             <div
               key={`hp-range-${i}`}

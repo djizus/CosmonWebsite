@@ -1,23 +1,17 @@
 import Modal from '@components/Modal/Modal'
 import Slider from '@components/Slider/Slider'
-import React from 'react'
-import { FightType } from 'types'
+import React, { useContext } from 'react'
+import { FightContext } from '../FightContext'
 import CosmonsProgression from './CosmonsProgression'
 import MainEvents from './MainEvents'
 
 interface FightReportModalProps {
-  battle: FightType
-  finalBattle: FightType
   onClickNewFight: () => void
   onCloseModal: () => void
 }
 
-const FightReportModal: React.FC<FightReportModalProps> = ({
-  battle,
-  finalBattle,
-  onClickNewFight,
-  onCloseModal,
-}) => {
+const FightReportModal: React.FC<FightReportModalProps> = ({ onClickNewFight, onCloseModal }) => {
+  const { battleOverTime } = useContext(FightContext)
   return (
     <Modal onCloseModal={onCloseModal} hasCloseButton={false} width={700}>
       <Slider
@@ -27,7 +21,7 @@ const FightReportModal: React.FC<FightReportModalProps> = ({
           onClick: onCloseModal,
         }}
       >
-        <MainEvents battle={finalBattle} />
+        <MainEvents battle={battleOverTime!} />
         <CosmonsProgression onClickNewFight={onClickNewFight} />
       </Slider>
     </Modal>
