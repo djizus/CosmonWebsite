@@ -57,7 +57,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
     if (battle) {
       fighters.current = [...battle.opponent.cosmons, ...battle.me.cosmons]
       if (fighters.current.length > 0) {
-        // playBattle()
+        playBattle()
       }
     }
   }, [battle])
