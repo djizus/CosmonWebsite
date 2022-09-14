@@ -36,11 +36,11 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
   const renderAffinityIcon = useCallback((affinity: AFFINITY_TYPES, size = 17) => {
     switch (affinity) {
       case AFFINITY_TYPES.GEOGRAPHICAL:
-        return <Geographical className={`h-[${size}px] w-[${size}px]`} />
+        return <Geographical style={{ width: size, height: size }} />
       case AFFINITY_TYPES.PERSONALITY:
-        return <Personality className={`h-[${size}px] w-[${size}px]`} />
+        return <Personality style={{ width: size, height: size }} />
       case AFFINITY_TYPES.TIME:
-        return <Time className={`h-[1${size}px] w-[${size}px]`} />
+        return <Time style={{ width: size, height: size }} />
     }
   }, [])
 
@@ -200,6 +200,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                 {showBonusTooltip === affinity &&
                 (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0 ? (
                   <motion.div
+                    initial={{ opacity: 0, x: labelPosition === 'right' ? -10 : 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: labelPosition === 'right' ? -10 : 10 }}
                     transition={{ type: 'tween' }}
