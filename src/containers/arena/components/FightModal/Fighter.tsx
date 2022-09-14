@@ -6,6 +6,7 @@ import clsx from 'clsx'
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion'
 import React, { forwardRef, useMemo, useRef } from 'react'
 import { CosmonType, FightEventType } from 'types'
+import styles from './Fighter.module.scss'
 
 type FighterProps = {
   cosmon: CosmonType
@@ -19,6 +20,8 @@ type FighterProps = {
   revealCards: string[]
   isFightStart: boolean
   currentFightEvent: FightEventType | undefined
+  animationsSpeed?: number
+  highlightSameAffinity?: boolean
 } & HTMLMotionProps<'div'>
 
 const Fighter = forwardRef<HTMLDivElement, FighterProps>(
@@ -35,6 +38,8 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
       critical,
       isFightStart,
       currentFightEvent,
+      animationsSpeed = 1,
+      highlightSameAffinity = false,
       ...divProps
     },
     ref
@@ -50,7 +55,7 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
         y: isOpponentSide ? [0, -10, 30, 0] : [0, 10, -30, 0],
         zIndex: 900,
         transition: {
-          duration: 0.4,
+          duration: 0.4 / animationsSpeed,
           type: 'keyframes',
           times: [0, 0.25, 0.5, 75, 1],
           ease: 'linear',
@@ -59,7 +64,7 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
       dodge: {
         x: [0, -15, 15, -15, 15, 0],
         transition: {
-          duration: 0.8,
+          duration: 0.8 / animationsSpeed,
           type: 'keyframes',
           times: [0, 0.2, 0.4, 0.6, 0.8, 1],
           ease: 'linear',
@@ -83,9 +88,10 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
         key={cosmon.id}
         {...divProps}
         className={clsx(
-          `relative h-full w-full rounded-[4px] border-[0.5px] border-[#ffffff]/[0.2] p-[5px]`,
+          `relative h-full w-full rounded-[4px] border-[0.5px] border-[#ffffff]/[0.2] p-[5px] transition-shadow`,
           { 'border-[#ffffff]/[0.6]': isAttacker },
           { 'border-[#f07273]': isDefender },
+          { [styles.fighterHighlighted]: highlightSameAffinity },
           divProps.className
         )}
         variants={cardVariants}
@@ -99,7 +105,7 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
                 opacity: [0, 1, 0],
                 scale: [1, 2],
                 transition: {
-                  duration: 1.7,
+                  duration: 1.7 / animationsSpeed,
                 },
               }}
               style={{ position: 'absolute', top: 20, left: 20, zIndex: 950 }}
@@ -117,7 +123,7 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
                 opacity: [0, 1, 0],
                 scale: [1, 2],
                 transition: {
-                  duration: 1.7,
+                  duration: 1.7 / animationsSpeed,
                 },
               }}
               style={{ position: 'absolute', top: 20, right: 20, zIndex: 950 }}
@@ -138,7 +144,7 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
                 opacity: [0, 1, 0],
                 scale: [1, 2],
                 transition: {
-                  duration: 1,
+                  duration: 1 / animationsSpeed,
                 },
               }}
               style={{ position: 'absolute', top: 20, right: 20, zIndex: 950 }}
@@ -175,15 +181,15 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
         </AnimatePresence>
 
         <FlipCard
-          // card={cosmon.data.extension.image}
-          card={<CosmonCard cosmon={cosmon} />}
-          imgStyle={{
-            objectFit: 'cover',
-            width: '100%',
-            height: '100%',
-            borderRadius: 4,
-          }}
+          card={
+            <CosmonCard
+              cosmon={cosmon}
+              imgStyle={{ objectFit: 'cover', borderRadius: 4, height: '100%' }}
+            />
+          }
+          imgStyle={{ borderRadius: 4, height: '100%', width: '100%', objectFit: 'cover' }}
           revealed={revealCards.includes(cosmon.id)}
+          revealedDuration={0.8 / animationsSpeed}
           shine={shine}
         />
       </motion.div>

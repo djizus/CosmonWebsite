@@ -1,0 +1,130 @@
+.cosmonCardContainer {
+  .scarcityContainer {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    top: 1%;
+
+    p {
+      font-weight: 800;
+      text-transform: uppercase;
+      color: white;
+      line-height: 10px;
+      font-family: 'Poppins';
+      letter-spacing: 1px;
+    }
+
+    &.sm {
+      img {
+        width: 5%;
+        height: 5%;
+      }
+      p {
+        font-size: 0.2em;
+        line-height: 0.2em;
+      }
+    }
+    &.md {
+      img {
+        width: 10%;
+        height: 10%;
+      }
+      p {
+        font-size: 0.4em;
+        line-height: 0.4em;
+      }
+    }
+    &.lg {
+      img {
+        width: 12%;
+        height: 12%;
+      }
+      p {
+        font-size: 0.6em;
+        line-height: 0.6em;
+      }
+    }
+  }
+
+  .attributsContainer {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    padding-left: 9%;
+    padding-right: 9%;
+
+    &.sm {
+      bottom: 2%;
+    }
+    &.md {
+      bottom: 3%;
+    }
+    &.lg {
+      bottom: 4%;
+      padding-left: 10%;
+      padding-right: 10%;
+    }
+
+    .flag {
+      &.sm {
+        line-height: 9px;
+        font-size: 11px;
+      }
+      &.md {
+        line-height: 9px;
+        font-size: 11px;
+      }
+      &.lg {
+        line-height: 17px;
+        font-size: 19px;
+      }
+    }
+
+    p.level {
+      color: white;
+      font-weight: 700;
+      font-family: 'Poppins';
+
+      &.sm {
+        font-size: 4px;
+        line-height: 10px;
+      }
+
+      &.md {
+        font-size: 10px;
+        line-height: 10px;
+      }
+
+      &.lg {
+        font-size: 18px;
+        line-height: 18px;
+      }
+    }
+
+    p.label {
+      color: white;
+      font-weight: normal;
+      font-family: 'Poppins';
+
+      &.sm {
+        font-size: 2px;
+        line-height: 10px;
+      }
+
+      &.md {
+        font-size: 6px;
+        line-height: 15px;
+      }
+
+      &.lg {
+        font-size: 11px;
+        line-height: 20px;
+      }
+    }
+  }
+}

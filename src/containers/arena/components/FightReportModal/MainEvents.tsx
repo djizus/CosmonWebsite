@@ -1,17 +1,25 @@
 import { getCosmonStat } from '@utils/cosmon'
-import React, { useMemo } from 'react'
+import { AnimatePresence } from 'framer-motion'
+import React, { useMemo, useState } from 'react'
 import { FightType } from 'types'
+import FightLogsModal from './FightLogsModal'
 
 interface MainEventsProps {
   battle: FightType
 }
 
 const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
+  const [showFightLogsModal, setShowFightLogsModal] = useState(false)
+
   const iWin = useMemo(() => battle.winner.identity.includes(battle.me.identity), [battle])
   const iStart = useMemo(
     () => battle.me.cosmons.findIndex((c) => c.id === battle.events[0].atk_id) !== -1,
     []
   )
+
+  const handleClickOpenLogs = () => {
+    setShowFightLogsModal(true)
+  }
 
   return (
     <div className="flex flex-col items-center">
@@ -28,7 +36,7 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
         </div>
       ) : null}
 
-      <div className="mt-[32px] mb-[100px] flex w-full flex-col justify-center rounded-[20px] bg-[#282255] py-[32px] px-[40px]">
+      <div className="mt-[32px] flex w-full flex-col justify-center rounded-[20px] bg-[#282255] py-[32px] px-[40px]">
         <div className="flex">
           <div className="flex flex-1 justify-center">
             <p className="text-white">{battle.me.deckName}</p>
@@ -69,6 +77,26 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
           </div>
         </div>
       </div>
+
+      <div className="mt-[32px] mb-[100px] flex w-full flex-col items-center justify-center rounded-[20px] bg-[#282255] py-[20px] px-[50px]">
+        <p className="font-normal">Learn more about the key moments by checking the fight logs!</p>
+        <p
+          onClick={handleClickOpenLogs}
+          className="mt-[16px] cursor-pointer font-normal text-white underline"
+        >
+          Open logs
+        </p>
+      </div>
+
+      <AnimatePresence>
+        {showFightLogsModal ? (
+          <FightLogsModal
+            onCloseModal={() => {
+              setShowFightLogsModal(false)
+            }}
+          />
+        ) : null}
+      </AnimatePresence>
     </div>
   )
 }

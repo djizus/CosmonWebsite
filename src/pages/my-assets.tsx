@@ -19,6 +19,7 @@ import ConnectionNeededContent from '../components/ConnectionNeededContent/Conne
 import Tooltip from '@components/Tooltip/Tooltip'
 import clsx from 'clsx'
 import { useDeckStore } from '@store/deckStore'
+import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 
 export default function Page() {
   const { cosmons, coins, setShowWithdrawDepositModal, isConnected } = useWalletStore(
@@ -217,13 +218,15 @@ export default function Page() {
                           : 'Transfer impossible\nYour cosmon is already in a deck'}
                       </p>
                     </Tooltip>
-                    <Image
-                      src={cosmon.data.extension.image}
+                    <CosmonCard
+                      cosmon={cosmon}
+                      showLevel
+                      showPersonality
+                      showScarcity
+                      showNationality
+                      size="md"
                       onClick={() => set_showCosmonDetail(cosmon)}
-                      height={280}
-                      width={167}
-                      placeholder="blur"
-                      blurDataURL="/cosmon-placeholder.svg"
+                      containerStyle={{ height: 280, width: 167 }}
                       className="cursor-pointer"
                     />
                   </div>

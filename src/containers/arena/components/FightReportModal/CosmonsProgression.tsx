@@ -1,20 +1,24 @@
-import { useGameStore } from '@store/gameStore'
+import Button from '@components/Button/Button'
+import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import { useWalletStore } from '@store/walletStore'
 import { getCosmonStat } from '@utils/cosmon'
 import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { ReactNode, useMemo, useState } from 'react'
+import React, { ReactNode, useContext, useMemo, useState } from 'react'
 import { useMount } from 'react-use'
 import { CosmonStatKeyType, CosmonStatType, CosmonType } from 'types'
+import { FightContext } from '../FightContext'
 
-interface CosmonsProgressionProps {}
+interface CosmonsProgressionProps {
+  onClickNewFight: () => void
+}
 
-const CosmonsProgression: React.FC<CosmonsProgressionProps> = () => {
+const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight }) => {
   const { cosmons } = useWalletStore()
-  const { battle } = useGameStore()
+  const { battleOverTime } = useContext(FightContext)
 
   const cosmonsEvolved = useMemo(() => {
-    return battle?.me.cosmonsWithoutBonus
+    return battleOverTime?.me.cosmonsWithoutBonus
       .map((c) => {
         const pos = cosmons.findIndex((cosmon) => cosmon.id === c.id)
         if (pos !== -1) {
@@ -22,9 +26,9 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = () => {
         }
       })
       .filter(Boolean)
-  }, [battle])
+  }, [battleOverTime])
 
-  const cosmonsNonEvolved = battle?.me.cosmonsWithoutBonus
+  const cosmonsNonEvolved = battleOverTime?.me.cosmonsWithoutBonus
 
   return (
     <div className="flex flex-col items-center">
@@ -32,12 +36,20 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = () => {
       <div className="mt-[20px] flex w-full flex-col justify-center gap-[20px] rounded-[20px] bg-[#282255] py-[32px] px-[40px]">
         {cosmonsNonEvolved?.map((cosmonNonEvolved, i) => (
           <CosmonProgression
-            iWin={battle?.winner.identity.includes(battle.me.identity) ?? false}
+            iWin={battleOverTime?.winner.identity.includes(battleOverTime.me.identity) ?? false}
             key={cosmonNonEvolved.id}
             cosmon={cosmonNonEvolved}
             cosmonEvolved={cosmonsEvolved![i]!}
           />
         ))}
+      </div>
+      <div
+        className="absolute bottom-0 flex justify-center"
+        style={{ bottom: '-17.2%', right: '29%' }}
+      >
+        <Button size="small" type="secondary" onClick={onClickNewFight}>
+          <h2 style={{ fontSize: 14, lineHeight: '26px' }}>New Fight !</h2>
+        </Button>
       </div>
     </div>
   )
@@ -54,8 +66,8 @@ interface CosmonProgressionProps {
 const CosmonProgression: React.FC<CosmonProgressionProps> = ({ cosmon, cosmonEvolved, iWin }) => {
   return (
     <div className="flex">
-      <div>
-        <img src={cosmon.data.extension.image} width={90} style={{ position: 'relative' }} />
+      <div style={{ border: '1px solid #555', padding: 3, borderRadius: 4 }}>
+        <CosmonCard cosmon={cosmon} style={{ width: 90, height: 151 }} />
       </div>
       <div className="ml-[20px] flex flex-1 flex-col justify-center">
         <CosmonXpProgression

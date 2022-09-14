@@ -9,7 +9,7 @@ import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import CosmonFullModal from '@components/Modal/CosmonFullModal'
 import CosmonFightPointsBar from '@components/Cosmon/CosmonFightPointsBar'
 import { getCosmonStat } from '@utils/cosmon'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
+import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 
 interface DeckContainerProps {
   deck: Deck
@@ -66,22 +66,20 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
             {deck.cosmons.map((cosmon) => (
               <div key={`image-${deck.id}-${cosmon.id}`} className="flex h-full w-full flex-col">
                 <Hover perspective={300} speed={5}>
-                  <LazyLoadImage
-                    effect="opacity"
-                    src={cosmon.data.extension.image}
-                    onClick={() => {
-                      set_showCosmonDetail(cosmon)
-                    }}
-                    placeholder={
-                      <div className="flex h-full w-full items-center justify-center">
-                        <p>Loading...</p>
-                      </div>
-                    }
-                    style={{
+                  <CosmonCard
+                    cosmon={cosmon}
+                    imgStyle={{
                       width: '100%',
                       height: '100%',
                       objectFit: 'contain',
                       cursor: 'pointer',
+                    }}
+                    showLevel
+                    showPersonality
+                    showNationality
+                    showScarcity
+                    onClick={() => {
+                      set_showCosmonDetail(cosmon)
                     }}
                   />
                 </Hover>

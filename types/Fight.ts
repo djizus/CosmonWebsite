@@ -17,6 +17,14 @@ export type FightEventType = {
   damage: number
   critical: boolean
   action_point: number
+  action_type?: FightEventActionType
+  heal: number
+  heal_target_id: string
+}
+
+export enum FightEventActionType {
+  HIT,
+  HEAL,
 }
 
 export type FightType = {

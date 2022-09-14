@@ -1,0 +1,41 @@
+$borderWidth: 2px;
+
+.hexagon {
+  position: relative;
+  width: 60px;
+  height: 67px;
+  background: linear-gradient(180deg, #a996ff 0%, rgba(76, 54, 173, 0.5) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  z-index: 10;
+
+  &::before {
+    position: absolute;
+    content: '';
+    top: $borderWidth;
+    left: $borderWidth;
+    height: calc(100% - calc($borderWidth * 2));
+    width: calc(100% - calc($borderWidth * 2));
+    z-index: -1;
+    transition: all 0.3s;
+  }
+
+  &.hexagonPlain {
+    &::before {
+      background: #4e4888;
+    }
+  }
+
+  &.hexagonEmpty {
+    &::before {
+      background: #190a31;
+    }
+  }
+}
+
+.hexagon,
+.hexagon:before {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
