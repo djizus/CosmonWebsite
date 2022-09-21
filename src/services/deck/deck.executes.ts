@@ -10,6 +10,7 @@ const PUBLIC_DECK_CONTRACT = process.env.NEXT_PUBLIC_DECK_CONTRACT!
  */
 export const createDeck = async (name: string, nftIds: NFTId[]) => {
   try {
+    console.log('createDeck :: ', name, nftIds)
     const { signingClient, address } = useWalletStore.getState()
     const response = await signingClient?.execute(
       address,
@@ -20,6 +21,7 @@ export const createDeck = async (name: string, nftIds: NFTId[]) => {
     )
     return response
   } catch (e: any) {
+    console.error(e)
     throw new Error(`Error while creating a deck`)
   }
 }

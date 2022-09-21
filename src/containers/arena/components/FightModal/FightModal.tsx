@@ -20,6 +20,7 @@ import { sleep } from '@utils/sleep'
 import ButtonForward from '@components/Button/ButtonForward'
 import ButtonPlay from '@components/Button/ButtonPlay'
 import FightDeckAffinities from './FightDeckAffinities'
+import Badge from '@components/Badge/Badge'
 
 interface FightModalProps {
   onCloseModal: () => void
@@ -319,8 +320,13 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
             ) : null}
           </div>
 
-          <section>
+          <section className="flex">
             <p className="text-3xl text-white">{battleOverTime?.opponent.deckName ?? ''}</p>
+            <Badge className="ml-[20px] flex items-center justify-center">
+              <p className="text-sm font-semibold text-white">
+                Score {battleOverTime?.opponent.deckScore ?? ''}
+              </p>
+            </Badge>
           </section>
 
           <section
@@ -374,8 +380,13 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
             </div>
           </section>
 
-          <section>
+          <section className="flex">
             <p className="text-3xl text-white">{battleOverTime?.me.deckName ?? ''}</p>
+            <Badge className="ml-[20px] flex items-center justify-center">
+              <p className="text-sm font-semibold text-white">
+                Score {battleOverTime?.me.deckScore ?? ''}
+              </p>
+            </Badge>
           </section>
         </main>
 

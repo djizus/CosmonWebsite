@@ -8,14 +8,18 @@ import { AnimatePresence, motion } from 'framer-motion'
 import TopLeftCorner from '@public/deck/top-left-corner.svg'
 import Plus from '@public/icons/plus.svg'
 import { useWalletStore } from '@store/walletStore'
+import FlipCard from '@components/FlipCard/FlipCard'
+import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
+import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
 
 interface DeckSlotProps {
   slotIdx: number
   data: CosmonType | undefined
   highlight?: boolean
+  revealStats?: boolean
 }
 
-const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight }) => {
+const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight, revealStats = false }) => {
   const { deck, setDeck, deckToEdit } = useContext(DeckBuilderContext)
   const { markCosmonAsTemporaryFree } = useWalletStore()
 
@@ -98,13 +102,10 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight }) => {
                 initial={{ transform: 'scale(0)' }}
                 animate={{ transform: 'scale(1)' }}
                 exit={{ transform: 'scale(0)' }}
-                className="h-full"
+                className="h-full w-full"
               >
-                <div className="group h-full transition-all">
-                  <DragPreviewImage
-                    connect={dragPreview}
-                    src={'/dragging-preview.png'}
-                  />
+                <div className="group h-full w-full transition-all">
+                  <DragPreviewImage connect={dragPreview} src={'/dragging-preview.png'} />
                   <div
                     onClick={handleRemoveNftFromDeck}
                     className="transfer-card-icon absolute -top-4 -right-4 z-30 scale-0 cursor-pointer rounded-full p-2 transition-all group-hover:scale-100"
@@ -116,9 +117,19 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight }) => {
                       alt="Remove cosmon from deck"
                     />
                   </div>
-                  <img
-                    ref={drag}
-                    src={data?.data.extension.image}
+                  <FlipCard
+                    card={
+                      <CosmonCard
+                        cosmon={data}
+                        showLevel
+                        showPersonality
+                        showNationality
+                        showScarcity
+                        imgStyle={{ objectFit: 'cover', borderRadius: 6 }}
+                      />
+                    }
+                    cardBack={<CosmonStatsCard cosmon={data} />}
+                    revealed={revealStats}
                     className="h-full w-full cursor-grab"
                   />
                 </div>
@@ -126,9 +137,7 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight }) => {
             ) : (
               <div className="flex flex-col items-center justify-center">
                 <Plus />
-                <p className="mt-[13px] text-cosmon-main-tertiary">
-                  Player {slotIdx + 1}
-                </p>
+                <p className="mt-[13px] text-cosmon-main-tertiary">Player {slotIdx + 1}</p>
               </div>
             )}
           </AnimatePresence>

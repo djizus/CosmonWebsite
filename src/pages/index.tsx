@@ -11,18 +11,23 @@ import Partners from '../sections/Partners'
 import CommonQuestions from '../sections/CommonQuestions'
 import Subscribe from '../sections/Subscribe'
 import Section from '../components/Section/Section'
+import BandeauLastBlockchainActions from '@sections/BandeauLastBlockchainActions/BandeauLastBlockchainActions'
 
 export default function Page() {
   return (
     <div className="bg-[#09082D]">
-      <Section className="bg-cosmon-blue-darker pb-2 lg:pb-32">
+      <Section className="bg-cosmon-blue-darker">
         <Hero>
-          The first play to earn in the COSMOS ecosystem combining video games,
-          NFT and financial gain. Now, let's go to war!{' '}
+          The first play to earn in the COSMOS ecosystem combining video games, NFT and financial
+          gain. Now, let's go to war!{' '}
         </Hero>
       </Section>
 
-      <Section className="bg-cosmon-blue-darker pt-[91px] lg:pt-[60px] lg:pb-[180px]">
+      <div className="pt-[50px] lg:pt-[110px]">
+        <BandeauLastBlockchainActions />
+      </div>
+
+      <Section className="bg-cosmon-blue-darker pt-[91px] lg:pt-[185px] lg:pb-[180px]">
         <Intro />
       </Section>
 

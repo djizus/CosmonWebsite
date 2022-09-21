@@ -1,0 +1,79 @@
+.lastActionContainer {
+  display: inline-block;
+  gap: 16px;
+  position: relative;
+  padding: 16px 20px;
+  border-radius: 8px;
+  width: max-content;
+  min-width: max-content;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 8px;
+    padding: 1px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  p:first-of-type {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  p:nth-child(2) {
+    font-size: 13px;
+    color: white;
+    font-weight: normal;
+  }
+
+  &.win {
+    background-color: rgba(74, 255, 58, 0.1);
+    color: #4aff3a;
+
+    &::after {
+      background: linear-gradient(180deg, #4aff3a 0%, rgba(57, 159, 48, 0.4) 100%);
+    }
+  }
+
+  &.lost {
+    background-color: rgba(255, 58, 58, 0.1);
+    color: #ff3a3a;
+
+    &::after {
+      background: linear-gradient(180deg, #ff3a3a 0%, rgba(168, 37, 37, 0.4) 100%);
+    }
+  }
+
+  &.claimRewards {
+    background-color: rgba(255, 247, 58, 0.1);
+    color: #fff73a;
+
+    &::after {
+      background: linear-gradient(180deg, #fff73a 0%, rgba(155, 151, 45, 0.4) 100%);
+    }
+  }
+
+  &.claimAirdrop {
+    background-color: rgba(146, 128, 230, 0.1);
+    color: #9280e6;
+
+    &::after {
+      background: linear-gradient(180deg, #9280e6 0%, rgba(111, 96, 181, 0.4) 100%);
+    }
+  }
+
+  &.mintCreated {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+
+    &::after {
+      background: linear-gradient(180deg, #ffffff 0%, rgba(189, 189, 189, 0.4) 100%);
+    }
+  }
+}

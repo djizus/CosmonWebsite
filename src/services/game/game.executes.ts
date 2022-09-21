@@ -48,7 +48,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
     const response = await signingClient.execute(
       address,
       PUBLIC_GAME_CONTRACT,
-      { fight: { deck: deck.id, arena: arena.name } },
+      { fight: { deck: deck.id, arena: arena.name, nfts: deck.cosmons.map((c) => c.id) } },
       'auto',
       `[COSMON] fight against opponent: deck ${deck.id} // ${arena.name}`
     )
@@ -102,6 +102,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
           [cosmonsWithAffinityBonus[0], cosmonsWithAffinityBonus[1], cosmonsWithAffinityBonus[2]] ||
           [],
         cosmonsWithoutBonus: opponentCosmonsList || [],
+        deckScore: +getAttrValue('opponent_deck_score') || 0,
       },
       me: {
         identity: getAttrValue('my_address') || '',
@@ -110,6 +111,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
           [cosmonsWithAffinityBonus[3], cosmonsWithAffinityBonus[4], cosmonsWithAffinityBonus[5]] ||
           [],
         cosmonsWithoutBonus: deck.cosmons || [],
+        deckScore: +getAttrValue('my_deck_score') || 0,
       },
       winner: {
         identity: getAttrValue('winner') || '',

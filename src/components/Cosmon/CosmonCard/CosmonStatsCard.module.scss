@@ -1,0 +1,187 @@
+$polygonBorderWidth: 2px;
+
+.cosmonStatsCardContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  padding: 4px;
+  border-radius: 6px;
+
+  &.common {
+    background-image: url('/cosmons/bg-card/common.png');
+  }
+  &.uncommon {
+    background-image: url('/cosmons/bg-card/uncommon.png');
+  }
+  &.rare {
+    background-image: url('/cosmons/bg-card/rare.png');
+  }
+  &.epic {
+    background-image: url('/cosmons/bg-card/epic.png');
+  }
+  &.legendary {
+    background-image: url('/cosmons/bg-card/legendary.png');
+  }
+  &.divinity {
+    background-image: url('/cosmons/bg-card/divinity.png');
+  }
+
+  .mainContainer {
+    background: rgba(33, 35, 44, 0.5);
+    padding: 8px 5px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+
+    .title {
+      color: white;
+      font-size: 11px;
+      font-weight: 400;
+    }
+
+    .xpProgressionContainer {
+      width: 100%;
+      height: 2px;
+      position: relative;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .chartContainer {
+      position: relative;
+      width: 100%;
+      height: 160px;
+      margin-top: 16px;
+      border: 0.5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      display: flex;
+
+      &::before,
+      &::after {
+        width: inherit;
+        height: inherit;
+        content: '';
+      }
+
+      &::before {
+        position: absolute;
+        z-index: 1;
+        width: calc(100% + $polygonBorderWidth);
+        height: calc(100% + $polygonBorderWidth);
+        background: rgba(#e3d18e, 1);
+        opacity: 0.5;
+        transition: clip-path 0.33s ease-in-out;
+        clip-path: polygon(
+          calc(50% + calc(20% * var(--def) / calc(var(--def) * 1.5)))
+            calc(50% - calc(35% * var(--def) / calc(var(--def) * 1.5))),
+          calc(50% + calc(40% * var(--hp) / calc(var(--hp) * 1.5))) 50%,
+
+          calc(50% + calc(20% * var(--int) / calc(var(--int) * 1.5)))
+            calc(50% + calc(35% * var(--int) / calc(var(--int) * 1.5))),
+          calc(50% - calc(20% * var(--luk) / calc(var(--luk) * 1.5)))
+            calc(50% + calc(35% * var(--luk) / calc(var(--luk) * 1.5))),
+          calc(50% - calc(40% * var(--spe) / calc(var(--spe) * 1.5))) 50%,
+
+          calc(50% - calc(20% * var(--atq) / calc(var(--atq) * 1.5)))
+            calc(50% - calc(35% * var(--atq) / calc(var(--atq) * 1.5)))
+        );
+      }
+
+      &::after {
+        position: absolute;
+        width: calc(100% - $polygonBorderWidth);
+        height: calc(100% - $polygonBorderWidth);
+        z-index: 2;
+        top: $polygonBorderWidth;
+        left: $polygonBorderWidth;
+        background: rgba(#3f3f43, 1);
+        opacity: 0.7;
+        transition: clip-path 0.33s ease-in-out;
+        clip-path: polygon(
+          calc(50% + calc(20% * var(--def) / calc(var(--def) * 1.5)))
+            calc(50% - calc(35% * var(--def) / calc(var(--def) * 1.5))),
+          calc(50% + calc(40% * var(--hp) / calc(var(--hp) * 1.5))) 50%,
+
+          calc(50% + calc(20% * var(--int) / calc(var(--int) * 1.5)))
+            calc(50% + calc(35% * var(--int) / calc(var(--int) * 1.5))),
+          calc(50% - calc(20% * var(--luk) / calc(var(--luk) * 1.5)))
+            calc(50% + calc(35% * var(--luk) / calc(var(--luk) * 1.5))),
+          calc(50% - calc(40% * var(--spe) / calc(var(--spe) * 1.5))) 50%,
+
+          calc(50% - calc(20% * var(--atq) / calc(var(--atq) * 1.5)))
+            calc(50% - calc(35% * var(--atq) / calc(var(--atq) * 1.5)))
+        );
+      }
+
+      p {
+        position: absolute;
+        z-index: 2;
+        text-align: center;
+        line-height: 1;
+        font-weight: 400;
+        font-size: 8px;
+      }
+
+      p:nth-of-type(1) {
+        top: 8%;
+        left: 65%;
+      }
+
+      p:nth-of-type(2) {
+        top: 50%;
+        left: 85%;
+        transform: translateY(-50%);
+      }
+
+      p:nth-of-type(3) {
+        bottom: 8%;
+        left: 65%;
+      }
+
+      p:nth-of-type(4) {
+        bottom: 8%;
+        left: 22%;
+      }
+
+      p:nth-of-type(5) {
+        top: 50%;
+        right: 85%;
+        transform: translateY(-50%);
+      }
+
+      p:nth-of-type(6) {
+        top: 8%;
+        left: 22%;
+      }
+    }
+
+    .statsContainer {
+      margin-top: 12px;
+      padding: 0 8px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 30%;
+      width: 100%;
+
+      div {
+        display: flex;
+        justify-content: space-between;
+
+        p {
+          font-size: 10px;
+        }
+
+        p:last-child {
+          font-weight: 800;
+        }
+      }
+    }
+  }
+}

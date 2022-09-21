@@ -17,6 +17,7 @@
     "bignumber.js": "^9.0.2",
     "clsx": "^1.1.1",
     "country-code-emoji": "^2.3.0",
+    "date-fns": "^2.29.3",
     "env-cmd": "^10.1.0",
     "framer-motion": "^6.3.11",
     "html-entities": "^2.3.3",
