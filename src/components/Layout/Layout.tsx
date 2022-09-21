@@ -3,18 +3,17 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Button from '../Button/Button'
 import Footer from '../Footer/Footer'
-import HamburgerMenu from '../HamburgerMenu/hamburgerMenu'
 import { useEffect, useState } from 'react'
 import WalletPopup from './WalletPopup'
 import { getShortAddress } from '../../utils/'
 import { useWalletStore } from '../../store/walletStore'
 import { getAmountFromDenom } from '../../utils/index'
-import { chainFetcher } from '../../services/fetcher'
-import useSWR from 'swr'
-
 import DisconnectOrCopyPopup from './DisconnectOrCopyPopup'
 import { useCosmonStore } from '../../store/cosmonStore'
 import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
+import { AnimatePresence } from 'framer-motion'
+import Modal from '@components/Modal/Modal'
+import BuyXKIModal from '@components/Modal/BuyXKIModal'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -26,15 +25,12 @@ export default function Layout({ children }: LayoutProps) {
   const {
     address: walletAddress,
     connect,
-    disconnect,
-    signingClient,
     isFetchingData,
     fetchWalletData,
     cosmons,
     isConnected,
     ibcDenom,
     coins,
-    ibcCoins,
     showWithdrawDepositModal,
     setShowWithdrawDepositModal,
   } = useWalletStore((state) => state)
@@ -42,8 +38,8 @@ export default function Layout({ children }: LayoutProps) {
   const { getWhitelistData } = useCosmonStore((state) => state)
 
   const [showWalletPopup, set_showWalletPopup] = useState(false)
-  const [showDisconnectOrCopyPopup, set_showDisconnectOrCopyPopup] =
-    useState(false)
+  const [showNoXKIModal, setShowNoXKIModal] = useState(false)
+  const [showDisconnectOrCopyPopup, set_showDisconnectOrCopyPopup] = useState(false)
 
   const handleSwitchAccount = async () => {
     await connect()
@@ -68,7 +64,10 @@ export default function Layout({ children }: LayoutProps) {
 
   useEffect(() => {
     if (coins.length > 0) {
-      // console.log('coins', coins)
+      const availableXki = getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins)
+      if (availableXki <= 0) {
+        setShowNoXKIModal(true)
+      }
     }
   }, [coins])
 
@@ -90,9 +89,7 @@ export default function Layout({ children }: LayoutProps) {
       </Head>
 
       {showWithdrawDepositModal && (
-        <WithdrawDepositModal
-          onCloseModal={() => setShowWithdrawDepositModal()}
-        />
+        <WithdrawDepositModal onCloseModal={() => setShowWithdrawDepositModal()} />
       )}
 
       <header className=" max-w-auto relative z-10 -mb-[60px] flex w-full items-center justify-between px-5 pt-4 lg:pt-6">
@@ -131,6 +128,14 @@ export default function Layout({ children }: LayoutProps) {
         <div className="relative hidden items-center lg:flex">
           {isConnected ? (
             <div className="flex items-center gap-x-5">
+              <div>
+                <a href="https://app.osmosis.zone/?from=ATOM&to=XKI" target="_blank">
+                  <Button type="primary" size="small" className="relative max-h-[42px]">
+                    Buy XKI
+                  </Button>
+                </a>
+              </div>
+
               <div className="relative">
                 <Button
                   isLoading={isFetchingData}
@@ -140,31 +145,19 @@ export default function Layout({ children }: LayoutProps) {
                   onClick={() => set_showWalletPopup(true)}
                 >
                   <span className="font-bold uppercase">
-                    {getAmountFromDenom(
-                      process.env.NEXT_PUBLIC_STAKING_DENOM || '',
-                      coins
-                    )}
+                    {getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins)}
                     {' ' + process.env.NEXT_PUBLIC_DENOM}
                   </span>
                 </Button>
-                {showWalletPopup && (
-                  <WalletPopup
-                    onClosePopup={() => set_showWalletPopup(false)}
-                  />
-                )}
+                {showWalletPopup && <WalletPopup onClosePopup={() => set_showWalletPopup(false)} />}
               </div>
 
               <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
-                {getAmountFromDenom(
-                  process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
-                  coins
-                )}
+                {getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '', coins)}
 
                 <div className="ml-1 uppercase"> {ibcDenom}</div>
                 <div
-                  onClick={() =>
-                    set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)
-                  }
+                  onClick={() => set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)}
                   className="ml-2 flex h-full cursor-pointer items-center rounded-xl border border-[#9FA4DD] py-2 px-4 text-white"
                 >
                   {getShortAddress(walletAddress)}
@@ -189,6 +182,17 @@ export default function Layout({ children }: LayoutProps) {
           )}
         </div>
       </header>
+
+      <AnimatePresence>
+        {showNoXKIModal ? (
+          <BuyXKIModal
+            hasCloseButton={false}
+            onCloseModal={() => {
+              setShowNoXKIModal(false)
+            }}
+          />
+        ) : null}
+      </AnimatePresence>
 
       <main className="-mt-4 lg:-mt-6">{children}</main>
       <Footer />

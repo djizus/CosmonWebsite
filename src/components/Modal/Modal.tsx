@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { useEffect } from 'react'
 import Close from '/public/icons/close.svg'
 
-type ModalProps = {
+export type ModalProps = {
   children: React.ReactNode
   fullScreen?: boolean
   hasCloseButton?: boolean
