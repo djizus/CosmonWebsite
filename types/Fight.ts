@@ -6,6 +6,7 @@ export type FightPlayerType = {
   deckName?: string
   cosmons: CosmonType[]
   cosmonsWithoutBonus: CosmonType[]
+  deckScore: number
 }
 
 export type FightEventType = {
@@ -31,6 +32,6 @@ export type FightType = {
   arena: ArenaType
   me: FightPlayerType
   opponent: FightPlayerType
-  winner: Omit<FightPlayerType, 'cosmons' | 'cosmonsWithoutBonus'>
+  winner: Omit<FightPlayerType, 'cosmons' | 'cosmonsWithoutBonus' | 'deckScore'>
   events: FightEventType[]
 }

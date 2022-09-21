@@ -2,10 +2,12 @@ import clsx from 'clsx'
 import ArrowRight from '/public/icons/arrow-right.svg'
 import style from './Button.module.scss'
 import LoadingIcon from '../LoadingIcon/LoadingIcon'
+import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
 type ButtonProps = {
   type?:
     | 'primary'
+    | 'primaryBordered'
     | 'secondary'
     | 'tertiary'
     | 'quaternary'
@@ -22,7 +24,8 @@ type ButtonProps = {
   className?: string
   isLoading?: boolean
   fullWidth?: boolean
-}
+  active?: boolean
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 
 export default function Button({
   type = 'primary',
@@ -34,13 +37,12 @@ export default function Button({
   className = '',
   onClick,
   isLoading = false,
+  active = false,
   ...props
 }: ButtonProps) {
   return (
     <div
-      className={`relative z-0 mx-auto mb-1 flex flex-row lg:m-0 ${
-        fullWidth ? 'w-full' : 'w-fit'
-      }`}
+      className={`relative z-0 mx-auto mb-1 flex flex-row lg:m-0 ${fullWidth ? 'w-full' : 'w-fit'}`}
     >
       <button
         onClick={onClick}
@@ -50,25 +52,18 @@ export default function Button({
           `${style[size]}`,
           fullWidth && 'w-full justify-center',
           style[type],
+          { [style.active]: active },
           `${className}`
         )}
-        style={{ ...(isLoading ? { pointerEvents: 'none' } : null) }}
+        style={{ ...props.style, ...(isLoading ? { pointerEvents: 'none' } : null) }}
       >
         {isLoading && <LoadingIcon />}
         {icon && icon.position === 'left' && (
-          <ArrowRight
-            className={`${style.arrow} ${
-              icon.direction === 'left' && style.reverse
-            }`}
-          />
+          <ArrowRight className={`${style.arrow} ${icon.direction === 'left' && style.reverse}`} />
         )}
         {children}
         {icon && icon.position === 'right' && (
-          <ArrowRight
-            className={`${style.arrow} ${
-              icon.direction === 'left' && style.reverse
-            }`}
-          />
+          <ArrowRight className={`${style.arrow} ${icon.direction === 'left' && style.reverse}`} />
         )}
       </button>
     </div>

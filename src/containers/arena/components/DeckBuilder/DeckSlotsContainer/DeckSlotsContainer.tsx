@@ -7,6 +7,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import { DeckBuilderContext } from '../DeckBuilderContext'
 import DeckSlot from './DeckSlot'
+import FlipIcon from '@public/icons/flip.svg'
 
 interface DeckSlotsContainerProps {}
 
@@ -15,17 +16,11 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
     useContext(DeckBuilderContext)
 
   const [errors, setErrors] = useState<string[]>([])
+  const [revealStats, setRevealStats] = useState(true)
 
-  const {
-    createDeck,
-    creatingDeck,
-    updateDeck,
-    updatingDeck,
-    computeDeckAffinities,
-  } = useDeckStore()
-  const [highlightNftsWithAffinity, setHighlightNftsWithAffinity] = useState<
-    string[] | undefined
-  >()
+  const { createDeck, creatingDeck, updateDeck, updatingDeck, computeDeckAffinities } =
+    useDeckStore()
+  const [highlightNftsWithAffinity, setHighlightNftsWithAffinity] = useState<string[] | undefined>()
 
   const handleClickSaveDeck = useCallback(async () => {
     try {
@@ -54,10 +49,7 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
     }
   }, [deck, deckName, handleCloseModal, deckToEdit, errors])
 
-  const checkDeckErrors = (
-    deck: (CosmonType | undefined)[],
-    deckName: string
-  ) => {
+  const checkDeckErrors = (deck: (CosmonType | undefined)[], deckName: string) => {
     let es = []
     if (!deckName || deckName === '') {
       es.push('Please choose your team name before saving')
@@ -75,13 +67,10 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
       : undefined
   }, [deck])
 
-  const handleHoverAffinity = useCallback(
-    (affinityData: Set<NFTId>, affinity: AFFINITY_TYPES) => {
-      const affinityDatas = Array.from(affinityData)
-      setHighlightNftsWithAffinity(affinityDatas)
-    },
-    []
-  )
+  const handleHoverAffinity = useCallback((affinityData: Set<NFTId>, affinity: AFFINITY_TYPES) => {
+    const affinityDatas = Array.from(affinityData)
+    setHighlightNftsWithAffinity(affinityDatas)
+  }, [])
 
   const handleStopHoverAffinity = useCallback(() => {
     setHighlightNftsWithAffinity(undefined)
@@ -94,12 +83,14 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
       if (!hasChildrenArray) {
         return cosmon && highlightNftsWithAffinity.includes(cosmon.id)
       }
-      return highlightNftsWithAffinity.some(
-        (arrayIds) => cosmon && arrayIds.includes(cosmon.id)
-      )
+      return highlightNftsWithAffinity.some((arrayIds) => cosmon && arrayIds.includes(cosmon.id))
     },
     [highlightNftsWithAffinity]
   )
+
+  const handleClickFlipCards = useCallback(() => {
+    setRevealStats((prev) => !prev)
+  }, [])
 
   return (
     <div className="flex h-full w-full flex-col justify-around">
@@ -122,6 +113,7 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
               slotIdx={i}
               data={deckSlot}
               highlight={computeIsDeckSlotHighlighted(deckSlot!)}
+              revealStats={revealStats}
             />
           ))}
         </div>
@@ -131,12 +123,21 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
             Choose the right equilibrium between your players
           </p>
         </div>
+        <div className="mt-[24px]">
+          <Button
+            type="primaryBordered"
+            size="small"
+            active={!revealStats}
+            onClick={handleClickFlipCards}
+            disabled={deck.every((c) => c === undefined)}
+          >
+            <FlipIcon />
+            <p>Flip</p>
+          </Button>
+        </div>
       </div>
       <div className="relative mb-[4em] flex flex-col items-center">
-        <div
-          className="absolute flex flex-col gap-[20px]"
-          style={{ bottom: 'calc(100% + 34px)' }}
-        >
+        <div className="absolute flex flex-col gap-[20px]" style={{ bottom: 'calc(100% + 34px)' }}>
           <AnimatePresence>
             {errors?.length > 0
               ? errors.map((error, i) => (

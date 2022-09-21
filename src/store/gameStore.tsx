@@ -26,7 +26,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     try {
       const arenasListTemp = await GameService.queries().getArenas()
 
-      const registeredArenasList = await GameService.queries().getRegistredArenasForWallet()
+      const registeredArenasList = await GameService.queries().getRegisteredArenasForWallet()
 
       const arenasList =
         arenasListTemp?.map((arena) => ({

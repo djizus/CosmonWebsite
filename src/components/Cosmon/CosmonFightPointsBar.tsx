@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { CosmonType } from 'types/Cosmon'
 import styles from './CosmonFightPointsBar.module.scss'
 import Zap from '@public/icons/zap.svg'
@@ -13,6 +13,16 @@ const CosmonFightPointsBar: React.FC<
   CosmonFightPointsBarProps &
     React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 > = ({ cosmon, ...props }) => {
+  const fightPointsContainerRef = useRef<HTMLDivElement>(null)
+  const [portionWidth, setPortionWidth] = useState(0)
+
+  useEffect(() => {
+    if (fightPointsContainerRef.current) {
+      const { width } = fightPointsContainerRef.current.getBoundingClientRect()
+      setPortionWidth(width / +getCosmonStat(cosmon.stats!, 'Fp Max')?.value!)
+    }
+  }, [fightPointsContainerRef.current])
+
   return (
     <div {...props} className={clsx('flex items-center', props.className)}>
       <div
@@ -21,15 +31,17 @@ const CosmonFightPointsBar: React.FC<
         <Zap className={styles.zapSvg} />
       </div>
       <div
-        className={clsx(
-          'flex h-3/4 w-full flex-1 gap-[1px] py-[2px] px-[3px]',
-          styles.fightPointsContainer
-        )}
+        ref={fightPointsContainerRef}
+        className={clsx(styles.fightPointsContainer)}
+        style={{
+          gridTemplateColumns: `repeat(${+getCosmonStat(cosmon.stats!, 'Fp Max')
+            ?.value!}, minmax(0, ${portionWidth}px))`,
+        }}
       >
         {Array.from(Array(+getCosmonStat(cosmon.stats!, 'Fp Max')?.value!).keys()).map((i) => (
           <div
             key={`${cosmon.id}-fp-${i}`}
-            className={clsx('h-full w-full', styles.fightPointContainer, {
+            className={clsx(styles.fightPointContainer, {
               [styles.fightPointContainerEmpty]: i >= +getCosmonStat(cosmon.stats!, 'Fp')?.value!,
             })}
           />

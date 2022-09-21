@@ -78,8 +78,7 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
       <div
         className={styles.container}
         style={{
-          ...(deck.includes(nft) ||
-          (nft.isInDeck === true && !nft.temporaryFree)
+          ...(deck.includes(nft) || (nft.isInDeck === true && !nft.temporaryFree)
             ? { opacity: 0.7 }
             : null),
           ...(nft.isInDeck === true && !nft.temporaryFree
@@ -88,10 +87,7 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
         }}
         ref={drag}
       >
-        <div
-          className="flex flex-1 justify-between"
-          onDoubleClick={handleDoubleClick}
-        >
+        <div className="flex flex-1 justify-between" onDoubleClick={handleDoubleClick}>
           <div className="flex">
             <div>
               <img
@@ -103,8 +99,8 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
             <div className="ml-[13px] flex flex-col items-start justify-center text-left">
               <NFTName name={nft.data.extension.name} />
               <div className="mt-[8px] flex flex-row gap-[8px]">
-                <Badge>{getTrait(nft, 'Time')}</Badge>
-                <Badge>{getTrait(nft, 'Personality')}</Badge>
+                <Badge variant="secondary">{getTrait(nft, 'Time')}</Badge>
+                <Badge variant="secondary">{getTrait(nft, 'Personality')}</Badge>
               </div>
               <div className="mt-[8px] flex flex-row gap-[8px]">
                 <p className="text-xs text-cosmon-main-secondary ">
@@ -121,9 +117,7 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
                 className="m-1"
                 data-tip="tootlip"
                 data-for={`${nft.id}-${getScarcityByCosmon(nft)}`}
-                src={`/rarity-levels/${getScarcityByCosmon(
-                  nft
-                )!.toLowerCase()}.png`}
+                src={`/rarity-levels/${getScarcityByCosmon(nft)!.toLowerCase()}.png`}
               />
               <Tooltip
                 id={`${nft.id}-${getScarcityByCosmon(nft)}`}
@@ -136,21 +130,13 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
             <div className="m-1 flex">
               <p className="text-sm font-semibold text-cosmon-main-secondary">
                 Lvl.{' '}
-                <span className="">
-                  {nft.stats && getCosmonStat(nft.stats, 'Level')?.value}
-                </span>
+                <span className="">{nft.stats && getCosmonStat(nft.stats, 'Level')?.value}</span>
               </p>
             </div>
           </div>
         </div>
-        <AnimatePresence
-          initial={false}
-          exitBeforeEnter={true}
-          onExitComplete={() => null}
-        >
-          {listFilter.showStats ? (
-            <NFTStats nftStats={nft.stats} nftId={nft.id} />
-          ) : null}
+        <AnimatePresence initial={false} exitBeforeEnter={true} onExitComplete={() => null}>
+          {listFilter.showStats ? <NFTStats nftStats={nft.stats} nftId={nft.id} /> : null}
         </AnimatePresence>
       </div>
     </motion.div>

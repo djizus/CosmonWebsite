@@ -2,8 +2,10 @@ import clsx from 'clsx'
 import React, { CSSProperties, ReactNode } from 'react'
 import styles from './FlipCard.module.scss'
 
-interface FlipCardProps {
+interface FlipCardProps
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   card: string | ReactNode
+  cardBack?: string | ReactNode
   revealed?: boolean
   imgStyle?: CSSProperties
   shine?: boolean
@@ -12,6 +14,7 @@ interface FlipCardProps {
 
 const FlipCard: React.FC<FlipCardProps> = ({
   card,
+  cardBack,
   imgStyle,
   revealed,
   shine,
@@ -19,7 +22,7 @@ const FlipCard: React.FC<FlipCardProps> = ({
   ...props
 }) => {
   return (
-    <div className={clsx(styles.flipCard)}>
+    <div {...props} className={clsx(styles.flipCard, props.className)}>
       <div
         className={clsx(styles.flipCardInner)}
         style={{
@@ -27,11 +30,14 @@ const FlipCard: React.FC<FlipCardProps> = ({
           ...(revealed ? { transform: 'rotateY(180deg)' } : {}),
         }}
       >
-        <div className={clsx(styles.cardFront, { [styles.shineCard]: shine })}>
+        <div
+          className={clsx(styles.cardFront, { [styles.shineCard]: shine })}
+          style={{ zIndex: revealed ? 1 : -1 }}
+        >
           {typeof card === 'string' ? <img src={card} style={imgStyle} /> : card}
         </div>
-        <div className={clsx(styles.cardBack)}>
-          <img src="/dragging-preview.png" style={imgStyle} />
+        <div className={clsx(styles.cardBack)} style={{ zIndex: revealed === false ? 1 : -1 }}>
+          {cardBack || <img src="/dragging-preview.png" style={imgStyle} />}
         </div>
       </div>
     </div>

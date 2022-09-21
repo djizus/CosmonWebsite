@@ -51,7 +51,7 @@ const CosmonCard: React.FC<
 
   const personalityIconWidth = (perso: string) => {
     switch (perso) {
-      case 'agressive':
+      case 'aggressive':
       case 'creative':
       case 'dynamic':
       case 'erudite':
@@ -68,7 +68,7 @@ const CosmonCard: React.FC<
     <div
       {...divProps}
       className={clsx(
-        'relative flex h-full w-full rounded-[3px]',
+        'relative flex h-full w-full',
         styles.cosmonCardContainer,
         divProps.className
       )}

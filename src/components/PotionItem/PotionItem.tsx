@@ -24,30 +24,24 @@ export default function PotionItem({
   img,
   buy,
 }: PotionItemProps) {
-  const { isConnected, isFetchingData, coins } = useWalletStore(
+  const { isConnected, isFetchingData, coins } = useWalletStore((state) => state)
+
+  const { isSellOpen, isPreSellOpen, whitelistData } = useCosmonStore((state) => state)
+
+  const { getCosmonScarcityAvailable, getCosmonPrice: fetchCosmonPrice } = useCosmonStore(
     (state) => state
   )
-
-  const { isSellOpen, isPreSellOpen, whitelistData } = useCosmonStore(
-    (state) => state
-  )
-
-  const { getCosmonScarcityAvailable, getCosmonPrice: fetchCosmonPrice } =
-    useCosmonStore((state) => state)
 
   // console.log('price', price)
   const [cosmonAvailable, set_cosmonAvailable] = useState<boolean | null>(null)
   const [cosmonPrice, set_cosmonPrice] = useState<string>('XX')
-  const [cosmonDiscountPrice, set_cosmonDiscountPrice] = useState<
-    string | null
-  >(null)
+  const [cosmonDiscountPrice, set_cosmonDiscountPrice] = useState<string | null>(null)
 
   const getCosmonAvailable = async () => {
     let isAvailable = false
     const cosmonLeftByScarcity = (await getCosmonScarcityAvailable(type)) > 0
     const cosmonWhitelistLeft =
-      whitelistData &&
-      whitelistData?.available_slots > whitelistData?.used_slots
+      whitelistData && whitelistData?.available_slots > whitelistData?.used_slots
     if (isSellOpen && cosmonLeftByScarcity) {
       isAvailable = true
     } else if (isPreSellOpen && cosmonWhitelistLeft && cosmonLeftByScarcity) {
@@ -76,11 +70,7 @@ export default function PotionItem({
     ) {
       set_cosmonDiscountPrice(
         new BigNumber(price)
-          .minus(
-            new BigNumber(price)
-              .multipliedBy(whitelistData.discount_percent)
-              .dividedBy(100)
-          )
+          .minus(new BigNumber(price).multipliedBy(whitelistData.discount_percent).dividedBy(100))
           .plus(0.01)
           .toFixed(2)
           .toString()
@@ -107,9 +97,7 @@ export default function PotionItem({
       <div className="relative flex h-[140px] w-full">
         <Image layout="fill" objectFit="contain" src={`../potions/${img}`} />
       </div>
-      <p className="pt-6 text-[22px] font-bold leading-[27px] text-[#E7E7E7]">
-        {type}
-      </p>
+      <p className="pt-6 text-[22px] font-bold leading-[27px] text-[#E7E7E7]">{type}</p>
 
       <div className="mt-2 rounded-lg bg-cosmon-main-primary px-[10px] py-1 text-center text-base font-semibold text-white">
         {yieldPercent}% APR*
@@ -135,15 +123,9 @@ export default function PotionItem({
               // type={'secondary'}
               disabled={!cosmonAvailable || !hasEnoughCoinsToBuy}
               size={'small'}
-              onClick={() =>
-                buy(cosmonDiscountPrice ? cosmonDiscountPrice : cosmonPrice)
-              }
+              onClick={() => buy(cosmonDiscountPrice ? cosmonDiscountPrice : cosmonPrice)}
             >
-              {cosmonAvailable === null
-                ? 'Fetching data'
-                : cosmonAvailable
-                ? 'Buy'
-                : 'Unavailable'}
+              {cosmonAvailable === null ? 'Fetching data' : cosmonAvailable ? 'Buy' : 'Unavailable'}
             </Button>
           </div>
           {!hasEnoughCoinsToBuy ? (

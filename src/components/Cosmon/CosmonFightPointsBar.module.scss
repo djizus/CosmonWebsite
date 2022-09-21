@@ -14,6 +14,11 @@ $secondaryBarColor: #140653;
 }
 
 .fightPointsContainer {
+  width: 100%;
+  display: grid;
+  column-gap: 1px;
+  height: calc(100% / 1.5);
+  padding: 2px;
   background-color: $secondaryBarColor;
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;

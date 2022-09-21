@@ -1,8 +1,14 @@
 import create from 'zustand'
 import { persist } from 'zustand/middleware'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
-import { SigningStargateClient } from '@cosmjs/stargate'
-import { connectKeplr, makeClient, makeIbcClient, makeStargateClient } from '../services/keplr'
+import { IndexedTx, SearchTxQuery, SigningStargateClient } from '@cosmjs/stargate'
+import {
+  connectKeplr,
+  makeClient,
+  makeIbcClient,
+  makeStargateClient,
+  makeStargateClientUnsigned,
+} from '../services/keplr'
 import { Coin } from '@cosmjs/amino/build/coins'
 import {
   executeBuyCosmon,
@@ -25,12 +31,15 @@ import { sortCosmonsByScarcity } from '@utils/cosmon'
 import { NFTId, CosmonType, Scarcity } from 'types'
 import { XPRegistryService } from '@services/xp-registry'
 import { DeckService } from '@services/deck'
+import { CustomIndexedTx, IndexedTxMethodType } from 'types/IndexedTxMethodType'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
 const PUBLIC_STAKING_IBC_DENOM_ON_CHAIN = process.env.NEXT_PUBLIC_IBC_DENOM || ''
+const SEARCH_BLOCKCHAIN_HEIGHT_STEPS =
+  Number(process.env.NEXT_PUBLIC_SEARCH_BLOCKCHAIN_HEIGHT_STEPS) || 500
 
 interface WalletState {
   address: string
@@ -72,6 +81,7 @@ interface WalletState {
   getAirdropData: () => void
   claimAirdrop: () => any
   resetClaimData: () => void
+  searchTx: (txMethodType: IndexedTxMethodType) => Promise<CustomIndexedTx>
   setShowWithdrawDepositModal: (type?: 'withdraw' | 'deposit') => void
   // checkIfEligibleForAirdrop: (reset?: boolean) => Promise<void>
 }
@@ -537,6 +547,45 @@ const useWalletStore = create<WalletState>(
           signingClient: null,
           isConnected: false,
         })
+      },
+      searchTx: async (txMethodType: IndexedTxMethodType): Promise<CustomIndexedTx> => {
+        const client = await makeStargateClientUnsigned()
+        const height = await client.getHeight()
+
+        const tags = [
+          {
+            key: 'wasm.method',
+            value: txMethodType,
+          },
+        ]
+
+        const searchUntilResult = (
+          currentStep: number,
+          step: number,
+          nbTries: number
+        ): Promise<CustomIndexedTx> => {
+          return new Promise(async (resolve) => {
+            const resp = await client?.searchTx({ tags }, { minHeight: height - currentStep })
+            if (resp && resp.length > 0) {
+              // Order is last row has the higher block height
+              const mostRecentResult = resp[resp.length - 1]
+              // Fetch block info to retrieve time info
+              const block = await client.getBlock(mostRecentResult.height)
+              return resolve({ ...mostRecentResult, time: block.header.time })
+            }
+            // Every 3 tries, will double the step to find results faster
+            const nextStep = (nbTries % 3 === 0 && step * 2) || step
+            return resolve(searchUntilResult(currentStep + step, nextStep, ++nbTries))
+          })
+        }
+
+        const searchRes = await searchUntilResult(
+          SEARCH_BLOCKCHAIN_HEIGHT_STEPS,
+          SEARCH_BLOCKCHAIN_HEIGHT_STEPS,
+          1
+        )
+
+        return searchRes
       },
     }),
     {

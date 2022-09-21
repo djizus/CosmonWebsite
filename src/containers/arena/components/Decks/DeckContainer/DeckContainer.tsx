@@ -4,12 +4,15 @@ import { useDeckStore } from '@store/deckStore'
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { useCallback, useMemo, useState } from 'react'
 import DeckDropdownMenu from './DeckDropdownMenu'
-import Hover from 'react-3d-hover'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import CosmonFullModal from '@components/Modal/CosmonFullModal'
 import CosmonFightPointsBar from '@components/Cosmon/CosmonFightPointsBar'
 import { getCosmonStat } from '@utils/cosmon'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
+import EditIcon from '@public/icons/edit.svg'
+import FlipIcon from '@public/icons/flip.svg'
+import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
+import FlipCard from '@components/FlipCard/FlipCard'
 
 interface DeckContainerProps {
   deck: Deck
@@ -26,6 +29,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
 }) => {
   const { computeDeckAffinities } = useDeckStore()
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
+  const [revealCards, setRevealCards] = useState(true)
 
   const affinities = useMemo(() => {
     return computeDeckAffinities(deck.cosmons)
@@ -42,6 +46,10 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   const handleClickOnFight = useCallback(() => {
     onClickFight(deck)
   }, [deck, onClickFight])
+
+  const onClickFlipCards = useCallback(() => {
+    setRevealCards((prev) => !prev)
+  }, [])
 
   return (
     <motion.div
@@ -61,32 +69,34 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
             <DeckDropdownMenu onClickDeleteDeck={onClickDeleteDeck} />
           </div>
         </div>
-        <div className="mt-[30px] flex">
-          <div className="grid w-full grid-cols-3 gap-[30px]">
-            {deck.cosmons.map((cosmon) => (
-              <div key={`image-${deck.id}-${cosmon.id}`} className="flex h-full w-full flex-col">
-                <Hover perspective={300} speed={5}>
+        <div
+          className="mt-[30px] grid w-full grid-cols-3 gap-[30px]"
+          style={{ aspectRatio: '1.7' }}
+        >
+          {deck.cosmons.map((cosmon) => (
+            <div key={`image-${deck.id}-${cosmon.id}`} className="flex h-full w-full flex-col">
+              <FlipCard
+                card={
                   <CosmonCard
                     cosmon={cosmon}
-                    imgStyle={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'contain',
-                      cursor: 'pointer',
-                    }}
                     showLevel
                     showPersonality
                     showNationality
                     showScarcity
-                    onClick={() => {
-                      set_showCosmonDetail(cosmon)
-                    }}
+                    imgStyle={{ objectFit: 'cover', borderRadius: 6 }}
                   />
-                </Hover>
-                <CosmonFightPointsBar className="mt-[16px]" cosmon={cosmon} />
-              </div>
-            ))}
-          </div>
+                }
+                cardBack={<CosmonStatsCard cosmon={cosmon} />}
+                revealed={revealCards}
+                className="cursor-pointer"
+                onClick={() => {
+                  set_showCosmonDetail(cosmon)
+                }}
+              />
+
+              <CosmonFightPointsBar className="mt-[16px]" cosmon={cosmon} />
+            </div>
+          ))}
         </div>
         <div className="mt-[30px] flex flex-1 gap-[12px]">
           <div className="w-3/4">
@@ -102,9 +112,18 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
                 : 'Fight'}
             </Button>
           </div>
-          <div className="w-1/4">
-            <Button type="secondary" size="small" fullWidth onClick={onClickEditDeck}>
-              Edit
+          <div className="flex w-1/4 gap-[12px]">
+            <Button
+              type="primaryBordered"
+              size="small"
+              fullWidth
+              active={!revealCards}
+              onClick={onClickFlipCards}
+            >
+              <FlipIcon />
+            </Button>
+            <Button type="primaryBordered" size="small" fullWidth onClick={onClickEditDeck}>
+              <EditIcon />
             </Button>
           </div>
         </div>
