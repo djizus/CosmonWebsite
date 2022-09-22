@@ -1,0 +1,51 @@
+.cashPrizeContainer {
+  background: #20164f;
+  position: relative;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding: 30px 20px 10px 20px;
+  width: 500px;
+  height: 158px;
+
+  &::after {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    padding: 3px;
+    background: conic-gradient(
+      from 180deg at 50% 50%,
+      #e5f908 0deg,
+      #55c72e 18.75deg,
+      rgba(125, 151, 40, 0.835867) 63.75deg,
+      rgba(0, 196, 55, 0.746961) 103.13deg,
+      rgba(230, 26, 26, 0.4) 150.97deg,
+      #9c00d3 219.37deg,
+      #e757ff 266.25deg,
+      #1844e3 312.9deg,
+      rgba(82, 60, 204, 0.9) 343.12deg,
+      rgba(213, 247, 5, 0.8) 359.75deg,
+      rgba(145, 50, 179, 0) 359.96deg,
+      #e5f908 360deg
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  h3 {
+    color: white;
+    font-size: 60px;
+    font-weight: 700;
+    line-height: 60px;
+  }
+
+  img {
+    width: 60px;
+    height: 60px;
+  }
+}

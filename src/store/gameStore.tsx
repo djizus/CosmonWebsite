@@ -123,4 +123,10 @@ export const useGameStore = create<GameState>((set, get) => ({
       return battle
     } catch (error) {}
   },
+  fetchArenaFees: () => {},
+  fetchCurrentPrizePool: () => {},
+  fetchNextPrizePool: () => {},
+  fetchPrizesForAddress: () => {
+    address: String
+  },
 }))

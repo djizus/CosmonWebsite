@@ -1,0 +1,53 @@
+.countdownContainer {
+  background: #20164f;
+  position: relative;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding: 30px 20px 25px 20px;
+  width: 500px;
+  height: 158px;
+
+  &::after {
+    content: ' ';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    padding: 3px;
+    background: conic-gradient(
+      from 180deg at 50% 50%,
+      rgba(5, 87, 247, 0.8) -0.25deg,
+      #5484ff 6.56deg,
+      #0f3feb 18.75deg,
+      rgba(44, 103, 255, 0.835867) 63.75deg,
+      rgba(0, 78, 196, 0.746961) 103.13deg,
+      rgba(0, 72, 211, 0.4) 150.97deg,
+      #0061d3 200.63deg,
+      #5768ff 266.25deg,
+      #1844e3 312.9deg,
+      rgba(39, 0, 250, 0.9) 343.12deg,
+      rgba(5, 87, 247, 0.8) 359.75deg,
+      #5484ff 366.56deg
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  h3 {
+    color: white;
+    font-size: 55px;
+    font-weight: 700;
+    line-height: 60px;
+  }
+
+  img {
+    width: 60px;
+    height: 60px;
+  }
+}
