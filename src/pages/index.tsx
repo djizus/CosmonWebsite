@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import ChooseYourLeaders from '../sections/ChooseYourLeaders'
 import Hero from '../sections/Hero'
 import HoldAndEarn from '../sections/HoldAndEarn'
@@ -12,8 +12,59 @@ import CommonQuestions from '../sections/CommonQuestions'
 import Subscribe from '../sections/Subscribe'
 import Section from '../components/Section/Section'
 import BandeauLastBlockchainActions from '@sections/BandeauLastBlockchainActions/BandeauLastBlockchainActions'
+import CashPrize from '@components/Highlighted/CashPrize'
+import Countdown from '@components/Highlighted/Countdown'
+import { useMount } from 'react-use'
+import { useGameStore } from '@store/gameStore'
+import { differenceInMilliseconds } from 'date-fns'
+import { useArenaStore } from '@store/arenaStore'
+import { Coin } from '@cosmjs/proto-signing'
+import { AnimatePresence, motion } from 'framer-motion'
 
 export default function Page() {
+  const { fetchArenasList, arenasList } = useGameStore()
+  const { fetchNextPrizePool } = useArenaStore()
+  const [prize, setPrize] = useState<Coin>()
+
+  useMount(() => {
+    fetchData()
+  })
+
+  const fetchData = async () => {
+    if (arenasList?.length <= 0) {
+      await fetchArenasList()
+    }
+  }
+
+  const leaguePro = useMemo(() => {
+    if (arenasList?.length > 0) {
+      return arenasList.filter((a) => a.name !== 'Training')[0]
+    }
+    return undefined
+  }, [arenasList])
+
+  const leagueStartDate = useMemo(() => {
+    if (leaguePro) {
+      const startTimestamp = leaguePro.arena_open_time
+      const startEpoch = new Date(0)
+      startEpoch.setUTCSeconds(startTimestamp)
+      return differenceInMilliseconds(startEpoch, new Date())
+    }
+  }, [leaguePro])
+
+  useEffect(() => {
+    if (leaguePro) {
+      fetchLeagueProPrizePool(leaguePro.contract)
+    }
+  }, [leaguePro])
+
+  const fetchLeagueProPrizePool = async (leagueProContractAddress: string) => {
+    try {
+      const prize = await fetchNextPrizePool(leagueProContractAddress)
+      setPrize(prize[0])
+    } catch (error) {}
+  }
+
   return (
     <div className="bg-[#09082D]">
       <Section className="bg-cosmon-blue-darker">
@@ -24,6 +75,31 @@ export default function Page() {
       </Section>
 
       <div className="pt-[50px] lg:pt-[110px]">
+        <div className="mb-[68px] flex justify-center gap-[100px] px-[12vw]">
+          <div className="flex flex-col items-center">
+            <p className="mb-[20px] text-[22px] font-semibold text-white">First Prize Pool</p>
+            <AnimatePresence>
+              {prize ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <CashPrize prize={prize} />
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+          <div className="flex flex-col items-center">
+            <p className="mb-[20px] text-[22px] font-semibold text-white">
+              Professional Leagues are coming
+            </p>
+            <AnimatePresence>
+              {leagueStartDate ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  {' '}
+                  <Countdown from={leagueStartDate} />
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+        </div>
         <BandeauLastBlockchainActions />
       </div>
 

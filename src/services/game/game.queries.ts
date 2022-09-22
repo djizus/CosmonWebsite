@@ -1,3 +1,4 @@
+import { makeUnsignedClient } from '@services/keplr'
 import { ArenaType } from 'types/Arena'
 import { useWalletStore } from '../../store/walletStore'
 
@@ -8,8 +9,8 @@ const PUBLIC_GAME_CONTRACT = process.env.NEXT_PUBLIC_GAME_CONTRACT!
  */
 export const getArenas = async (): Promise<ArenaType[] | undefined> => {
   try {
-    const { signingClient } = useWalletStore.getState()
-    const response = await signingClient?.queryContractSmart(PUBLIC_GAME_CONTRACT, {
+    const client = await makeUnsignedClient()
+    const response = await client?.queryContractSmart(PUBLIC_GAME_CONTRACT, {
       get_arenas: {},
     })
     return response

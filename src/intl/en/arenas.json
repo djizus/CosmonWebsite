@@ -2,5 +2,9 @@
   "training": {
     "name": "<strong>Training</strong> Mode",
     "description": "Enter the Arena and give a try to the fighting experience with other players! Optimize your deck and make your Cosmons evolved as much as possible before the arrival of the professional league!"
+  },
+  "league1": {
+    "name": "<strong>Professional</strong> league",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
   }
 }

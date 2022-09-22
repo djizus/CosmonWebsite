@@ -3,6 +3,7 @@ import { OfflineSigner } from '@cosmjs/proto-signing/build/signer'
 import { GasPrice } from '@cosmjs/stargate/build/fee'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/signingcosmwasmclient'
 import { SigningStargateClient, StargateClient, StargateClientOptions } from '@cosmjs/stargate'
+import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 
 const PUBLIC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT || ''
 const PUBLIC_IBC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_IBC_CHAIN_RPC_ENDPOINT || ''
@@ -94,6 +95,10 @@ export const makeClient = async (offlineSigner: OfflineSigner) => {
     prefix: process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX,
     gasPrice: GasPrice.fromString(`0.025${process.env.NEXT_PUBLIC_STAKING_DENOM}`),
   })
+}
+
+export const makeUnsignedClient = async () => {
+  return await CosmWasmClient.connect(PUBLIC_RPC_ENDPOINT)
 }
 
 export const makeStargateClient = async (offlineSigner: OfflineSigner) => {
