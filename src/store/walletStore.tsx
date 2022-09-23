@@ -326,22 +326,25 @@ const useWalletStore = create<WalletState>(
               })
             )
 
-            const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(
-              myCosmons.map((c) => c.id)
-            )
+            if (myCosmons.length) {
+              const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(
+                myCosmons.map((c) => c.id)
+              )
 
-            myCosmons = myCosmons.map((c, i) => ({
-              ...c,
-              isInDeck: cosmonIdsAlreadyInDecks[i],
-            }))
-            set({
-              cosmons: sortCosmonsByScarcity(myCosmons).map(
+              myCosmons = myCosmons.map((c, i) => ({
+                ...c,
+                isInDeck: cosmonIdsAlreadyInDecks[i],
+              }))
+              set({
+                cosmons: sortCosmonsByScarcity(myCosmons).map(
+                  (cosmon) => get().cosmons.find((c) => c.id === cosmon.id) || cosmon
+                ),
+              })
+              return sortCosmonsByScarcity(myCosmons).map(
                 (cosmon) => get().cosmons.find((c) => c.id === cosmon.id) || cosmon
-              ),
-            })
-            return sortCosmonsByScarcity(myCosmons).map(
-              (cosmon) => get().cosmons.find((c) => c.id === cosmon.id) || cosmon
-            )
+              )
+            }
+            return []
           } catch (e) {
             console.error('Error while fetching cosmons', e)
           } finally {
