@@ -76,7 +76,7 @@ export const connectKeplr = async () => {
           gasPriceStep: {
             low: 0.025,
             average: 0.25,
-            high: 0.03,
+            high: 0.3,
           },
           features: ['cosmwasm', 'ibc-transfer', 'ibc-go', 'wasmd_0.24+'],
         })
