@@ -121,7 +121,6 @@ const useWalletStore = create<WalletState>(
           window.keplr.defaultOptions = {
             sign: {
               preferNoSetFee: true,
-              preferNoSetMemo: true,
             }
           }
 
