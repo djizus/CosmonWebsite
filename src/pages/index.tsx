@@ -75,31 +75,29 @@ export default function Page() {
       </Section>
 
       <div className="pt-[50px] lg:pt-[110px]">
-        <div className="mb-[68px] flex justify-center gap-[100px] px-[12vw]">
-          <div className="flex flex-col items-center">
-            <p className="mb-[20px] text-[22px] font-semibold text-white">First Prize Pool</p>
-            <AnimatePresence>
-              {prize ? (
+        {prize && leagueStartDate ? (
+          <div className="mb-[68px] flex justify-center gap-[100px] px-[12vw]">
+            <div className="flex flex-col items-center">
+              <p className="mb-[20px] text-[22px] font-semibold text-white">First Prize Pool</p>
+              <AnimatePresence>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <CashPrize prize={prize} />
                 </motion.div>
-              ) : null}
-            </AnimatePresence>
-          </div>
-          <div className="flex flex-col items-center">
-            <p className="mb-[20px] text-[22px] font-semibold text-white">
-              Professional Leagues are coming
-            </p>
-            <AnimatePresence>
-              {leagueStartDate ? (
+              </AnimatePresence>
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="mb-[20px] text-[22px] font-semibold text-white">
+                Professional Leagues are coming
+              </p>
+              <AnimatePresence>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   {' '}
                   <Countdown from={leagueStartDate} />
                 </motion.div>
-              ) : null}
-            </AnimatePresence>
+              </AnimatePresence>
+            </div>
           </div>
-        </div>
+        ) : null}
         <BandeauLastBlockchainActions />
       </div>
 
