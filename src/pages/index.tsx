@@ -76,7 +76,7 @@ export default function Page() {
 
       <div className="pt-[50px] lg:pt-[110px]">
         {prize && leagueStartDate ? (
-          <div className="mb-[68px] flex justify-center gap-[100px] px-[12vw]">
+          <div className="mb-[68px] flex flex-col justify-center gap-[5%] lg:flex-row ">
             <div className="flex flex-col items-center">
               <p className="mb-[20px] text-[22px] font-semibold text-white">First Prize Pool</p>
               <AnimatePresence>
@@ -85,13 +85,12 @@ export default function Page() {
                 </motion.div>
               </AnimatePresence>
             </div>
-            <div className="flex flex-col items-center">
-              <p className="mb-[20px] text-[22px] font-semibold text-white">
+            <div className="mt-[32px] flex flex-col items-center lg:mt-[0px]">
+              <p className="mb-[20px] text-[22px] font-semibold text-white ">
                 Professional Leagues are coming
               </p>
               <AnimatePresence>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {' '}
                   <Countdown from={leagueStartDate} />
                 </motion.div>
               </AnimatePresence>

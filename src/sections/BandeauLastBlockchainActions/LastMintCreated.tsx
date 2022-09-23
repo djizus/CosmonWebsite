@@ -13,8 +13,8 @@ interface LastMintCreatedProps {
 const LastMintCreated: React.FC<LastMintCreatedProps> = ({ ref, tx }) => {
   const title = useMemo(() => {
     const { events } = JSON.parse(tx.rawLog)[0]
-    const wasmAttributes = events?.find((e: any) => e.type === 'coin_received')?.attributes
-    const receiver = wasmAttributes?.find((att: any) => att.key === 'receiver')?.value
+    const wasmAttributes = events?.find((e: any) => e.type === 'message')?.attributes
+    const receiver = wasmAttributes?.find((att: any) => att.key === 'sender')?.value
     return `${(receiver && truncate(receiver, 6)) || ''} minted a card`
   }, [tx])
 

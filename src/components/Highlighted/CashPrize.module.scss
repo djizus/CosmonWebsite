@@ -5,8 +5,14 @@
   display: flex;
   justify-content: center;
   padding: 30px 20px 10px 20px;
-  width: 500px;
-  height: 158px;
+
+  width: calc(100vw - 20px);
+  height: max-content;
+
+  @screen sm {
+    width: 500px;
+    height: 158px;
+  }
 
   &::after {
     content: ' ';

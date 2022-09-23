@@ -34,7 +34,7 @@ const BandeauLastBlockchainActions: React.FC<BandeauLastBlockchainActionsProps> 
     setLoading(true)
     Promise.all([
       searchTx('fight'),
-      searchTx('new_minted_nft'),
+      searchTx('try_buy'),
       searchTx('claim_rewards'),
       searchTx('claim'),
     ]).then((res) => {
