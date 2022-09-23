@@ -84,11 +84,13 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   useEffect(() => {
     if (arenasList?.length > 0) {
       const leaguePro = arenasList.filter((a) => a.name !== 'Training')[0]
-      fetchLeagueProPrizePool(leaguePro.contract)
-      const startTimestamp = leaguePro.arena_open_time
-      const startEpoch = new Date(0)
-      startEpoch.setUTCSeconds(startTimestamp)
-      setNextLeagueStartDate(startEpoch)
+      if (leaguePro) {
+        fetchLeagueProPrizePool(leaguePro.contract)
+        const startTimestamp = leaguePro.arena_open_time
+        const startEpoch = new Date(0)
+        startEpoch.setUTCSeconds(startTimestamp)
+        setNextLeagueStartDate(startEpoch)
+      }
     }
   }, [arenasList])
 
@@ -145,7 +147,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                     <div className="flex items-center gap-[10px]">
                       <img src="/xki-logo.png" style={{ width: 30, height: 30 }} />
                       <p className="text-[34px] font-extrabold italic leading-[26px] text-white">
-                        {prize ? `${convertMicroDenomToDenom(prize?.amount!)}` : ''}
+                        {prize ? `${convertMicroDenomToDenom(prize?.amount!)}` : 'XXXX'}
                       </p>
                     </div>
                     <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">Prize pool</p>
@@ -158,7 +160,9 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                         className="text-[34px] font-extrabold italic leading-[30px] text-white"
                       />
                     ) : (
-                      <p>Coming soon</p>
+                      <p className="text-[34px] font-extrabold italic leading-[30px] text-white">
+                        Coming soon
+                      </p>
                     )}
                     <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">Starts in</p>
                   </div>
