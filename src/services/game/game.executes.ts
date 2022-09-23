@@ -5,8 +5,10 @@ import { useWalletStore } from '@store/walletStore'
 import { CosmonType, FightType } from 'types'
 import { ArenaType } from 'types/Arena'
 import { Deck } from 'types/Deck'
+import {calculateFee, GasPrice} from "@cosmjs/stargate";
 
 const PUBLIC_GAME_CONTRACT = process.env.NEXT_PUBLIC_GAME_CONTRACT!
+const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM;
 
 /**
  * Register a wallet to an arena
@@ -49,7 +51,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
       address,
       PUBLIC_GAME_CONTRACT,
       { fight: { deck: deck.id, arena: arena.name, nfts: deck.cosmons.map((c) => c.id) } },
-      'auto',
+      calculateFee(7_500_000, GasPrice.fromString(`0.025${PUBLIC_STAKING_DENOM}`)),
       `[COSMON] fight against opponent: deck ${deck.id} // ${arena.name}`
     )
 

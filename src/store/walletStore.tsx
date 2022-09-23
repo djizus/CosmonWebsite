@@ -118,6 +118,13 @@ const useWalletStore = create<WalletState>(
         try {
           await connectKeplr()
 
+          window.keplr.defaultOptions = {
+            sign: {
+              preferNoSetFee: true,
+              preferNoSetMemo: true,
+            }
+          }
+
           // enable website to access kepler
           await (window as any).keplr.enable(PUBLIC_CHAIN_ID)
           await (window as any).keplr.enable(PUBLIC_IBC_CHAIN_ID)
