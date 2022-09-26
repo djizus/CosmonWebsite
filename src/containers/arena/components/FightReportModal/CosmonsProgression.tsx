@@ -100,8 +100,8 @@ const CosmonProgression: React.FC<CosmonProgressionProps> = ({ cosmon, cosmonEvo
             statsEvolved={cosmonEvolved.stats!}
           />
           <CosmonStatProgression
-            key={`${cosmon.id}-Psy`}
-            statKey="Psy"
+            key={`${cosmon.id}-Hp`}
+            statKey="Hp"
             stats={cosmon.stats!}
             statsEvolved={cosmonEvolved.stats!}
           />
@@ -251,8 +251,8 @@ const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
         return 'Intelligence (INT)'
       case 'Luk':
         return 'Chance (LUK)'
-      case 'Psy':
-        return 'Psychology (PSY)'
+      case 'Hp':
+        return 'Health Points (HP)'
       default:
         return ''
     }
