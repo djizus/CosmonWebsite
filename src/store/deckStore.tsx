@@ -138,15 +138,19 @@ export const useDeckStore = create<DeckState>((set, get) => ({
           try {
             set({ decksList: [] })
             await updateCosmonsAreInDeck()
+            set({ updatingDeck: false })
             return resp
           } catch (error) {
             console.error(error)
-          } finally {
             set({ updatingDeck: false })
           }
         })
+        .catch((e) => {
+          console.error(e)
+          set({ updatingDeck: false })
+        })
       return response
-    } catch (error) {}
+    } catch (e) {}
   },
   fetchPersonalityAffinities: async () => {
     try {
