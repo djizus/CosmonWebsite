@@ -52,7 +52,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
       PUBLIC_GAME_CONTRACT,
       { fight: { deck: deck.id, arena: arena.name, nfts: deck.cosmons.map((c) => c.id) } },
       calculateFee(7_500_000, GasPrice.fromString(`0.025${PUBLIC_STAKING_DENOM}`)),
-      `[COSMON] fight against opponent: deck ${deck.id} // ${arena.name}`
+      `[COSMON] fight with deckID ${deck.id} // ${arena.name}`
     )
 
     const fightAttributes = response.logs[0].events.find(
