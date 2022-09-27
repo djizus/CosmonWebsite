@@ -117,21 +117,23 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight, revealSta
                       alt="Remove cosmon from deck"
                     />
                   </div>
-                  <FlipCard
-                    card={
-                      <CosmonCard
-                        cosmon={data}
-                        showLevel
-                        showPersonality
-                        showNationality
-                        showScarcity
-                        imgStyle={{ objectFit: 'cover', borderRadius: 6 }}
-                      />
-                    }
-                    cardBack={<CosmonStatsCard cosmon={data} />}
-                    revealed={revealStats}
-                    className="h-full w-full cursor-grab"
-                  />
+                  <div ref={drag} className="h-full w-full">
+                    <FlipCard
+                      card={
+                        <CosmonCard
+                          cosmon={data}
+                          showLevel
+                          showPersonality
+                          showNationality
+                          showScarcity
+                          imgStyle={{ objectFit: 'cover', borderRadius: 6 }}
+                        />
+                      }
+                      cardBack={<CosmonStatsCard cosmon={data} />}
+                      revealed={revealStats}
+                      className="h-full w-full cursor-grab"
+                    />
+                  </div>
                 </div>
               </motion.div>
             ) : (
