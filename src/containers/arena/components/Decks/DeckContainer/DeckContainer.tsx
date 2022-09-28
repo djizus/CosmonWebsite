@@ -31,7 +31,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   const { computeDeckAffinities } = useDeckStore()
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
   const [revealCards, setRevealCards] = useState(true)
-  const { fetchDecksList } = useDeckStore()
+  const { refreshCosmonsAndDecksList } = useDeckStore()
 
   const affinities = useMemo(() => {
     return computeDeckAffinities(deck.cosmons)
@@ -67,13 +67,13 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
       now.getDate(),
       now.getHours() + 1,
       0,
-      0
+      20 // we add 20 sec to let the script that refill FPs to run
     )
     return nextHour
   }, [])
 
-  const handleCountdownReached = () => {
-    fetchDecksList()
+  const handleCountdownReached = async () => {
+    await refreshCosmonsAndDecksList()
   }
 
   return (

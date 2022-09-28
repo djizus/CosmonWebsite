@@ -17,19 +17,19 @@ const Countdown: React.FC<CountdownProps> = ({
   tag: Tag = 'p',
   onCountdownReached,
 }) => {
-  const [timeLeft, timeLeftFormatted] = useCountdown(differenceInMilliseconds(to, from))
+  const [, timeLeftFormatted] = useCountdown(differenceInMilliseconds(to, from))
 
   useEffect(() => {
-    if (timeLeft === 0 && onCountdownReached) {
+    if (Object.values(timeLeftFormatted).every((k) => +k === 0) && onCountdownReached) {
       onCountdownReached()
     }
-  }, [timeLeft])
+  }, [timeLeftFormatted])
 
   return (
     <Tag className={className}>
       {+timeLeftFormatted.days > 0 ? timeLeftFormatted.days + '\xa0:\xa0' : ''}
       {+timeLeftFormatted.hours > 0 ? timeLeftFormatted.days + '\xa0:\xa0' : ''}
-      {timeLeftFormatted.minutes}&nbsp;:&nbsp;
+      {+timeLeftFormatted.minutes > 0 ? timeLeftFormatted.minutes + '\xa0:\xa0' : ''}
       {timeLeftFormatted.seconds}
     </Tag>
   )
