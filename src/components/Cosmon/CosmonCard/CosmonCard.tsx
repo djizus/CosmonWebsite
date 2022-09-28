@@ -1,9 +1,12 @@
+import React, { CSSProperties, useEffect, useMemo, useState } from 'react'
 import { getCosmonStat, getScarcityByCosmon, getTrait, indexByCharacter } from '@utils/cosmon'
 import countries from '@utils/countries'
 import clsx from 'clsx'
-import React, { CSSProperties, useMemo } from 'react'
+import { motion, useAnimationControls } from 'framer-motion'
 import { CosmonType } from 'types'
 import styles from './CosmonCard.module.scss'
+import Shimmer from '@components/Shimmer/Shimmer'
+import theme from 'tailwind.config'
 
 interface CosmonCardProps {
   cosmon: CosmonType
@@ -29,6 +32,19 @@ const CosmonCard: React.FC<
   size = 'md',
   ...divProps
 }) => {
+  const [imageLoaded, setImageLoaded] = useState(false)
+  /* const controls = useAnimationControls()
+  controls.start('default')
+
+  const imgVariants = {
+    default: {
+      transform: 'scale(0)',
+    },
+    appear: {
+      transform: 'scale(1)',
+    },
+  }
+ */
   const scarcity = useMemo(() => {
     return getScarcityByCosmon(cosmon)
   }, [cosmon])
@@ -64,6 +80,18 @@ const CosmonCard: React.FC<
     }
   }
 
+  /* const handleLoadImage = (e: any) => {
+    console.log('handleLoadImage :: ', e)
+    setImageLoaded(true)
+  }
+
+  useEffect(() => {
+    console.log('imageLoaded :: ', imageLoaded)
+    if (imageLoaded === true) {
+      controls.start('appear')
+    }
+  }, [imageLoaded]) */
+
   return (
     <div
       {...divProps}
@@ -77,10 +105,17 @@ const CosmonCard: React.FC<
         ...containerStyle,
       }}
     >
-      <img
+      {/* {imageLoaded === false ? (
+        <Shimmer style={{ background: theme.theme.extend.colors.cosmon.main.secondary }} />
+      ) : null} */}
+
+      <motion.img
+        // onLoad={handleLoadImage}
+        // variants={imgVariants}
         src={`https://static.foundation.ki/klub/images/cosmon/${indexByCharacter(
           cosmon.data.extension.name
         )}/evo-0/${scarcity?.toLowerCase()}.png`}
+        // animate={controls}
         style={{
           height: '100%',
           width: '100%',

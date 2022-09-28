@@ -13,6 +13,7 @@ import EditIcon from '@public/icons/edit.svg'
 import FlipIcon from '@public/icons/flip.svg'
 import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
 import FlipCard from '@components/FlipCard/FlipCard'
+import Countdown from '@components/Countdown/Countdown'
 
 interface DeckContainerProps {
   deck: Deck
@@ -49,6 +50,25 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
 
   const onClickFlipCards = useCallback(() => {
     setRevealCards((prev) => !prev)
+  }, [])
+
+  const missFp = useMemo(() => {
+    if (deck) {
+      return deck.cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0)
+    }
+  }, [deck])
+
+  const nextHourDate = useMemo(() => {
+    const now = new Date()
+    const nextHour = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      now.getHours() + 1,
+      0,
+      0
+    )
+    return nextHour
   }, [])
 
   return (
@@ -102,14 +122,19 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
           <div className="w-3/4">
             <Button
               onClick={handleClickOnFight}
-              disabled={deck.cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0)}
+              disabled={missFp}
               type="primary"
               size="small"
               fullWidth
             >
-              {deck.cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0)
-                ? 'Not enough Fight Points'
-                : 'Fight'}
+              {missFp ? (
+                <p>
+                  +{process.env.NEXT_PUBLIC_NB_FP_REFILLED} Fight Points in &nbsp;
+                  <Countdown from={new Date()} to={nextHourDate} tag="span" />
+                </p>
+              ) : (
+                'Fight'
+              )}
             </Button>
           </div>
           <div className="flex w-1/4 gap-[12px]">
