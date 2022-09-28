@@ -13,7 +13,9 @@ const Countdown: React.FC<CountdownProps> = ({ from, to, className, tag: Tag = '
   const [, timeLeft] = useCountdown(differenceInMilliseconds(to, from))
   return (
     <Tag className={className}>
-      {timeLeft.days}&nbsp;:&nbsp;{timeLeft.hours}&nbsp;:&nbsp;{timeLeft.minutes}&nbsp;:&nbsp;
+      {+timeLeft.days > 0 ? timeLeft.days + '\xa0:\xa0' : ''}
+      {+timeLeft.hours > 0 ? timeLeft.days + '\xa0:\xa0' : ''}
+      {timeLeft.minutes}&nbsp;:&nbsp;
       {timeLeft.seconds}
     </Tag>
   )
