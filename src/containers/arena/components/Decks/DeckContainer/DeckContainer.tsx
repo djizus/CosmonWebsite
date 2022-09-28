@@ -129,7 +129,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
             >
               {missFp ? (
                 <p>
-                  +{process.env.NEXT_PUBLIC_NB_FP_REFILLED} Fight Points in &nbsp;
+                  +{process.env.NEXT_PUBLIC_NB_FP_REFILLED_PER_HOUR} Fight Points in &nbsp;
                   <Countdown from={new Date()} to={nextHourDate} tag="span" />
                 </p>
               ) : (
