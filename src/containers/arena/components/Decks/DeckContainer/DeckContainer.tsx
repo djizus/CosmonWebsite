@@ -31,6 +31,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   const { computeDeckAffinities } = useDeckStore()
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
   const [revealCards, setRevealCards] = useState(true)
+  const { fetchDecksList } = useDeckStore()
 
   const affinities = useMemo(() => {
     return computeDeckAffinities(deck.cosmons)
@@ -70,6 +71,10 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
     )
     return nextHour
   }, [])
+
+  const handleCountdownReached = () => {
+    fetchDecksList()
+  }
 
   return (
     <motion.div
@@ -130,7 +135,12 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
               {missFp ? (
                 <p>
                   +{process.env.NEXT_PUBLIC_NB_FP_REFILLED_PER_HOUR} Fight Points in &nbsp;
-                  <Countdown from={new Date()} to={nextHourDate} tag="span" />
+                  <Countdown
+                    from={new Date()}
+                    to={nextHourDate}
+                    tag="span"
+                    onCountdownReached={handleCountdownReached}
+                  />
                 </p>
               ) : (
                 'Fight'

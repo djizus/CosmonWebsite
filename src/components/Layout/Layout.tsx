@@ -12,7 +12,6 @@ import DisconnectOrCopyPopup from './DisconnectOrCopyPopup'
 import { useCosmonStore } from '../../store/cosmonStore'
 import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
 import { AnimatePresence } from 'framer-motion'
-import Modal from '@components/Modal/Modal'
 import BuyXKIModal from '@components/Modal/BuyXKIModal'
 
 type LayoutProps = {
