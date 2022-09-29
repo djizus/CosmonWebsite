@@ -1,5 +1,6 @@
 import Button from '@components/Button/Button'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
+import Tooltip from '@components/Tooltip/Tooltip'
 import { useWalletStore } from '@store/walletStore'
 import { getCosmonStat } from '@utils/cosmon'
 import clsx from 'clsx'
@@ -43,15 +44,25 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
           />
         ))}
       </div>
-      {cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0) === false ? (
-        <div
-          className="absolute bottom-0 flex justify-center"
-          style={{ bottom: '-17.2%', right: '29%' }}
+      <div
+        className="absolute bottom-0 flex justify-center"
+        data-tip="tootlip"
+        data-for={`no-fp-available`}
+        style={{ bottom: '-17.2%', right: '29%' }}
+      >
+        <Button
+          size="small"
+          type="secondary"
+          onClick={onClickNewFight}
+          disabled={cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0)}
         >
-          <Button size="small" type="secondary" onClick={onClickNewFight}>
-            <h2 style={{ fontSize: 14, lineHeight: '26px' }}>New Fight !</h2>
-          </Button>
-        </div>
+          <h2 style={{ fontSize: 14, lineHeight: '26px' }}>New Fight !</h2>
+        </Button>
+      </div>
+      {cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0) ? (
+        <Tooltip id={`no-fp-available`} place="top">
+          <p>No more Fight Points available</p>
+        </Tooltip>
       ) : null}
     </div>
   )
