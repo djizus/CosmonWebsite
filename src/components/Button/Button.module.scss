@@ -106,6 +106,13 @@
       mask-composite: exclude;
     }
 
+    &:disabled {
+      background: #2e3736;
+      opacity: 0.4;
+      cursor: not-allowed;
+      color: #999;
+    }
+
     &:hover {
       &::after {
         display: none;
