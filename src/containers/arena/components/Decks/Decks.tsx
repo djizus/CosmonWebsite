@@ -184,14 +184,14 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showLearnMoreModal && new RegExp(/training/, 'ig').test(selectedArena?.name || '') ? (
+        {showLearnMoreModal && (
           <TrainingModeDescriptionModal
             onCloseModal={() => {
               setSelectedArena(undefined)
             }}
             onSliderEndReached={handleRegisterToArena}
           />
-        ) : null}
+        )}
       </AnimatePresence>
 
       <FightContext.Provider
