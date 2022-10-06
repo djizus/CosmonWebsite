@@ -121,7 +121,7 @@ const useWalletStore = create<WalletState>(
           window.keplr.defaultOptions = {
             sign: {
               preferNoSetFee: true,
-            }
+            },
           }
 
           // enable website to access kepler

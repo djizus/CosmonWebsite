@@ -1,0 +1,74 @@
+.container {
+  width: 495px;
+  height: 208px;
+  display: flex;
+  flex-direction: row;
+  border-radius: 12px;
+  border: 1px solid theme('colors.cosmon.main.primary');
+  background: rgba(159, 164, 221, 0.06);
+  padding: 50px;
+  color: white;
+}
+
+.doughnutContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.legendContent {
+  margin-left: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.doughnut {
+  width: 134px;
+  height: 134px;
+}
+
+.legendLabel {
+  font-weight: 400;
+  font-size: 16px;
+  margin-left: 9px;
+  margin-right: 90px;
+  width: 70px;
+}
+
+.value {
+  font-weight: 600;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.victoryIcon {
+  background-color: #5a40e1;
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border: 1px solid white;
+}
+
+.defeatIcon {
+  background-color: #ebb418;
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border: 1px solid white;
+}
+
+.victoryLine {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.defeatLine {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

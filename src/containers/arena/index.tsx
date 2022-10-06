@@ -8,14 +8,16 @@ import { useArenaStore } from '@store/arenaStore'
 import { useDeckStore } from '@store/deckStore'
 import { useGameStore } from '@store/gameStore'
 import { convertMicroDenomToDenom } from '@utils/conversion'
+import clsx from 'clsx'
 import { AnimatePresence } from 'framer-motion'
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
-import { Deck } from 'types'
+import { ArenaType, Deck } from 'types'
 import DeckBuilderModal from './components/DeckBuilder/DeckBuilderModal'
 import Decks from './components/Decks/Decks'
 import DeleteDeckModal from './components/DeleteDeckModal'
 import MEA from './components/MEA/MEA'
 import Progression from './components/Progression/Progression'
+import * as style from './style.module.scss'
 
 interface ArenaProps {}
 
@@ -31,7 +33,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   const { arenasList } = useGameStore()
   const { fetchNextPrizePool } = useArenaStore()
   const [prize, setPrize] = useState<Coin>()
-
+  const [currentLeaguePro, setCurrentLeaguePro] = useState<ArenaType | null>(null)
   const handleClickDeck = useCallback(() => {
     setView('decks')
   }, [])
@@ -54,7 +56,8 @@ const Arena: React.FC<ArenaProps> = ({}) => {
       case 'decks':
         return <Decks onEditDeck={handleClickEditDeck} onDeleteDeck={handleDeletetDeck} />
       case 'progression':
-        return <Progression />
+        // currentLeaguePro can't be null because if it is null we can't display it
+        return <Progression currentLeaguePro={currentLeaguePro as ArenaType} />
     }
   }, [view])
 
@@ -83,8 +86,11 @@ const Arena: React.FC<ArenaProps> = ({}) => {
 
   useEffect(() => {
     if (arenasList?.length > 0) {
+      // @TODO: we will need to update this part for the second league
       const leaguePro = arenasList.filter((a) => a.name !== 'Training')[0]
+
       if (leaguePro) {
+        setCurrentLeaguePro(leaguePro)
         fetchLeagueProPrizePool(leaguePro.contract)
         const startTimestamp = leaguePro.arena_open_time
         const startEpoch = new Date(0)
@@ -100,6 +106,8 @@ const Arena: React.FC<ArenaProps> = ({}) => {
       setPrize(prize[0])
     } catch (error) {}
   }
+
+  console.log(arenasList, currentLeaguePro)
 
   return (
     <div className="pt-[100px] lg:pt-[132px]">
@@ -164,7 +172,9 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                         Coming soon
                       </p>
                     )}
-                    <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">Championship starts in</p>
+                    <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">
+                      Championship starts in
+                    </p>
                   </div>
                 </div>
               </div>
@@ -177,17 +187,27 @@ const Arena: React.FC<ArenaProps> = ({}) => {
         <div className="max-w-auto px-2 pt-[80px]">
           <div className="flex items-center justify-between">
             <div className="flex flex-row">
-              <Button type="quaternary" size="small" onClick={handleClickDeck}>
+              <Button
+                className={clsx(style.button, {
+                  [style.activeButton]: view === 'decks',
+                })}
+                type="quaternary"
+                size="small"
+                onClick={handleClickDeck}
+                active
+              >
                 My Decks
               </Button>
               <Button
                 type="quaternary"
-                disabled
                 size="small"
-                className="ml-[32px]"
+                className={clsx('ml-[32px]', style.button, {
+                  [style.activeButton]: view === 'progression',
+                })}
                 onClick={handleClickProgression}
+                disabled={!currentLeaguePro}
               >
-                Progression <span className="font-thin">(Coming soon)</span>
+                Progression
               </Button>
             </div>
             <div>

@@ -1,0 +1,63 @@
+.container {
+  width: 556px;
+  display: flex;
+  flex-direction: row;
+  border-radius: 12px;
+  border: 1px solid theme('colors.cosmon.main.primary');
+  background: rgba(159, 164, 221, 0.06);
+  height: 208px;
+}
+
+.earningsContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 36px 38px 28px 38px;
+  font-family: 'Poppins';
+  color: white;
+}
+
+.scoreContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 36px 38px 28px 38px;
+  border-left: 1px solid theme('colors.cosmon.main.primary');
+  color: white;
+}
+
+.value {
+  font-weight: 600;
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.suffixe {
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.label {
+  font-size: 24px;
+  font-weight: 600;
+  margin-left: 16px;
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(217, 217, 217, 0.2);
+  border-radius: 50%;
+}
+
+.firstLine {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 26px;
+}

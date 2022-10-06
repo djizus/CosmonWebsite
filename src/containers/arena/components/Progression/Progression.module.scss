@@ -1,0 +1,15 @@
+.cardContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex: 1;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.leaderboard {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  margin-top: 96px;
+}

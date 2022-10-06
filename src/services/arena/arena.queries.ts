@@ -66,9 +66,66 @@ export const fetchPrizesForAddress = async (contractAddress: string) => {
   }
 }
 
+/**
+ * Fetch current leaderboard
+ * @retun currentLeaderboard
+ */
+export const fetchCurrentLeaderboard = async (contractAddress: string) => {
+  try {
+    const { signingClient } = useWalletStore.getState()
+
+    const currentLeaderboard = await signingClient?.queryContractSmart(contractAddress, {
+      get_leaderboard_by_score: { limit: 10, last_score: null },
+    })
+
+    return currentLeaderboard
+  } catch (e) {
+    console.error(`Error while fetching current leaderboard`, e)
+  }
+}
+
+/**
+ * Fetch old leaderboard
+ * @retun oldLeaderboard
+ */
+export const fetchOldLeaderboard = async (contractAddress: string) => {
+  try {
+    const { signingClient } = useWalletStore.getState()
+
+    const oldLeaderboard = await signingClient?.queryContractSmart(contractAddress, {
+      get_old_leaderboard: { limit: 10, offset: 1 },
+    })
+
+    return oldLeaderboard
+  } catch (e) {
+    console.error(`Error while fetching old leaderboard`, e)
+  }
+}
+
+/**
+ * Fetch walletInfos
+ * @retun walletInfos
+ */
+export const fetchWalletInfos = async (contractAddress: string) => {
+  try {
+    const { signingClient } = useWalletStore.getState()
+
+    const oldLeaderboard = await signingClient?.queryContractSmart(contractAddress, {
+      get_wallet_infos: { address: contractAddress },
+    })
+
+    return oldLeaderboard
+  } catch (e) {
+    console.error(`Error while fetching wallet infos`, e)
+  }
+}
+
 export default {
   fetchArenaFees,
   fetchCurrentPrizePool,
   fetchNextPrizePool,
   fetchPrizesForAddress,
+  fetchCurrentLeaderboard,
+  fetchOldLeaderboard,
+  fetchWalletInfos,
 }
