@@ -9,3 +9,28 @@ export type ArenaType = {
   price: Coin
   registeredIn: boolean
 }
+
+export type WalletInfos = {
+  points: number
+  defeats: number
+  victories: number
+}
+
+export type PrizesForAddress = {
+  to_claim: Coin[]
+  total: Coin[]
+}
+
+export type CurrentLeaderBoardItem = {
+  address: string
+  position: number
+  points: number
+  defeats: number
+  victories: number
+  fights: number
+}
+
+export type CurrentLeaderBoard = CurrentLeaderBoardItem[]
+
+export type OldLeaderBoardItem = any
+export type OldLeaderBoard = OldLeaderBoardItem[]

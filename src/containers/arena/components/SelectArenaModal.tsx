@@ -119,7 +119,9 @@ const ArenaContainer: React.FC<{
         { 'cursor-not-allowed': arena.arena_open === false }
       )}
       onClick={() => {
-        onSelectArena(arena)
+        if (arena.arena_open) {
+          onSelectArena(arena)
+        }
       }}
     >
       {arena.arena_open === false ? (

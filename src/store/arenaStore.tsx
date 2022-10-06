@@ -1,34 +1,40 @@
 import create from 'zustand'
 import { ArenaService } from '@services/arena'
 import { Coin } from '@cosmjs/proto-signing'
+import { WalletInfos, PrizesForAddress, CurrentLeaderBoard, OldLeaderBoard } from 'types'
+import { toast } from 'react-toastify'
+import { ToastContainer } from '@components/ToastContainer/ToastContainer'
+import SuccessIcon from '@public/icons/success.svg'
+import ErrorIcon from '@public/icons/error.svg'
 
 interface ArenaState {
-  // @TODO: Update typage when we can
-  oldLeaderboard: any
-  currentLeaderboard: any
-  walletInfos: any
+  oldLeaderboard: OldLeaderBoard
+  currentLeaderboard: CurrentLeaderBoard
+  walletInfos: WalletInfos
   arenaFees: any
   currentPrizePool: any
   nextPrizePool: any
-  prizesForAddress: {
-    to_claim: Coin[]
-    total: Coin[]
-  }
-  fetchArenaFees: (contractAddress: string) => Promise<Coin[]>
-  fetchCurrentPrizePool: (contractAddress: string) => Promise<Coin[]>
-  fetchNextPrizePool: (contractAddress: string) => Promise<Coin[]>
-  fetchPrizesForAddress: (contractAddress: string) => Promise<Coin[]>
-  fetchCurrentLeaderBoard: (contractAddress: string) => void
-  fetchOldLeaderBoard: (contractAddress: string) => void
-  fetchWalletInfos: (contractAddress: string) => void
+  prizesForAddress: PrizesForAddress
+  fetchArenaFees: (arenaAddress: string) => Promise<Coin[]>
+  fetchCurrentPrizePool: (arenaAddress: string) => Promise<Coin[]>
+  fetchNextPrizePool: (arenaAddress: string) => Promise<Coin[]>
+  fetchPrizesForAddress: (arenaAddress: string) => Promise<Coin[]>
+  fetchCurrentLeaderBoard: (arenaAddress: string) => void
+  fetchOldLeaderBoard: (arenaAddress: string) => void
+  fetchWalletInfos: (arenaAddress: string, walletAddress: string) => void
+  fetchWalletsInfos: (arenaAddress: string, walletsAddress: string[]) => void
+  claimPrize: (arenaAddress: string) => void
   loading: boolean
 }
 
 export const useArenaStore = create<ArenaState>((set, get) => ({
-  // @TODO: Update typage when we can
-  oldLeaderboard: null,
-  currentLeaderboard: null,
-  walletInfos: null,
+  oldLeaderboard: [],
+  currentLeaderboard: [],
+  walletInfos: {
+    points: 0,
+    defeats: 0,
+    victories: 0,
+  },
   arenaFees: null,
   currentPrizePool: null,
   nextPrizePool: null,
@@ -38,9 +44,9 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   },
   loading: false,
 
-  fetchArenaFees: async (contractAddress: string) => {
+  fetchArenaFees: async (arenaAddress: string) => {
     try {
-      const arenaFees = await ArenaService.queries().fetchArenaFees(contractAddress)
+      const arenaFees = await ArenaService.queries().fetchArenaFees(arenaAddress)
 
       set({
         arenaFees,
@@ -50,9 +56,9 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       console.error(error)
     }
   },
-  fetchCurrentPrizePool: async (contractAddress: string) => {
+  fetchCurrentPrizePool: async (arenaAddress: string) => {
     try {
-      const currentPrizePool = await ArenaService.queries().fetchCurrentPrizePool(contractAddress)
+      const currentPrizePool = await ArenaService.queries().fetchCurrentPrizePool(arenaAddress)
 
       set({
         currentPrizePool,
@@ -62,9 +68,9 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       console.error(error)
     }
   },
-  fetchNextPrizePool: async (contractAddress: string) => {
+  fetchNextPrizePool: async (arenaAddress: string) => {
     try {
-      const nextPrizePool = await ArenaService.queries().fetchNextPrizePool(contractAddress)
+      const nextPrizePool = await ArenaService.queries().fetchNextPrizePool(arenaAddress)
 
       set({
         nextPrizePool,
@@ -74,15 +80,12 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       console.error(error)
     }
   },
-  fetchPrizesForAddress: async (contractAddress: string) => {
+  fetchPrizesForAddress: async (arenaAddress: string) => {
     try {
-      const prizesForAddress = await ArenaService.queries().fetchPrizesForAddress(contractAddress)
+      const prizesForAddress = await ArenaService.queries().fetchPrizesForAddress(arenaAddress)
 
       set({
-        prizesForAddress: {
-          to_claim: [],
-          total: [],
-        },
+        prizesForAddress,
       })
 
       return prizesForAddress
@@ -90,22 +93,60 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       console.error(error)
     }
   },
-  fetchCurrentLeaderBoard: async (contractAddress: string) => {
+  fetchCurrentLeaderBoard: async (arenaAddress: string) => {
     try {
+      // @TODO handle pagination later
       const currentLeaderboard = await ArenaService.queries().fetchCurrentLeaderboard(
-        contractAddress
+        arenaAddress,
+        10,
+        null
+      )
+
+      // @TODO : check with back if we rly need to reverse currentLeaderboard
+      const addressesFromLeaderboard: string[] = currentLeaderboard
+        .reverse()
+        .reduce((acc: string[], curr: string[]) => {
+          if (curr.length > 0) {
+            return [...acc, ...curr]
+          }
+
+          return [...acc]
+        }, [])
+
+      const walletsInfos = await ArenaService.queries().fetchWalletsInfos(
+        arenaAddress,
+        addressesFromLeaderboard
+      )
+
+      const formatedLeaderboard: CurrentLeaderBoard = addressesFromLeaderboard.reduce(
+        (acc: CurrentLeaderBoard, curr: string, index: number) => {
+          if (walletsInfos[index]) {
+            return [
+              ...acc,
+              {
+                address: curr,
+                position: index + 1,
+                fights: walletsInfos[index].victories + walletsInfos[index].defeats,
+                ...walletsInfos[index],
+              },
+            ]
+          }
+
+          return acc
+        },
+        []
       )
 
       set({
-        currentLeaderboard,
+        currentLeaderboard: formatedLeaderboard,
       })
     } catch (error) {
       console.error(error)
     }
   },
-  fetchOldLeaderBoard: async (contractAddress: string) => {
+  fetchOldLeaderBoard: async (arenaAddress: string) => {
     try {
-      const oldLeaderboard = await ArenaService.queries().fetchOldLeaderboard(contractAddress)
+      const oldLeaderboard = await ArenaService.queries().fetchOldLeaderboard(arenaAddress)
 
       set({
         oldLeaderboard,
@@ -114,12 +155,58 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       console.error(error)
     }
   },
-  fetchWalletInfos: async (contractAddress: string) => {
+  fetchWalletInfos: async (arenaAddress: string, walletAddress: string) => {
     try {
-      const walletInfos = await ArenaService.queries().fetchWalletInfos(contractAddress)
+      const walletInfos = await ArenaService.queries().fetchWalletInfos(arenaAddress, walletAddress)
 
       set({
         walletInfos,
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  fetchWalletsInfos: async (arenaAddress: string, walletsAddress: string[]) => {
+    try {
+      const walletInfos = await ArenaService.queries().fetchWalletsInfos(
+        arenaAddress,
+        walletsAddress
+      )
+
+      // @TODO define later
+      // set({
+      //   walletInfos,
+      // })
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  claimPrize: async (arenaAddress: string) => {
+    try {
+      await toast.promise(ArenaService.executes().claimPrize(arenaAddress), {
+        pending: {
+          render() {
+            return <ToastContainer type="pending">Claiming your rewards</ToastContainer>
+          },
+        },
+        success: {
+          render() {
+            return <ToastContainer type={'success'}>Rewards successfully claimed</ToastContainer>
+          },
+          icon: SuccessIcon,
+        },
+        error: {
+          render({ data }: any) {
+            return <ToastContainer type="error">{data.message}</ToastContainer>
+          },
+          icon: ErrorIcon,
+        },
+      })
+
+      const prizesForAddress = await ArenaService.queries().fetchPrizesForAddress(arenaAddress)
+
+      set({
+        prizesForAddress: prizesForAddress,
       })
     } catch (error) {
       console.error(error)

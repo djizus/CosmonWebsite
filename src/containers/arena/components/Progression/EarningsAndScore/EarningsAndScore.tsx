@@ -1,10 +1,14 @@
 import DiamondIcon from '/public/icons/diamond.svg'
 import AwardIcon from '/public/icons/award.svg'
 import * as style from './EarningsAndScore.module.scss'
+import { PrizesForAddress, WalletInfos } from 'types'
 
-interface Props {}
+interface Props {
+  walletInfos: WalletInfos
+  prizesForAddress: PrizesForAddress
+}
 
-const EarningsAndScore: React.FC<Props> = ({}) => {
+const EarningsAndScore: React.FC<Props> = ({ walletInfos, prizesForAddress }) => {
   return (
     <div className={style.container}>
       <div className={style.earningsContent}>
@@ -14,7 +18,9 @@ const EarningsAndScore: React.FC<Props> = ({}) => {
           </div>
           <span className={style.label}>Earnings</span>
         </div>
-        <p className={style.value}>1,226.54</p>
+        <p className={style.value}>
+          {prizesForAddress.total.length > 0 ? prizesForAddress.total[0] : 0}
+        </p>
         <p className={style.suffixe}>USDC</p>
       </div>
       <div className={style.scoreContent}>
@@ -24,7 +30,7 @@ const EarningsAndScore: React.FC<Props> = ({}) => {
           </div>
           <span className={style.label}>Your score</span>
         </div>
-        <p className={style.value}>115,497</p>
+        <p className={style.value}>{walletInfos.points}</p>
         <p className={style.suffixe}>Points</p>
       </div>
     </div>

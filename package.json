@@ -4,7 +4,8 @@
     "dev": "next dev",
     "build": "env-cmd -f .env.production next build && next export",
     "build-preprod": "env-cmd -f .env.staging next build && next export",
-    "start": "next start"
+    "start": "next start",
+    "type-scss": "typed-scss-modules src -w"
   },
   "dependencies": {
     "@cosmjs/cosmwasm-stargate": "^0.28.11",

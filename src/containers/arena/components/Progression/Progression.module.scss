@@ -1,4 +1,9 @@
-.cardContainer {
+.progression {
+  min-height: 400px;
+  margin-top: 40px;
+}
+
+.cardsContainer {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -9,7 +14,16 @@
 
 .leaderboard {
   display: flex;
+  flex-direction: column;
   width: 100%;
   flex: 1;
   margin-top: 96px;
+}
+
+.leaderboardLabel {
+  text-align: left;
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 32px;
 }

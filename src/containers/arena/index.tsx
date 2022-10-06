@@ -107,8 +107,6 @@ const Arena: React.FC<ArenaProps> = ({}) => {
     } catch (error) {}
   }
 
-  console.log(arenasList, currentLeaguePro)
-
   return (
     <div className="pt-[100px] lg:pt-[132px]">
       <div className="relative h-[380px] bg-cosmon-main-quaternary">

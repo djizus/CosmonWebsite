@@ -1,0 +1,15 @@
+.claimBanner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(49, 46, 90, 0.5);
+  border-radius: 20px;
+  padding: 55px 57px 51px 44px;
+}
+
+.label {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+}
