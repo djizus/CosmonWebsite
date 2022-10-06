@@ -137,7 +137,9 @@ const ArenaContainer: React.FC<{
                 'Coming soon'
               )}
             </p>
-            <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">Championship starts in</p>
+            <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">
+              Championship starts in
+            </p>
           </div>
         </>
       ) : null}
