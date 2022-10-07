@@ -24,6 +24,7 @@ interface ArenaState {
   fetchWalletInfos: (arenaAddress: string, walletAddress: string) => void
   fetchWalletsInfos: (arenaAddress: string, walletsAddress: string[]) => void
   claimPrize: (arenaAddress: string) => void
+  fetchRankForAddress: (arenaAddress: string, walletAddress: string) => void
   loading: boolean
 }
 
@@ -34,6 +35,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     points: 0,
     defeats: 0,
     victories: 0,
+    position: null,
   },
   arenaFees: null,
   currentPrizePool: null,
@@ -158,9 +160,13 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   fetchWalletInfos: async (arenaAddress: string, walletAddress: string) => {
     try {
       const walletInfos = await ArenaService.queries().fetchWalletInfos(arenaAddress, walletAddress)
+      const position = await ArenaService.queries().fetchRankForAddress(arenaAddress, walletAddress)
 
       set({
-        walletInfos,
+        walletInfos: {
+          ...walletInfos,
+          position: position ?? null,
+        },
       })
     } catch (error) {
       console.error(error)
@@ -208,6 +214,13 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       set({
         prizesForAddress: prizesForAddress,
       })
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  fetchRankForAddress: async (arenaAddress: string, walletAddress: string) => {
+    try {
+      const rank = await ArenaService.queries().fetchRankForAddress(arenaAddress, walletAddress)
     } catch (error) {
       console.error(error)
     }

@@ -16,7 +16,7 @@ const Leaderboard: React.FC<Props> = ({
   walletInfos,
   className,
 }) => {
-  const displayMyWallet = isMyWalletInCurrentPage(currentWalletAddress, currentLeaderboard)
+  const displayMyWallet = !isMyWalletInCurrentPage(currentWalletAddress, currentLeaderboard)
   const fights = walletInfos.victories + walletInfos.defeats
   return (
     <div className={style.container}>
@@ -35,7 +35,7 @@ const Leaderboard: React.FC<Props> = ({
           {displayMyWallet && (
             <>
               <tr className={style.myWalletLine}>
-                <td className={style.positionCell}>999</td>
+                <td className={style.positionCell}>{walletInfos.position}</td>
                 <td className={style.cell}>{currentWalletAddress}</td>
                 <td className={style.cell}>{fights}</td>
                 <td className={style.cell}>{walletInfos.victories}</td>
@@ -53,7 +53,12 @@ const Leaderboard: React.FC<Props> = ({
             </>
           )}
           {currentLeaderboard.map((wallet: CurrentLeaderBoardItem) => (
-            <tr key={wallet.address} className={style.line}>
+            <tr
+              key={wallet.address}
+              className={clsx(style.line, {
+                [style.myWalletLine]: wallet.address === currentWalletAddress,
+              })}
+            >
               <td className={style.positionCell}>{wallet.position}</td>
               <td className={style.cell}>{wallet.address}</td>
               <td className={style.cell}>{wallet.fights}</td>

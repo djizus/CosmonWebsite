@@ -138,7 +138,25 @@ export const fetchWalletsInfos = async (arenaAddress: string, walletsAddress: st
 
     return walletsInfos
   } catch (e) {
-    console.error(`Error while fetching wallet infos`, e)
+    console.error(`Error while fetching wallets infos`, e)
+  }
+}
+
+/**
+ * Fetch your wallet rank in league
+ * @retun your rank in league
+ */
+export const fetchRankForAddress = async (arenaAddress: string, walletAddress: string) => {
+  try {
+    const { signingClient } = useWalletStore.getState()
+
+    const rank = await signingClient?.queryContractSmart(arenaAddress, {
+      get_rank_for_address: { address: walletAddress },
+    })
+
+    return rank
+  } catch (e) {
+    console.error(`Error while fetching wallet rank in league`, e)
   }
 }
 
@@ -151,4 +169,5 @@ export default {
   fetchOldLeaderboard,
   fetchWalletInfos,
   fetchWalletsInfos,
+  fetchRankForAddress,
 }

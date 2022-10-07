@@ -14,6 +14,7 @@ export type WalletInfos = {
   points: number
   defeats: number
   victories: number
+  position: number | null
 }
 
 export type PrizesForAddress = {
