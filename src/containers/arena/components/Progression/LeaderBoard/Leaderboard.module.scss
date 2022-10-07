@@ -1,0 +1,84 @@
+.container {
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+}
+
+.header {
+  vertical-align: top;
+  height: 40px;
+  border-bottom: 1px solid theme('colors.cosmon.main.primary');
+}
+
+.tbody:before {
+  content: '';
+  display: block;
+  height: 19px;
+  visibility: hidden;
+}
+
+.hr {
+  width: 100%;
+  border: 0px;
+  margin-top: 34px;
+  border-bottom: 1px solid theme('colors.cosmon.main.primary');
+}
+
+.headerCell {
+  text-align: left;
+  font-weight: 400;
+  font-size: 20px;
+  color: theme('colors.cosmon.main.tertiary');
+}
+
+.myWalletLine {
+  margin-top: 20px;
+  background: rgba(159, 164, 221, 0.1);
+  border-radius: 10px;
+  border: 1px solid #9fa4dd;
+  height: 48px;
+}
+
+.positionCell {
+  text-align: left;
+  font-weight: 400;
+  font-size: 20px;
+  color: white;
+  padding-left: 20px;
+}
+
+.cell {
+  text-align: left;
+  font-weight: 400;
+  font-size: 20px;
+  color: white;
+}
+
+.fakeCell {
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+}
+
+.fakePositionCell {
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  padding-left: 20px;
+}
+
+.fakeCosmonCell {
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  padding-left: 220px;
+}
+
+.line {
+  height: 48px;
+}

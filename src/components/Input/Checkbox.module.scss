@@ -54,3 +54,7 @@ $primary: theme('colors.cosmon.main.primary');
     color: #444444;
   }
 }
+
+.checkboxDisabled {
+  cursor: not-allowed;
+}

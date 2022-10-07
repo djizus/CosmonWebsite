@@ -1,19 +1,12 @@
 import clsx from 'clsx'
 import ArrowRight from '/public/icons/arrow-right.svg'
-import style from './Button.module.scss'
+import * as style from './Button.module.scss'
 import LoadingIcon from '../LoadingIcon/LoadingIcon'
 import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
 type ButtonProps = {
-  type?:
-    | 'primary'
-    | 'primaryBordered'
-    | 'secondary'
-    | 'tertiary'
-    | 'quaternary'
-    | 'ghost'
-    | 'disabled-colored'
-  size?: 'small' | 'normal'
+  type?: 'primary' | 'primaryBordered' | 'secondary' | 'quaternary' | 'ghost' | 'disabledColored'
+  size?: 'small'
   icon?: {
     position: 'left' | 'right'
     direction: 'left' | 'right'
@@ -29,7 +22,7 @@ type ButtonProps = {
 
 export default function Button({
   type = 'primary',
-  size = 'normal',
+  size,
   children,
   fullWidth,
   icon,
@@ -49,7 +42,7 @@ export default function Button({
         disabled={disabled}
         className={clsx(
           `${style.btn}`,
-          `${style[size]}`,
+          { [style.small]: size === 'small' },
           fullWidth && 'w-full justify-center',
           style[type],
           { [style.active]: active },

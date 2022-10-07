@@ -1,4 +1,4 @@
-import style from './Footer.module.scss'
+import * as style from './Footer.module.scss'
 import Link from 'next/link'
 import Button from '../Button/Button'
 import { useEffect, useState } from 'react'
@@ -30,12 +30,10 @@ export default function Footer() {
     <footer className={`relative ${style.footer} bg-cosmon-blue-dark`}>
       <div className="max-w-auto">
         <div className="flex flex-col lg:flex-row lg:justify-between">
-          <h1 className="text-left text-3xl font-bold leading-[48px] text-[#FCFCFC]">
-            Cosmon
-          </h1>
+          <h1 className="text-left text-3xl font-bold leading-[48px] text-[#FCFCFC]">Cosmon</h1>
           <div className="flex gap-x-14 pt-8  lg:pt-2 ">
             <div className="flex lg:ml-20 lg:mr-[96px]">
-              <div className={style['link-group']}>
+              <div className={style.linkGroup}>
                 <div className={style.title}>About</div>
                 <Link href={'/buy-cosmon'}>
                   <a className={`${style.link}`}>Buy Cosmon</a>
@@ -49,7 +47,7 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className={style['link-group']}>
+            <div className={style.linkGroup}>
               <div className={style.title}>Support</div>
               {/* MVP */}
               {/* <Link href={'/about'}>

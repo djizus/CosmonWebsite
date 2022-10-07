@@ -2,7 +2,7 @@ import { getCosmonStat, getScarcityByCosmon } from '@utils/cosmon'
 import clsx from 'clsx'
 import React, { useMemo } from 'react'
 import { CosmonType } from 'types'
-import styles from './CosmonStatsCard.module.scss'
+import * as styles from './CosmonStatsCard.module.scss'
 
 interface CosmonStatsCardProps {
   cosmon: CosmonType
@@ -15,12 +15,17 @@ const CosmonStatsCard: React.FC<CosmonStatsCardProps> = ({ cosmon }) => {
     return (currentXp! / xpMax!) * 100
   }, [cosmon])
 
+  const scarcity = getScarcityByCosmon(cosmon)?.toLowerCase() ?? null
+
   return (
     <div
-      className={clsx(
-        styles.cosmonStatsCardContainer,
-        styles[getScarcityByCosmon(cosmon)!.toLowerCase()]
-      )}
+      className={clsx(styles.cosmonStatsCardContainer, {
+        [styles.common]: scarcity === 'common',
+        [styles.uncommon]: scarcity === 'uncommon',
+        [styles.rare]: scarcity === 'rare',
+        [styles.legendary]: scarcity === 'legendary',
+        [styles.divinity]: scarcity === 'divinity',
+      })}
     >
       <div className={clsx(styles.mainContainer)}>
         <p className={styles.title}>Level {getCosmonStat(cosmon.stats!, 'Level')?.value}</p>
