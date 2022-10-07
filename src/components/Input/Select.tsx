@@ -40,13 +40,7 @@ const dropIn = {
   },
 }
 
-const Select: React.FC<SelectProps> = ({
-  value,
-  options,
-  placeholder,
-  className,
-  onChange,
-}) => {
+const Select: React.FC<SelectProps> = ({ value, options, placeholder, className, onChange }) => {
   const [isOptionsContainerOpen, toggleOptionsContainerOpen] = useToggle(false)
 
   const isMultiple = useMemo(() => {
@@ -75,14 +69,9 @@ const Select: React.FC<SelectProps> = ({
 
   return (
     <div className={clsx(styles.selectContainer, className)}>
-      <div
-        className={clsx(styles.selectToggleContainer)}
-        onClick={toggleOptionsContainerOpen}
-      >
+      <div className={clsx(styles.selectToggleContainer)} onClick={toggleOptionsContainerOpen}>
         <p className="text-sm font-semibold text-cosmon-main-primary">
-          {!value || (isMultiple && value.length <= 0)
-            ? placeholder
-            : selectedLabel}
+          {!value || (isMultiple && value.length <= 0) ? placeholder : selectedLabel}
         </p>
         <ChevronUp
           style={{
@@ -122,10 +111,7 @@ const Select: React.FC<SelectProps> = ({
                   </Checkbox>
                 ) : (
                   <div
-                    className={clsx(
-                      styles.selectableOption,
-                      'mb-[5px] flex flex-1 cursor-pointer'
-                    )}
+                    className={clsx('mb-[5px] flex flex-1 cursor-pointer')}
                     onClick={() => {
                       selectValue(option)
                     }}
@@ -134,8 +120,7 @@ const Select: React.FC<SelectProps> = ({
                       <p
                         className={clsx(
                           {
-                            [styles.selectableOptionSelected]:
-                              value === option.value,
+                            [styles.selectableOptionSelected]: value === option.value,
                           },
                           'text-xs font-medium text-cosmon-black-8 '
                         )}

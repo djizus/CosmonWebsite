@@ -144,7 +144,7 @@ export default function Page() {
                           onClick={() => {
                             hasRewards && claimRewards()
                           }}
-                          type={hasRewards ? 'primary' : 'disabled-colored'}
+                          type={hasRewards ? 'primary' : 'disabledColored'}
                           size="small"
                           className="text-sm"
                         >

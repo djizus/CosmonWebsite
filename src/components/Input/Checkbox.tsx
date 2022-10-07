@@ -1,22 +1,16 @@
 import clsx from 'clsx'
 import React, { ReactNode, useCallback } from 'react'
 import CheckIcon from '@public/icons/check.svg'
-import styles from './Checkbox.module.scss'
+import * as styles from './Checkbox.module.scss'
 
 interface CheckboxProps {
   label?: string | React.ReactNode
-  children?: (
-    renderCheckBox: () => ReactNode,
-    renderLabel: () => ReactNode
-  ) => ReactNode
+  children?: (renderCheckBox: () => ReactNode, renderLabel: () => ReactNode) => ReactNode
 }
 
 const Checkbox: React.FC<
   CheckboxProps &
-    React.DetailedHTMLProps<
-      React.InputHTMLAttributes<HTMLInputElement>,
-      HTMLInputElement
-    >
+    React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 > = ({ label, children, ...props }) => {
   const renderCheckbox = useCallback(() => {
     return (
