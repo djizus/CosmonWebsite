@@ -33,11 +33,6 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
     } catch (error) {}
   }, [currentLeaguePro])
 
-  console.log('walletInfos', walletInfos)
-  console.log('currentLeaderboard', currentLeaderboard)
-  console.log('oldLeaderboard', oldLeaderboard)
-  console.log('prizesForAddress', prizesForAddress)
-
   return (
     <div className={style.progression}>
       {prizesForAddress.to_claim.length > 0 && <ClaimBanner prizesForAddress={prizesForAddress} />}
