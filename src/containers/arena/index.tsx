@@ -30,7 +30,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   const [deckToDelete, setDeckToDelete] = useState<Deck | undefined>()
   const { removeDeck, isRemovingDeck } = useDeckStore()
   const [nextLeagueStartDate, setNextLeagueStartDate] = useState<Date>()
-  const { arenasList } = useGameStore()
+  const { arenasList, fetchArenasList } = useGameStore()
   const { fetchNextPrizePool } = useArenaStore()
   const [prize, setPrize] = useState<Coin>()
   const [currentLeaguePro, setCurrentLeaguePro] = useState<ArenaType | null>(null)
@@ -97,6 +97,9 @@ const Arena: React.FC<ArenaProps> = ({}) => {
         startEpoch.setUTCSeconds(startTimestamp)
         setNextLeagueStartDate(startEpoch)
       }
+    } else {
+      // we have to put this in a place (method) where the whole app bootstraps
+      fetchArenasList()
     }
   }, [arenasList])
 
