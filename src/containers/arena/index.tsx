@@ -177,7 +177,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                         alt="Prizepool info"
                         data-tip="Prizepool"
                         data-for={`prizepool`}
-                        className={clsx('h-[24px] w-[24px] cursor-help', style.tipIcon)}
+                        className="h-[24px] w-[24px] cursor-help"
                       />
                       <Tooltip
                         className={style.toolTip}
