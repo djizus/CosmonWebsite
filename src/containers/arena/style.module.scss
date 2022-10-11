@@ -5,3 +5,107 @@
 .activeButton {
   background-color: theme('colors.cosmon.main.primary') !important;
 }
+
+.tipContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.prizePoolText {
+  margin-right: 6px;
+}
+
+.toolTip {
+  width: 405px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  background: #20164f;
+  border-radius: 12px !important;
+  border: 1px solid #a996ff !important;
+}
+
+.tipTitle {
+  font-weight: 600;
+  font-size: 24px;
+  color: white;
+  text-align: left;
+  margin-bottom: 30px;
+  margin-top: 22px;
+}
+
+.tipText {
+  text-align: left;
+  font-weight: 400;
+  font-size: 22px;
+  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tipFirstText {
+  text-align: left;
+  font-weight: 400;
+  font-size: 22px;
+  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-right: 33px;
+}
+
+.tipSecondText {
+  text-align: left;
+  font-weight: 400;
+  font-size: 22px;
+  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-right: 48px;
+}
+
+.tipFourthText {
+  text-align: left;
+  font-weight: 400;
+  font-size: 22px;
+  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-right: 47px;
+  margin-left: -6px;
+}
+
+.tipFifthText {
+  text-align: left;
+  font-weight: 400;
+  font-size: 22px;
+  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-right: 33px;
+}
+
+.tipPercent {
+  font-weight: 600;
+  margin-left: 12px;
+  font-size: 22px;
+  color: white;
+  background-clip: border-box;
+  -webkit-text-fill-color: white;
+}
+
+.line {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 14px;
+}

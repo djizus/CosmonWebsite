@@ -1,6 +1,7 @@
 import Button from '@components/Button/Button'
 import ConnectionNeededContent from '@components/ConnectionNeededContent/ConnectionNeededContent'
 import Countdown from '@components/Countdown/Countdown'
+import Tooltip from '@components/Tooltip/Tooltip'
 import UnmaskOnReach from '@components/UnmaskOnReach/UnmaskOnReach'
 import { getMEAs } from '@containers/arena/data'
 import { Coin } from '@cosmjs/proto-signing'
@@ -162,7 +163,57 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                         {prize ? `${convertMicroDenomToDenom(prize?.amount!)}` : 'XXXX'}
                       </p>
                     </div>
-                    <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">Prize pool</p>
+                    <div className={style.tipContainer}>
+                      <p
+                        className={clsx(
+                          'text-[20px] font-semibold text-[#9FA4DD]',
+                          style.prizePoolText
+                        )}
+                      >
+                        Prize pool
+                      </p>
+                      <img
+                        src="/icons/info.svg"
+                        alt="Prizepool info"
+                        data-tip="Prizepool"
+                        data-for={`prizepool`}
+                        className={clsx('h-[24px] w-[24px] cursor-help', style.tipIcon)}
+                      />
+                      <Tooltip
+                        className={style.toolTip}
+                        id={`prizepool`}
+                        place="bottom"
+                        offset={{
+                          bottom: 8,
+                        }}
+                      >
+                        <>
+                          <p className={style.tipTitle}>Prize pool breakdown</p>
+                          <div className={style.line}>
+                            <p className={style.tipFirstText}>
+                              1.<span className={style.tipPercent}>50%</span>
+                            </p>
+                            <p className={style.tipSecondText}>
+                              2.<span className={style.tipPercent}>10%</span>
+                            </p>
+                            <p className={style.tipText}>
+                              3.<span className={style.tipPercent}>5%</span>
+                            </p>
+                          </div>
+                          <div className={style.line}>
+                            <p className={style.tipFourthText}>
+                              4.<span className={style.tipPercent}>3%</span>
+                            </p>
+                            <p className={style.tipFifthText}>
+                              5.<span className={style.tipPercent}>2%</span>
+                            </p>
+                            <p className={style.tipText}>
+                              6 - 200.<span className={style.tipPercent}>0.15%</span>
+                            </p>
+                          </div>
+                        </>
+                      </Tooltip>
+                    </div>
                   </div>
                   <div className="mt-[40px] flex flex-1 flex-col items-center justify-center">
                     {nextLeagueStartDate ? (
