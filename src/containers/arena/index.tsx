@@ -9,6 +9,7 @@ import { useDeckStore } from '@store/deckStore'
 import { useGameStore } from '@store/gameStore'
 import { convertMicroDenomToDenom } from '@utils/conversion'
 import clsx from 'clsx'
+import isAfter from 'date-fns/isAfter'
 import { AnimatePresence } from 'framer-motion'
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import { ArenaType, Deck } from 'types'
@@ -90,11 +91,13 @@ const Arena: React.FC<ArenaProps> = ({}) => {
       const leaguePro = arenasList.filter((a) => a.name !== 'Training')[0]
 
       if (leaguePro) {
-        setCurrentLeaguePro(leaguePro)
         fetchLeagueProPrizePool(leaguePro.contract)
         const startTimestamp = leaguePro.arena_open_time
         const startEpoch = new Date(0)
         startEpoch.setUTCSeconds(startTimestamp)
+        if (isAfter(new Date(), startEpoch)) {
+          setCurrentLeaguePro(leaguePro)
+        }
         setNextLeagueStartDate(startEpoch)
       }
     } else {
