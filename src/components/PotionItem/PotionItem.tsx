@@ -130,7 +130,7 @@ export default function PotionItem({
           </div>
           {!hasEnoughCoinsToBuy ? (
             <Tooltip id={`buy-${type}`} place="top">
-              <p>Not enough money</p>
+              <p>You don’t have enough ATOM in your wallet. Please deposit ATOMs</p>
             </Tooltip>
           ) : null}
         </>
