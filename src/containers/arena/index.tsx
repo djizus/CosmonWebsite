@@ -119,122 +119,118 @@ const Arena: React.FC<ArenaProps> = ({}) => {
       <div className="relative h-[380px] bg-cosmon-main-quaternary">
         <div className="flex h-full items-center justify-center gap-x-[54px]">
           {getMEAs().map((mea, i) => (
-            <UnmaskOnReach key={`mea-${i}`} delay={(i + 1) * 0.18}>
-              <MEA {...mea} />
-            </UnmaskOnReach>
+            <MEA {...mea} />
           ))}
-          <UnmaskOnReach key={`mea-next-season`} delay={2 * 0.18}>
+          <div
+            style={{
+              position: 'relative',
+              background: 'url(/mea-bg-outline.png) top left no-repeat',
+              backgroundSize: 'cover',
+              height: 235,
+              width: 600,
+              borderRadius: 16,
+            }}
+          >
             <div
               style={{
-                position: 'relative',
-                background: 'url(/mea-bg-outline.png) top left no-repeat',
-                backgroundSize: 'cover',
-                height: 235,
-                width: 600,
+                position: 'absolute',
+                top: 1,
+                left: 1,
+                right: 1,
+                bottom: 1,
+                width: 'calc(100% - 2px)',
+                height: 'calc(100% - 2px)',
+                background: 'url(/mea-bg.png) top left no-repeat',
+                backgroundSize: 'contain',
                 borderRadius: 16,
+                display: 'flex',
+                flexDirection: 'column',
+                paddingLeft: 52,
+                paddingTop: 52,
               }}
             >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 1,
-                  left: 1,
-                  right: 1,
-                  bottom: 1,
-                  width: 'calc(100% - 2px)',
-                  height: 'calc(100% - 2px)',
-                  background: 'url(/mea-bg.png) top left no-repeat',
-                  backgroundSize: 'contain',
-                  borderRadius: 16,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  paddingLeft: 52,
-                  paddingTop: 52,
-                }}
-              >
-                <div className="flex self-start">
-                  <h2 className="text-[34px] leading-[26px]">Season #1</h2>
-                </div>
-                <div className="flex items-center ">
-                  <div className="mt-[40px] flex flex-col items-center pl-4">
-                    <div className="flex items-center gap-[10px]">
-                      <img src="/xki-logo.png" style={{ width: 30, height: 30 }} />
-                      <p className="text-[34px] font-extrabold italic leading-[26px] text-white">
-                        {prize ? `${convertMicroDenomToDenom(prize?.amount!)}` : 'XXXX'}
-                      </p>
-                    </div>
-                    <div className={style.tipContainer}>
-                      <p
-                        className={clsx(
-                          'text-[20px] font-semibold text-[#9FA4DD]',
-                          style.prizePoolText
-                        )}
-                      >
-                        Prize pool
-                      </p>
-                      <img
-                        src="/icons/info.svg"
-                        alt="Prizepool info"
-                        data-tip="Prizepool"
-                        data-for={`prizepool`}
-                        className="h-[24px] w-[24px] cursor-help"
-                      />
-                      <Tooltip
-                        className={style.toolTip}
-                        id={`prizepool`}
-                        place="bottom"
-                        offset={{
-                          bottom: 8,
-                        }}
-                      >
-                        <>
-                          <p className={style.tipTitle}>Prize pool breakdown</p>
-                          <div className={style.line}>
-                            <p className={style.tipFirstText}>
-                              1.<span className={style.tipPercent}>50%</span>
-                            </p>
-                            <p className={style.tipSecondText}>
-                              2.<span className={style.tipPercent}>10%</span>
-                            </p>
-                            <p className={style.tipText}>
-                              3.<span className={style.tipPercent}>5%</span>
-                            </p>
-                          </div>
-                          <div className={style.line}>
-                            <p className={style.tipFourthText}>
-                              4.<span className={style.tipPercent}>3%</span>
-                            </p>
-                            <p className={style.tipFifthText}>
-                              5.<span className={style.tipPercent}>2%</span>
-                            </p>
-                            <p className={style.tipText}>
-                              6 - 200.<span className={style.tipPercent}>0.15%</span>
-                            </p>
-                          </div>
-                        </>
-                      </Tooltip>
-                    </div>
-                  </div>
-                  <div className="mt-[40px] flex flex-1 flex-col items-center justify-center">
-                    {nextLeagueStartDate ? (
-                      <Countdown
-                        from={new Date()}
-                        to={nextLeagueStartDate}
-                        className="text-[34px] font-extrabold italic leading-[30px] text-white"
-                      />
-                    ) : (
-                      <p className="text-[34px] font-extrabold italic leading-[30px] text-white">
-                        Coming soon
-                      </p>
-                    )}
-                    <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">
-                      Championship starts in
+              <div className="flex self-start">
+                <h2 className="text-[34px] leading-[26px]">Season #1</h2>
+              </div>
+              <div className="flex items-center ">
+                <div className="mt-[40px] flex flex-col items-center pl-4">
+                  <div className="flex items-center gap-[10px]">
+                    <img src="/xki-logo.png" style={{ width: 30, height: 30 }} />
+                    <p className="text-[34px] font-extrabold italic leading-[26px] text-white">
+                      {prize ? `${convertMicroDenomToDenom(prize?.amount!)}` : 'XXXX'}
                     </p>
                   </div>
+                  <div className={style.tipContainer}>
+                    <p
+                      className={clsx(
+                        'text-[20px] font-semibold text-[#9FA4DD]',
+                        style.prizePoolText
+                      )}
+                    >
+                      Prize pool
+                    </p>
+                    <img
+                      src="/icons/info.svg"
+                      alt="Prizepool info"
+                      data-tip="Prizepool"
+                      data-for={`prizepool`}
+                      className="h-[24px] w-[24px] cursor-help"
+                    />
+                    <Tooltip
+                      className={style.toolTip}
+                      id={`prizepool`}
+                      place="bottom"
+                      offset={{
+                        bottom: 8,
+                      }}
+                    >
+                      <>
+                        <p className={style.tipTitle}>Prize pool breakdown</p>
+                        <div className={style.line}>
+                          <p className={style.tipFirstText}>
+                            1.<span className={style.tipPercent}>50%</span>
+                          </p>
+                          <p className={style.tipSecondText}>
+                            2.<span className={style.tipPercent}>10%</span>
+                          </p>
+                          <p className={style.tipText}>
+                            3.<span className={style.tipPercent}>5%</span>
+                          </p>
+                        </div>
+                        <div className={style.line}>
+                          <p className={style.tipFourthText}>
+                            4.<span className={style.tipPercent}>3%</span>
+                          </p>
+                          <p className={style.tipFifthText}>
+                            5.<span className={style.tipPercent}>2%</span>
+                          </p>
+                          <p className={style.tipText}>
+                            6 - 200.<span className={style.tipPercent}>0.15%</span>
+                          </p>
+                        </div>
+                      </>
+                    </Tooltip>
+                  </div>
+                </div>
+                <div className="mt-[40px] flex flex-1 flex-col items-center justify-center">
+                  {nextLeagueStartDate ? (
+                    <Countdown
+                      from={new Date()}
+                      to={nextLeagueStartDate}
+                      className="text-[34px] font-extrabold italic leading-[30px] text-white"
+                    />
+                  ) : (
+                    <p className="text-[34px] font-extrabold italic leading-[30px] text-white">
+                      Coming soon
+                    </p>
+                  )}
+                  <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">
+                    Championship starts in
+                  </p>
                 </div>
               </div>
             </div>
-          </UnmaskOnReach>
+          </div>
         </div>
       </div>
 
