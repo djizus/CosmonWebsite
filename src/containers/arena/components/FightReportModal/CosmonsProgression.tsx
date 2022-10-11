@@ -54,7 +54,7 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
           size="small"
           type="secondary"
           onClick={onClickNewFight}
-          disabled={cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0)}
+          disabled={cosmonsEvolved?.some((c) => +getCosmonStat(c!.stats!, 'Fp')?.value! === 0)}
         >
           <h2 style={{ fontSize: 14, lineHeight: '26px' }}>New Fight !</h2>
         </Button>
@@ -89,8 +89,12 @@ const CosmonProgression: React.FC<CosmonProgressionProps> = ({ cosmon, cosmonEvo
           levelStatEvolved={+getCosmonStat(cosmonEvolved.stats!, 'Level')!.value!}
           xpStat={+getCosmonStat(cosmon.stats!, 'Xp')!.value!}
           xpStatEvolved={+getCosmonStat(cosmonEvolved.stats!, 'Xp')!.value!}
-          xpNextLevel={+getCosmonStat(cosmon.stats!, 'Next Level')?.value! || 0}
+          xpNextLevel={
+            +getCosmonStat(cosmon.stats!, 'Next Level')?.value! ||
+            +getCosmonStat(cosmonEvolved.stats!, 'Next Level')?.value!
+          }
           xpNextLevelEvolved={+getCosmonStat(cosmonEvolved.stats!, 'Next Level')?.value! || 0}
+          floorXpEvolved={+getCosmonStat(cosmonEvolved.stats!, 'Floor Level')?.value! || 0}
         />
 
         <div className="mt-[16px] grid grid-cols-2 gap-x-[24px] gap-y-[8px]">
@@ -144,6 +148,7 @@ interface CosmonXpProgressionProps {
   xpStatEvolved: number
   xpNextLevel: number
   xpNextLevelEvolved: number
+  floorXpEvolved: number
 }
 
 const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
@@ -154,26 +159,29 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
   xpStatEvolved,
   xpNextLevel,
   xpNextLevelEvolved,
+  floorXpEvolved,
 }) => {
   const [currentXpPercent, setCurrentXpPercent] = useState<number>(
-    iWin ? (xpStatEvolved / xpNextLevelEvolved) * 100 : (xpStatEvolved / xpNextLevelEvolved) * 100 // will animate from 0 only if i win
+    iWin
+      ? ((xpStatEvolved - floorXpEvolved) / xpNextLevelEvolved) * 100
+      : ((xpStatEvolved - floorXpEvolved) / xpNextLevelEvolved) * 100 // will animate from 0 only if i win
   )
   const [currentXp, setCurrentXp] = useState<number>(0)
   const [currentLevel, setCurrentLevel] = useState(levelStat)
-  const [currentXpMax, setCurrentXpMax] = useState(xpNextLevel)
+  const [currentXpMax, setCurrentXpMax] = useState(xpNextLevel - floorXpEvolved)
   const [levelUp, setLevelUp] = useState(false)
 
   useMount(() => {
     if (levelStat === levelStatEvolved) {
-      setCurrentXp(xpStatEvolved)
+      setCurrentXp(xpStatEvolved - floorXpEvolved)
       setTimeout(() => {
-        setCurrentXpPercent((xpStatEvolved / xpNextLevelEvolved) * 100)
+        setCurrentXpPercent(((xpStatEvolved - floorXpEvolved) / xpNextLevelEvolved) * 100)
       }, 1000)
     } else {
       setLevelUp(true)
-      setCurrentXp(xpStatEvolved)
-      setCurrentXpPercent((xpStatEvolved / xpNextLevelEvolved) * 100)
-      setCurrentXpMax(xpNextLevelEvolved)
+      setCurrentXp(xpStatEvolved - floorXpEvolved)
+      setCurrentXpPercent(((xpStatEvolved - floorXpEvolved) / xpNextLevelEvolved) * 100)
+      setCurrentXpMax(xpNextLevelEvolved - floorXpEvolved)
       setCurrentLevel(levelStatEvolved)
 
       setTimeout(() => {
