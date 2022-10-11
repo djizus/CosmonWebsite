@@ -52,4 +52,6 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
   )
 }
 
+Progression.displayName = 'Progression'
+
 export default Progression

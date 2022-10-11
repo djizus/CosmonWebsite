@@ -1,7 +1,4 @@
-import {
-  AnimationType,
-  UnmaskOnReachProps,
-} from '@components/UnmaskOnReach/UnmaskOnReach.types'
+import { AnimationType, UnmaskOnReachProps } from '@components/UnmaskOnReach/UnmaskOnReach.types'
 import { HTMLMotionProps, motion } from 'framer-motion'
 
 const UnmaskOnReach = ({
@@ -51,9 +48,23 @@ const UnmaskOnReach = ({
   }
 
   return (
-    <div className={className} style={{ overflow: 'hidden' }}>
+    <motion.div
+      className={className}
+      initial={{ overflow: 'hidden' }}
+      animate={{
+        overflow: 'hidden',
+        transitionEnd: {
+          overflow: 'visible',
+        },
+      }}
+      transition={{
+        delay: delay + 2,
+        duration: 2,
+        ease: 'linear',
+      }}
+    >
       {AnimationStyle[animation]()}
-    </div>
+    </motion.div>
   )
 }
 
