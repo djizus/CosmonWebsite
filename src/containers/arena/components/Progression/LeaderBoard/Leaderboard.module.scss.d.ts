@@ -3,6 +3,7 @@ export const container: string
 export const fakeCell: string
 export const fakeCosmonCell: string
 export const fakePositionCell: string
+export const firstHr: string
 export const header: string
 export const headerCell: string
 export const hr: string
