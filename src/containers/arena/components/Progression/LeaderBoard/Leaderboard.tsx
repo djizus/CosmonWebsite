@@ -20,6 +20,7 @@ const Leaderboard: React.FC<Props> = ({
   const fights = walletInfos.victories + walletInfos.defeats
   return (
     <div className={style.container}>
+      <hr className={style.firstHr} />
       <table className={clsx(style.table, className)}>
         <thead className={style.header}>
           <tr>
