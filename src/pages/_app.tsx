@@ -3,6 +3,7 @@ import '../styles/globals.scss'
 import '../styles/toastify.scss'
 import '@services/translations'
 import Close from '/public/icons/close.svg'
+import Head from 'next/head'
 
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPage } from 'next'
@@ -23,6 +24,20 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return getLayout(
     <>
+      <Head>
+        {/* Global Site Tag (gtag.js) - Google Analytics */}
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=G-JQB8FVXXGV`} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-JQB8FVXXGV');
+          `,
+          }}
+        />
+      </Head>
       <Component {...pageProps} />
       <ToastContainer
         closeButton={
