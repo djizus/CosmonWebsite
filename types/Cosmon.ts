@@ -20,6 +20,7 @@ export type CosmonStatKeyType =
   | 'Fp'
   | 'Fp Max'
   | 'Next Level'
+  | 'Floor Level'
   | 'Ap'
 
 export type CosmonStatType = {
