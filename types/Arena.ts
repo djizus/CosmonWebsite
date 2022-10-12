@@ -7,6 +7,7 @@ export type ArenaType = {
   arena_open_time: number // timestamp
   image_url: string
   price: Coin
+  combat_price: Coin
   registeredIn: boolean
 }
 
@@ -14,6 +15,7 @@ export type WalletInfos = {
   points: number
   defeats: number
   victories: number
+  draws: number
   position: number | null
 }
 
@@ -27,6 +29,7 @@ export type CurrentLeaderBoardItem = {
   position: number
   points: number
   defeats: number
+  draws: number
   victories: number
   fights: number
 }

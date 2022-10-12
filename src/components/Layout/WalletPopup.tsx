@@ -9,16 +9,14 @@ type WalletPopupProps = {
 }
 
 export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
-  const { initIbc, isFetchingData, coins, setShowWithdrawDepositModal } =
-    useWalletStore((state) => state)
+  const { initIbc, isFetchingData, coins, setShowWithdrawDepositModal } = useWalletStore(
+    (state) => state
+  )
 
   const { rewardsData, claimRewards } = useRewardStore((state) => state)
 
   const hasRewards = () => {
-    return (
-      getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins) !==
-      0
-    )
+    return getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins) !== 0
   }
 
   return (
@@ -29,17 +27,12 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
       ></div>
       <div className="absolute top-14 right-0 z-[50] w-[327px] rounded-xl border-[0.5px] border-[#A996FF] border-opacity-50 bg-cosmon-main-secondary p-5">
         <div className="font-[14px]  text-white">
-          <div className="font-semibold">
-            Your {process.env.NEXT_PUBLIC_DENOM || ''} Breakdown
-          </div>
+          <div className="font-semibold">Your {process.env.NEXT_PUBLIC_DENOM || ''} Breakdown</div>
           <div className="flex flex-col gap-y-1 pt-4">
             <div className="flex justify-between">
               <div> {process.env.NEXT_PUBLIC_DENOM || ''} balance </div>
               <div>
-                {getAmountFromDenom(
-                  process.env.NEXT_PUBLIC_STAKING_DENOM || '',
-                  coins
-                )}{' '}
+                {getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins)}{' '}
                 {process.env.NEXT_PUBLIC_DENOM || ''}
               </div>
             </div>
@@ -63,30 +56,6 @@ export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
               </div>
             </div>
           </div>
-
-          <div className="flex justify-between pt-4">
-            <Button
-              // isLoading={isWalletLoading}
-              onClick={() => setShowWithdrawDepositModal('deposit')}
-              size="small"
-              type="secondary"
-            >
-              Deposit
-            </Button>
-            <Button
-              onClick={() => setShowWithdrawDepositModal('withdraw')}
-              size="small"
-              type="secondary"
-            >
-              Withdraw
-            </Button>
-          </div>
-
-          {/* <div className="pt-6">
-            <Button fullWidth type="secondary" className="max-h-[42px]">
-              Prize Pool: $1,000,000.13
-            </Button>
-          </div> */}
         </div>
       </div>
     </>

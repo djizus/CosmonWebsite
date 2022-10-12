@@ -15,10 +15,12 @@ interface ArenaState {
   currentPrizePool: any
   nextPrizePool: any
   prizesForAddress: PrizesForAddress
+  currentChampionshipNumber: number
   fetchArenaFees: (arenaAddress: string) => Promise<Coin[]>
   fetchCurrentPrizePool: (arenaAddress: string) => Promise<Coin[]>
   fetchNextPrizePool: (arenaAddress: string) => Promise<Coin[]>
   fetchPrizesForAddress: (arenaAddress: string) => Promise<Coin[]>
+  fetchCurrentChampionshipNumber: (arenaAddress: string) => void
   fetchCurrentLeaderBoard: (arenaAddress: string) => void
   fetchOldLeaderBoard: (arenaAddress: string) => void
   fetchWalletInfos: (arenaAddress: string, walletAddress: string) => void
@@ -35,8 +37,10 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     points: 0,
     defeats: 0,
     victories: 0,
+    draws: 0,
     position: null,
   },
+  currentChampionshipNumber: 1,
   arenaFees: null,
   currentPrizePool: null,
   nextPrizePool: null,
@@ -105,7 +109,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       )
 
       // @TODO : check with back if we rly need to reverse currentLeaderboard
-      const addressesFromLeaderboard: string[] = currentLeaderboard
+      const addressesFromLeaderboard: string[] = [...currentLeaderboard]
         .reverse()
         .reduce((acc: string[], curr: string[]) => {
           if (curr.length > 0) {
@@ -128,7 +132,10 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
               {
                 address: curr,
                 position: index + 1,
-                fights: walletsInfos[index].victories + walletsInfos[index].defeats,
+                fights:
+                  walletsInfos[index].victories +
+                  walletsInfos[index].defeats +
+                  walletsInfos[index].draws,
                 ...walletsInfos[index],
               },
             ]
@@ -221,6 +228,15 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   fetchRankForAddress: async (arenaAddress: string, walletAddress: string) => {
     try {
       const rank = await ArenaService.queries().fetchRankForAddress(arenaAddress, walletAddress)
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  fetchCurrentChampionshipNumber: async (arenaAddress: string) => {
+    try {
+      const { currentChampionshipNumber } = get()
+      const champNum = await ArenaService.queries().fetchCurrentChampionshipNumber(arenaAddress)
+      set({ currentChampionshipNumber: champNum ?? currentChampionshipNumber })
     } catch (error) {
       console.error(error)
     }

@@ -13,6 +13,7 @@ import { useCosmonStore } from '../../store/cosmonStore'
 import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
 import { AnimatePresence } from 'framer-motion'
 import BuyXKIModal from '@components/Modal/BuyXKIModal'
+import IBCCoinBreakdownPopup from './IBCCoinBreakdownPopup'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -37,6 +38,7 @@ export default function Layout({ children }: LayoutProps) {
   const { getWhitelistData } = useCosmonStore((state) => state)
 
   const [showWalletPopup, set_showWalletPopup] = useState(false)
+  const [showATOMBreakdownPopup, set_showATOMBreakdownPopup] = useState(false)
   const [showNoXKIModal, setShowNoXKIModal] = useState(false)
   const [showDisconnectOrCopyPopup, set_showDisconnectOrCopyPopup] = useState(false)
 
@@ -152,9 +154,16 @@ export default function Layout({ children }: LayoutProps) {
               </div>
 
               <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
-                {getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '', coins)}
+                <div
+                  className="flex cursor-pointer"
+                  onClick={() => {
+                    set_showATOMBreakdownPopup(true)
+                  }}
+                >
+                  {getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '', coins)}
 
-                <div className="ml-1 uppercase"> {ibcDenom}</div>
+                  <div className="ml-1 uppercase"> {ibcDenom}</div>
+                </div>
                 <div
                   onClick={() => set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)}
                   className="ml-2 flex h-full cursor-pointer items-center rounded-xl border border-[#9FA4DD] py-2 px-4 text-white"
@@ -168,6 +177,9 @@ export default function Layout({ children }: LayoutProps) {
                   />
                 )}
               </div>
+              {showATOMBreakdownPopup && (
+                <IBCCoinBreakdownPopup onClosePopup={() => set_showATOMBreakdownPopup(false)} />
+              )}
             </div>
           ) : (
             <Button
