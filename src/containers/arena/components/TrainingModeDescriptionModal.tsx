@@ -27,10 +27,11 @@ const TrainingModeDescriptionModal: React.FC<TrainingModeDescriptionModalProps> 
             <img src="/mad-doctor.png" />
             <p className="mt-[20px] text-xl font-semibold text-white">Welcome to Training mode</p>
             <p className="mt-[20px] text-sm font-normal text-[#D4D4D4]">
-              Prof. Wosmongton is here to teach you how to fight! Build your deck to optimize the
-              affinities between your Cosmons. Pay attention to the order of the Cosmons in your
-              deck, and have a close look to the fight report to understand what’s going on during
-              the fight. It may help you to become a competitive contender!
+              Did you listen to Prof. Wosmongton advices during the training mode? You should have!
+              Your Cosmon leaders are evolving in a different way following their personalities and
+              it may give them a different edge when leveling up. Find the fighting characteristics
+              that are the most important, and adjust the composition of your deck to make it to the
+              top!
             </p>
           </div>,
         ]}
