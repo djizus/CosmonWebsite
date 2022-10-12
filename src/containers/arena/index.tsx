@@ -2,7 +2,6 @@ import Button from '@components/Button/Button'
 import ConnectionNeededContent from '@components/ConnectionNeededContent/ConnectionNeededContent'
 import Countdown from '@components/Countdown/Countdown'
 import Tooltip from '@components/Tooltip/Tooltip'
-import UnmaskOnReach from '@components/UnmaskOnReach/UnmaskOnReach'
 import { getMEAs } from '@containers/arena/data'
 import { Coin } from '@cosmjs/proto-signing'
 import { useArenaStore } from '@store/arenaStore'
@@ -12,6 +11,7 @@ import { convertMicroDenomToDenom } from '@utils/conversion'
 import clsx from 'clsx'
 import isAfter from 'date-fns/isAfter'
 import { AnimatePresence } from 'framer-motion'
+import numeral from 'numeral'
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import { ArenaType, Deck } from 'types'
 import DeckBuilderModal from './components/DeckBuilder/DeckBuilderModal'
@@ -33,9 +33,11 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   const { removeDeck, isRemovingDeck } = useDeckStore()
   const [nextLeagueStartDate, setNextLeagueStartDate] = useState<Date>()
   const { arenasList, fetchArenasList } = useGameStore()
-  const { fetchNextPrizePool } = useArenaStore()
+  const { fetchNextPrizePool, fetchCurrentChampionshipNumber, currentChampionshipNumber } =
+    useArenaStore()
   const [prize, setPrize] = useState<Coin>()
   const [currentLeaguePro, setCurrentLeaguePro] = useState<ArenaType | null>(null)
+
   const handleClickDeck = useCallback(() => {
     setView('decks')
   }, [])
@@ -90,9 +92,11 @@ const Arena: React.FC<ArenaProps> = ({}) => {
     if (arenasList?.length > 0) {
       // @TODO: we will need to update this part for the second league
       const leaguePro = arenasList.filter((a) => a.name !== 'Training')[0]
-
       if (leaguePro) {
         fetchLeagueProPrizePool(leaguePro.contract)
+        try {
+          fetchCurrentChampionshipNumber(leaguePro.contract)
+        } catch (error) {}
         const startTimestamp = leaguePro.arena_open_time
         const startEpoch = new Date(0)
         startEpoch.setUTCSeconds(startTimestamp)
@@ -119,7 +123,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
       <div className="relative h-[380px] bg-cosmon-main-quaternary">
         <div className="flex h-full items-center justify-center gap-x-[54px]">
           {getMEAs().map((mea, i) => (
-            <MEA {...mea} />
+            <MEA key={`mea-${i}`} {...mea} />
           ))}
           <div
             style={{
@@ -150,14 +154,18 @@ const Arena: React.FC<ArenaProps> = ({}) => {
               }}
             >
               <div className="flex self-start">
-                <h2 className="text-[34px] leading-[26px]">Championship #1</h2>
+                <h2 className="text-[34px] leading-[26px]">
+                  Championship #{currentChampionshipNumber}
+                </h2>
               </div>
               <div className="flex items-center ">
                 <div className="mt-[40px] flex flex-col items-center pl-4">
                   <div className="flex items-center gap-[10px]">
                     <img src="/xki-logo.png" style={{ width: 30, height: 30 }} />
                     <p className="text-[34px] font-extrabold italic leading-[26px] text-white">
-                      {prize ? `${convertMicroDenomToDenom(prize?.amount!)}` : 'XXXX'}
+                      {prize
+                        ? `${numeral(convertMicroDenomToDenom(prize?.amount!)).format('0,0')}`
+                        : 'XXXX'}
                     </p>
                   </div>
                   <div className={style.tipContainer}>

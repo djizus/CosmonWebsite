@@ -1,6 +1,5 @@
 import { makeUnsignedClient } from '@services/keplr'
 import { useWalletStore } from '../../store/walletStore'
-import { ArenaService } from './arena.service'
 
 /**
  * Fetch the fees of the arena
@@ -45,6 +44,22 @@ export const fetchNextPrizePool = async (arenaAddress: string) => {
       get_next_prize_pool: {},
     })
     return nextPrizePool
+  } catch (e) {
+    console.error(`Error while fetching current prize pool `, e)
+  }
+}
+
+/**
+ * Fetch the current championship number
+ * @retun championshipNumber
+ */
+export const fetchCurrentChampionshipNumber = async (arenaAddress: string) => {
+  try {
+    const client = await makeUnsignedClient()
+    const championshipNumber = await client?.queryContractSmart(arenaAddress, {
+      get_season_number: {},
+    })
+    return championshipNumber
   } catch (e) {
     console.error(`Error while fetching current prize pool `, e)
   }
@@ -117,6 +132,10 @@ export const fetchWalletInfos = async (arenaAddress: string, walletAddress: stri
     const walletInfos = await signingClient?.queryContractSmart(arenaAddress, {
       get_wallet_infos: { address: walletAddress },
     })
+    console.log(
+      '🚀 ~ file: arena.queries.ts ~ line 135 ~ fetchWalletInfos ~ walletInfos',
+      walletInfos
+    )
 
     return walletInfos
   } catch (e) {
@@ -170,4 +189,5 @@ export default {
   fetchWalletInfos,
   fetchWalletsInfos,
   fetchRankForAddress,
+  fetchCurrentChampionshipNumber,
 }

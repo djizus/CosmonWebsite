@@ -28,8 +28,15 @@ const Countdown: React.FC<CountdownProps> = ({
   return (
     <Tag className={className}>
       {+timeLeftFormatted.days > 0 ? timeLeftFormatted.days + '\xa0:\xa0' : ''}
-      {+timeLeftFormatted.hours > 0 ? timeLeftFormatted.days + '\xa0:\xa0' : ''}
-      {+timeLeftFormatted.minutes > 0 ? timeLeftFormatted.minutes + '\xa0:\xa0' : ''}
+      {+timeLeftFormatted.hours > 0 ||
+      (+timeLeftFormatted.hours <= 0 && +timeLeftFormatted.days > 0)
+        ? timeLeftFormatted.hours + '\xa0:\xa0'
+        : ''}
+      {+timeLeftFormatted.minutes > 0 ||
+      (+timeLeftFormatted.minutes <= 0 &&
+        (+timeLeftFormatted.hours > 0 || +timeLeftFormatted.days > 0))
+        ? timeLeftFormatted.minutes + '\xa0:\xa0'
+        : ''}
       {timeLeftFormatted.seconds}
     </Tag>
   )

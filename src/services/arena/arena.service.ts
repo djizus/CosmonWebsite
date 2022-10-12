@@ -1,5 +1,5 @@
-import deckQueries from './arena.queries'
-import deckExecutes from './arena.executes'
+import queries from './arena.queries'
+import executes from './arena.executes'
 
 export class ArenaService {
   static contractAddress = String(process.env.NEXT_PUBLIC_TRAINING_CONTRACT)
@@ -7,10 +7,10 @@ export class ArenaService {
   constructor() {}
 
   static queries() {
-    return deckQueries
+    return queries
   }
 
   static executes() {
-    return deckExecutes
+    return executes
   }
 }

@@ -15,10 +15,12 @@ interface ArenaState {
   currentPrizePool: any
   nextPrizePool: any
   prizesForAddress: PrizesForAddress
+  currentChampionshipNumber: number
   fetchArenaFees: (arenaAddress: string) => Promise<Coin[]>
   fetchCurrentPrizePool: (arenaAddress: string) => Promise<Coin[]>
   fetchNextPrizePool: (arenaAddress: string) => Promise<Coin[]>
   fetchPrizesForAddress: (arenaAddress: string) => Promise<Coin[]>
+  fetchCurrentChampionshipNumber: (arenaAddress: string) => void
   fetchCurrentLeaderBoard: (arenaAddress: string) => void
   fetchOldLeaderBoard: (arenaAddress: string) => void
   fetchWalletInfos: (arenaAddress: string, walletAddress: string) => void
@@ -37,6 +39,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     victories: 0,
     position: null,
   },
+  currentChampionshipNumber: 1,
   arenaFees: null,
   currentPrizePool: null,
   nextPrizePool: null,
@@ -221,6 +224,15 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   fetchRankForAddress: async (arenaAddress: string, walletAddress: string) => {
     try {
       const rank = await ArenaService.queries().fetchRankForAddress(arenaAddress, walletAddress)
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  fetchCurrentChampionshipNumber: async (arenaAddress: string) => {
+    try {
+      const { currentChampionshipNumber } = get()
+      const champNum = await ArenaService.queries().fetchCurrentChampionshipNumber(arenaAddress)
+      set({ currentChampionshipNumber: champNum ?? currentChampionshipNumber })
     } catch (error) {
       console.error(error)
     }
