@@ -5,10 +5,10 @@ import { useWalletStore } from '@store/walletStore'
 import { CosmonType, FightType } from 'types'
 import { ArenaType } from 'types/Arena'
 import { Deck } from 'types/Deck'
-import {calculateFee, GasPrice} from "@cosmjs/stargate";
+import { calculateFee, GasPrice } from '@cosmjs/stargate'
 
 const PUBLIC_GAME_CONTRACT = process.env.NEXT_PUBLIC_GAME_CONTRACT!
-const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM;
+const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM
 
 /**
  * Register a wallet to an arena
@@ -52,7 +52,8 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
       PUBLIC_GAME_CONTRACT,
       { fight: { deck: deck.id, arena: arena.name, nfts: deck.cosmons.map((c) => c.id) } },
       calculateFee(7_500_000, GasPrice.fromString(`0.025${PUBLIC_STAKING_DENOM}`)),
-      `[COSMON] fight with deckID ${deck.id} // ${arena.name}`
+      `[COSMON] fight with deckID ${deck.id} // ${arena.name}`,
+      (arena.combat_price && [arena.combat_price]) || null
     )
 
     const fightAttributes = response.logs[0].events.find(
@@ -116,7 +117,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
         deckScore: +getAttrValue('my_deck_score') || 0,
       },
       winner: {
-        identity: getAttrValue('winner') || '',
+        identity: getAttrValue('winner') || '', // getAttrValue('winner') === "" if it's a draw
       },
       events: JSON.parse(getAttrValue('action'))?.results || [],
     }

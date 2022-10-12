@@ -7,6 +7,7 @@ export type ArenaType = {
   arena_open_time: number // timestamp
   image_url: string
   price: Coin
+  combat_price: Coin
   registeredIn: boolean
 }
 

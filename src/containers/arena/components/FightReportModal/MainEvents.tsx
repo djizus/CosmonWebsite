@@ -12,6 +12,7 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
   const [showFightLogsModal, setShowFightLogsModal] = useState(false)
 
   const iWin = useMemo(() => battle.winner.identity.includes(battle.me.identity), [battle])
+  const isDraw = useMemo(() => battle?.winner.identity === '', [battle])
   const iStart = useMemo(
     () => battle.me.cosmons.findIndex((c) => c.id === battle.events[0].atk_id) !== -1,
     []
@@ -26,12 +27,15 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
       <p className="text-white">
         {iWin
           ? 'You won, your Cosmons are making progresses!'
+          : isDraw
+          ? 'It’s a draw. Both parties fought well!'
           : 'You lost, your Cosmons aren’t evolving…'}
       </p>
-      {iWin ? (
+      {iWin || isDraw ? (
         <div className="mt-[20px] flex w-full justify-center rounded-[20px] bg-[#282255] py-[20px]">
           <p className="font-normal">
-            Victory by KO on round {battle.events[battle.events.length - 1].turn}
+            {iWin ? `Victory by KO on round` : `Draw without KO on round`}{' '}
+            {battle.events[battle.events.length - 1].turn}`
           </p>
         </div>
       ) : null}

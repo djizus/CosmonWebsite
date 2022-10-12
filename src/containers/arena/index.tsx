@@ -150,7 +150,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
               }}
             >
               <div className="flex self-start">
-                <h2 className="text-[34px] leading-[26px]">Season #1</h2>
+                <h2 className="text-[34px] leading-[26px]">Championship #1</h2>
               </div>
               <div className="flex items-center ">
                 <div className="mt-[40px] flex flex-col items-center pl-4">

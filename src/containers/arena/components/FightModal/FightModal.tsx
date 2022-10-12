@@ -68,6 +68,8 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
     [battleOverTime]
   )
 
+  const isDraw = useMemo(() => battleOverTime?.winner.identity === '', [battleOverTime])
+
   const iStart = useMemo(
     () =>
       battleOverTime?.me.cosmons.findIndex((c) => c.id === battleOverTime!.events[0].atk_id) !==
@@ -104,13 +106,17 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
   }, [fightSpeed])
 
   const announceWinner = useCallback(async () => {
-    setSentence(<Trans>{iWin ? 'You won 💪' : 'You lost 😟'}</Trans>)
-    if (iWin) {
+    setSentence(
+      <Trans>
+        {iWin ? 'You won 💪' : isDraw ? 'It’s a draw. Both parties fought well!' : 'You lost 😟'}
+      </Trans>
+    )
+    if (iWin && !isDraw) {
       setShowConfetti(true)
     }
     setIsFightEnd(true)
     onFightEnd()
-  }, [fightSpeed, iWin])
+  }, [fightSpeed, iWin, isDraw])
 
   const playBattle = useCallback(async () => {
     const { opponent, me, events } = battleOverTime!
@@ -150,7 +156,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
 
     // winner
     await announceWinner()
-  }, [battleOverTime, fightSpeed, iWin])
+  }, [battleOverTime, fightSpeed])
 
   const playEventAndGetCorrespondingSentence = useCallback(
     async (event: FightEventType) => {
