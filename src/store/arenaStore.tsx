@@ -37,6 +37,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     points: 0,
     defeats: 0,
     victories: 0,
+    draws: 0,
     position: null,
   },
   currentChampionshipNumber: 1,
@@ -108,7 +109,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       )
 
       // @TODO : check with back if we rly need to reverse currentLeaderboard
-      const addressesFromLeaderboard: string[] = currentLeaderboard
+      const addressesFromLeaderboard: string[] = [...currentLeaderboard]
         .reverse()
         .reduce((acc: string[], curr: string[]) => {
           if (curr.length > 0) {
@@ -131,7 +132,10 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
               {
                 address: curr,
                 position: index + 1,
-                fights: walletsInfos[index].victories + walletsInfos[index].defeats,
+                fights:
+                  walletsInfos[index].victories +
+                  walletsInfos[index].defeats +
+                  walletsInfos[index].draws,
                 ...walletsInfos[index],
               },
             ]

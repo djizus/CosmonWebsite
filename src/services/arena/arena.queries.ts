@@ -132,10 +132,6 @@ export const fetchWalletInfos = async (arenaAddress: string, walletAddress: stri
     const walletInfos = await signingClient?.queryContractSmart(arenaAddress, {
       get_wallet_infos: { address: walletAddress },
     })
-    console.log(
-      '🚀 ~ file: arena.queries.ts ~ line 135 ~ fetchWalletInfos ~ walletInfos',
-      walletInfos
-    )
 
     return walletInfos
   } catch (e) {

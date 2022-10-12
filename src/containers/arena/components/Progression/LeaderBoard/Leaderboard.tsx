@@ -28,6 +28,7 @@ const Leaderboard: React.FC<Props> = ({
             <th className={style.headerCell}>Cosmon player</th>
             <th className={style.headerCell}>Fights</th>
             <th className={style.headerCell}>Victories</th>
+            <th className={style.headerCell}>Draw Games</th>
             <th className={style.headerCell}>Defeats</th>
             <th className={style.headerCell}>Score</th>
           </tr>
@@ -40,6 +41,7 @@ const Leaderboard: React.FC<Props> = ({
                 <td className={style.cell}>{currentWalletAddress}</td>
                 <td className={style.cell}>{fights}</td>
                 <td className={style.cell}>{walletInfos.victories}</td>
+                <td className={style.cell}>{walletInfos.draws}</td>
                 <td className={style.cell}>{walletInfos.defeats}</td>
                 <td className={style.cell}>{walletInfos.points}</td>
               </tr>
@@ -64,6 +66,7 @@ const Leaderboard: React.FC<Props> = ({
               <td className={style.cell}>{wallet.address}</td>
               <td className={style.cell}>{wallet.fights}</td>
               <td className={style.cell}>{wallet.victories}</td>
+              <td className={style.cell}>{wallet.draws}</td>
               <td className={style.cell}>{wallet.defeats}</td>
               <td className={style.cell}>{wallet.points}</td>
             </tr>

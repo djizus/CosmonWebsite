@@ -1,5 +1,6 @@
 export const container: string
 export const defeatIcon: string
+export const drawIcon: string
 export const defeatLine: string
 export const doughnut: string
 export const doughnutContent: string

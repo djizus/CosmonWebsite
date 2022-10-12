@@ -11,12 +11,12 @@ interface Props {
 
 const WinsLosesChart: React.FC<Props> = ({ walletInfos }) => {
   const data = {
-    labels: ['Victories', 'Defeats'],
+    labels: ['Victories', 'Draws', 'Defeats'],
     datasets: [
       {
-        backgroundColor: ['#5E43EA', '#F6BD16'],
-        borderColor: ['#5E43EA', '#F6BD16'],
-        data: [walletInfos.victories, walletInfos.defeats],
+        backgroundColor: ['#5E43EA', '#61DDAA', '#F6BD16'],
+        borderColor: ['#5E43EA', '#61DDAA', '#F6BD16'],
+        data: [walletInfos.victories, walletInfos.draws, walletInfos.defeats],
       },
     ],
   }
@@ -35,14 +35,31 @@ const WinsLosesChart: React.FC<Props> = ({ walletInfos }) => {
       </div>
       <div className={style.legendContent}>
         <div className={style.victoryLine}>
-          <div className={style.victoryIcon} />
-          <span className={style.legendLabel}>Victories</span>
-          <span className={style.value}>{walletInfos.victories}</span>
+          <div className="flex w-full items-center justify-between">
+            <div className="flex flex-1 items-center">
+              <div className={style.victoryIcon} />
+              <span className={style.legendLabel}>Victories</span>
+            </div>
+            <span className={style.value}>{walletInfos.victories}</span>
+          </div>
+        </div>
+        <div className={style.victoryLine}>
+          <div className="flex w-full items-center justify-between">
+            <div className="flex flex-1 items-center">
+              <div className={style.drawIcon} />
+              <span className={style.legendLabel}>Draw Games</span>
+            </div>
+            <span className={style.value}>{walletInfos.draws}</span>
+          </div>
         </div>
         <div className={style.defeatLine}>
-          <div className={style.defeatIcon} />
-          <span className={style.legendLabel}>Defeats</span>
-          <span className={style.value}>{walletInfos.defeats}</span>
+          <div className="flex w-full items-center justify-between">
+            <div className="flex flex-1 items-center">
+              <div className={style.defeatIcon} />
+              <span className={style.legendLabel}>Defeats</span>
+            </div>
+            <span className={style.value}>{walletInfos.defeats}</span>
+          </div>
         </div>
       </div>
     </div>

@@ -15,6 +15,7 @@ export type WalletInfos = {
   points: number
   defeats: number
   victories: number
+  draws: number
   position: number | null
 }
 
@@ -28,6 +29,7 @@ export type CurrentLeaderBoardItem = {
   position: number
   points: number
   defeats: number
+  draws: number
   victories: number
   fights: number
 }

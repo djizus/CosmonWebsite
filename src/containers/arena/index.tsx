@@ -94,9 +94,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
       const leaguePro = arenasList.filter((a) => a.name !== 'Training')[0]
       if (leaguePro) {
         fetchLeagueProPrizePool(leaguePro.contract)
-        try {
-          fetchCurrentChampionshipNumber(leaguePro.contract)
-        } catch (error) {}
+        fetchCurrentChampionshipNumber(leaguePro.contract)
         const startTimestamp = leaguePro.arena_open_time
         const startEpoch = new Date(0)
         startEpoch.setUTCSeconds(startTimestamp)

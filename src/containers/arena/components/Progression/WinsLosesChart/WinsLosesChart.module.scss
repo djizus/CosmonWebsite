@@ -23,6 +23,11 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  width: 100%;
+
+  & > div {
+    width: 100%;
+  }
 }
 
 .doughnut {
@@ -34,8 +39,6 @@
   font-weight: 400;
   font-size: 16px;
   margin-left: 9px;
-  margin-right: 90px;
-  width: 70px;
 }
 
 .value {
@@ -46,6 +49,13 @@
 
 .victoryIcon {
   background-color: #5a40e1;
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border: 1px solid white;
+}
+.drawIcon {
+  background-color: #61ddaa;
   border-radius: 50%;
   width: 8px;
   height: 8px;
