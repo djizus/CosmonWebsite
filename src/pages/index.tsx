@@ -78,7 +78,7 @@ export default function Page() {
         {prize && leagueStartDate ? (
           <div className="mb-[68px] flex flex-col justify-center gap-[5%] lg:flex-row ">
             <div className="flex flex-col items-center">
-              <p className="mb-[20px] text-[22px] font-semibold text-white">First Prize Pool</p>
+              <p className="mb-[20px] text-[22px] font-semibold text-white">Current Prize Pool</p>
               <AnimatePresence>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <CashPrize prize={prize} />
@@ -86,9 +86,7 @@ export default function Page() {
               </AnimatePresence>
             </div>
             <div className="mt-[32px] flex flex-col items-center lg:mt-[0px]">
-              <p className="mb-[20px] text-[22px] font-semibold text-white ">
-                Professional Leagues are coming
-              </p>
+              <p className="mb-[20px] text-[22px] font-semibold text-white ">League ends in</p>
               <AnimatePresence>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <Countdown from={leagueStartDate} />
