@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from 'react'
 import Layout from '../components/Layout/Layout'
 import CommonQuestions from '../sections/CommonQuestions'
 import Section from '../components/Section/Section'
-import PotionItem from '../components/PotionItem/PotionItem'
+import BuyableCard from '../components/BuyableCard/BuyableCard'
 import Button from '../components/Button/Button'
 import { SCARCITIES, Scarcity } from '../../types/Scarcity'
 import { useWalletStore } from '../store/walletStore'
@@ -85,7 +85,9 @@ export default function Page() {
 
       <div className="mx-auto max-w-[1230px]">
         <Section className="px-[40px] pt-[107px] lg:pt-[160px]">
-          <h4 className="mx-auto max-w-[288px] lg:max-w-none">Open a potion, unleash a leader!</h4>
+          <h4 className="mx-auto max-w-[288px] lg:max-w-none">
+            Get your Leader to join the fight!
+          </h4>
           <p className="mx-auto flex flex-col gap-y-2 pt-[40px] lg:max-w-[880px] lg:pt-[20px]">
             <div>
               Get a vial to mint a random Cosmon from a given rarity level! Each vial will unleash
@@ -171,7 +173,7 @@ export default function Page() {
 
           <div className="mt-20 grid grid-cols-2 gap-y-[60px] lg:grid-cols-5">
             {/* {scarcities.map((scarcity) => (
-            <PotionItem
+            <BuyableCard
               buy={() => buy(scarcity)}
               isCurrentlyBuying={isCurrentlyBuying === scarcity}
               type={scarcity}
@@ -184,7 +186,7 @@ export default function Page() {
             />
           ))} */}
             <UnmaskOnReach delay={0.2}>
-              <PotionItem
+              <BuyableCard
                 buy={(price: string) => buy(SCARCITIES.COMMON, price)}
                 yieldPercent={
                   (process.env.NEXT_PUBLIC_YIELD_COMMON !== undefined &&
@@ -193,43 +195,43 @@ export default function Page() {
                 }
                 isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.COMMON}
                 type={SCARCITIES.COMMON}
-                img="common.png"
+                img="common.svg"
               />
             </UnmaskOnReach>
             <UnmaskOnReach delay={0.2}>
-              <PotionItem
+              <BuyableCard
                 buy={(price: string) => buy(SCARCITIES.UNCOMMON, price)}
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_UNCOMMON || 'xx'}
                 isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.UNCOMMON}
                 type={SCARCITIES.UNCOMMON}
-                img="uncommon.png"
+                img="uncommon.svg"
               />
             </UnmaskOnReach>
             <UnmaskOnReach delay={0.4}>
-              <PotionItem
+              <BuyableCard
                 buy={(price) => buy(SCARCITIES.RARE, price)}
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_RARE || 'xx'}
                 isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.RARE}
                 type={SCARCITIES.RARE}
-                img="rare.png"
+                img="rare.svg"
               />
             </UnmaskOnReach>
             <UnmaskOnReach delay={0.6}>
-              <PotionItem
+              <BuyableCard
                 buy={(price) => buy(SCARCITIES.EPIC, price)}
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_EPIC || 'xx'}
                 isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.EPIC}
                 type={SCARCITIES.EPIC}
-                img="epic.png"
+                img="epic.svg"
               />
             </UnmaskOnReach>
             <UnmaskOnReach delay={0.8}>
-              <PotionItem
+              <BuyableCard
                 buy={(price) => buy(SCARCITIES.LEGENDARY, price)}
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_LEGENDARY || 'xx'}
                 isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.LEGENDARY}
                 type={SCARCITIES.LEGENDARY}
-                img="legendary.png"
+                img="legendary.svg"
               />
             </UnmaskOnReach>
           </div>
