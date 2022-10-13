@@ -92,7 +92,7 @@ export default function BuyableCard({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative flex h-[140px] w-full">
+      <div className="relative flex h-[284px] w-[170px]">
         <Image layout="fill" objectFit="contain" src={`../cosmons/buyable-card/${img}`} />
       </div>
       <p className="pt-6 text-[22px] font-bold leading-[27px] text-[#E7E7E7]">{type}</p>
