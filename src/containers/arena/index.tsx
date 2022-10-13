@@ -33,8 +33,12 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   const { removeDeck, isRemovingDeck } = useDeckStore()
   const [nextLeagueStartDate, setNextLeagueStartDate] = useState<Date>()
   const { arenasList, fetchArenasList } = useGameStore()
-  const { fetchNextPrizePool, fetchCurrentChampionshipNumber, currentChampionshipNumber } =
-    useArenaStore()
+  const {
+    fetchNextPrizePool,
+    fetchCurrentChampionshipNumber,
+    currentChampionshipNumber,
+    getNextLeagueOpenTime,
+  } = useArenaStore()
   const [prize, setPrize] = useState<Coin>()
   const [currentLeaguePro, setCurrentLeaguePro] = useState<ArenaType | null>(null)
 
@@ -219,17 +223,11 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                   </div>
                 </div>
                 <div className="mt-[40px] flex flex-1 flex-col items-center justify-center">
-                  {nextLeagueStartDate ? (
-                    <Countdown
-                      from={new Date()}
-                      to={nextLeagueStartDate}
-                      className="text-[34px] font-extrabold italic leading-[30px] text-white"
-                    />
-                  ) : (
-                    <p className="text-[34px] font-extrabold italic leading-[30px] text-white">
-                      Coming soon
-                    </p>
-                  )}
+                  <Countdown
+                    from={new Date()}
+                    to={getNextLeagueOpenTime()}
+                    className="text-[34px] font-extrabold italic leading-[30px] text-white"
+                  />
                   <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">
                     Championship starts in
                   </p>

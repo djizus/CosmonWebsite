@@ -35,7 +35,7 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
         <div className="mt-[20px] flex w-full justify-center rounded-[20px] bg-[#282255] py-[20px]">
           <p className="font-normal">
             {iWin ? `Victory by KO on round` : `Draw without KO on round`}{' '}
-            {battle.events[battle.events.length - 1].turn}`
+            {battle.events[battle.events.length - 1].turn}
           </p>
         </div>
       ) : null}

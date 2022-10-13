@@ -59,7 +59,7 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
           <h2 style={{ fontSize: 14, lineHeight: '26px' }}>New Fight !</h2>
         </Button>
       </div>
-      {cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0) ? (
+      {cosmonsEvolved?.some((c) => +getCosmonStat(c!.stats!, 'Fp')?.value! === 0) ? (
         <Tooltip id={`no-fp-available`} place="top">
           <p>No more Fight Points available</p>
         </Tooltip>

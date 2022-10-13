@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { ToastContainer } from '@components/ToastContainer/ToastContainer'
 import SuccessIcon from '@public/icons/success.svg'
 import ErrorIcon from '@public/icons/error.svg'
+import { getNextMonday } from '@utils/date'
 
 interface ArenaState {
   oldLeaderboard: OldLeaderBoard
@@ -27,6 +28,7 @@ interface ArenaState {
   fetchWalletsInfos: (arenaAddress: string, walletsAddress: string[]) => void
   claimPrize: (arenaAddress: string) => void
   fetchRankForAddress: (arenaAddress: string, walletAddress: string) => void
+  getNextLeagueOpenTime: () => Date
   loading: boolean
 }
 
@@ -240,5 +242,10 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     } catch (error) {
       console.error(error)
     }
+  },
+  getNextLeagueOpenTime: () => {
+    const nextMonday = getNextMonday()
+    nextMonday.setUTCHours(16)
+    return nextMonday
   },
 }))
