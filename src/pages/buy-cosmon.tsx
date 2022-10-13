@@ -195,7 +195,7 @@ export default function Page() {
                 }
                 isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.COMMON}
                 type={SCARCITIES.COMMON}
-                img="common.svg"
+                img="common.png"
               />
             </UnmaskOnReach>
             <UnmaskOnReach delay={0.2}>
@@ -204,7 +204,7 @@ export default function Page() {
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_UNCOMMON || 'xx'}
                 isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.UNCOMMON}
                 type={SCARCITIES.UNCOMMON}
-                img="uncommon.svg"
+                img="uncommon.png"
               />
             </UnmaskOnReach>
             <UnmaskOnReach delay={0.4}>
@@ -213,7 +213,7 @@ export default function Page() {
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_RARE || 'xx'}
                 isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.RARE}
                 type={SCARCITIES.RARE}
-                img="rare.svg"
+                img="rare.png"
               />
             </UnmaskOnReach>
             <UnmaskOnReach delay={0.6}>
@@ -222,7 +222,7 @@ export default function Page() {
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_EPIC || 'xx'}
                 isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.EPIC}
                 type={SCARCITIES.EPIC}
-                img="epic.svg"
+                img="epic.png"
               />
             </UnmaskOnReach>
             <UnmaskOnReach delay={0.8}>
@@ -231,7 +231,7 @@ export default function Page() {
                 yieldPercent={process.env.NEXT_PUBLIC_YIELD_LEGENDARY || 'xx'}
                 isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.LEGENDARY}
                 type={SCARCITIES.LEGENDARY}
-                img="legendary.svg"
+                img="legendary.png"
               />
             </UnmaskOnReach>
           </div>
