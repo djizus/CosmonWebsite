@@ -23,8 +23,6 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
     } catch (error) {}
   }, [battle.arena.contract])
 
-  console.log(battle, walletInfos)
-
   const iWin = useMemo(() => battle.winner.identity.includes(battle.me.identity), [battle])
   const isDraw = useMemo(() => battle?.winner.identity === '', [battle])
   const iStart = useMemo(
