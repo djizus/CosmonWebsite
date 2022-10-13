@@ -13,7 +13,7 @@ import Subscribe from '../sections/Subscribe'
 import Section from '../components/Section/Section'
 import BandeauLastBlockchainActions from '@sections/BandeauLastBlockchainActions/BandeauLastBlockchainActions'
 import CashPrize from '@components/Highlighted/CashPrize'
-import Countdown from '@components/Highlighted/Countdown'
+import HighlightedCountdown from '@components/Highlighted/Countdown'
 import { useMount } from 'react-use'
 import { useGameStore } from '@store/gameStore'
 import { differenceInMilliseconds } from 'date-fns'
@@ -75,7 +75,7 @@ export default function Page() {
       </Section>
 
       <div className="pt-[50px] lg:pt-[110px]">
-        {prize && leagueStartDate ? (
+        {prize ? (
           <div className="mb-[68px] flex flex-col justify-center gap-[5%] lg:flex-row ">
             <div className="flex flex-col items-center">
               <p className="mb-[20px] text-[22px] font-semibold text-white">First Prize Pool</p>
@@ -91,7 +91,7 @@ export default function Page() {
               </p>
               <AnimatePresence>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <Countdown from={leagueStartDate} />
+                  <HighlightedCountdown />
                 </motion.div>
               </AnimatePresence>
             </div>
