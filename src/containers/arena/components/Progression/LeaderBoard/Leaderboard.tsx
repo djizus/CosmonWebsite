@@ -17,7 +17,8 @@ const Leaderboard: React.FC<Props> = ({
   className,
 }) => {
   const displayMyWallet = !isMyWalletInCurrentPage(currentWalletAddress, currentLeaderboard)
-  const fights = walletInfos.victories + walletInfos.defeats
+  const fights = walletInfos.victories + walletInfos.defeats + walletInfos.draws
+
   return (
     <div className={style.container}>
       <hr className={style.firstHr} />

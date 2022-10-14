@@ -23,15 +23,17 @@ const WinsLosesChart: React.FC<Props> = ({ walletInfos }) => {
   return (
     <div className={style.container}>
       <div className={style.doughnutContent}>
-        <Doughnut
-          className={style.doughnut}
-          data={data}
-          options={{
-            cutout: 50,
-            responsive: true,
-            maintainAspectRatio: true,
-          }}
-        />
+        {data.datasets[0].data.reduce((prev, curr) => prev + curr, 0) > 0 ? (
+          <Doughnut
+            className={style.doughnut}
+            data={data}
+            options={{
+              cutout: 50,
+              responsive: true,
+              maintainAspectRatio: true,
+            }}
+          />
+        ) : null}
       </div>
       <div className={style.legendContent}>
         <div className={style.victoryLine}>
