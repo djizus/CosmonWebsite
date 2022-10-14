@@ -1,6 +1,9 @@
+import { useArenaStore } from '@store/arenaStore'
+import { useWalletStore } from '@store/walletStore'
+import { convertNumberToNumberWithSuffix } from '@utils/conversion'
 import { getCosmonStat } from '@utils/cosmon'
 import { AnimatePresence } from 'framer-motion'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { FightType } from 'types'
 import FightLogsModal from './FightLogsModal'
 
@@ -10,6 +13,15 @@ interface MainEventsProps {
 
 const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
   const [showFightLogsModal, setShowFightLogsModal] = useState(false)
+  const { walletInfos, fetchWalletInfos } = useArenaStore()
+
+  const { address } = useWalletStore()
+
+  useEffect(() => {
+    try {
+      fetchWalletInfos(battle.arena.contract, address)
+    } catch (error) {}
+  }, [battle.arena.contract])
 
   const iWin = useMemo(() => battle.winner.identity.includes(battle.me.identity), [battle])
   const isDraw = useMemo(() => battle?.winner.identity === '', [battle])
@@ -82,11 +94,33 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
         </div>
       </div>
 
-      <div className="mt-[32px] mb-[100px] flex w-full flex-col items-center justify-center rounded-[20px] bg-[#282255] py-[20px] px-[50px]">
-        <p className="font-normal">Learn more about the key moments by checking the fight logs!</p>
+      {battle.arena.name !== 'Training' && (
+        <div className="mt-[32px] flex w-full flex-col items-center justify-center rounded-[20px] bg-[#282255] py-[20px] px-[50px]">
+          {iWin || isDraw ? (
+            <p className="text-[14px] font-normal text-white">
+              You just won {iWin ? 2 : 0} points
+              {walletInfos.position !== null &&
+                `, your rank is now 
+              ${convertNumberToNumberWithSuffix(walletInfos.position)}`}
+            </p>
+          ) : (
+            <p className="text-[14px] font-normal text-white">
+              You just lost 1 point
+              {walletInfos.position !== null &&
+                `, your rank is now 
+              ${convertNumberToNumberWithSuffix(walletInfos.position)}`}
+            </p>
+          )}
+        </div>
+      )}
+
+      <div className="mt-[20px] mb-[27px] flex w-full flex-col items-center justify-center rounded-[20px] bg-[#282255] py-[20px] px-[50px]">
+        <p className="text-[14px] font-normal">
+          Learn more about the key moments by checking the fight logs!
+        </p>
         <p
           onClick={handleClickOpenLogs}
-          className="mt-[16px] cursor-pointer font-normal text-white underline"
+          className="mt-[16px] cursor-pointer text-[14px] font-normal text-white underline"
         >
           Open logs
         </p>

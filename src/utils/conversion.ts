@@ -36,3 +36,20 @@ export const zeroStakingCoin = {
   amount: '0',
   denom: process.env.NEXT_PUBLIC_STAKING_DENOM || 'ujuno',
 }
+
+export function convertNumberToNumberWithSuffix(number: number): string {
+  const oneDigit = number % 10
+  const twoDigit = number % 100
+
+  if (oneDigit === 1 && twoDigit !== 11) {
+    return number + 'st'
+  }
+  if (oneDigit === 2 && twoDigit !== 12) {
+    return number + 'nd'
+  }
+  if (oneDigit === 3 && twoDigit !== 13) {
+    return number + 'rd'
+  }
+
+  return number + 'th'
+}
