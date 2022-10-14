@@ -21,6 +21,8 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
     fetchCurrentLeaderBoard,
     fetchWalletInfos,
     fetchPrizesForAddress,
+    claimPrize,
+    loading,
   } = useArenaStore()
 
   const { address } = useWalletStore()
@@ -33,9 +35,21 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
     } catch (error) {}
   }, [currentLeaguePro])
 
+  const handleClickClaimPrize = async () => {
+    try {
+      claimPrize(currentLeaguePro.contract)
+    } catch (error) {}
+  }
+
   return (
     <div className={style.progression}>
-      {prizesForAddress.to_claim.length > 0 && <ClaimBanner prizesForAddress={prizesForAddress} />}
+      {prizesForAddress.to_claim.length > 0 && (
+        <ClaimBanner
+          prizesForAddress={prizesForAddress}
+          onClickClaim={handleClickClaimPrize}
+          loading={loading}
+        />
+      )}
       <div className={style.cardsContainer}>
         <EarningsAndScore walletInfos={walletInfos} prizesForAddress={prizesForAddress} />
         <WinsLosesChart walletInfos={walletInfos} />

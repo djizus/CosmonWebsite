@@ -7,6 +7,7 @@ import { ToastContainer } from '@components/ToastContainer/ToastContainer'
 import SuccessIcon from '@public/icons/success.svg'
 import ErrorIcon from '@public/icons/error.svg'
 import { getNextMonday } from '@utils/date'
+import { useWalletStore } from './walletStore'
 
 interface ArenaState {
   oldLeaderboard: OldLeaderBoard
@@ -70,10 +71,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   fetchCurrentPrizePool: async (arenaAddress: string) => {
     try {
       const currentPrizePool = await ArenaService.queries().fetchCurrentPrizePool(arenaAddress)
-
-      set({
-        currentPrizePool,
-      })
+      set({ currentPrizePool })
       return currentPrizePool
     } catch (error) {
       console.error(error)
@@ -82,10 +80,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   fetchNextPrizePool: async (arenaAddress: string) => {
     try {
       const nextPrizePool = await ArenaService.queries().fetchNextPrizePool(arenaAddress)
-
-      set({
-        nextPrizePool,
-      })
+      set({ nextPrizePool })
       return nextPrizePool
     } catch (error) {
       console.error(error)
@@ -105,11 +100,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   fetchPrizesForAddress: async (arenaAddress: string) => {
     try {
       const prizesForAddress = await ArenaService.queries().fetchPrizesForAddress(arenaAddress)
-
-      set({
-        prizesForAddress,
-      })
-
+      set({ prizesForAddress })
       return prizesForAddress
     } catch (error) {
       console.error(error)
@@ -212,31 +203,40 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   },
   claimPrize: async (arenaAddress: string) => {
     try {
-      await toast.promise(ArenaService.executes().claimPrize(arenaAddress), {
-        pending: {
-          render() {
-            return <ToastContainer type="pending">Claiming your rewards</ToastContainer>
+      set({ loading: true })
+      await toast
+        .promise(ArenaService.executes().claimPrize(arenaAddress), {
+          pending: {
+            render() {
+              return <ToastContainer type="pending">Claiming your rewards</ToastContainer>
+            },
           },
-        },
-        success: {
-          render() {
-            return <ToastContainer type={'success'}>Rewards successfully claimed</ToastContainer>
+          success: {
+            render() {
+              return <ToastContainer type={'success'}>Rewards successfully claimed</ToastContainer>
+            },
+            icon: SuccessIcon,
           },
-          icon: SuccessIcon,
-        },
-        error: {
-          render({ data }: any) {
-            return <ToastContainer type="error">{data.message}</ToastContainer>
+          error: {
+            render({ data }: any) {
+              return <ToastContainer type="error">{data.message}</ToastContainer>
+            },
+            icon: ErrorIcon,
           },
-          icon: ErrorIcon,
-        },
-      })
+        })
+        .then(async () => {
+          const { fetchWalletData } = useWalletStore()
+          const prizesForAddress = await ArenaService.queries().fetchPrizesForAddress(arenaAddress)
+          fetchWalletData()
 
-      const prizesForAddress = await ArenaService.queries().fetchPrizesForAddress(arenaAddress)
-
-      set({
-        prizesForAddress: prizesForAddress,
-      })
+          set({
+            prizesForAddress: prizesForAddress,
+            loading: false,
+          })
+        })
+        .catch(() => {
+          set({ loading: false })
+        })
     } catch (error) {
       console.error(error)
     }
