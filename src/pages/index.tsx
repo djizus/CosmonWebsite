@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useMemo, useState } from 'react'
+import { ReactElement, useEffect, useMemo } from 'react'
 import ChooseYourLeaders from '../sections/ChooseYourLeaders'
 import Hero from '../sections/Hero'
 import HoldAndEarn from '../sections/HoldAndEarn'
@@ -16,15 +16,12 @@ import CashPrize from '@components/Highlighted/CashPrize'
 import HighlightedCountdown from '@components/Highlighted/Countdown'
 import { useMount } from 'react-use'
 import { useGameStore } from '@store/gameStore'
-import { differenceInMilliseconds } from 'date-fns'
 import { useArenaStore } from '@store/arenaStore'
-import { Coin } from '@cosmjs/proto-signing'
 import { AnimatePresence, motion } from 'framer-motion'
 
 export default function Page() {
   const { fetchArenasList, arenasList } = useGameStore()
-  const { fetchNextPrizePool } = useArenaStore()
-  const [prize, setPrize] = useState<Coin>()
+  const { getPrizePool, prizePool } = useArenaStore()
 
   useMount(() => {
     fetchData()
@@ -43,25 +40,15 @@ export default function Page() {
     return undefined
   }, [arenasList])
 
-  const leagueStartDate = useMemo(() => {
-    if (leaguePro) {
-      const startTimestamp = leaguePro.arena_open_time
-      const startEpoch = new Date(0)
-      startEpoch.setUTCSeconds(startTimestamp)
-      return differenceInMilliseconds(startEpoch, new Date())
-    }
-  }, [leaguePro])
-
   useEffect(() => {
     if (leaguePro) {
       fetchLeagueProPrizePool(leaguePro.contract)
     }
   }, [leaguePro])
 
-  const fetchLeagueProPrizePool = async (leagueProContractAddress: string) => {
+  const fetchLeagueProPrizePool = (leagueProContractAddress: string) => {
     try {
-      const prize = await fetchNextPrizePool(leagueProContractAddress)
-      setPrize(prize[0])
+      getPrizePool(leagueProContractAddress)
     } catch (error) {}
   }
 
@@ -75,13 +62,13 @@ export default function Page() {
       </Section>
 
       <div className="pt-[50px] lg:pt-[110px]">
-        {prize ? (
+        {prizePool ? (
           <div className="mb-[68px] flex flex-col justify-center gap-[5%] lg:flex-row ">
             <div className="flex flex-col items-center">
               <p className="mb-[20px] text-[22px] font-semibold text-white">First Prize Pool</p>
               <AnimatePresence>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <CashPrize prize={prize} />
+                  <CashPrize prize={prizePool} />
                 </motion.div>
               </AnimatePresence>
             </div>

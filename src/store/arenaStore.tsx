@@ -15,6 +15,7 @@ interface ArenaState {
   arenaFees: any
   currentPrizePool: any
   nextPrizePool: any
+  prizePool: Coin | null
   prizesForAddress: PrizesForAddress
   currentChampionshipNumber: number
   fetchArenaFees: (arenaAddress: string) => Promise<Coin[]>
@@ -29,6 +30,7 @@ interface ArenaState {
   claimPrize: (arenaAddress: string) => void
   fetchRankForAddress: (arenaAddress: string, walletAddress: string) => void
   getNextLeagueOpenTime: () => Date
+  getPrizePool: (arenaAddress: string) => void
   loading: boolean
 }
 
@@ -46,6 +48,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   arenaFees: null,
   currentPrizePool: null,
   nextPrizePool: null,
+  prizePool: null,
   prizesForAddress: {
     to_claim: [],
     total: [],
@@ -86,6 +89,17 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       return nextPrizePool
     } catch (error) {
       console.error(error)
+    }
+  },
+  getPrizePool: async (arenaAddress: string) => {
+    const { fetchCurrentPrizePool, fetchNextPrizePool } = get()
+    const currPrize = await fetchCurrentPrizePool(arenaAddress)
+    if (currPrize?.length > 0) {
+      set({ prizePool: currPrize[0] })
+    }
+    const nextPrize = await fetchNextPrizePool(arenaAddress)
+    if (nextPrize?.length > 0) {
+      set({ prizePool: nextPrize[0] })
     }
   },
   fetchPrizesForAddress: async (arenaAddress: string) => {
