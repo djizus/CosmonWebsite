@@ -17,6 +17,7 @@ interface SelectProps {
   placeholder: string | React.ReactNode
   onChange: (value: string | string[]) => void
   className?: string
+  selectOptionsClassName?: string
 }
 
 const dropIn = {
@@ -40,7 +41,14 @@ const dropIn = {
   },
 }
 
-const Select: React.FC<SelectProps> = ({ value, options, placeholder, className, onChange }) => {
+const Select: React.FC<SelectProps> = ({
+  value,
+  options,
+  placeholder,
+  className,
+  selectOptionsClassName,
+  onChange,
+}) => {
   const [isOptionsContainerOpen, toggleOptionsContainerOpen] = useToggle(false)
 
   const isMultiple = useMemo(() => {
@@ -74,6 +82,7 @@ const Select: React.FC<SelectProps> = ({ value, options, placeholder, className,
           {!value || (isMultiple && value.length <= 0) ? placeholder : selectedLabel}
         </p>
         <ChevronUp
+          className={styles.chevron}
           style={{
             transform: !isOptionsContainerOpen ? 'rotate(180deg)' : null,
           }}
@@ -86,7 +95,7 @@ const Select: React.FC<SelectProps> = ({ value, options, placeholder, className,
             initial="hidden"
             animate="visible"
             exit="exit"
-            className={clsx(styles.selectOptionsContainer)}
+            className={clsx(styles.selectOptionsContainer, selectOptionsClassName)}
           >
             {options.map((option, i) => (
               <div

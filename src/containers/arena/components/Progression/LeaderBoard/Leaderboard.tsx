@@ -1,11 +1,11 @@
 import clsx from 'clsx'
-import { CurrentLeaderBoard, CurrentLeaderBoardItem, WalletInfos } from 'types/Arena'
+import { LeaderBoard, LeaderBoardItem, WalletInfos } from 'types/Arena'
 import { isMyWalletInCurrentPage } from './utils'
 import * as style from './Leaderboard.module.scss'
 
 interface Props {
   currentWalletAddress: string
-  currentLeaderboard: CurrentLeaderBoard
+  currentLeaderboard: LeaderBoard
   walletInfos: WalletInfos
   className?: string
 }
@@ -56,7 +56,7 @@ const Leaderboard: React.FC<Props> = ({
               </tr>
             </>
           )}
-          {currentLeaderboard.map((wallet: CurrentLeaderBoardItem) => (
+          {currentLeaderboard.map((wallet: LeaderBoardItem) => (
             <tr
               key={wallet.address}
               className={clsx(style.line, {

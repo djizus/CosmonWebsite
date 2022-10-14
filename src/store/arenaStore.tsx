@@ -1,7 +1,7 @@
 import create from 'zustand'
 import { ArenaService } from '@services/arena'
 import { Coin } from '@cosmjs/proto-signing'
-import { WalletInfos, PrizesForAddress, CurrentLeaderBoard, OldLeaderBoard } from 'types'
+import { WalletInfos, PrizesForAddress, LeaderBoard } from 'types'
 import { toast } from 'react-toastify'
 import { ToastContainer } from '@components/ToastContainer/ToastContainer'
 import SuccessIcon from '@public/icons/success.svg'
@@ -9,8 +9,8 @@ import ErrorIcon from '@public/icons/error.svg'
 import { getNextMonday } from '@utils/date'
 
 interface ArenaState {
-  oldLeaderboard: OldLeaderBoard
-  currentLeaderboard: CurrentLeaderBoard
+  oldLeaderboard: LeaderBoard
+  currentLeaderboard: LeaderBoard
   walletInfos: WalletInfos
   arenaFees: any
   currentPrizePool: any
@@ -140,8 +140,8 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
         addressesFromLeaderboard
       )
 
-      const formatedLeaderboard: CurrentLeaderBoard = addressesFromLeaderboard.reduce(
-        (acc: CurrentLeaderBoard, curr: string, index: number) => {
+      const formatedLeaderboard: LeaderBoard = addressesFromLeaderboard.reduce(
+        (acc: LeaderBoard, curr: string, index: number) => {
           if (walletsInfos[index]) {
             return [
               ...acc,
@@ -173,8 +173,17 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     try {
       const oldLeaderboard = await ArenaService.queries().fetchOldLeaderboard(arenaAddress)
 
+      const formatedOldLeaderboard: LeaderBoard = oldLeaderboard.map((item: any, index: number) => {
+        return {
+          address: item[0],
+          position: index + 1,
+          fights: item[1].victories + item[1].defeats + item[1].draws,
+          ...item[1],
+        }
+      })
+
       set({
-        oldLeaderboard,
+        oldLeaderboard: formatedOldLeaderboard,
       })
     } catch (error) {
       console.error(error)

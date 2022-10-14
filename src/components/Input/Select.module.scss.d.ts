@@ -1,3 +1,4 @@
+export const chevron: string
 export const selectableOptionContainer: string
 export const selectableOptionSelected: string
 export const selectContainer: string
