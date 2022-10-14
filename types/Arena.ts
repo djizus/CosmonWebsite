@@ -24,7 +24,7 @@ export type PrizesForAddress = {
   total: Coin[]
 }
 
-export type CurrentLeaderBoardItem = {
+export type LeaderBoardItem = {
   address: string
   position: number
   points: number
@@ -34,7 +34,4 @@ export type CurrentLeaderBoardItem = {
   fights: number
 }
 
-export type CurrentLeaderBoard = CurrentLeaderBoardItem[]
-
-export type OldLeaderBoardItem = any
-export type OldLeaderBoard = OldLeaderBoardItem[]
+export type LeaderBoard = LeaderBoardItem[]
