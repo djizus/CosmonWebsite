@@ -169,8 +169,8 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   fetchWalletInfos: async (arenaAddress: string, walletAddress: string) => {
     try {
       const walletInfos = await ArenaService.queries().fetchWalletInfos(arenaAddress, walletAddress)
+      if (!walletInfos) return
       const position = await ArenaService.queries().fetchRankForAddress(arenaAddress, walletAddress)
-
       set({
         walletInfos: {
           ...walletInfos,
