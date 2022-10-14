@@ -234,12 +234,11 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
           },
         })
         .then(async () => {
-          const { fetchWalletData } = useWalletStore()
+          const { fetchWalletData } = useWalletStore.getState()
           const prizesForAddress = await ArenaService.queries().fetchPrizesForAddress(arenaAddress)
           fetchWalletData()
-
           set({
-            prizesForAddress: prizesForAddress,
+            prizesForAddress,
             loading: false,
           })
         })
