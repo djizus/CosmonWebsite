@@ -11,7 +11,7 @@ import { FightContext } from '../FightContext'
 import FightModal from '../FightModal/FightModal'
 import FightReportModal from '../FightReportModal/FightReportModal'
 import SelectArenaModal from '../SelectArenaModal'
-import TrainingModeDescriptionModal from '../TrainingModeDescriptionModal'
+import ArenaDescriptionModal from '../ArenaDescriptionModal'
 import DeckContainer from './DeckContainer/DeckContainer'
 import DecksEmptyList from './DecksEmptyList'
 
@@ -21,7 +21,7 @@ interface DecksProps {
 }
 
 const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
-  const { isConnected, cosmons } = useWalletStore()
+  const { isConnected, cosmons, fetchCoin } = useWalletStore()
   const { fetchArenasList, registerToArena, fight } = useGameStore()
   const { decksList, fetchDecksList, fetchPersonalityAffinities, refreshCosmonsAndDecksList } =
     useDeckStore()
@@ -94,6 +94,10 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
     try {
       if (selectedArena) {
         const refreshedArenasList = await registerToArena(selectedArena)
+        // refresh xki balance
+        if (selectedArena.name !== 'Training') {
+          fetchCoin()
+        }
         setSelectedArena(refreshedArenasList?.find((arena) => arena.name === selectedArena.name))
         setShowLearnMoreModal(false)
         setShowSelectArenaModal(true)
@@ -185,8 +189,10 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
 
       <AnimatePresence>
         {showLearnMoreModal && (
-          <TrainingModeDescriptionModal
+          <ArenaDescriptionModal
+            arena={selectedArena!}
             onCloseModal={() => {
+              setShowLearnMoreModal(false)
               setSelectedArena(undefined)
             }}
             onSliderEndReached={handleRegisterToArena}

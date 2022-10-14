@@ -3,7 +3,6 @@ import ConnectionNeededContent from '@components/ConnectionNeededContent/Connect
 import Countdown from '@components/Countdown/Countdown'
 import Tooltip from '@components/Tooltip/Tooltip'
 import { getMEAs } from '@containers/arena/data'
-import { Coin } from '@cosmjs/proto-signing'
 import { useArenaStore } from '@store/arenaStore'
 import { useDeckStore } from '@store/deckStore'
 import { useGameStore } from '@store/gameStore'
@@ -31,15 +30,14 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   const [deckToEdit, setDeckToEdit] = useState<Deck | undefined>()
   const [deckToDelete, setDeckToDelete] = useState<Deck | undefined>()
   const { removeDeck, isRemovingDeck } = useDeckStore()
-  const [nextLeagueStartDate, setNextLeagueStartDate] = useState<Date>()
   const { arenasList, fetchArenasList } = useGameStore()
   const {
-    fetchNextPrizePool,
     fetchCurrentChampionshipNumber,
     currentChampionshipNumber,
     getNextLeagueOpenTime,
+    getPrizePool,
+    prizePool,
   } = useArenaStore()
-  const [prize, setPrize] = useState<Coin>()
   const [currentLeaguePro, setCurrentLeaguePro] = useState<ArenaType | null>(null)
 
   const handleClickDeck = useCallback(() => {
@@ -105,7 +103,6 @@ const Arena: React.FC<ArenaProps> = ({}) => {
         if (isAfter(new Date(), startEpoch)) {
           setCurrentLeaguePro(leaguePro)
         }
-        setNextLeagueStartDate(startEpoch)
       }
     } else {
       // we have to put this in a place (method) where the whole app bootstraps
@@ -113,10 +110,9 @@ const Arena: React.FC<ArenaProps> = ({}) => {
     }
   }, [arenasList])
 
-  const fetchLeagueProPrizePool = async (leagueProContractAddress: string) => {
+  const fetchLeagueProPrizePool = (leagueProContractAddress: string) => {
     try {
-      const prize = await fetchNextPrizePool(leagueProContractAddress)
-      setPrize(prize[0])
+      getPrizePool(leagueProContractAddress)
     } catch (error) {}
   }
 
@@ -165,8 +161,8 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                   <div className="flex items-center gap-[10px]">
                     <img src="/xki-logo.png" style={{ width: 30, height: 30 }} />
                     <p className="text-[34px] font-extrabold italic leading-[26px] text-white">
-                      {prize
-                        ? `${numeral(convertMicroDenomToDenom(prize?.amount!)).format('0,0')}`
+                      {prizePool
+                        ? `${numeral(convertMicroDenomToDenom(prizePool?.amount!)).format('0,0')}`
                         : 'XXXX'}
                     </p>
                   </div>

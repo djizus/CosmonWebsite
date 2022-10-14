@@ -3,6 +3,7 @@
     "title": "Fight Request",
     "ctaSelectArena": "Select an arena",
     "ctaLearnMore": "Learn more",
-    "ctaFight": "Let's fight!"
+    "ctaFight": "Let's fight!",
+    "ctaFightWithPrice": "Let's fight for {{price}} $XKI !"
   }
 }

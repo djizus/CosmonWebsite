@@ -10,6 +10,7 @@ import { camelCase } from 'lodash'
 import { useMemo } from 'react'
 import { Trans } from 'react-i18next'
 import Countdown from '@components/Countdown/Countdown'
+import { convertMicroDenomToDenom } from '@utils/conversion'
 
 interface SelectArenaModalProps {
   loading?: boolean
@@ -74,7 +75,11 @@ const SelectArenaModal: React.FC<SelectArenaModalProps> = ({
             {internArena === undefined
               ? t('selectArenaModal.ctaSelectArena')
               : internArena.registeredIn
-              ? t('selectArenaModal.ctaFight')
+              ? internArena.combat_price?.amount
+                ? t('selectArenaModal.ctaFightWithPrice', {
+                    price: convertMicroDenomToDenom(internArena.combat_price.amount),
+                  })
+                : t('selectArenaModal.ctaFight')
               : t('selectArenaModal.ctaLearnMore')}
           </Button>
         </div>
@@ -82,7 +87,7 @@ const SelectArenaModal: React.FC<SelectArenaModalProps> = ({
     </Modal>
   )
 }
-
+SelectArenaModal.displayName = 'SelectArenaModal'
 export default SelectArenaModal
 
 const ArenaContainer: React.FC<{
