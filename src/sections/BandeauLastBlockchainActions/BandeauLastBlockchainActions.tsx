@@ -14,6 +14,7 @@ import LastClaimRewards from './LastClaimRewards'
 import LastLost from './LastLost'
 import LastClaimAirdrop from './LastClaimAirdrop'
 import { motion } from 'framer-motion'
+import LoadingIcon from '@components/LoadingIcon/LoadingIcon'
 
 interface BandeauLastBlockchainActionsProps {}
 
@@ -126,7 +127,11 @@ const BandeauLastBlockchainActions: React.FC<BandeauLastBlockchainActionsProps> 
             }}
           />
         </div>
-      ) : null}
+      ) : (
+        <div className="py-[60px]">
+          <LoadingIcon />
+        </div>
+      )}
     </div>
   )
 }

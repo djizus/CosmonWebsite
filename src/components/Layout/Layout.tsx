@@ -156,20 +156,21 @@ export default function Layout({ children }: LayoutProps) {
                 {showWalletPopup && <WalletPopup onClosePopup={() => set_showWalletPopup(false)} />}
               </div>
 
-              <div className="flex items-center rounded-xl bg-[#1D1A47] pl-4 text-sm font-semibold text-white">
-                <div
-                  className="flex cursor-pointer"
+              <div className="flex cursor-pointer items-center rounded-xl bg-[#1D1A47] text-sm font-semibold text-white">
+                <span
+                  className="cursor-pointer py-[10px] px-[15px] uppercase"
                   onClick={() => {
                     set_showATOMBreakdownPopup(true)
                   }}
                 >
-                  {getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '', coins)}
-
-                  <div className="ml-1 uppercase"> {ibcDenom}</div>
-                </div>
+                  {getAmountFromDenom(process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '', coins)}{' '}
+                  {ibcDenom}
+                </span>
                 <div
-                  onClick={() => set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)}
-                  className="ml-2 flex h-full cursor-pointer items-center rounded-xl border border-[#9FA4DD] py-2 px-4 text-white"
+                  onClick={(e) => {
+                    set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)
+                  }}
+                  className="flex h-full cursor-pointer items-center rounded-xl border border-[#9FA4DD] py-2 px-4 text-white"
                 >
                   {getShortAddress(walletAddress)}
                   <img className="ml-2 h-6 w-6" src="/avatar.png" alt="" />
