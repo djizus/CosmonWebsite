@@ -2,6 +2,8 @@ import DiamondIcon from '/public/icons/diamond.svg'
 import AwardIcon from '/public/icons/award.svg'
 import * as style from './EarningsAndScore.module.scss'
 import { PrizesForAddress, WalletInfos } from 'types'
+import { convertMicroDenomToDenom } from '@utils/conversion'
+import numeral from 'numeral'
 
 interface Props {
   walletInfos: WalletInfos
@@ -19,9 +21,11 @@ const EarningsAndScore: React.FC<Props> = ({ walletInfos, prizesForAddress }) =>
           <span className={style.label}>Earnings</span>
         </div>
         <p className={style.value}>
-          {prizesForAddress.total.length > 0 ? prizesForAddress.total[0] : 0}
+          {prizesForAddress.total.length > 0
+            ? numeral(convertMicroDenomToDenom(prizesForAddress.total[0].amount)).format('0,0')
+            : 0}
         </p>
-        <p className={style.suffixe}>USDC</p>
+        <p className={style.suffixe}>XKI</p>
       </div>
       <div className={style.scoreContent}>
         <div className={style.firstLine}>
