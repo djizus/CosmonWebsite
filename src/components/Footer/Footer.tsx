@@ -62,6 +62,11 @@ export default function Footer() {
                   Light Paper
                 </a>
               </Link>
+              <Link href="https://docs.cosmon.ki/">
+                <a target="_blank" className={style.link}>
+                  Documentation
+                </a>
+              </Link>
             </div>
           </div>
 

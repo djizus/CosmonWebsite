@@ -108,6 +108,9 @@ export default function Layout({ children }: LayoutProps) {
             <Link href="/buy-cosmon">
               <a>Buy Cosmon</a>
             </Link>
+            <Link href="https://docs.cosmon.ki/">
+              <a target="_blank">Documentation</a>
+            </Link>
             <Link href="/my-assets">
               <a>
                 My Assets
