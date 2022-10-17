@@ -73,7 +73,7 @@ export default function Page() {
               </AnimatePresence>
             </div>
             <div className="mt-[32px] flex flex-col items-center lg:mt-[0px]">
-              <p className="mb-[20px] text-[22px] font-semibold text-white ">League ends in</p>
+              <p className="mb-[20px] text-[22px] font-semibold text-white ">League starts in</p>
               <AnimatePresence>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <HighlightedCountdown />
