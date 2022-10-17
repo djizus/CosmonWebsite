@@ -1,3 +1,5 @@
+import { isAfter, isBefore } from 'date-fns'
+
 export const msToTime = (durationInMs: number) => {
   const s = Math.floor((durationInMs / 1000) % 60)
   const m = Math.floor((durationInMs / (1000 * 60)) % 60)
@@ -21,8 +23,12 @@ export const getNextMonday = (date = new Date()) => {
   const dateCopy = new Date(date.getTime())
 
   const nextMonday = new Date(
-    dateCopy.setDate(dateCopy.getDate() + ((7 - dateCopy.getDay() + 1) % 7 || 7))
+    dateCopy.setDate(dateCopy.getDate() + ((7 - dateCopy.getDay() + 1) % 7))
   )
+
+  if (isAfter(new Date(), nextMonday) && (7 - dateCopy.getDay() + 1) % 7 == 0) {
+    nextMonday.setDate(nextMonday.getDate() + 7)
+  }
 
   return nextMonday
 }

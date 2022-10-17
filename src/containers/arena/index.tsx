@@ -7,6 +7,7 @@ import { useArenaStore } from '@store/arenaStore'
 import { useDeckStore } from '@store/deckStore'
 import { useGameStore } from '@store/gameStore'
 import { convertMicroDenomToDenom } from '@utils/conversion'
+import { sleep } from '@utils/sleep'
 import clsx from 'clsx'
 import isAfter from 'date-fns/isAfter'
 import { AnimatePresence } from 'framer-motion'
@@ -116,6 +117,15 @@ const Arena: React.FC<ArenaProps> = ({}) => {
     } catch (error) {}
   }
 
+  const [time, setTime] = useState<Date | undefined>(getNextLeagueOpenTime())
+
+  const refreshTime = async () => {
+    setTime(undefined)
+    await sleep(1000)
+    fetchArenasList()
+    setTime(getNextLeagueOpenTime())
+  }
+
   return (
     <div className="pt-[100px] lg:pt-[132px]">
       <div className="relative h-[380px] bg-cosmon-main-quaternary">
@@ -219,11 +229,16 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                   </div>
                 </div>
                 <div className="mt-[40px] flex flex-1 flex-col items-center justify-center">
-                  <Countdown
-                    from={new Date()}
-                    to={getNextLeagueOpenTime()}
-                    className="text-[34px] font-extrabold italic leading-[30px] text-white"
-                  />
+                  {time ? (
+                    <Countdown
+                      from={new Date()}
+                      to={time}
+                      onCountdownReached={refreshTime}
+                      className="text-[34px] font-extrabold italic leading-[30px] text-white"
+                    />
+                  ) : (
+                    '00'
+                  )}
                   <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">
                     Championship starts in
                   </p>

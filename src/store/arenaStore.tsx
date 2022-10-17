@@ -266,8 +266,10 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     }
   },
   getNextLeagueOpenTime: () => {
-    const nextMonday = getNextMonday()
-    nextMonday.setUTCHours(16)
-    return nextMonday
+    const d = new Date()
+    d.setUTCHours(16)
+    d.setMinutes(0)
+    d.setSeconds(0)
+    return getNextMonday(d)
   },
 }))
