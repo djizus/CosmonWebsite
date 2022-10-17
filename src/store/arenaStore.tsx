@@ -116,15 +116,16 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       )
 
       // @TODO : check with back if we rly need to reverse currentLeaderboard
-      const addressesFromLeaderboard: string[] = [...currentLeaderboard]
-        .reverse()
-        .reduce((acc: string[], curr: string[]) => {
+      const addressesFromLeaderboard: string[] = [...currentLeaderboard].reduce(
+        (acc: string[], curr: string[]) => {
           if (curr.length > 0) {
             return [...acc, ...curr]
           }
 
           return [...acc]
-        }, [])
+        },
+        []
+      )
 
       const walletsInfos = await ArenaService.queries().fetchWalletsInfos(
         arenaAddress,
