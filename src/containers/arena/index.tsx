@@ -242,7 +242,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                     </p>
                   )}
                   <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">
-                    Championship starts in
+                    Championship ends in
                   </p>
                 </div>
               </div>
