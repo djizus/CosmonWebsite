@@ -18,7 +18,7 @@ const Leaderboard: React.FC<Props> = ({
 }) => {
   const displayMyWallet = !isMyWalletInCurrentPage(currentWalletAddress, currentLeaderboard)
   const fights = walletInfos.victories + walletInfos.defeats + walletInfos.draws
-
+  const slicedLeaderboard = currentLeaderboard.slice(0, 5)
   return (
     <div className={style.container}>
       <hr className={style.firstHr} />
@@ -56,7 +56,7 @@ const Leaderboard: React.FC<Props> = ({
               </tr>
             </>
           )}
-          {currentLeaderboard.map((wallet: LeaderBoardItem) => (
+          {slicedLeaderboard.map((wallet: LeaderBoardItem) => (
             <tr
               key={wallet.address}
               className={clsx(style.line, {
