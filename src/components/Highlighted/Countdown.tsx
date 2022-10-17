@@ -23,7 +23,7 @@ const HighlightedCountdown: React.FC<HighlightedCountdownProps> = () => {
         {time ? (
           <Countdown from={new Date()} to={time} onCountdownReached={refreshTime} tag="h3" />
         ) : (
-          '00'
+          <h3>00</h3>
         )}
         <p className="mt-[23px] text-sm">Just a few days to wait to fight for the prize pool</p>
       </div>

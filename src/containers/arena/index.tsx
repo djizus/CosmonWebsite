@@ -237,7 +237,9 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                       className="text-[34px] font-extrabold italic leading-[30px] text-white"
                     />
                   ) : (
-                    '00'
+                    <p className="text-[34px] font-extrabold italic leading-[30px] text-white">
+                      00
+                    </p>
                   )}
                   <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">
                     Championship starts in
