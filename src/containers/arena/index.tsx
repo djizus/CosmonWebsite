@@ -122,6 +122,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   const refreshTime = async () => {
     setTime(undefined)
     await sleep(1000)
+    fetchArenasList()
     setTime(getNextLeagueOpenTime())
   }
 
