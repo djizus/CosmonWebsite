@@ -53,6 +53,7 @@ const Leaderboard: React.FC<Props> = ({
                 <td className={style.fakeCell}>...</td>
                 <td className={style.fakeCell}>...</td>
                 <td className={style.fakeCell}>...</td>
+                <td className={style.fakeCell}>...</td>
               </tr>
             </>
           )}
