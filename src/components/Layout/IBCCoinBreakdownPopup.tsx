@@ -8,7 +8,8 @@ interface IBCCoinBreakdownPopupProps {
 }
 
 const IBCCoinBreakdownPopup: React.FC<IBCCoinBreakdownPopupProps> = ({ onClosePopup }) => {
-  const { ibcDenom, coins, setShowWithdrawDepositModal } = useWalletStore()
+  const { ibcDenom, coins, setShowWithdrawDepositModal, ibcSigningClient, stargateSigningClient } =
+    useWalletStore()
 
   return (
     <>
@@ -34,6 +35,7 @@ const IBCCoinBreakdownPopup: React.FC<IBCCoinBreakdownPopupProps> = ({ onClosePo
               onClick={() => setShowWithdrawDepositModal('deposit')}
               size="small"
               type="secondary"
+              disabled={!ibcSigningClient || !stargateSigningClient}
             >
               Deposit
             </Button>
@@ -41,6 +43,7 @@ const IBCCoinBreakdownPopup: React.FC<IBCCoinBreakdownPopupProps> = ({ onClosePo
               onClick={() => setShowWithdrawDepositModal('withdraw')}
               size="small"
               type="secondary"
+              disabled={!ibcSigningClient || !stargateSigningClient}
             >
               Withdraw
             </Button>

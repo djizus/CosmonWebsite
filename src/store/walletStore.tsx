@@ -133,8 +133,12 @@ const useWalletStore = create<WalletState>(
           const ibcOfflineSigner = await (window as any).getOfflineSignerAuto(PUBLIC_IBC_CHAIN_ID)
 
           const client = await makeClient(offlineSigner)
-          const stargateClient = await makeStargateClient(offlineSigner)
-          const ibcClient = await makeIbcClient(ibcOfflineSigner)
+          let stargateClient = null,
+            ibcClient = null
+          try {
+            stargateClient = await makeStargateClient(offlineSigner)
+            ibcClient = await makeIbcClient(ibcOfflineSigner)
+          } catch (error) {}
 
           set({
             signingClient: client,
