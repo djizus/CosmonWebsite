@@ -1,5 +1,6 @@
 export const activeButton: string
 export const button: string
+export const buyBoostButton: string
 export const line: string
 export const prizePoolText: string
 export const tipContainer: string

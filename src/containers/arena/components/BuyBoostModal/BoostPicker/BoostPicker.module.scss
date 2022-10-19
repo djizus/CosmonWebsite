@@ -1,0 +1,65 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  color: #b1a8b9;
+  margin-bottom: 24px;
+}
+
+.content {
+  width: 493px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+  background: #282255;
+  border-radius: 20px;
+  padding: 32px 40px 24px;
+}
+
+.boost {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.leftBlock {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.rightBlock {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.boostButton {
+}
+
+.attrContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: #222047;
+  border-radius: 8px;
+  padding: 8px;
+}

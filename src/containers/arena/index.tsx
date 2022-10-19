@@ -14,6 +14,7 @@ import { AnimatePresence } from 'framer-motion'
 import numeral from 'numeral'
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import { ArenaType, Deck } from 'types'
+import BuyBoostModal from './components/BuyBoostModal/BuyBoostModal'
 import DeckBuilderModal from './components/DeckBuilder/DeckBuilderModal'
 import Decks from './components/Decks/Decks'
 import DeleteDeckModal from './components/DeleteDeckModal'
@@ -28,6 +29,7 @@ type ViewType = 'decks' | 'progression'
 const Arena: React.FC<ArenaProps> = ({}) => {
   const [view, setView] = useState<ViewType>('decks')
   const [deckBuilderVisible, setDeckBuilderVisible] = useState(false)
+  const [buyBoostVisible, setBuyBoostVisible] = useState(false)
   const [deckToEdit, setDeckToEdit] = useState<Deck | undefined>()
   const [deckToDelete, setDeckToDelete] = useState<Deck | undefined>()
   const { removeDeck, isRemovingDeck } = useDeckStore()
@@ -76,6 +78,14 @@ const Arena: React.FC<ArenaProps> = ({}) => {
 
   const handleOpenDeckBuilderModal = useCallback(() => {
     setDeckBuilderVisible(true)
+  }, [])
+
+  const handleOpenBuyBoostModal = useCallback(() => {
+    setBuyBoostVisible(true)
+  }, [])
+
+  const handleCloseBuyBoostModal = useCallback(() => {
+    setBuyBoostVisible(false)
   }, [])
 
   const handleConfirmDeleteDeck = useCallback(async () => {
@@ -295,6 +305,13 @@ const Arena: React.FC<ArenaProps> = ({}) => {
               </Button>
             </div>
             <div>
+              <Button
+                size="small"
+                onClick={handleOpenBuyBoostModal}
+                className={style.buyBoostButton}
+              >
+                Buy a boost
+              </Button>
               <Button size="small" onClick={handleOpenDeckBuilderModal}>
                 Add a new deck
               </Button>
@@ -303,12 +320,15 @@ const Arena: React.FC<ArenaProps> = ({}) => {
 
           <div>{renderCurrentView}</div>
           <AnimatePresence initial={false} exitBeforeEnter={true} onExitComplete={() => null}>
-            {deckBuilderVisible ? (
+            {buyBoostVisible && <BuyBoostModal handleCloseModal={handleCloseBuyBoostModal} />}
+          </AnimatePresence>
+          <AnimatePresence initial={false} exitBeforeEnter={true} onExitComplete={() => null}>
+            {deckBuilderVisible && (
               <DeckBuilderModal
                 deckToEdit={deckToEdit}
                 handleCloseModal={handleCloseDeckBuilderModal}
               />
-            ) : null}
+            )}
           </AnimatePresence>
 
           {deckToDelete ? (

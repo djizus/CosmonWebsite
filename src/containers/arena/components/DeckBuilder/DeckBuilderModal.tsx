@@ -34,13 +34,8 @@ interface DeckBuilderModalProps {
   handleCloseModal: () => void
 }
 
-const DeckBuilderModal: React.FC<DeckBuilderModalProps> = ({
-  deckToEdit,
-  handleCloseModal,
-}) => {
-  const { cosmons, resetAllCosmonsTemporaryFree } = useWalletStore(
-    (state) => state
-  )
+const DeckBuilderModal: React.FC<DeckBuilderModalProps> = ({ deckToEdit, handleCloseModal }) => {
+  const { cosmons, resetAllCosmonsTemporaryFree } = useWalletStore((state) => state)
   const [affinities, setAffinities] = useState<any>([])
   const [deckName, setDeckName] = useState(deckToEdit?.name || '')
   const [nfts, setNfts] = useState<CosmonType[]>(cosmons)
