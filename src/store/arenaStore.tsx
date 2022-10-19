@@ -35,6 +35,8 @@ interface ArenaState {
   loading: boolean
 }
 
+export const WINNER_IS_DRAW = 'DRAW'
+
 export const useArenaStore = create<ArenaState>((set, get) => ({
   oldLeaderboard: [],
   currentLeaderboard: [],
