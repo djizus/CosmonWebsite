@@ -25,6 +25,7 @@ import {
   stopListenForChangeAccount as stopListenForChangeKeplrAccount,
 } from '@services/connection/keplr'
 import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
+import HamburgerMenu from '@components/HamburgerMenu/HamburgerMenu'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -48,6 +49,8 @@ export default function Layout({ children }: LayoutProps) {
   } = useWalletStore((state) => state)
 
   const { getWhitelistData } = useCosmonStore((state) => state)
+
+  const [isHamburgerActive, setIsHamburgerActive] = useState(false)
 
   const [showWalletPopup, set_showWalletPopup] = useState(false)
   const [showATOMBreakdownPopup, set_showATOMBreakdownPopup] = useState(false)
@@ -162,9 +165,10 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
 
-        {/* <div className="lg:hidden">
-          <HamburgerMenu />
-        </div> */}
+        <div className="lg:hidden">
+          <HamburgerMenu onToggleMenu={setIsHamburgerActive} />
+          <AnimatePresence>{isHamburgerActive ? <div></div> : null}</AnimatePresence>
+        </div>
 
         <div className="relative hidden items-center lg:flex">
           {isConnected ? (
