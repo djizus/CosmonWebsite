@@ -1,0 +1,19 @@
+.icon {
+  color: white !important;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: #222047;
+  border-radius: 8px;
+  padding: 8px;
+  margin-right: 24px;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  width: 59px;
+  height: 40px;
+}
