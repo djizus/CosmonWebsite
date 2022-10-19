@@ -13,7 +13,11 @@ interface FightReportModalProps {
 const FightReportModal: React.FC<FightReportModalProps> = ({ onClickNewFight, onCloseModal }) => {
   const { battleOverTime } = useContext(FightContext)
   return (
-    <Modal onCloseModal={onCloseModal} hasCloseButton={false} width={700}>
+    <Modal
+      onCloseModal={onCloseModal}
+      hasCloseButton={false}
+      containerClassname="max-w-[98vw] w-[98vw] lg:max-w-[700px] lg:w-[700px]"
+    >
       <Slider
         showPagination={false}
         onEndReached={{

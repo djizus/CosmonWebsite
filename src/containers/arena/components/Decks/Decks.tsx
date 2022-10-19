@@ -157,7 +157,7 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
     <div className="min-h-[400px]">
       {decksList?.length > 0 ? (
         <div className="mt-[40px]">
-          <div className="grid w-full grid-cols-2 gap-[32px] overflow-visible">
+          <div className="grid w-full grid-cols-1 gap-[32px] overflow-visible lg:grid-cols-2">
             <AnimatePresence>
               {decksList.map((deck) => (
                 <DeckContainer

@@ -54,7 +54,7 @@ export default function Modal({
           }}
           className={clsx(
             'fixed left-1/2 top-1/2 z-50 flex h-fit font-semibold',
-            { [`max-w-[533px]`]: width === undefined && !fullScreen },
+            { [`w-[98vw] max-w-[98vw] lg:max-w-[533px]`]: width === undefined && !fullScreen },
             { 'top-0 left-0 h-screen w-screen max-w-[100vw]': fullScreen },
             containerClassname
           )}

@@ -69,7 +69,11 @@ const FightLogsModal: React.FC<FightLogsModalProps> = ({ onCloseModal }) => {
   }
 
   return (
-    <Modal onCloseModal={onCloseModal} hasCloseButton={false} width={700}>
+    <Modal
+      onCloseModal={onCloseModal}
+      hasCloseButton={false}
+      containerClassname="max-w-[98vw] w-[98vw] lg:max-w-[700px] lg:w-[700px]"
+    >
       <p className="text-lg text-white">Fight log</p>
 
       <div

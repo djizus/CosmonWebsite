@@ -309,7 +309,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
         </header>
 
         <main className="relative flex grow flex-col items-center">
-          <div className="absolute left-0" style={{ top: '51%' }}>
+          <div className="absolute left-0 hidden lg:flex" style={{ top: '51%' }}>
             {battle ? (
               <FightDeckAffinities
                 cosmons={battle?.me.cosmons!}
@@ -319,7 +319,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
               />
             ) : null}
           </div>
-          <div className="absolute right-0 top-0">
+          <div className="absolute right-0 top-0 hidden lg:flex">
             {battle ? (
               <FightDeckAffinities
                 cosmons={battle?.opponent.cosmons!}
@@ -340,7 +340,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
           </section>
 
           <section
-            className=" mb-[15px] flex h-full w-full max-w-[30%] grow justify-center"
+            className=" mb-[15px] flex h-full w-full max-w-[85%] grow justify-center lg:max-w-[30%]"
             style={{ transform: 'perspective(150vw) rotateX(20deg)', marginBottom: '1.5%' }}
           >
             <div className="grid h-full w-full grid-cols-3 gap-3 gap-y-6 rounded-md border-[0.5px] border-[#6d77db] p-3">

@@ -119,7 +119,7 @@ const ArenaContainer: React.FC<{
 
   const renderName = useMemo(() => {
     return (
-      <span className="text-xl font-normal leading-6 text-white">
+      <span className="text-[18px] font-normal leading-6 text-white lg:text-xl">
         <Trans i18nKey={`${camelCase(arena.name)}.name`} t={t} />
       </span>
     )
