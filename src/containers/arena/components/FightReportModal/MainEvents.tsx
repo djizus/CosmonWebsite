@@ -1,4 +1,4 @@
-import { useArenaStore } from '@store/arenaStore'
+import { useArenaStore, WINNER_IS_DRAW } from '@store/arenaStore'
 import { useWalletStore } from '@store/walletStore'
 import { convertNumberToNumberWithSuffix } from '@utils/conversion'
 import { getCosmonStat } from '@utils/cosmon'
@@ -24,7 +24,10 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
   }, [battle.arena.contract])
 
   const iWin = useMemo(() => battle.winner.identity.includes(battle.me.identity), [battle])
-  const isDraw = useMemo(() => battle?.winner.identity === '', [battle])
+  const isDraw = useMemo(
+    () => battle?.winner.identity?.toLowerCase() === WINNER_IS_DRAW.toLowerCase(),
+    [battle]
+  )
   const iStart = useMemo(
     () => battle.me.cosmons.findIndex((c) => c.id === battle.events[0].atk_id) !== -1,
     []

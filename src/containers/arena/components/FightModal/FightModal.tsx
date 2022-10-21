@@ -21,6 +21,7 @@ import ButtonForward from '@components/Button/ButtonForward'
 import ButtonPlay from '@components/Button/ButtonPlay'
 import FightDeckAffinities from './FightDeckAffinities'
 import Badge from '@components/Badge/Badge'
+import { WINNER_IS_DRAW } from '@store/arenaStore'
 
 interface FightModalProps {
   onCloseModal: () => void
@@ -68,7 +69,10 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
     [battleOverTime]
   )
 
-  const isDraw = useMemo(() => battleOverTime?.winner.identity === '', [battleOverTime])
+  const isDraw = useMemo(
+    () => battleOverTime?.winner.identity?.toLowerCase() === WINNER_IS_DRAW.toLowerCase(),
+    [battleOverTime]
+  )
 
   const iStart = useMemo(
     () =>
