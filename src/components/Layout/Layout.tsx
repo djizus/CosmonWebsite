@@ -11,7 +11,7 @@ import { getAmountFromDenom } from '../../utils/index'
 import DisconnectOrCopyPopup from './DisconnectOrCopyPopup'
 import { useCosmonStore } from '../../store/cosmonStore'
 import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import BuyXKIModal from '@components/Modal/BuyXKIModal'
 import IBCCoinBreakdownPopup from './IBCCoinBreakdownPopup'
 import { CONNECTION_TYPE } from 'types/Connection'
@@ -25,9 +25,9 @@ import {
   stopListenForChangeAccount as stopListenForChangeKeplrAccount,
 } from '@services/connection/keplr'
 import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
-import HamburgerMenu from '@components/HamburgerMenu/HamburgerMenu'
 import { NavigationMenu } from '@components/Mobile'
 import { useRouter } from 'next/router'
+import HamburgerMenu from '@components/HamburgerMenu/hamburgerMenu'
 
 type LayoutProps = {
   children: React.ReactNode
