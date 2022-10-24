@@ -1,11 +1,12 @@
 import Button from '@components/Button/Button'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import Tooltip from '@components/Tooltip/Tooltip'
+import { useArenaStore } from '@store/arenaStore'
 import { useWalletStore } from '@store/walletStore'
 import { getCosmonStat } from '@utils/cosmon'
 import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { ReactNode, useContext, useMemo, useState } from 'react'
+import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { useMount } from 'react-use'
 import { CosmonStatKeyType, CosmonStatType, CosmonType } from 'types'
 import { FightContext } from '../FightContext'
@@ -15,9 +16,15 @@ interface CosmonsProgressionProps {
 }
 
 const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight }) => {
-  const { cosmons } = useWalletStore()
+  const { cosmons, address } = useWalletStore()
   const { battleOverTime } = useContext(FightContext)
-
+  const {
+    currentLeaguePro,
+    dailyCombatLimit,
+    maxDailyCombatLimit,
+    fetchDailyCombat,
+    fetchMaxDailyCombat,
+  } = useArenaStore()
   const cosmonsEvolved = useMemo(() => {
     return battleOverTime?.me.cosmonsWithoutBonus
       .map((c) => {
@@ -29,8 +36,15 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
       .filter(Boolean)
   }, [battleOverTime])
 
-  const cosmonsNonEvolved = battleOverTime?.me.cosmonsWithoutBonus
+  useEffect(() => {
+    if (currentLeaguePro) {
+      fetchDailyCombat(currentLeaguePro.contract, address)
+      fetchMaxDailyCombat(currentLeaguePro.contract)
+    }
+  }, [])
 
+  const cosmonsNonEvolved = battleOverTime?.me.cosmonsWithoutBonus
+  const isMaxCombatReach = dailyCombatLimit === maxDailyCombatLimit
   return (
     <div className="flex flex-col items-center">
       <p className="text-white">Cosmon evolution</p>
@@ -54,7 +68,10 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
           size="small"
           type="secondary"
           onClick={onClickNewFight}
-          disabled={cosmonsEvolved?.some((c) => +getCosmonStat(c!.stats!, 'Fp')?.value! === 0)}
+          disabled={
+            cosmonsEvolved?.some((c) => +getCosmonStat(c!.stats!, 'Fp')?.value! === 0) ||
+            isMaxCombatReach
+          }
         >
           <h2 style={{ fontSize: 14, lineHeight: '26px' }}>New Fight !</h2>
         </Button>
@@ -62,6 +79,11 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
       {cosmonsEvolved?.some((c) => +getCosmonStat(c!.stats!, 'Fp')?.value! === 0) ? (
         <Tooltip id={`no-fp-available`} place="top">
           <p>No more Fight Points available</p>
+        </Tooltip>
+      ) : null}
+      {isMaxCombatReach ? (
+        <Tooltip id={`no-fp-available`} place="top">
+          <p>Maximum number of fights reached today</p>
         </Tooltip>
       ) : null}
     </div>
