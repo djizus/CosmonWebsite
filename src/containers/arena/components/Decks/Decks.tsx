@@ -26,7 +26,7 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
   const { fetchArenasList, registerToArena, fight } = useGameStore()
   const { decksList, fetchDecksList, fetchPersonalityAffinities, refreshCosmonsAndDecksList } =
     useDeckStore()
-  const { fetchHourlyFPNumber, hourlyFPNumber } = useArenaStore()
+  const { fetchHourlyFPNumber } = useArenaStore()
 
   const [showSelectArenaModal, setShowSelectArenaModal] = useState(false)
   const [showLearnMoreModal, setShowLearnMoreModal] = useState(false)
