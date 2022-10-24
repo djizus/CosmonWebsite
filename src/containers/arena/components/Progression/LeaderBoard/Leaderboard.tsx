@@ -7,6 +7,7 @@ interface Props {
   currentWalletAddress: string
   currentLeaderboard: LeaderBoard
   walletInfos: WalletInfos
+  isOldLeaderboard: boolean
   className?: string
 }
 
@@ -14,11 +15,14 @@ const Leaderboard: React.FC<Props> = ({
   currentLeaderboard,
   currentWalletAddress,
   walletInfos,
+  isOldLeaderboard,
   className,
 }) => {
-  const displayMyWallet = !isMyWalletInCurrentPage(currentWalletAddress, currentLeaderboard)
+  const displayMyWallet =
+    !isMyWalletInCurrentPage(currentWalletAddress, currentLeaderboard) && !isOldLeaderboard
   const fights = walletInfos.victories + walletInfos.defeats + walletInfos.draws
   const slicedLeaderboard = currentLeaderboard.slice(0, 5)
+
   return (
     <div className={style.container}>
       <hr className={style.firstHr} />
