@@ -14,6 +14,7 @@ import FlipIcon from '@public/icons/flip.svg'
 import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
 import FlipCard from '@components/FlipCard/FlipCard'
 import Countdown from '@components/Countdown/Countdown'
+import { useArenaStore } from '@store/arenaStore'
 
 interface DeckContainerProps {
   deck: Deck
@@ -32,6 +33,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
   const [revealCards, setRevealCards] = useState(true)
   const { refreshCosmonsAndDecksList } = useDeckStore()
+  const { hourlyFPNumber } = useArenaStore()
 
   const affinities = useMemo(() => {
     return computeDeckAffinities(deck.cosmons)
@@ -134,7 +136,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
             >
               {missFp ? (
                 <p>
-                  +{process.env.NEXT_PUBLIC_NB_FP_REFILLED_PER_HOUR} Fight Points in &nbsp;
+                  +{hourlyFPNumber} Fight Points in &nbsp;
                   <Countdown
                     from={new Date()}
                     to={nextHourDate}
