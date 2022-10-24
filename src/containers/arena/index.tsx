@@ -204,7 +204,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                         <p className={style.tipTitle}>Prize pool breakdown</p>
                         <div className={style.line}>
                           <p className={style.tipFirstText}>
-                            1.<span className={style.tipPercent}>50%</span>
+                            1.<span className={style.tipPercent}>20%</span>
                           </p>
                           <p className={style.tipSecondText}>
                             2.<span className={style.tipPercent}>10%</span>
@@ -215,13 +215,29 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                         </div>
                         <div className={style.line}>
                           <p className={style.tipFourthText}>
-                            4.<span className={style.tipPercent}>3%</span>
+                            4-9.<span className={style.tipPercent}>2.5%</span>
                           </p>
                           <p className={style.tipFifthText}>
-                            5.<span className={style.tipPercent}>2%</span>
+                            10-24.<span className={style.tipPercent}>0.50%</span>
                           </p>
                           <p className={style.tipText}>
-                            6 - 200.<span className={style.tipPercent}>0.15%</span>
+                            25-49.<span className={style.tipPercent}>0.30%</span>
+                          </p>
+                        </div>
+                        <div className={style.line}>
+                          <p className={style.tipFourthText}>
+                            50-99.<span className={style.tipPercent}>0.25%</span>
+                          </p>
+                          <p className={style.tipFifthText}>
+                            100-149.<span className={style.tipPercent}>0.20%</span>
+                          </p>
+                          <p className={style.tipText}>
+                            150-199.<span className={style.tipPercent}>0.150%</span>
+                          </p>
+                        </div>
+                        <div className={style.line}>
+                          <p className={style.tipFourthText}>
+                            200-250.<span className={style.tipPercent}>0.100%</span>
                           </p>
                         </div>
                       </>
