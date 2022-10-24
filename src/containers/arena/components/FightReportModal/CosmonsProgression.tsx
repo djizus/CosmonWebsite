@@ -81,11 +81,11 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
           <p>No more Fight Points available</p>
         </Tooltip>
       ) : null}
-      {isMaxCombatReach && (
+      {isMaxCombatReach ? (
         <Tooltip id={`no-fp-available`} place="top">
           <p>Maximum number of fights reached today</p>
         </Tooltip>
-      )}
+      ) : null}
     </div>
   )
 }
