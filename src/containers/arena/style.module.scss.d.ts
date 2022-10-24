@@ -3,11 +3,7 @@ export const button: string
 export const line: string
 export const prizePoolText: string
 export const tipContainer: string
-export const tipFifthText: string
-export const tipFirstText: string
-export const tipFourthText: string
 export const tipPercent: string
-export const tipSecondText: string
 export const tipText: string
 export const tipTitle: string
 export const toolTip: string

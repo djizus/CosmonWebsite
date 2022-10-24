@@ -19,7 +19,7 @@
 }
 
 .toolTip {
-  width: 480px;
+  // width: 480px;
   // height: 200px;
   display: flex;
   flex-direction: column;
@@ -30,7 +30,7 @@
   padding-left: 30px !important;
   padding-top: 30px !important;
   padding-bottom: 20px !important;
-  padding-right: 15px !important;
+  padding-right: 20px !important;
 }
 
 .tipTitle {
@@ -53,51 +53,6 @@ $textSize: 15px;
   -webkit-text-fill-color: transparent;
 }
 
-.tipFirstText {
-  text-align: left;
-  font-weight: 400;
-  font-size: $textSize;
-  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-right: 33px;
-}
-
-.tipSecondText {
-  text-align: left;
-  font-weight: 400;
-  font-size: $textSize;
-  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-right: 48px;
-}
-
-.tipFourthText {
-  text-align: left;
-  font-weight: 400;
-  font-size: $textSize;
-  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-right: 47px;
-  margin-left: -6px;
-}
-
-.tipFifthText {
-  text-align: left;
-  font-weight: 400;
-  font-size: $textSize;
-  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-right: 33px;
-}
-
 .tipPercent {
   font-weight: 600;
   margin-left: 12px;
@@ -114,4 +69,5 @@ $textSize: 15px;
   align-items: center;
   width: 100%;
   margin-bottom: 8px;
+  gap: 35px;
 }
