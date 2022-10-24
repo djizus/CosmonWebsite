@@ -1,0 +1,38 @@
+.combatLimitOverlay {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  left: -1px;
+  bottom: -1px;
+  background: rgba(56, 56, 86, 0.95);
+  backdrop-filter: blur(1px);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.combatLimit {
+  margin-bottom: 28px;
+  width: 100%;
+  text-align: right;
+}
+
+.combatLimitCounter {
+  text-align: right;
+}
+
+.combatLimitMessage {
+  font-weight: 400;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.fire {
+  margin-right: 11px;
+}
+
+.countdown {
+  font-size: 20px;
+  font-weight: 800;
+}

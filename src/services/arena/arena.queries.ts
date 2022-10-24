@@ -175,6 +175,42 @@ export const fetchRankForAddress = async (arenaAddress: string, walletAddress: s
   }
 }
 
+/**
+ * Fetch your daily combat in the league
+ * @retun your daily combat limit in the league
+ */
+export const fetchDailyCombat = async (arenaAddress: string, walletAddress: string) => {
+  try {
+    const { signingClient } = useWalletStore.getState()
+
+    const dailyCombat = await signingClient?.queryContractSmart(arenaAddress, {
+      get_daily_combat: { address: walletAddress },
+    })
+
+    return dailyCombat
+  } catch (e) {
+    console.error(`Error while fetching daily comnbat in league`, e)
+  }
+}
+
+/**
+ * Fetch max daily combat in the league
+ * @retun max daily combat limit in the league
+ */
+export const fetchMaxDailyCombat = async (arenaAddress: string) => {
+  try {
+    const { signingClient } = useWalletStore.getState()
+
+    const dailyCombat = await signingClient?.queryContractSmart(arenaAddress, {
+      get_max_daily_combat: {},
+    })
+
+    return dailyCombat
+  } catch (e) {
+    console.error(`Error while fetching max daily comnbat in league`, e)
+  }
+}
+
 export default {
   fetchArenaFees,
   fetchCurrentPrizePool,
@@ -186,4 +222,6 @@ export default {
   fetchWalletsInfos,
   fetchRankForAddress,
   fetchCurrentChampionshipNumber,
+  fetchDailyCombat,
+  fetchMaxDailyCombat,
 }
