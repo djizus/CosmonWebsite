@@ -9,3 +9,4 @@ export const quaternary: string
 export const reverse: string
 export const secondary: string
 export const small: string
+export const white: string

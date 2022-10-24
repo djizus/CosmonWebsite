@@ -10,6 +10,7 @@ import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'reac
 import { useMount } from 'react-use'
 import { CosmonStatKeyType, CosmonStatType, CosmonType } from 'types'
 import { FightContext } from '../FightContext'
+import * as style from './CosmonsProgression.module.scss'
 
 interface CosmonsProgressionProps {
   onClickNewFight: () => void
@@ -171,9 +172,11 @@ interface CosmonXpProgressionProps {
   xpNextLevel: number
   xpNextLevelEvolved: number
   floorXpEvolved: number
+  className?: string
+  decksName?: string[]
 }
 
-const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
+export const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
   iWin,
   levelStat,
   levelStatEvolved,
@@ -182,6 +185,8 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
   xpNextLevel,
   xpNextLevelEvolved,
   floorXpEvolved,
+  className,
+  decksName,
 }) => {
   const [currentXp, setCurrentXp] = useState<number>(0)
   const [currentLevel, setCurrentLevel] = useState(levelStat)
@@ -210,10 +215,19 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
   })
 
   return (
-    <div className="flex w-full flex-col">
+    <div className={clsx('flex w-full flex-col', className)}>
       <div className="flex w-full items-center justify-between">
         <div className="relative flex">
           <p className="text-sm font-normal text-white">Level {currentLevel}</p>
+          {decksName && decksName.length > 0 && (
+            <div className={style.pillsContainer}>
+              {decksName.map((deckName, index) => (
+                <div key={`${deckName}-${index}`} className={style.pills}>
+                  <p className={style.pillsLabel}>{deckName}</p>
+                </div>
+              ))}
+            </div>
+          )}
           {xpStatEvolved > xpStat ? (
             <CosmonStatProgressionLabel
               className="ml-[12px]"
@@ -272,12 +286,14 @@ interface CosmonStatProgressionProps {
   statKey: CosmonStatKeyType
   stats: CosmonStatType[]
   statsEvolved: CosmonStatType[]
+  className?: string
 }
 
-const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
+export const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
   statKey,
   stats,
   statsEvolved,
+  className,
 }) => {
   const statLabel = useMemo(() => {
     switch (statKey) {
@@ -299,7 +315,7 @@ const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
   }, [statKey])
 
   return (
-    <div className="flex flex-1 justify-between">
+    <div className={clsx('flex flex-1 justify-between', className)}>
       <p className="text-sm font-normal">{statLabel}</p>
       <p className="text-sm">
         {getCosmonStat(statsEvolved, statKey)?.value}

@@ -46,7 +46,7 @@ const NFTsListFilter: React.FC<NFTsListFilterProps> = ({}) => {
         placeholder="Search"
         onChange={handleChangeSearch}
         icon={{
-          icon: <Search className="h-[24px] w-[24px]" />,
+          icon: <Search style={{ color: '#20164F' }} className="h-[24px] w-[24px]" />,
           position: 'left',
         }}
       />
@@ -74,14 +74,8 @@ const NFTsListFilter: React.FC<NFTsListFilterProps> = ({}) => {
             options={scarcities.map((s) => ({
               label: (
                 <div className="flex items-center">
-                  <img
-                    width={40}
-                    height={40}
-                    src={`/rarity-levels/${s.toLowerCase()}.png`}
-                  />
-                  <p className="ml-[4px] text-xs font-medium text-cosmon-black-8">
-                    {s}
-                  </p>
+                  <img width={40} height={40} src={`/rarity-levels/${s.toLowerCase()}.png`} />
+                  <p className="ml-[4px] text-xs font-medium text-cosmon-black-8">{s}</p>
                 </div>
               ),
               value: s,

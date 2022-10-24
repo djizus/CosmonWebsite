@@ -5,7 +5,14 @@ import LoadingIcon from '../LoadingIcon/LoadingIcon'
 import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
 type ButtonProps = {
-  type?: 'primary' | 'primaryBordered' | 'secondary' | 'quaternary' | 'ghost' | 'disabledColored'
+  type?:
+    | 'primary'
+    | 'primaryBordered'
+    | 'secondary'
+    | 'quaternary'
+    | 'ghost'
+    | 'disabledColored'
+    | 'white'
   size?: 'small'
   icon?: {
     position: 'left' | 'right'
@@ -18,6 +25,7 @@ type ButtonProps = {
   isLoading?: boolean
   fullWidth?: boolean
   active?: boolean
+  withoutContainer?: boolean
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 
 export default function Button({
@@ -31,11 +39,16 @@ export default function Button({
   onClick,
   isLoading = false,
   active = false,
+  withoutContainer = false,
   ...props
 }: ButtonProps) {
   return (
     <div
-      className={`relative z-0 mx-auto mb-1 flex flex-row lg:m-0 ${fullWidth ? 'w-full' : 'w-fit'}`}
+      className={
+        withoutContainer
+          ? ''
+          : `relative z-0 mx-auto mb-1 flex flex-row lg:m-0 ${fullWidth ? 'w-full' : 'w-fit'}`
+      }
     >
       <button
         onClick={onClick}

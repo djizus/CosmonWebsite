@@ -177,4 +177,16 @@
 
     color: rgba(255, 255, 255, 0.6);
   }
+
+  &.white {
+    border: 1px solid white;
+    background: transparent;
+
+    &:disabled {
+      background: #2e3736;
+      opacity: 0.4;
+      cursor: not-allowed;
+      color: #999;
+    }
+  }
 }

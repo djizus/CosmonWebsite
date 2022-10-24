@@ -3,6 +3,10 @@ import { motion } from 'framer-motion'
 import BoostPicker from './BoostPicker/BoostPicker'
 import * as style from './BuyBoostModal.module.scss'
 import { CurrentView } from './BuyBoostModalType'
+import LeaderPicker from './LeaderPicker/LeaderPicker'
+import { Boost } from 'types/Boost'
+import Recap from './Recap/Recap'
+import { CosmonType } from 'types/Cosmon'
 
 const dropIn = {
   hidden: {
@@ -31,7 +35,8 @@ interface BuyBoostModalProps {
 
 const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal }) => {
   const [currentView, setCurentView] = useState<CurrentView>('boost')
-  const [selectedBoost, setSelectedBoost] = useState<string>('')
+  const [selectedBoost, setSelectedBoost] = useState<Boost | null>(null)
+  const [selectedLeader, setSelectedLeader] = useState<CosmonType | null>(null)
 
   const handleKeyDown = useCallback(
     (evt: KeyboardEvent) => {
@@ -54,20 +59,42 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal }) => {
     handleCloseModal()
   }
 
-  const handleChangeView = (view: CurrentView) => {
-    setCurentView(view)
+  const resetModal = () => {
+    setCurentView('boost')
+    setSelectedLeader(null)
+    setSelectedBoost(null)
   }
 
-  const renderCurrentView = useMemo(() => {
+  const renderCurrentView = () => {
     switch (currentView) {
       case 'boost':
-        return <BoostPicker selectedBoost={selectedBoost} setSelectedBoost={setSelectedBoost} />
+        return (
+          <BoostPicker
+            selectedBoost={selectedBoost}
+            setSelectedBoost={setSelectedBoost}
+            setCurrentView={setCurentView}
+          />
+        )
       case 'leader':
-        return <p>LEADER</p>
+        return (
+          <LeaderPicker
+            selectedBoost={selectedBoost as Boost}
+            setCurrentView={setCurentView}
+            selectedLeader={selectedLeader}
+            setSelectedLeader={setSelectedLeader}
+          />
+        )
       case 'recap':
-        return <p>RECAP</p>
+        return (
+          <Recap
+            resetModal={resetModal}
+            closeModal={closeModal}
+            selectedLeader={selectedLeader}
+            selectedBoost={selectedBoost as Boost}
+          />
+        )
     }
-  }, [currentView])
+  }
 
   return (
     <motion.div
@@ -78,7 +105,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal }) => {
       exit="exit"
       className={style.overlay}
     >
-      <div className={style.modal}>{renderCurrentView}</div>
+      <div className={style.modal}>{renderCurrentView()}</div>
     </motion.div>
   )
 }

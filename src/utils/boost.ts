@@ -31,3 +31,22 @@ export function getIconForAttr(boost: string) {
       return Sparkles
   }
 }
+
+export function getStatNameFromBoost(boost: string) {
+  switch (boost) {
+    case ELIXIR:
+      return 'energy'
+    case MEGAELIXIR:
+      return 'energy'
+    case POWER:
+      return 'attack'
+    case DEFENSE:
+      return 'defense'
+    case SPEED:
+      return 'speed'
+    case MIND:
+      return 'mind'
+    case LUCK:
+      return 'luck'
+  }
+}

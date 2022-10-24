@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 40px;
   background: #282255;
   border-radius: 20px;
@@ -37,29 +37,58 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
+  margin-bottom: 16px;
+
+  &:last-of-type {
+    margin-bottom: 0px;
+  }
 }
 
 .leftBlock {
   flex: 1;
   display: flex;
   justify-content: flex-start;
+  align-items: center;
 }
 
 .rightBlock {
   flex: 1;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .boostButton {
+  margin-left: 0px;
+}
+
+.selectedBoost {
+  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%) !important;
 }
 
 .attrContent {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   background: #222047;
   border-radius: 8px;
   padding: 8px;
+  margin-right: 24px;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  width: 59px;
+  height: 40px;
+}
+
+.price {
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+}
+
+.attrIcon {
+  color: white !important;
 }
