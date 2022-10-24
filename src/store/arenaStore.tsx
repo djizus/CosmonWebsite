@@ -8,6 +8,7 @@ import SuccessIcon from '@public/icons/success.svg'
 import ErrorIcon from '@public/icons/error.svg'
 import { getNextMonday } from '@utils/date'
 import { useWalletStore } from './walletStore'
+import { XPRegistryService } from '@services/xp-registry'
 
 interface ArenaState {
   oldLeaderboard: LeaderBoard
@@ -33,6 +34,8 @@ interface ArenaState {
   getNextLeagueOpenTime: () => Date
   getPrizePool: (arenaAddress: string) => void
   loading: boolean
+  hourlyFPNumber: number
+  fetchHourlyFPNumber: () => void
 }
 
 export const WINNER_IS_DRAW = 'DRAW'
@@ -57,6 +60,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     total: [],
   },
   loading: false,
+  hourlyFPNumber: 0,
 
   fetchArenaFees: async (arenaAddress: string) => {
     try {
@@ -274,5 +278,9 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     d.setMinutes(0)
     d.setSeconds(0)
     return getNextMonday(d)
+  },
+  fetchHourlyFPNumber: async () => {
+    const hourlyFPNumber = await XPRegistryService.queries().fecthHourlyFpNumber()
+    set({ hourlyFPNumber })
   },
 }))

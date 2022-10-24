@@ -14,6 +14,7 @@ import SelectArenaModal from '../SelectArenaModal'
 import ArenaDescriptionModal from '../ArenaDescriptionModal'
 import DeckContainer from './DeckContainer/DeckContainer'
 import DecksEmptyList from './DecksEmptyList'
+import { useArenaStore } from '@store/arenaStore'
 
 interface DecksProps {
   onEditDeck: (deck: Deck) => void
@@ -25,6 +26,7 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
   const { fetchArenasList, registerToArena, fight } = useGameStore()
   const { decksList, fetchDecksList, fetchPersonalityAffinities, refreshCosmonsAndDecksList } =
     useDeckStore()
+  const { fetchHourlyFPNumber, hourlyFPNumber } = useArenaStore()
 
   const [showSelectArenaModal, setShowSelectArenaModal] = useState(false)
   const [showLearnMoreModal, setShowLearnMoreModal] = useState(false)
@@ -38,6 +40,7 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
 
   useEffect(() => {
     if (isConnected) {
+      fetchHourlyFPNumber()
       fetchPersonalityAffinities()
       fetchArenasList()
     }
