@@ -39,6 +39,10 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
     fetchPrizesForAddress,
     claimPrize,
     loading,
+    fetchDailyCombat,
+    fetchMaxDailyCombat,
+    dailyCombatLimit,
+    maxDailyCombatLimit,
   } = useArenaStore()
 
   const { address } = useWalletStore()
@@ -51,6 +55,8 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
       fetchCurrentLeaderBoard(currentLeaguePro.contract)
       fetchPrizesForAddress(currentLeaguePro.contract)
       fetchOldLeaderBoard(currentLeaguePro.contract)
+      fetchDailyCombat(currentLeaguePro.contract, address)
+      fetchMaxDailyCombat(currentLeaguePro.contract)
     } catch (error) {}
   }, [currentLeaguePro])
 
@@ -71,7 +77,11 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
       )}
       <div className={style.cardsContainer}>
         <EarningsAndScore walletInfos={walletInfos} prizesForAddress={prizesForAddress} />
-        <WinsLosesChart walletInfos={walletInfos} />
+        <WinsLosesChart
+          dailyCombatLimit={dailyCombatLimit}
+          maxDailyCombatLimit={maxDailyCombatLimit}
+          walletInfos={walletInfos}
+        />
       </div>
       <div className={style.leaderboard}>
         {oldLeaderboard.length > 0 ? (

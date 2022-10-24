@@ -33,13 +33,14 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   const { removeDeck, isRemovingDeck } = useDeckStore()
   const { arenasList, fetchArenasList } = useGameStore()
   const {
+    currentLeaguePro,
     fetchCurrentChampionshipNumber,
     currentChampionshipNumber,
     getNextLeagueOpenTime,
     getPrizePool,
     prizePool,
+    setCurrentLeaguePro,
   } = useArenaStore()
-  const [currentLeaguePro, setCurrentLeaguePro] = useState<ArenaType | null>(null)
 
   const handleClickDeck = useCallback(() => {
     setView('decks')

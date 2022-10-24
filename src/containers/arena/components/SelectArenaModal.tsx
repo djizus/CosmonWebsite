@@ -11,7 +11,9 @@ import { useMemo } from 'react'
 import { Trans } from 'react-i18next'
 import Countdown from '@components/Countdown/Countdown'
 import { convertMicroDenomToDenom } from '@utils/conversion'
-
+import { useArenaStore } from '@store/arenaStore'
+import { useWalletStore } from '@store/walletStore'
+import * as style from './SelectArenaModal.module.scss'
 interface SelectArenaModalProps {
   loading?: boolean
   selectedArena?: ArenaType
@@ -27,6 +29,7 @@ const SelectArenaModal: React.FC<SelectArenaModalProps> = ({
 }) => {
   const { t } = useTranslation('arena')
   const { arenasList } = useGameStore()
+
   const [internArena, setInternArena] = useState<ArenaType | undefined>()
 
   useEffect(() => {
@@ -98,6 +101,22 @@ const ArenaContainer: React.FC<{
   const { t } = useTranslation('arenas')
   const [nextLeagueStartDate, setNextLeagueStartDate] = useState<Date>()
 
+  const {
+    fetchDailyCombat,
+    currentLeaguePro,
+    fetchMaxDailyCombat,
+    dailyCombatLimit,
+    maxDailyCombatLimit,
+  } = useArenaStore()
+  const { address } = useWalletStore()
+
+  useEffect(() => {
+    if (currentLeaguePro) {
+      fetchDailyCombat(currentLeaguePro.contract, address)
+      fetchMaxDailyCombat(currentLeaguePro.contract)
+    }
+  }, [])
+
   const renderName = useMemo(() => {
     return (
       <span className="text-xl font-normal leading-6 text-white">
@@ -115,55 +134,103 @@ const ArenaContainer: React.FC<{
     }
   }, [arena])
 
-  return (
-    <div
-      className={clsx(
-        'relative mt-[32px] flex w-full cursor-pointer flex-col rounded-[20px] border border-[#9FA4DD] px-[40px] py-[24px] hover:bg-[#282255]',
-        { 'bg-[#282255]': isSelected },
-        { 'bg-transparent': isSelected === false },
-        { 'cursor-not-allowed': arena.arena_open === false }
-      )}
-      onClick={() => {
-        if (arena.arena_open) {
-          onSelectArena(arena)
-        }
-      }}
-    >
-      {arena.arena_open === false ? (
-        <>
-          <div className="absolute top-0 left-0 flex h-full w-full rounded-[20px] bg-[#383856]/[0.9] backdrop-blur-[4px]" />
-          <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center  ">
-            <p className="text-3xl font-semibold text-white">
-              {nextLeagueStartDate ? (
-                <Countdown
-                  from={new Date()}
-                  to={nextLeagueStartDate}
-                  className="text-[34px] font-extrabold italic text-white"
-                />
-              ) : (
-                'Coming soon'
-              )}
-            </p>
-            <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">
-              Championship starts in
-            </p>
-          </div>
-        </>
-      ) : null}
+  const isTrainingMode = arena.name == 'Training'
+  const notAllowed =
+    arena.arena_open === false || (maxDailyCombatLimit === dailyCombatLimit && !isTrainingMode)
 
-      <div className="flex items-center justify-center gap-[14px]">
-        <span className="flex items-center justify-center rounded-[4px] p-[6px]">
-          {arena.image_url ? (
-            <img src={arena.image_url} className="h-[41px] w-[37px]" />
-          ) : (
-            <Shield />
-          )}
-        </span>
-        {renderName}
+  const now = new Date()
+  const getNextRefill = () => {
+    const date = new Date()
+
+    if (now.getUTCHours() >= 16) {
+      date.setDate(now.getUTCDay() + 1)
+      date.setUTCHours(16, 0, 0)
+    } else if (now.getUTCHours() < 16) {
+      date.setUTCHours(16, 0, 0)
+    }
+
+    return date
+  }
+
+  return (
+    <>
+      <div
+        className={clsx(
+          'relative mt-[32px] flex w-full cursor-pointer flex-col rounded-[20px] border border-[#9FA4DD] px-[40px] py-[24px]',
+          {
+            'bg-[#282255]': isSelected,
+            'hover:bg-[#282255]': arena.arena_open === true,
+            'cursor-not-allowed': notAllowed,
+            'bg-transparent': isSelected === false,
+            'border-none': dailyCombatLimit === maxDailyCombatLimit && !isTrainingMode,
+          }
+        )}
+        onClick={() => {
+          if (isTrainingMode) {
+            if (arena.arena_open) {
+              onSelectArena(arena)
+            }
+          } else {
+            if (arena.arena_open && maxDailyCombatLimit !== dailyCombatLimit && !isTrainingMode) {
+              onSelectArena(arena)
+            }
+          }
+        }}
+      >
+        {arena.arena_open === false ? (
+          <>
+            <div className="absolute top-0 left-0 flex h-full w-full rounded-[20px] bg-[#383856]/[0.9] backdrop-blur-[4px]" />
+            <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center  ">
+              <p className="text-3xl font-semibold text-white">
+                {nextLeagueStartDate ? (
+                  <Countdown
+                    from={new Date()}
+                    to={nextLeagueStartDate}
+                    className="text-[34px] font-extrabold italic text-white"
+                  />
+                ) : (
+                  'Coming soon'
+                )}
+              </p>
+              <p className="mt-[16px] text-[20px] font-semibold text-[#9FA4DD]">
+                Championship starts in
+              </p>
+            </div>
+          </>
+        ) : null}
+        {arena.name != 'Training' && (
+          <span className={style.combatLimitCounter}>
+            <span className={style.fire}>💥</span>
+            {dailyCombatLimit} / {maxDailyCombatLimit}
+          </span>
+        )}
+
+        <div className="flex items-center justify-center gap-[14px]">
+          <span className="flex items-center justify-center rounded-[4px] p-[6px]">
+            {arena.image_url ? (
+              <img src={arena.image_url} className="h-[41px] w-[37px]" />
+            ) : (
+              <Shield />
+            )}
+          </span>
+          {renderName}
+        </div>
+        <p className="mt-[16px] text-sm font-normal leading-6 text-white">
+          <Trans i18nKey={`${camelCase(arena.name)}.description`} t={t} />
+        </p>
+        {dailyCombatLimit === maxDailyCombatLimit && !isTrainingMode && (
+          <div className={style.combatLimitOverlay}>
+            <p className={style.combatLimit}>
+              💥 {dailyCombatLimit}/{maxDailyCombatLimit}
+            </p>
+            <p className={style.combatLimitMessage}>
+              You reached the maximum number of fights you can do in 24h. Please wait until the next
+              refill:
+            </p>
+            <Countdown className={style.countdown} from={now} to={getNextRefill()} />
+          </div>
+        )}
       </div>
-      <p className="mt-[16px] text-sm font-normal leading-6 text-white">
-        <Trans i18nKey={`${camelCase(arena.name)}.description`} t={t} />
-      </p>
-    </div>
+    </>
   )
 }

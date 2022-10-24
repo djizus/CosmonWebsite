@@ -1,4 +1,6 @@
+export const chart: string
 export const container: string
+export const dailyLimit: string
 export const defeatIcon: string
 export const defeatLine: string
 export const doughnut: string

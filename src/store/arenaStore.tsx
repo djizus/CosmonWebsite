@@ -1,7 +1,7 @@
 import create from 'zustand'
 import { ArenaService } from '@services/arena'
 import { Coin } from '@cosmjs/proto-signing'
-import { WalletInfos, PrizesForAddress, LeaderBoard } from 'types'
+import { WalletInfos, PrizesForAddress, LeaderBoard, ArenaType } from 'types'
 import { toast } from 'react-toastify'
 import { ToastContainer } from '@components/ToastContainer/ToastContainer'
 import SuccessIcon from '@public/icons/success.svg'
@@ -11,6 +11,7 @@ import { useWalletStore } from './walletStore'
 import { XPRegistryService } from '@services/xp-registry'
 
 interface ArenaState {
+  currentLeaguePro: ArenaType | null
   oldLeaderboard: LeaderBoard
   currentLeaderboard: LeaderBoard
   walletInfos: WalletInfos
@@ -20,6 +21,8 @@ interface ArenaState {
   prizePool: Coin | null
   prizesForAddress: PrizesForAddress
   currentChampionshipNumber: number
+  dailyCombatLimit: number
+  maxDailyCombatLimit: number
   fetchArenaFees: (arenaAddress: string) => Promise<Coin[]>
   fetchCurrentPrizePool: (arenaAddress: string) => Promise<Coin[]>
   fetchNextPrizePool: (arenaAddress: string) => Promise<Coin[]>
@@ -29,10 +32,13 @@ interface ArenaState {
   fetchOldLeaderBoard: (arenaAddress: string) => void
   fetchWalletInfos: (arenaAddress: string, walletAddress: string) => void
   fetchWalletsInfos: (arenaAddress: string, walletsAddress: string[]) => void
+  fetchDailyCombat: (arenaAddress: string, walletAddress: string) => void
+  fetchMaxDailyCombat: (arenaAddress: string) => void
   claimPrize: (arenaAddress: string) => void
   fetchRankForAddress: (arenaAddress: string, walletAddress: string) => void
   getNextLeagueOpenTime: () => Date
   getPrizePool: (arenaAddress: string) => void
+  setCurrentLeaguePro: (leaguePro: ArenaType) => void
   loading: boolean
   hourlyFPNumber: number
   fetchHourlyFPNumber: () => void
@@ -41,8 +47,11 @@ interface ArenaState {
 export const WINNER_IS_DRAW = 'DRAW'
 
 export const useArenaStore = create<ArenaState>((set, get) => ({
+  currentLeaguePro: null,
   oldLeaderboard: [],
   currentLeaderboard: [],
+  dailyCombatLimit: 0,
+  maxDailyCombatLimit: 0,
   walletInfos: {
     points: 0,
     defeats: 0,
@@ -282,5 +291,33 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   fetchHourlyFPNumber: async () => {
     const hourlyFPNumber = await XPRegistryService.queries().fecthHourlyFpNumber()
     set({ hourlyFPNumber })
+  },
+  fetchDailyCombat: async (arenaAddress: string, walletAddress: string) => {
+    try {
+      const dailyCombatLimit = await ArenaService.queries().fetchDailyCombat(
+        arenaAddress,
+        walletAddress
+      )
+      set({
+        dailyCombatLimit,
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  fetchMaxDailyCombat: async (arenaAddress: string) => {
+    try {
+      const maxDailyCombatLimit = await ArenaService.queries().fetchMaxDailyCombat(arenaAddress)
+      set({
+        maxDailyCombatLimit,
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  setCurrentLeaguePro: (leaguePro: ArenaType) => {
+    set({
+      currentLeaguePro: leaguePro,
+    })
   },
 }))
