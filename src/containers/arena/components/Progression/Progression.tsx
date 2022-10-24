@@ -100,6 +100,7 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
                 selectedLeaderboard === 'current' ? currentLeaderboard : oldLeaderboard
               }
               walletInfos={walletInfos}
+              isOldLeaderboard={selectedLeaderboard === 'old'}
             />
           </>
         ) : (
@@ -109,6 +110,7 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
               currentWalletAddress={address}
               currentLeaderboard={currentLeaderboard}
               walletInfos={walletInfos}
+              isOldLeaderboard={selectedLeaderboard === 'old'}
             />
           </>
         )}
