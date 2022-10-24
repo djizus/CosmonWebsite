@@ -6,8 +6,8 @@ import { useWalletStore } from '@store/walletStore'
 import { getCosmonStat } from '@utils/cosmon'
 import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react'
-import { useMount } from 'react-use'
+import React, { ReactNode, useContext, useMemo, useState, useEffect } from 'react'
+import { useMount, useWindowSize } from 'react-use'
 import { CosmonStatKeyType, CosmonStatType, CosmonType } from 'types'
 import { FightContext } from '../FightContext'
 
@@ -213,7 +213,7 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
     <div className="flex w-full flex-col">
       <div className="flex w-full items-center justify-between">
         <div className="relative flex">
-          <p className="text-sm font-normal text-white">Level {currentLevel}</p>
+          <p className="text-xs font-normal text-white lg:text-sm">Level {currentLevel}</p>
           {xpStatEvolved > xpStat ? (
             <CosmonStatProgressionLabel
               className="ml-[12px]"
@@ -222,8 +222,8 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
           ) : null}
         </div>
         <p className="relative">
-          {currentXp}
-          <span className="text-sm font-normal">/{currentXpMax}</span>
+          <span className="lg:text-md text-sm">{currentXp}</span>
+          <span className="text-xs font-normal lg:text-sm">/{currentXpMax}</span>
           <AnimatePresence>
             {levelUp ? (
               <motion.div
@@ -238,7 +238,11 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
                 }}
                 style={{ position: 'absolute', top: 0, right: 0, zIndex: 950 }}
               >
-                <span className={clsx('whitespace-nowrap text-sm font-normal text-[#0DBB81]')}>
+                <span
+                  className={clsx(
+                    'whitespace-nowrap text-xs font-normal text-[#0DBB81] lg:text-sm'
+                  )}
+                >
                   Level Up !
                 </span>
               </motion.div>
@@ -279,29 +283,30 @@ const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
   stats,
   statsEvolved,
 }) => {
+  const { width } = useWindowSize()
   const statLabel = useMemo(() => {
     switch (statKey) {
       case 'Atq':
-        return 'Attack (ATK)'
+        return width > 640 ? 'Attack (ATK)' : 'ATK'
       case 'Def':
-        return 'Defense (DEF)'
+        return width > 640 ? 'Defense (DEF)' : 'DEF'
       case 'Spe':
-        return 'Speed (SPE)'
+        return width > 640 ? 'Speed (SPE)' : 'SPE'
       case 'Int':
-        return 'Intelligence (INT)'
+        return width > 640 ? 'Intelligence (INT)' : 'INT'
       case 'Luk':
-        return 'Chance (LUK)'
+        return width > 640 ? 'Chance (LUK)' : 'LUK'
       case 'Hp':
-        return 'Health Points (HP)'
+        return width > 640 ? 'Health Points (HP)' : 'HP'
       default:
         return ''
     }
-  }, [statKey])
+  }, [statKey, width])
 
   return (
     <div className="flex flex-1 justify-between">
-      <p className="text-sm font-normal">{statLabel}</p>
-      <p className="text-sm">
+      <p className="text-xs font-normal lg:text-sm">{statLabel}</p>
+      <p className="text-xs lg:text-sm">
         {getCosmonStat(statsEvolved, statKey)?.value}
         {getCosmonStat(statsEvolved, statKey)?.value! > getCosmonStat(stats, statKey)?.value! ? (
           <CosmonStatProgressionLabel
@@ -325,5 +330,9 @@ const CosmonStatProgressionLabel: React.FC<CosmonStatProgressionLabelProps> = ({
   label,
   className,
 }) => {
-  return <span className={clsx('text-sm font-normal text-[#0DBB81]', className)}>{label}</span>
+  return (
+    <span className={clsx('text-xs font-normal text-[#0DBB81] lg:text-sm ', className)}>
+      {label}
+    </span>
+  )
 }

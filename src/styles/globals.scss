@@ -67,12 +67,7 @@ input {
 
   .transfer-card-icon {
     @apply rounded-full;
-    background: linear-gradient(
-        0deg,
-        rgba(25, 22, 63, 0.8),
-        rgba(25, 22, 63, 0.8)
-      ),
-      #ffffff;
+    background: linear-gradient(0deg, rgba(25, 22, 63, 0.8), rgba(25, 22, 63, 0.8)), #ffffff;
 
     border: 0.5px solid #413673;
     box-shadow: 0px 2px 5px rgba(48, 48, 48, 0.05);
@@ -111,11 +106,7 @@ input {
       z-index: -1;
       margin: -1px;
       border-radius: inherit;
-      background-image: linear-gradient(
-        180deg,
-        #a996ff 0%,
-        rgba(118, 96, 216, 0.5) 100%
-      );
+      background-image: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%);
     }
   }
 
@@ -129,4 +120,18 @@ input {
   @screen sm {
     @apply max-h-fit max-w-fit;
   }
+}
+
+/* Hide arrow of tooltip */
+.__react_component_tooltip.place-left::after {
+  border-left: 0 solid transparent !important;
+}
+.__react_component_tooltip.place-right::after {
+  border-right: 0 solid transparent !important;
+}
+.__react_component_tooltip.place-top::after {
+  border-top: 0 solid transparent !important;
+}
+.__react_component_tooltip.place-bottom::after {
+  border-bottom: 0 solid transparent !important;
 }

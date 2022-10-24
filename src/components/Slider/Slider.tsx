@@ -64,7 +64,7 @@ const Slider: React.FC<SliderProps> = ({
   }
 
   return (
-    <div className="flex w-full flex-col overflow-hidden">
+    <div className="flex h-full w-full flex-col overflow-hidden">
       <AnimatePresence initial={false} exitBeforeEnter custom={direction}>
         <motion.div
           key={page}
@@ -93,7 +93,7 @@ const Slider: React.FC<SliderProps> = ({
           {children[page]}
         </motion.div>
       </AnimatePresence>
-      <div className={clsx('mt-[50px] flex justify-between lg:mt-[60px]')}>
+      <div className={clsx('mt-[20px] flex justify-between lg:mt-[60px]')}>
         {page > 0 && showNavigationButtons ? (
           <div className="flex flex-1">
             <Button

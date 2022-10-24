@@ -11,7 +11,7 @@ import { getAmountFromDenom } from '../../utils/index'
 import DisconnectOrCopyPopup from './DisconnectOrCopyPopup'
 import { useCosmonStore } from '../../store/cosmonStore'
 import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import BuyXKIModal from '@components/Modal/BuyXKIModal'
 import IBCCoinBreakdownPopup from './IBCCoinBreakdownPopup'
 import { CONNECTION_TYPE } from 'types/Connection'
@@ -26,6 +26,8 @@ import {
 } from '@services/connection/keplr'
 import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
 import HamburgerMenu from '@components/HamburgerMenu/HamburgerMenu'
+import { NavigationMenu } from '@components/Mobile'
+import { useRouter } from 'next/router'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -34,6 +36,8 @@ type LayoutProps = {
 const ARENA_IS_ACTIVE = Boolean(process.env.NEXT_PUBLIC_ARENA_IS_ACTIVE)
 
 export default function Layout({ children }: LayoutProps) {
+  const router = useRouter()
+
   const {
     address: walletAddress,
     connect,
@@ -114,6 +118,13 @@ export default function Layout({ children }: LayoutProps) {
   }, [wasPreviouslyConnected()?.address, cosmosConnectionProvider, isConnected])
 
   useEffect(() => {
+    if (isHamburgerActive) {
+      // close navigation when route changes
+      setIsHamburgerActive(!isHamburgerActive)
+    }
+  }, [router.asPath])
+
+  useEffect(() => {
     if (coins.length > 0) {
       const availableXki = getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins)
       if (availableXki <= 0) {
@@ -137,7 +148,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="flex">
           <Link href="/">
             <a>
-              <div className="relative h-[22px] w-[73px] lg:h-[40px] lg:w-[131px]">
+              <div className="relative z-[100] h-[22px] w-[73px] lg:h-[40px] lg:w-[131px]">
                 <Image priority={true} src={'../logo.png'} layout="fill" />
               </div>
             </a>
@@ -166,8 +177,8 @@ export default function Layout({ children }: LayoutProps) {
         </div>
 
         <div className="lg:hidden">
-          <HamburgerMenu onToggleMenu={setIsHamburgerActive} />
-          <AnimatePresence>{isHamburgerActive ? <div></div> : null}</AnimatePresence>
+          <HamburgerMenu isActive={isHamburgerActive} onToggleMenu={setIsHamburgerActive} />
+          <AnimatePresence>{isHamburgerActive ? <NavigationMenu /> : null}</AnimatePresence>
         </div>
 
         <div className="relative hidden items-center lg:flex">

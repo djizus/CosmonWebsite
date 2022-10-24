@@ -1,4 +1,5 @@
 export const cell: string
+export const cellAlignedRight: string
 export const container: string
 export const fakeCell: string
 export const fakeCosmonCell: string

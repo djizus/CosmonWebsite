@@ -31,6 +31,15 @@
   padding-top: 30px !important;
   padding-bottom: 20px !important;
   padding-right: 20px !important;
+
+  @media (max-width: 640px) {
+    width: 330px;
+    height: 170px;
+    font-size: large;
+    padding-left: 20px !important;
+    padding-top: 20px !important;
+    padding-right: 15px !important;
+  }
 }
 
 .tipTitle {
@@ -39,6 +48,10 @@
   color: white;
   text-align: left;
   margin-bottom: 20px;
+
+  @media (max-width: 640px) {
+    font-size: large;
+  }
 }
 
 $textSize: 15px;
@@ -60,6 +73,17 @@ $textSize: 15px;
   color: white;
   background-clip: border-box;
   -webkit-text-fill-color: white;
+}
+
+.tipPercent,
+.tipText,
+.tipFirstText,
+.tipSecondText,
+.tipFourthText,
+.tipFifthText {
+  @media (max-width: 640px) {
+    font-size: medium;
+  }
 }
 
 .line {

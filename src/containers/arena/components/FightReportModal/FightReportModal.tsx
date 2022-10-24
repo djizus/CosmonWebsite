@@ -16,7 +16,8 @@ const FightReportModal: React.FC<FightReportModalProps> = ({ onClickNewFight, on
     <Modal
       onCloseModal={onCloseModal}
       hasCloseButton={false}
-      containerClassname="max-w-[98vw] w-[98vw] lg:max-w-[700px] lg:w-[700px]"
+      containerClassname="max-w-[98vw] w-[98vw] lg:max-w-[700px] lg:w-[700px] max-h-[100vh]"
+      subContainerClassname="overflow-y-auto lg:overflow-y-visible"
     >
       <Slider
         showPagination={false}
@@ -24,6 +25,7 @@ const FightReportModal: React.FC<FightReportModalProps> = ({ onClickNewFight, on
           btnLabel: 'Go back to arena',
           onClick: onCloseModal,
         }}
+        containerClassName="overflow-auto lg:overflow-visible"
       >
         <MainEvents battle={battleOverTime!} />
         <CosmonsProgression onClickNewFight={onClickNewFight} />

@@ -133,6 +133,13 @@ const Arena: React.FC<ArenaProps> = ({}) => {
             </div>
           </div>
 
+          <div className="border-shiny-gradient mt-[35px] h-auto w-full rounded-xl bg-cosmon-main-secondary py-5 px-5 lg:hidden">
+            <p className="text-sm">
+              To create, edit or delete a deck, please go the desktop version to experience Cosmon
+              in the best possible way.
+            </p>
+          </div>
+
           <div>{renderCurrentView}</div>
           <AnimatePresence initial={false} exitBeforeEnter={true} onExitComplete={() => null}>
             {deckBuilderVisible ? (

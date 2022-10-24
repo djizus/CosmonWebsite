@@ -299,8 +299,8 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
           backgroundPosition: 'center center',
         }}
       >
-        <header className="flex justify-center py-[30px]">
-          <p className="text-3xl font-normal text-white">
+        <header className="flex justify-center py-[20px] lg:py-[30px]">
+          <p className="text-xl font-normal text-white lg:text-3xl">
             <Trans
               i18nKey={`${battleOverTime && camelCase(battleOverTime.arena.name)}.name` || ''}
               t={t}
@@ -330,8 +330,10 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
             ) : null}
           </div>
 
-          <section className="flex">
-            <p className="text-3xl text-white">{battleOverTime?.opponent.deckName ?? ''}</p>
+          <section className="flex items-center">
+            <p className="text-md text-white lg:text-3xl ">
+              {battleOverTime?.opponent.deckName ?? ''}
+            </p>
             <Badge className="ml-[20px] flex items-center justify-center">
               <p className="text-sm font-semibold text-white">
                 Score {battleOverTime?.opponent.deckScore ?? ''}
@@ -340,7 +342,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
           </section>
 
           <section
-            className=" mb-[15px] flex h-full w-full max-w-[85%] grow justify-center lg:max-w-[30%]"
+            className="mb-[15px] flex h-[90%] w-full max-w-[85%] grow justify-center pb-[10%] lg:h-full lg:max-w-[30%] lg:pb-[0]"
             style={{ transform: 'perspective(150vw) rotateX(20deg)', marginBottom: '1.5%' }}
           >
             <div className="grid h-full w-full grid-cols-3 gap-3 gap-y-6 rounded-md border-[0.5px] border-[#6d77db] p-3">
@@ -390,8 +392,8 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
             </div>
           </section>
 
-          <section className="flex">
-            <p className="text-3xl text-white">{battleOverTime?.me.deckName ?? ''}</p>
+          <section className="flex items-center">
+            <p className="text-md text-white lg:text-3xl">{battleOverTime?.me.deckName ?? ''}</p>
             <Badge className="ml-[20px] flex items-center justify-center">
               <p className="text-sm font-semibold text-white">
                 Score {battleOverTime?.me.deckScore ?? ''}
@@ -400,28 +402,28 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
           </section>
         </main>
 
-        <footer className="relative mt-[30px] flex w-full items-center justify-center pb-[50px]">
-          <div className="relative flex w-1/2 items-center justify-center rounded-[10px] bg-[white]/[.2] py-[20px]">
+        <footer className="relative mt-[30px] flex w-full  flex-col items-center justify-center px-[20px] pb-[20px] lg:px-0 lg:pb-[50px]">
+          <div className="relative flex w-full items-center justify-center rounded-[10px] bg-[white]/[.2] py-[20px] lg:w-1/2 lg:flex-row">
             <p className="text-base font-normal text-white">
               {sentence || 'Fighters are getting ready...'}
             </p>
-            <div
-              className="absolute ml-[40px] flex items-center gap-[16px]"
-              style={{ left: 'calc(100%)' }}
-            >
-              <ButtonPlay
-                isActive={fightSpeed === FIGHT_PLAY_SPEED}
-                onClick={() => {
-                  setFightSpeed(FIGHT_PLAY_SPEED)
-                }}
-              />
-              <ButtonForward
-                isActive={fightSpeed === FIGHT_FORWARD_SPEED}
-                onClick={() => {
-                  setFightSpeed(FIGHT_FORWARD_SPEED)
-                }}
-              />
-            </div>
+          </div>
+          <div
+            className="mt-[8%] flex items-center gap-[16px] lg:absolute lg:mt-0"
+            style={{ right: 'calc(10%)' }}
+          >
+            <ButtonPlay
+              isActive={fightSpeed === FIGHT_PLAY_SPEED}
+              onClick={() => {
+                setFightSpeed(FIGHT_PLAY_SPEED)
+              }}
+            />
+            <ButtonForward
+              isActive={fightSpeed === FIGHT_FORWARD_SPEED}
+              onClick={() => {
+                setFightSpeed(FIGHT_FORWARD_SPEED)
+              }}
+            />
           </div>
         </footer>
       </div>

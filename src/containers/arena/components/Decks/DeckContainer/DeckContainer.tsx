@@ -15,6 +15,7 @@ import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
 import FlipCard from '@components/FlipCard/FlipCard'
 import Countdown from '@components/Countdown/Countdown'
 import { useArenaStore } from '@store/arenaStore'
+import { useWindowSize } from 'react-use'
 
 interface DeckContainerProps {
   deck: Deck
@@ -34,6 +35,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   const [revealCards, setRevealCards] = useState(true)
   const { refreshCosmonsAndDecksList } = useDeckStore()
   const { hourlyFPNumber } = useArenaStore()
+  const { width } = useWindowSize()
 
   const affinities = useMemo(() => {
     return computeDeckAffinities(deck.cosmons)
@@ -110,6 +112,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
                 card={
                   <CosmonCard
                     cosmon={cosmon}
+                    size={width < 640 ? 'sm' : 'md'}
                     showLevel
                     showPersonality
                     showNationality

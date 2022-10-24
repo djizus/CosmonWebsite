@@ -1,21 +1,24 @@
 import clsx from 'clsx'
 import React, { useEffect } from 'react'
-import { useToggle } from 'react-use'
 import * as styles from './HamburgerMenu.module.scss'
 
 interface HamburgerMenuProps {
+  isActive: boolean
   onToggleMenu: (isActive: boolean) => void
 }
 
-const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ onToggleMenu }) => {
-  const [isOpen, toggle] = useToggle(false)
-
+const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isActive, onToggleMenu }) => {
   useEffect(() => {
-    onToggleMenu(isOpen)
-  }, [isOpen])
+    onToggleMenu(isActive)
+  }, [isActive])
 
   return (
-    <div className={clsx(styles.container, { [styles.open]: isOpen })} onClick={toggle}>
+    <div
+      className={clsx(styles.container, { [styles.open]: isActive })}
+      onClick={() => {
+        onToggleMenu(!isActive)
+      }}
+    >
       <span></span>
       <span></span>
       <span></span>
