@@ -161,26 +161,23 @@ const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
   xpNextLevelEvolved,
   floorXpEvolved,
 }) => {
-  const [currentXpPercent, setCurrentXpPercent] = useState<number>(
-    iWin
-      ? ((xpStatEvolved - floorXpEvolved) / xpNextLevelEvolved) * 100
-      : ((xpStatEvolved - floorXpEvolved) / xpNextLevelEvolved) * 100 // will animate from 0 only if i win
-  )
   const [currentXp, setCurrentXp] = useState<number>(0)
   const [currentLevel, setCurrentLevel] = useState(levelStat)
   const [currentXpMax, setCurrentXpMax] = useState(xpNextLevel - floorXpEvolved)
   const [levelUp, setLevelUp] = useState(false)
 
+  const currentXpPercent = useMemo(() => {
+    const xpPercent =
+      ((xpStatEvolved - floorXpEvolved) / (xpNextLevelEvolved - floorXpEvolved)) * 100
+    return xpPercent
+  }, [xpStatEvolved, floorXpEvolved, xpNextLevelEvolved])
+
   useMount(() => {
     if (levelStat === levelStatEvolved) {
       setCurrentXp(xpStatEvolved - floorXpEvolved)
-      setTimeout(() => {
-        setCurrentXpPercent(((xpStatEvolved - floorXpEvolved) / xpNextLevelEvolved) * 100)
-      }, 1000)
     } else {
       setLevelUp(true)
       setCurrentXp(xpStatEvolved - floorXpEvolved)
-      setCurrentXpPercent(((xpStatEvolved - floorXpEvolved) / xpNextLevelEvolved) * 100)
       setCurrentXpMax(xpNextLevelEvolved - floorXpEvolved)
       setCurrentLevel(levelStatEvolved)
 
