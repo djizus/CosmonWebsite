@@ -73,7 +73,7 @@ const WinsLosesChart: React.FC<Props> = ({
         </div>
       </div>
       <p className={style.dailyLimit}>
-        Fights available today : 💥 {dailyCombatLimit} / {maxDailyCombatLimit}
+        Fights done today : 💥 {dailyCombatLimit} / {maxDailyCombatLimit}
       </p>
     </div>
   )
