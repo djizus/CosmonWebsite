@@ -5,7 +5,8 @@ import { Boost } from 'types/Boost'
 import clsx from 'clsx'
 import { CurrentView } from '../BuyBoostModalType'
 import IconWithLabel from '../IconWithLabel/IconWithLabel'
-import { getIconForAttr } from '@utils/boost'
+import { getIconForAttr, getStatAcronymFromBoost } from '@utils/boost'
+import Tooltip from '@components/Tooltip/Tooltip'
 
 interface BoosterPickerProps {
   selectedBoost: Boost | null
@@ -62,7 +63,12 @@ const BoostPicker: React.FC<BoosterPickerProps> = ({
                 </Button>
               </div>
               <div className={style.rightBlock}>
-                <IconWithLabel Icon={Icon} label={`+${boost.inc_value}`} />
+                <div data-tip="tootlip" data-for={boost.name}>
+                  <IconWithLabel Icon={Icon} label={`+${boost.inc_value} %`} />
+                </div>
+                <Tooltip id={boost.name}>
+                  {boost.inc_value} % {getStatAcronymFromBoost(boost.name)}
+                </Tooltip>
                 <p className={style.price}>
                   {boost.price.amount} {boost.price.denom}
                 </p>

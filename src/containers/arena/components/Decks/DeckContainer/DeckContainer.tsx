@@ -57,7 +57,6 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
 
   const missFp = useMemo(() => {
     if (deck) {
-      console.log('allo', deck)
       return deck.cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0)
     }
   }, [deck])

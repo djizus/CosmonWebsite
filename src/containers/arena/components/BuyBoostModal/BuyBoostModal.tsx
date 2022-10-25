@@ -36,7 +36,21 @@ interface BuyBoostModalProps {
 const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal }) => {
   const [currentView, setCurentView] = useState<CurrentView>('boost')
   const [selectedBoost, setSelectedBoost] = useState<Boost | null>(null)
-  const [selectedLeader, setSelectedLeader] = useState<CosmonType | null>(null)
+  const [selectedLeaders, setSelectedLeaders] = useState<CosmonType[]>([])
+
+  const handleSelectLeader = (leader: CosmonType) => {
+    const leaderIndex = selectedLeaders.findIndex(
+      (selectedLeader) => selectedLeader.id === leader.id
+    )
+    const newArray = [...selectedLeaders]
+
+    if (leaderIndex !== -1) {
+      newArray.splice(leaderIndex, 1)
+      return setSelectedLeaders(newArray)
+    } else {
+      return setSelectedLeaders([...selectedLeaders, leader])
+    }
+  }
 
   const handleKeyDown = useCallback(
     (evt: KeyboardEvent) => {
@@ -61,7 +75,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal }) => {
 
   const resetModal = () => {
     setCurentView('boost')
-    setSelectedLeader(null)
+    setSelectedLeaders([])
     setSelectedBoost(null)
   }
 
@@ -80,8 +94,8 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal }) => {
           <LeaderPicker
             selectedBoost={selectedBoost as Boost}
             setCurrentView={setCurentView}
-            selectedLeader={selectedLeader}
-            setSelectedLeader={setSelectedLeader}
+            selectedLeaders={selectedLeaders}
+            handleSelectLeader={handleSelectLeader}
           />
         )
       case 'recap':
@@ -89,7 +103,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal }) => {
           <Recap
             resetModal={resetModal}
             closeModal={closeModal}
-            selectedLeader={selectedLeader}
+            selectedLeaders={selectedLeaders}
             selectedBoost={selectedBoost as Boost}
           />
         )

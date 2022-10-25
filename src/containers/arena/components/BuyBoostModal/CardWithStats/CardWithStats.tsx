@@ -18,6 +18,17 @@ interface Props {
 }
 
 const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick }) => {
+  const fakeStats = cosmon.stats!.map((stat) => {
+    if (stat.key === 'Hp') {
+      return {
+        ...stat,
+        value: Math.ceil((parseInt(stat.value) / 100) * 5 + parseInt(stat.value)).toString(),
+      }
+    }
+
+    return stat
+  })
+
   return (
     <div
       onClick={() => handleClick && handleClick(cosmon)}
@@ -37,9 +48,6 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
             />
           }
           revealed={true}
-          // onClick={() => {
-          //   set_showCosmonDetail(item)
-          // }}
         />
       </div>
       <div className={style.rightContent}>
@@ -64,19 +72,22 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
               key={`${cosmon.id}-Atq`}
               statKey="Atq"
               stats={cosmon.stats!}
-              statsEvolved={cosmon.stats!}
+              statToDisplay={cosmon.stats!}
+              statsEvolved={fakeStats}
             />
             <CosmonStatProgression
               className={style.stat}
               key={`${cosmon.id}-Spe`}
               statKey="Spe"
               stats={cosmon.stats!}
+              statToDisplay={cosmon.stats!}
               statsEvolved={cosmon.stats!}
             />
             <CosmonStatProgression
               className={style.stat}
               key={`${cosmon.id}-Luk`}
               statKey="Luk"
+              statToDisplay={cosmon.stats!}
               stats={cosmon.stats!}
               statsEvolved={cosmon.stats!}
             />
@@ -84,9 +95,18 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
           <div className={style.secondColumn}>
             <CosmonStatProgression
               className={style.stat}
+              key={`${cosmon.id}-Hp`}
+              statKey="Hp"
+              stats={cosmon.stats!}
+              statToDisplay={cosmon.stats!}
+              statsEvolved={fakeStats}
+            />
+            <CosmonStatProgression
+              className={style.stat}
               key={`${cosmon.id}-Def`}
               statKey="Def"
               stats={cosmon.stats!}
+              statToDisplay={cosmon.stats!}
               statsEvolved={cosmon.stats!}
             />
             <CosmonStatProgression
@@ -94,6 +114,7 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
               key={`${cosmon.id}-Int`}
               statKey="Int"
               stats={cosmon.stats!}
+              statToDisplay={cosmon.stats!}
               statsEvolved={cosmon.stats!}
             />
           </div>

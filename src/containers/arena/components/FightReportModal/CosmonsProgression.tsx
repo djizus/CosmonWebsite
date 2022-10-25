@@ -286,6 +286,7 @@ interface CosmonStatProgressionProps {
   statKey: CosmonStatKeyType
   stats: CosmonStatType[]
   statsEvolved: CosmonStatType[]
+  statToDisplay?: CosmonStatType[]
   className?: string
 }
 
@@ -293,6 +294,7 @@ export const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
   statKey,
   stats,
   statsEvolved,
+  statToDisplay,
   className,
 }) => {
   const statLabel = useMemo(() => {
@@ -318,13 +320,23 @@ export const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
     <div className={clsx('flex flex-1 justify-between', className)}>
       <p className="text-sm font-normal">{statLabel}</p>
       <p className="text-sm">
-        {getCosmonStat(statsEvolved, statKey)?.value}
+        {statToDisplay
+          ? getCosmonStat(statToDisplay, statKey)?.value
+          : getCosmonStat(statsEvolved, statKey)?.value}
         {getCosmonStat(statsEvolved, statKey)?.value! > getCosmonStat(stats, statKey)?.value! ? (
           <CosmonStatProgressionLabel
             className="ml-[4px]"
-            label={`+${
-              getCosmonStat(statsEvolved, statKey)?.value! - getCosmonStat(stats, statKey)?.value!
-            }`}
+            label={
+              statToDisplay
+                ? `+${
+                    parseInt(getCosmonStat(statsEvolved, statKey)?.value!) -
+                    parseInt(getCosmonStat(statToDisplay, statKey)?.value!)
+                  }`
+                : `+${
+                    parseInt(getCosmonStat(statsEvolved, statKey)?.value!) -
+                    parseInt(getCosmonStat(stats, statKey)?.value!)
+                  }`
+            }
           />
         ) : null}
       </p>

@@ -25,7 +25,7 @@ export type CosmonStatKeyType =
 
 export type CosmonStatType = {
   key: CosmonStatKeyType
-  value: number
+  value: string
 }
 
 export type CosmonType = {

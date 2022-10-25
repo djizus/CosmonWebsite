@@ -28,7 +28,7 @@
   flex-direction: column;
   flex: 1;
   align-items: flex-start;
-  margin-right: 56px;
+  margin-right: 24px;
   justify-content: flex-start;
 }
 
@@ -50,4 +50,9 @@
   line-height: 24px !important;
   margin-bottom: 4px;
   flex: unset;
+
+  > p:last-of-type {
+    font-size: 12px !important;
+    font-weight: 700;
+  }
 }

@@ -15,16 +15,16 @@ import { CosmonType } from 'types/Cosmon'
 import clsx from 'clsx'
 
 interface LeaderPickerProps {
-  selectedLeader: CosmonType | null
+  selectedLeaders: CosmonType[]
   selectedBoost: Boost
-  setSelectedLeader: Dispatch<SetStateAction<CosmonType | null>>
+  handleSelectLeader: (leader: CosmonType) => void
   setCurrentView: Dispatch<SetStateAction<CurrentView>>
 }
 
 const LeaderPicker: React.FC<LeaderPickerProps> = ({
-  selectedLeader,
+  selectedLeaders,
   selectedBoost,
-  setSelectedLeader,
+  handleSelectLeader,
   setCurrentView,
 }) => {
   const [search, setSearch] = useState<string>('')
@@ -40,7 +40,7 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
     return cosmons
       .map((c, i) => {
         if (c.isInDeck) {
-          const cosmonDecksName = decksList.reduce((acc, curr) => {
+          const cosmonDecksName = decksList.reduce((acc: string[], curr) => {
             const isCosmonInThisDeckIndex = curr.cosmons.findIndex((cosmon) => cosmon.id === c.id)
 
             if (isCosmonInThisDeckIndex !== -1) {
@@ -62,11 +62,14 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
         }
       })
       .filter((cosmon) => {
-        return new RegExp(search, 'gi').test(cosmon.data.extension.name)
+        const filterByCosmonName = new RegExp(search, 'gi').test(cosmon.data.extension.name)
+        const filterByDeckName = cosmon.decksName.some((deckName) =>
+          new RegExp(search, 'gi').test(deckName)
+        )
+
+        return filterByCosmonName || filterByDeckName
       })
   }, [cosmons, decksList, search])
-
-  console.log(search, formatedAndFiltredCosmons)
 
   const BoostIcon = getIconForAttr(selectedBoost.name)
 
@@ -74,7 +77,11 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
     <div className={style.container}>
       <p className={style.title}>Select the Leader</p>
       <div className={style.boostDetails}>
-        <IconWithLabel Icon={BoostIcon} label={`+${selectedBoost.inc_value}`} />
+        <IconWithLabel
+          className={style.boostIcon}
+          Icon={BoostIcon}
+          label={`+${selectedBoost.inc_value} %`}
+        />
         <IconWithLabel
           className={style.numberOfFights}
           Icon={() => <Flash />}
@@ -83,7 +90,8 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
         <div className={style.price}>
           <img className={style.kiLogo} src="/xki-logo.png" style={{ width: 30, height: 30 }} />
           <span>
-            {selectedBoost.price.amount} {selectedBoost.price.denom}
+            {parseInt(selectedBoost.price.amount) * selectedLeaders.length}{' '}
+            {selectedBoost.price.denom}
           </span>
         </div>
       </div>
@@ -102,10 +110,14 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
           <div>
             {formatedAndFiltredCosmons.map((cosmon) => (
               <CardsWithStats
+                key={cosmon.id}
                 className={clsx(style.card, {
-                  [style.selectedCard]: cosmon.id === selectedLeader?.id,
+                  [style.selectedCard]:
+                    selectedLeaders.findIndex(
+                      (selectedLeader) => cosmon.id === selectedLeader.id
+                    ) !== -1,
                 })}
-                handleClick={setSelectedLeader}
+                handleClick={handleSelectLeader}
                 cosmon={cosmon}
                 boost={selectedBoost}
               />
@@ -113,7 +125,10 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
           </div>
         </div>
       </div>
-      <Button disabled={!selectedBoost || !selectedLeader} onClick={() => setCurrentView('recap')}>
+      <Button
+        disabled={!selectedBoost || selectedLeaders.length <= 0}
+        onClick={() => setCurrentView('recap')}
+      >
         Buy {selectedBoost.name}
       </Button>
     </div>

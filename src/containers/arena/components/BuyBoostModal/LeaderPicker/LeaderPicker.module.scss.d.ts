@@ -1,4 +1,5 @@
 export const boostDetails: string
+export const boostIcon: string
 export const box: string
 export const card: string
 export const container: string

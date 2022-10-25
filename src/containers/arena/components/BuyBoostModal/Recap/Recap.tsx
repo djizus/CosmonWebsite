@@ -9,13 +9,13 @@ import clsx from 'clsx'
 import CardsWithStats from '../CardWithStats/CardWithStats'
 
 interface Props {
-  selectedLeader: CosmonType
+  selectedLeaders: CosmonType[]
   selectedBoost: Boost
   closeModal: () => void
   resetModal: () => void
 }
 
-const Recap: React.FC<Props> = ({ selectedBoost, selectedLeader, closeModal, resetModal }) => {
+const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, resetModal }) => {
   const BoostIcon = getIconForAttr(selectedBoost.name)
 
   return (
@@ -31,22 +31,28 @@ const Recap: React.FC<Props> = ({ selectedBoost, selectedLeader, closeModal, res
         <div className={style.price}>
           <img className={style.kiLogo} src="/xki-logo.png" style={{ width: 30, height: 30 }} />
           <span>
-            {selectedBoost.price.amount} {selectedBoost.price.denom}
+            {parseInt(selectedBoost.price.amount) * selectedLeaders.length}{' '}
+            {selectedBoost.price.denom}
           </span>
         </div>
       </div>
       <div className={style.content}>
-        <CardsWithStats
-          className={clsx(style.card)}
-          cosmon={selectedLeader}
-          boost={selectedBoost}
-        />
+        {selectedLeaders.map((selectedLeader) => (
+          <CardsWithStats
+            key={selectedLeader.id}
+            className={clsx(style.card)}
+            cosmon={selectedLeader}
+            boost={selectedBoost}
+          />
+        ))}
       </div>
-      <p className={style.text}>
-        {selectedLeader.data.extension.name} just boosted his{' '}
-        {getStatNameFromBoost(selectedBoost.name)} by {selectedBoost.inc_value} points!
-        <br /> This potion will last {selectedBoost.effect_time} fights before disappearing.
-      </p>
+      {selectedLeaders.length === 1 && (
+        <p className={style.text}>
+          {selectedLeaders[0].data.extension.name} just boosted his{' '}
+          {getStatNameFromBoost(selectedBoost.name)} by {selectedBoost.inc_value} points!
+          <br /> This potion will last {selectedBoost.effect_time} fights before disappearing.
+        </p>
+      )}
       <div className={style.footer}>
         <Button onClick={closeModal} type="white">
           Close
