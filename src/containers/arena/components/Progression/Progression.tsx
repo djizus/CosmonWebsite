@@ -9,6 +9,7 @@ import Leaderboard from './LeaderBoard/Leaderboard'
 import * as style from './Progression.module.scss'
 import WinsLosesChart from './WinsLosesChart/WinsLosesChart'
 import Select, { OptionType } from '@components/Input/Select'
+import { fetchOldLeaderboard } from '@services/arena'
 
 interface ProgressionProps {
   currentLeaguePro: ArenaType
@@ -48,17 +49,34 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
   const { address } = useWalletStore()
 
   const [selectedLeaderboard, setSelectedLeaderboard] = useState<SelectedLeaderboardType>('current')
+  const [page, setPage] = useState(0)
+  const [itemPerPage, setItemPerPage] = useState(20)
 
   useEffect(() => {
     try {
       fetchWalletInfos(currentLeaguePro.contract, address)
-      fetchCurrentLeaderBoard(currentLeaguePro.contract)
+      fetchCurrentLeaderBoard(currentLeaguePro.contract, { page, itemPerPage, init: true })
       fetchPrizesForAddress(currentLeaguePro.contract)
-      fetchOldLeaderBoard(currentLeaguePro.contract)
+      fetchOldLeaderBoard(currentLeaguePro.contract, {
+        limit: itemPerPage,
+        offset: page,
+      })
       fetchDailyCombat(currentLeaguePro.contract, address)
       fetchMaxDailyCombat(currentLeaguePro.contract)
     } catch (error) {}
   }, [currentLeaguePro])
+
+  useEffect(() => {
+    setPage(0)
+  }, [selectedLeaderboard])
+
+  useEffect(() => {
+    if (selectedLeaderboard === 'current' && currentLeaguePro) {
+      fetchCurrentLeaderBoard(currentLeaguePro.contract, { page, itemPerPage, init: false })
+    } else if (selectedLeaderboard === 'old' && currentLeaguePro) {
+      fetchOldLeaderboard(currentLeaguePro.contract, itemPerPage, page * itemPerPage)
+    }
+  }, [page, itemPerPage, selectedLeaderboard])
 
   const handleClickClaimPrize = async () => {
     try {
@@ -101,6 +119,9 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
               }
               walletInfos={walletInfos}
               isOldLeaderboard={selectedLeaderboard === 'old'}
+              page={page}
+              itemPerPage={itemPerPage}
+              handleChangePage={(value: number) => setPage(value)}
             />
           </>
         ) : (
@@ -111,6 +132,9 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
               currentLeaderboard={currentLeaderboard}
               walletInfos={walletInfos}
               isOldLeaderboard={selectedLeaderboard === 'old'}
+              page={page}
+              itemPerPage={itemPerPage}
+              handleChangePage={(value: number) => setPage(value)}
             />
           </>
         )}
