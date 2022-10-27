@@ -71,9 +71,9 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
   }, [selectedLeaderboard])
 
   useEffect(() => {
-    if (selectedLeaderboard === 'current') {
+    if (selectedLeaderboard === 'current' && currentLeaguePro) {
       fetchCurrentLeaderBoard(currentLeaguePro.contract, { page, itemPerPage, init: false })
-    } else if (selectedLeaderboard === 'old') {
+    } else if (selectedLeaderboard === 'old' && currentLeaguePro) {
       fetchOldLeaderboard(currentLeaguePro.contract, itemPerPage, page * itemPerPage)
     }
   }, [page, itemPerPage, selectedLeaderboard])
