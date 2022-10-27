@@ -175,15 +175,10 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       }
 
       // we get the first twelve players
-      const addressesFromLeaderboard: string[] = [...currentLeaderboard]
-        .reduce((acc: string[], curr: string[]) => {
-          if (curr.length > 0) {
-            return [...acc, ...curr]
-          }
-
-          return [...acc]
-        }, [])
-        .splice(page * itemPerPage, itemPerPage)
+      const addressesFromLeaderboard: string[] = [...currentLeaderboard].splice(
+        page * itemPerPage,
+        itemPerPage
+      )
 
       // we get wallet infos for displayed players
       const walletsInfos = await ArenaService.queries().fetchWalletsInfos(
