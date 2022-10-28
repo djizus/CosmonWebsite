@@ -110,7 +110,6 @@ export const fetchCurrentLeaderboard = async (
 export const fetchOldLeaderboard = async (arenaAddress: string, limit: number, offset: number) => {
   try {
     const { signingClient } = useWalletStore.getState()
-
     const oldLeaderboard = await signingClient?.queryContractSmart(arenaAddress, {
       get_old_leaderboard: { limit, offset },
     })

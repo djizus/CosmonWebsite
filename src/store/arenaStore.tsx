@@ -9,13 +9,12 @@ import ErrorIcon from '@public/icons/error.svg'
 import { getNextMonday } from '@utils/date'
 import { useWalletStore } from './walletStore'
 import { XPRegistryService } from '@services/xp-registry'
-import { isLength } from 'lodash'
 
 interface ArenaState {
   currentLeaguePro: ArenaType | null
   oldLeaderboard: LeaderBoard
   currentLeaderboard: LeaderBoard
-  currentLeaderboardWallets: Array<string[]>
+  currentLeaderboardWallets: string[]
   walletInfos: WalletInfos
   arenaFees: any
   currentPrizePool: any
@@ -72,7 +71,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   currentLeaguePro: null,
   oldLeaderboard: [],
   currentLeaderboard: [],
-  currentLeaderboardWallets: [[]],
+  currentLeaderboardWallets: [],
   dailyCombatLimit: 0,
   maxDailyCombatLimit: 0,
   walletInfos: {
@@ -157,12 +156,12 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     }
   ) => {
     try {
-      let currentLeaderboard = []
+      let currentLeaderboard: string[] = []
 
       if (init) {
         const firstsLeaderBoard = await ArenaService.queries().fetchFirstsLeaderboard(
           arenaAddress,
-          200
+          249
         )
         currentLeaderboard = [...firstsLeaderBoard]
 
@@ -174,6 +173,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
         currentLeaderboard = [...currentLeaderboardWallets]
       }
 
+      console.log(currentLeaderboard)
       // we get the first twelve players
       const addressesFromLeaderboard: string[] = [...currentLeaderboard].splice(
         page * itemPerPage,
@@ -193,7 +193,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
               ...acc,
               {
                 address: curr,
-                position: index + 1,
+                position: +currentLeaderboard.findIndex((addr) => addr === curr) + 1,
                 fights:
                   walletsInfos[index].victories +
                   walletsInfos[index].defeats +
@@ -207,6 +207,8 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
         },
         []
       )
+
+      console.log(formatedLeaderboard)
 
       set({
         currentLeaderboard: formatedLeaderboard,
@@ -226,11 +228,14 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     }
   ) => {
     try {
+      console.log('HALO')
       const oldLeaderboard = await ArenaService.queries().fetchOldLeaderboard(
         arenaAddress,
         limit,
         offset
       )
+
+      console.log('oldLeaderboard :: ', oldLeaderboard)
 
       const formatedOldLeaderboard: LeaderBoard = oldLeaderboard.map((item: any, index: number) => {
         return {
