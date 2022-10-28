@@ -28,7 +28,7 @@ const Leaderboard: React.FC<Props> = ({
   const displayMyWallet =
     !isMyWalletInCurrentPage(currentWalletAddress, currentLeaderboard) && !isOldLeaderboard
   const fights = walletInfos.victories + walletInfos.defeats + walletInfos.draws
-  const slicedLeaderboard = currentLeaderboard.slice(0, 5)
+  const slicedLeaderboard = currentLeaderboard.slice(0, 20)
 
   return (
     <div className={style.container}>

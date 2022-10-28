@@ -1,4 +1,3 @@
-import Dropdown from '@components/Dropdown/Dropdown'
 import { useArenaStore } from '@store/arenaStore'
 import { useWalletStore } from '@store/walletStore'
 import React, { useEffect, useState } from 'react'
@@ -9,7 +8,6 @@ import Leaderboard from './LeaderBoard/Leaderboard'
 import * as style from './Progression.module.scss'
 import WinsLosesChart from './WinsLosesChart/WinsLosesChart'
 import Select, { OptionType } from '@components/Input/Select'
-import { fetchOldLeaderboard } from '@services/arena'
 
 interface ProgressionProps {
   currentLeaguePro: ArenaType
@@ -50,7 +48,7 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
 
   const [selectedLeaderboard, setSelectedLeaderboard] = useState<SelectedLeaderboardType>('current')
   const [page, setPage] = useState(0)
-  const [itemPerPage, setItemPerPage] = useState(20)
+  const [itemPerPage] = useState(20)
 
   useEffect(() => {
     try {
@@ -74,7 +72,10 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
     if (selectedLeaderboard === 'current' && currentLeaguePro) {
       fetchCurrentLeaderBoard(currentLeaguePro.contract, { page, itemPerPage, init: false })
     } else if (selectedLeaderboard === 'old' && currentLeaguePro) {
-      fetchOldLeaderboard(currentLeaguePro.contract, itemPerPage, page * itemPerPage)
+      fetchOldLeaderBoard(currentLeaguePro.contract, {
+        limit: itemPerPage,
+        offset: page * itemPerPage,
+      })
     }
   }, [page, itemPerPage, selectedLeaderboard])
 
