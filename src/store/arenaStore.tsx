@@ -234,7 +234,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       const formatedOldLeaderboard: LeaderBoard = oldLeaderboard.map((item: any, index: number) => {
         return {
           address: item[0],
-          position: index + 1,
+          position: offset + index + 1,
           fights: item[1].victories + item[1].defeats + item[1].draws,
           ...item[1],
         }
