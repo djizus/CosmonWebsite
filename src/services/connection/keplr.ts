@@ -1,5 +1,6 @@
 import { OfflineSigner } from '@cosmjs/proto-signing'
 import { chainInfo } from 'src/config'
+import { deconnectAndConnect } from './global'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
@@ -51,4 +52,16 @@ export const connectKeplr = async (): Promise<[OfflineSigner | null, OfflineSign
     }
   }
   return [null, null]
+}
+
+export const handleChangeAccount = () => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('keplr_keystorechange', deconnectAndConnect)
+  }
+}
+
+export const stopListenForChangeAccount = () => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('keplr_keystorechange', deconnectAndConnect)
+  }
 }

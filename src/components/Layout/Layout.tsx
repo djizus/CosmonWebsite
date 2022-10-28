@@ -16,6 +16,9 @@ import BuyXKIModal from '@components/Modal/BuyXKIModal'
 import IBCCoinBreakdownPopup from './IBCCoinBreakdownPopup'
 import ConnectionSelectModal from '@components/Modal/ConnectionSelectModal'
 import { CONNECTION_TYPE } from 'types/Connection'
+import { isConnectionTypeHandled, wasPreviouslyConnected } from '@utils/connection'
+import { handleChangeAccount as handleChangeCosmostationAccount } from '@services/connection/cosmostation'
+import { handleChangeAccount as handleChangeKeplrAccount } from '@services/connection/keplr'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -35,6 +38,7 @@ export default function Layout({ children }: LayoutProps) {
     coins,
     showWithdrawDepositModal,
     setShowWithdrawDepositModal,
+    cosmosConnectionProvider,
   } = useWalletStore((state) => state)
 
   const { getWhitelistData } = useCosmonStore((state) => state)
@@ -45,31 +49,37 @@ export default function Layout({ children }: LayoutProps) {
   const [showConnectionSelectModal, setShowConnectionSelectModal] = useState(false)
   const [showDisconnectOrCopyPopup, set_showDisconnectOrCopyPopup] = useState(false)
 
-  const handleSwitchAccount = async (type: CONNECTION_TYPE) => {
-    await connect(type)
-    fetchWalletData()
-    getWhitelistData()
-  }
-
   useEffect(() => {
     // The user has been connected before, connect him automatically
-    if (walletAddress !== '') {
-      setTimeout(() => {
-        connect()
-      }, 250)
-    }
-    window.addEventListener('keplr_keystorechange', () =>
-      handleSwitchAccount(CONNECTION_TYPE.KEPLR)
-    )
-
-    // cleanup this component
-    return () => {
-      window.removeEventListener(
-        'keplr_keystorechange',
-        () => () => handleSwitchAccount(CONNECTION_TYPE.KEPLR)
-      )
+    const connectedAuth = wasPreviouslyConnected()
+    if (connectedAuth?.address) {
+      if (isConnectionTypeHandled(connectedAuth.type)) {
+        connect(connectedAuth.type)
+      }
     }
   }, [])
+
+  useEffect(() => {
+    if (isConnected) {
+      fetchWalletData()
+      getWhitelistData()
+    }
+  }, [isConnected])
+
+  useEffect(() => {
+    if (wasPreviouslyConnected()?.address && isConnected) {
+      switch (wasPreviouslyConnected()?.type) {
+        case CONNECTION_TYPE.COSMOSTATION:
+          cosmosConnectionProvider && handleChangeCosmostationAccount(cosmosConnectionProvider)
+          break
+        case CONNECTION_TYPE.KEPLR:
+          handleChangeKeplrAccount()
+          break
+        default:
+          break
+      }
+    }
+  }, [wasPreviouslyConnected()?.address, cosmosConnectionProvider, isConnected])
 
   useEffect(() => {
     if (coins.length > 0) {
@@ -79,16 +89,6 @@ export default function Layout({ children }: LayoutProps) {
       }
     }
   }, [coins])
-
-  useEffect(() => {
-    if (isConnected) {
-      fetchWalletData()
-    }
-    /* const refreshInterval = window.setInterval(() => {
-      fetchWalletData()
-    }, 8000)
-    return () => clearInterval(refreshInterval) */
-  }, [isConnected])
 
   return (
     <div className="flex flex-col">

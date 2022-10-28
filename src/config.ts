@@ -54,7 +54,7 @@ export const ibcTestnetChainInfo = {
     coinType: 118,
   },
   bech32Config: {
-    bech32PrefixAccAddr: 'osmos',
+    bech32PrefixAccAddr: 'osmo',
   },
   currencies: [
     {

@@ -35,7 +35,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
 
   fetchDecksList: async () => {
     const { address, cosmons } = useWalletStore.getState()
-    if (address) {
+    if (address && cosmons?.length > 0) {
       try {
         set({ isFetchingDecksList: true })
         let decks = [] as Deck[]

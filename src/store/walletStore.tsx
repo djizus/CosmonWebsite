@@ -33,7 +33,8 @@ import { DeckService } from '@services/deck'
 import { CustomIndexedTx, IndexedTxMethodType } from 'types/IndexedTxMethodType'
 import { connectKeplr } from '@services/connection/keplr'
 import { connectWithCosmostation } from '@services/connection/cosmostation'
-import { CONNECTION_TYPE } from 'types/Connection'
+import { CONNECTION_TYPE, CosmosConnectionProvider } from 'types/Connection'
+import { removeLastConnection, saveLastConnection, wasPreviouslyConnected } from '@utils/connection'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
@@ -62,6 +63,7 @@ interface WalletState {
   cosmons: CosmonType[]
   isCurrentlyIbcTransferring: boolean
   isConnected: boolean
+  cosmosConnectionProvider?: CosmosConnectionProvider | null
   hasSubscribed: boolean
   showWithdrawDepositModal?: 'withdraw' | 'deposit'
   connect: (type?: CONNECTION_TYPE) => void
@@ -101,6 +103,7 @@ const useWalletStore = create<WalletState>(
       stargateSigningClient: null,
       ibcSigningClient: null,
       isConnected: false,
+      cosmosConnectionProvider: null,
       hasSubscribed: false,
       isEligibleForAirdrop: null,
 
@@ -128,11 +131,13 @@ const useWalletStore = create<WalletState>(
 
                 break
               case CONNECTION_TYPE.COSMOSTATION:
-                const [cosmostationOfflineSigner, cosmostationIbcOfflineSigner] =
+                const [cosmostationOfflineSigner, cosmostationIbcOfflineSigner, provider] =
                   await connectWithCosmostation()
 
                 offlineSigner = cosmostationOfflineSigner
                 ibcOfflineSigner = cosmostationIbcOfflineSigner
+
+                set({ cosmosConnectionProvider: provider })
 
                 break
               default:
@@ -141,7 +146,7 @@ const useWalletStore = create<WalletState>(
           }
 
           if (!offlineSigner && !ibcOfflineSigner) {
-            throw new Error('No signer')
+            return
           }
 
           const client = await makeClient(offlineSigner!)
@@ -162,11 +167,15 @@ const useWalletStore = create<WalletState>(
             { address: '' },
           ]
 
+          console.log(accounts)
+
           set({
             address: accounts[0].address,
             ibcAddress: ibcAccounts[0].address,
             isConnected: true,
           })
+
+          saveLastConnection({ type })
         } catch (error: any) {
           console.error('error while connecting', error)
         } finally {
@@ -277,12 +286,11 @@ const useWalletStore = create<WalletState>(
         const { fetchSellData } = useCosmonStore.getState()
         const { getRewardsData } = useRewardStore.getState()
         await fetchSellData()
-        const { fetchCosmons, fetchCoin } = get()
+        const { fetchCoin, fetchCosmons } = get()
         await fetchCosmons()
         await fetchCoin()
         await getRewardsData()
         // await fetchRewards()
-
         set({
           // maxClaimableToken: maxClaimableToken,
           isFetchingData: false,
@@ -565,12 +573,14 @@ const useWalletStore = create<WalletState>(
           showWithdrawDepositModal: value,
         })
       },
-      disconnect: () => {
+      disconnect: async () => {
         get().signingClient?.disconnect()
+        removeLastConnection()
         set({
           address: '',
           signingClient: null,
           isConnected: false,
+          cosmons: [],
         })
       },
       searchTx: async (txMethodType: IndexedTxMethodType): Promise<CustomIndexedTx> => {
