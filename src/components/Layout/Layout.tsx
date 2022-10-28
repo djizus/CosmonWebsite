@@ -14,6 +14,8 @@ import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
 import { AnimatePresence } from 'framer-motion'
 import BuyXKIModal from '@components/Modal/BuyXKIModal'
 import IBCCoinBreakdownPopup from './IBCCoinBreakdownPopup'
+import ConnectionSelectModal from '@components/Modal/ConnectionSelectModal'
+import { CONNECTION_TYPE } from 'types/Connection'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -40,10 +42,11 @@ export default function Layout({ children }: LayoutProps) {
   const [showWalletPopup, set_showWalletPopup] = useState(false)
   const [showATOMBreakdownPopup, set_showATOMBreakdownPopup] = useState(false)
   const [showNoXKIModal, setShowNoXKIModal] = useState(false)
+  const [showConnectionSelectModal, setShowConnectionSelectModal] = useState(false)
   const [showDisconnectOrCopyPopup, set_showDisconnectOrCopyPopup] = useState(false)
 
-  const handleSwitchAccount = async () => {
-    await connect()
+  const handleSwitchAccount = async (type: CONNECTION_TYPE) => {
+    await connect(type)
     fetchWalletData()
     getWhitelistData()
   }
@@ -55,11 +58,16 @@ export default function Layout({ children }: LayoutProps) {
         connect()
       }, 250)
     }
-    window.addEventListener('keplr_keystorechange', handleSwitchAccount)
+    window.addEventListener('keplr_keystorechange', () =>
+      handleSwitchAccount(CONNECTION_TYPE.KEPLR)
+    )
 
     // cleanup this component
     return () => {
-      window.removeEventListener('keplr_keystorechange', handleSwitchAccount)
+      window.removeEventListener(
+        'keplr_keystorechange',
+        () => () => handleSwitchAccount(CONNECTION_TYPE.KEPLR)
+      )
     }
   }, [])
 
@@ -190,13 +198,35 @@ export default function Layout({ children }: LayoutProps) {
               className="max-h-[42px]"
               type="secondary"
               isLoading={isFetchingData}
-              onClick={() => connect()}
+              onClick={() => {
+                setShowConnectionSelectModal(true)
+              }}
             >
               Connect wallet
             </Button>
           )}
         </div>
       </header>
+
+      <AnimatePresence>
+        {showConnectionSelectModal ? (
+          <ConnectionSelectModal
+            onRequestClose={() => {
+              setShowConnectionSelectModal(false)
+            }}
+            overrideWithKeplrInstallLink={!window.keplr ? 'https://www.keplr.app/' : undefined}
+            onSelectExtension={(type: CONNECTION_TYPE) => {
+              console.log('🚀 ~ file: Layout.tsx ~ line 219 ~ Layout ~ type', type)
+              setShowConnectionSelectModal(false)
+
+              connect(type)
+            }}
+            onSelectWalletConnect={() => {
+              setShowConnectionSelectModal(false)
+            }}
+          />
+        ) : null}
+      </AnimatePresence>
 
       <AnimatePresence>
         {showNoXKIModal ? (

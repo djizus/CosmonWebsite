@@ -1,6 +1,6 @@
 import { Coin } from '@cosmjs/amino/build/coins'
 import { StdFee } from '@cosmjs/amino/build/signdoc'
-import { makeClient } from './keplr'
+import { makeClient } from './connection/cosmos-clients'
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 

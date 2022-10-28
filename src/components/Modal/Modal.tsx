@@ -8,7 +8,7 @@ export type ModalProps = {
   fullScreen?: boolean
   hasCloseButton?: boolean
   containerClassname?: string
-  width?: number
+  width?: number | string
   onCloseModal: () => void
 }
 

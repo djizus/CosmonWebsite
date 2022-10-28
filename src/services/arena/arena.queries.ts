@@ -1,4 +1,4 @@
-import { makeUnsignedClient } from '@services/keplr'
+import { makeUnsignedClient } from '@services/connection/cosmos-clients'
 import { useWalletStore } from '../../store/walletStore'
 
 /**
