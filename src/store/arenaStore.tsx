@@ -173,7 +173,6 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
         currentLeaderboard = [...currentLeaderboardWallets]
       }
 
-      console.log(currentLeaderboard)
       // we get the first twelve players
       const addressesFromLeaderboard: string[] = [...currentLeaderboard].splice(
         page * itemPerPage,
@@ -208,8 +207,6 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
         []
       )
 
-      console.log(formatedLeaderboard)
-
       set({
         currentLeaderboard: formatedLeaderboard,
       })
@@ -228,14 +225,11 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     }
   ) => {
     try {
-      console.log('HALO')
       const oldLeaderboard = await ArenaService.queries().fetchOldLeaderboard(
         arenaAddress,
         limit,
         offset
       )
-
-      console.log('oldLeaderboard :: ', oldLeaderboard)
 
       const formatedOldLeaderboard: LeaderBoard = oldLeaderboard.map((item: any, index: number) => {
         return {
