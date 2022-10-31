@@ -7,7 +7,7 @@ import Modal from './Modal'
 const ConnectionSelectModal: React.FC<{
   overrideWithKeplrInstallLink?: string
   onSelectExtension: (type: CONNECTION_TYPE) => void
-  onSelectWalletConnect: () => void
+  onSelectWalletConnect: (type: CONNECTION_TYPE) => void
   onRequestClose: () => void
 }> = ({
   onRequestClose,
@@ -109,19 +109,24 @@ const ConnectionSelectModal: React.FC<{
           </button>
         )}
 
-        {/* <button
-      className="mt-2 flex items-center rounded-2xl bg-cosmon-blue-dark p-4"
-      onClick={(e) => {
-        e.preventDefault()
-        onSelectWalletConnect()
-      }}
-    >
-      <Image src="../icons/walletconnect.svg" alt="wallet connect logo" width={26} height={26} />
-      <div className="ml-5 flex flex-col items-start">
-        <h6 className="text-white">WalletConnect</h6>
-        <p className="body2 mt-1 text-xs">Keplr Mobile</p>
-      </div>
-    </button> */}
+        <button
+          className="mt-2 flex items-center rounded-2xl bg-cosmon-blue-dark p-4"
+          onClick={(e) => {
+            e.preventDefault()
+            onSelectWalletConnect(CONNECTION_TYPE.COSMOSTATION_WALLET_CONNECT)
+          }}
+        >
+          <Image
+            src="../icons/walletconnect.svg"
+            alt="wallet connect logo"
+            width={36}
+            height={36}
+          />
+          <div className="ml-5 flex flex-col items-start">
+            <h6 className="text-white">WalletConnect</h6>
+            <p className="body2 mt-1 text-xs">Cosmostation Mobile</p>
+          </div>
+        </button>
       </div>
     </Modal>
   )

@@ -34,7 +34,8 @@ import { CustomIndexedTx, IndexedTxMethodType } from 'types/IndexedTxMethodType'
 import { connectKeplr } from '@services/connection/keplr'
 import { connectWithCosmostation } from '@services/connection/cosmostation'
 import { CONNECTION_TYPE, CosmosConnectionProvider } from 'types/Connection'
-import { removeLastConnection, saveLastConnection, wasPreviouslyConnected } from '@utils/connection'
+import { removeLastConnection, saveLastConnection } from '@utils/connection'
+import { getMobileOfflineSignerWithConnectWallet } from '@services/connection/cosmostation-walletconnect'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
@@ -138,6 +139,16 @@ const useWalletStore = create<WalletState>(
                 ibcOfflineSigner = cosmostationIbcOfflineSigner
 
                 set({ cosmosConnectionProvider: provider })
+
+                break
+              case CONNECTION_TYPE.COSMOSTATION_WALLET_CONNECT:
+                const [cosmostationWCOfflineSigner, cosmostationWCIbcOfflineSigner] =
+                  await getMobileOfflineSignerWithConnectWallet()
+
+                offlineSigner = cosmostationWCOfflineSigner
+                ibcOfflineSigner = cosmostationWCIbcOfflineSigner
+
+                // set({ cosmosConnectionProvider: provider })
 
                 break
               default:

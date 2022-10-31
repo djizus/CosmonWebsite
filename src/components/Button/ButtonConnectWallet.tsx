@@ -36,8 +36,9 @@ const ButtonConnectWallet: React.FC<ButtonConnectWalletProps> = ({ buttonProps }
               setShowConnectionSelectModal(false)
               connect(type)
             }}
-            onSelectWalletConnect={() => {
+            onSelectWalletConnect={(type: CONNECTION_TYPE) => {
               setShowConnectionSelectModal(false)
+              connect(type)
             }}
           />
         ) : null}
