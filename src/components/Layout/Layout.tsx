@@ -14,6 +14,17 @@ import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
 import { AnimatePresence } from 'framer-motion'
 import BuyXKIModal from '@components/Modal/BuyXKIModal'
 import IBCCoinBreakdownPopup from './IBCCoinBreakdownPopup'
+import { CONNECTION_TYPE } from 'types/Connection'
+import { isConnectionTypeHandled, wasPreviouslyConnected } from '@utils/connection'
+import {
+  handleChangeAccount as handleChangeCosmostationAccount,
+  stopListenForChangeAccount as stopListenForChangeCosmostationAccount,
+} from '@services/connection/cosmostation'
+import {
+  handleChangeAccount as handleChangeKeplrAccount,
+  stopListenForChangeAccount as stopListenForChangeKeplrAccount,
+} from '@services/connection/keplr'
+import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -33,6 +44,7 @@ export default function Layout({ children }: LayoutProps) {
     coins,
     showWithdrawDepositModal,
     setShowWithdrawDepositModal,
+    cosmosConnectionProvider,
   } = useWalletStore((state) => state)
 
   const { getWhitelistData } = useCosmonStore((state) => state)
@@ -42,26 +54,61 @@ export default function Layout({ children }: LayoutProps) {
   const [showNoXKIModal, setShowNoXKIModal] = useState(false)
   const [showDisconnectOrCopyPopup, set_showDisconnectOrCopyPopup] = useState(false)
 
-  const handleSwitchAccount = async () => {
-    await connect()
-    fetchWalletData()
-    getWhitelistData()
-  }
-
   useEffect(() => {
     // The user has been connected before, connect him automatically
-    if (walletAddress !== '') {
-      setTimeout(() => {
-        connect()
-      }, 250)
-    }
-    window.addEventListener('keplr_keystorechange', handleSwitchAccount)
-
-    // cleanup this component
-    return () => {
-      window.removeEventListener('keplr_keystorechange', handleSwitchAccount)
+    const connectedAuth = wasPreviouslyConnected()
+    if (connectedAuth?.address) {
+      if (isConnectionTypeHandled(connectedAuth.type)) {
+        connect(connectedAuth.type)
+      }
     }
   }, [])
+
+  useEffect(() => {
+    if (isConnected) {
+      fetchWalletData()
+      getWhitelistData()
+    }
+  }, [isConnected])
+
+  // handle change wallet account
+  useEffect(() => {
+    let event: any = null
+    if (wasPreviouslyConnected()?.address && isConnected) {
+      switch (wasPreviouslyConnected()?.type) {
+        case CONNECTION_TYPE.COSMOSTATION: {
+          if (cosmosConnectionProvider) {
+            event = handleChangeCosmostationAccount(cosmosConnectionProvider)
+          }
+          break
+        }
+
+        case CONNECTION_TYPE.KEPLR:
+          handleChangeKeplrAccount()
+          break
+        default:
+          break
+      }
+    }
+    return () => {
+      if (wasPreviouslyConnected()?.address && isConnected) {
+        switch (wasPreviouslyConnected()?.type) {
+          case CONNECTION_TYPE.COSMOSTATION: {
+            if (cosmosConnectionProvider && event) {
+              stopListenForChangeCosmostationAccount(cosmosConnectionProvider, event)
+            }
+            break
+          }
+
+          case CONNECTION_TYPE.KEPLR:
+            stopListenForChangeKeplrAccount()
+            break
+          default:
+            break
+        }
+      }
+    }
+  }, [wasPreviouslyConnected()?.address, cosmosConnectionProvider, isConnected])
 
   useEffect(() => {
     if (coins.length > 0) {
@@ -71,16 +118,6 @@ export default function Layout({ children }: LayoutProps) {
       }
     }
   }, [coins])
-
-  useEffect(() => {
-    if (isConnected) {
-      fetchWalletData()
-    }
-    /* const refreshInterval = window.setInterval(() => {
-      fetchWalletData()
-    }, 8000)
-    return () => clearInterval(refreshInterval) */
-  }, [isConnected])
 
   return (
     <div className="flex flex-col">
@@ -186,14 +223,7 @@ export default function Layout({ children }: LayoutProps) {
               )}
             </div>
           ) : (
-            <Button
-              className="max-h-[42px]"
-              type="secondary"
-              isLoading={isFetchingData}
-              onClick={() => connect()}
-            >
-              Connect wallet
-            </Button>
+            <ButtonConnectWallet buttonProps={{ type: 'secondary' }} />
           )}
         </div>
       </header>

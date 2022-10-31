@@ -3,12 +3,11 @@ import { persist } from 'zustand/middleware'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { SigningStargateClient } from '@cosmjs/stargate'
 import {
-  connectKeplr,
   makeClient,
   makeIbcClient,
   makeStargateClient,
   makeStargateClientUnsigned,
-} from '../services/keplr'
+} from '../services/connection/cosmos-clients'
 import { Coin } from '@cosmjs/amino/build/coins'
 import {
   executeBuyCosmon,
@@ -32,9 +31,11 @@ import { NFTId, CosmonType, Scarcity } from 'types'
 import { XPRegistryService } from '@services/xp-registry'
 import { DeckService } from '@services/deck'
 import { CustomIndexedTx, IndexedTxMethodType } from 'types/IndexedTxMethodType'
+import { connectKeplr } from '@services/connection/keplr'
+import { connectWithCosmostation } from '@services/connection/cosmostation'
+import { CONNECTION_TYPE, CosmosConnectionProvider } from 'types/Connection'
+import { removeLastConnection, saveLastConnection, wasPreviouslyConnected } from '@utils/connection'
 
-const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
-const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
 const PUBLIC_STAKING_IBC_DENOM_ON_CHAIN = process.env.NEXT_PUBLIC_IBC_DENOM || ''
@@ -62,12 +63,13 @@ interface WalletState {
   cosmons: CosmonType[]
   isCurrentlyIbcTransferring: boolean
   isConnected: boolean
+  cosmosConnectionProvider?: CosmosConnectionProvider | null
   hasSubscribed: boolean
   showWithdrawDepositModal?: 'withdraw' | 'deposit'
+  connect: (type?: CONNECTION_TYPE) => void
   setCosmons: (cosmons: CosmonType[]) => void
   buyCosmon: (scarcity: Scarcity, price: string) => any
   transferAsset: (recipient: string, asset: CosmonType) => void
-  connect: () => void
   disconnect: () => void
   setHasSubscribed: (hasSubscribed: boolean) => void
   fetchCoin: () => void
@@ -83,7 +85,6 @@ interface WalletState {
   resetClaimData: () => void
   searchTx: (txMethodType: IndexedTxMethodType) => Promise<CustomIndexedTx>
   setShowWithdrawDepositModal: (type?: 'withdraw' | 'deposit') => void
-  // checkIfEligibleForAirdrop: (reset?: boolean) => Promise<void>
 }
 
 const useWalletStore = create<WalletState>(
@@ -102,6 +103,7 @@ const useWalletStore = create<WalletState>(
       stargateSigningClient: null,
       ibcSigningClient: null,
       isConnected: false,
+      cosmosConnectionProvider: null,
       hasSubscribed: false,
       isEligibleForAirdrop: null,
 
@@ -110,51 +112,70 @@ const useWalletStore = create<WalletState>(
           hasSubscribed: hasSubscribed,
         })
       },
-      connect: async () => {
+      connect: async (type?: CONNECTION_TYPE) => {
         set({
           isFetchingData: true,
         })
 
         try {
-          await connectKeplr()
+          let offlineSigner = null,
+            ibcOfflineSigner = null
 
-          window.keplr.defaultOptions = {
-            sign: {
-              preferNoSetFee: true,
-            },
+          if (type) {
+            switch (type) {
+              case CONNECTION_TYPE.KEPLR:
+                const [keplrOfflineSigner, keplrIbcOfflineSigner] = await connectKeplr()
+
+                offlineSigner = keplrOfflineSigner
+                ibcOfflineSigner = keplrIbcOfflineSigner
+
+                break
+              case CONNECTION_TYPE.COSMOSTATION:
+                const [cosmostationOfflineSigner, cosmostationIbcOfflineSigner, provider] =
+                  await connectWithCosmostation()
+
+                offlineSigner = cosmostationOfflineSigner
+                ibcOfflineSigner = cosmostationIbcOfflineSigner
+
+                set({ cosmosConnectionProvider: provider })
+
+                break
+              default:
+                break
+            }
           }
 
-          // enable website to access kepler
-          await (window as any).keplr.enable(PUBLIC_CHAIN_ID)
-          await (window as any).keplr.enable(PUBLIC_IBC_CHAIN_ID)
+          if (!offlineSigner && !ibcOfflineSigner) {
+            return
+          }
 
-          // get offline signer for signing txs
-          const offlineSigner = await (window as any).getOfflineSignerAuto(PUBLIC_CHAIN_ID)
-          const ibcOfflineSigner = await (window as any).getOfflineSignerAuto(PUBLIC_IBC_CHAIN_ID)
-
-          const client = await makeClient(offlineSigner)
-          let stargateClient = null,
-            ibcClient = null
-          try {
-            stargateClient = await makeStargateClient(offlineSigner)
-            ibcClient = await makeIbcClient(ibcOfflineSigner)
-          } catch (error) {}
+          const client = await makeClient(offlineSigner!)
 
           set({
             signingClient: client,
-            stargateSigningClient: stargateClient,
-            ibcSigningClient: ibcClient,
+            stargateSigningClient:
+              (offlineSigner && (await makeStargateClient(offlineSigner!))) || null,
+            ibcSigningClient:
+              (ibcOfflineSigner && (await makeIbcClient(ibcOfflineSigner!))) || null,
           })
 
           // get user address
-          const [{ address }] = await offlineSigner.getAccounts()
-          const ibcAddress = (await ibcOfflineSigner.getAccounts())[0].address
+          const accounts = (offlineSigner && (await offlineSigner!.getAccounts())) || [
+            { address: '' },
+          ]
+          const ibcAccounts = (ibcOfflineSigner && (await ibcOfflineSigner!.getAccounts())) || [
+            { address: '' },
+          ]
+
+          console.log(accounts)
 
           set({
-            address: address,
-            ibcAddress,
+            address: accounts[0].address,
+            ibcAddress: ibcAccounts[0].address,
             isConnected: true,
           })
+
+          saveLastConnection({ type })
         } catch (error: any) {
           console.error('error while connecting', error)
         } finally {
@@ -265,12 +286,11 @@ const useWalletStore = create<WalletState>(
         const { fetchSellData } = useCosmonStore.getState()
         const { getRewardsData } = useRewardStore.getState()
         await fetchSellData()
-        const { fetchCosmons, fetchCoin } = get()
+        const { fetchCoin, fetchCosmons } = get()
         await fetchCosmons()
         await fetchCoin()
         await getRewardsData()
         // await fetchRewards()
-
         set({
           // maxClaimableToken: maxClaimableToken,
           isFetchingData: false,
@@ -553,12 +573,14 @@ const useWalletStore = create<WalletState>(
           showWithdrawDepositModal: value,
         })
       },
-      disconnect: () => {
+      disconnect: async () => {
         get().signingClient?.disconnect()
+        removeLastConnection()
         set({
           address: '',
           signingClient: null,
           isConnected: false,
+          cosmons: [],
         })
       },
       searchTx: async (txMethodType: IndexedTxMethodType): Promise<CustomIndexedTx> => {

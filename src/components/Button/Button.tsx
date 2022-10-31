@@ -4,7 +4,7 @@ import * as style from './Button.module.scss'
 import LoadingIcon from '../LoadingIcon/LoadingIcon'
 import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
-type ButtonProps = {
+export type ButtonProps = {
   type?: 'primary' | 'primaryBordered' | 'secondary' | 'quaternary' | 'ghost' | 'disabledColored'
   size?: 'small'
   icon?: {
