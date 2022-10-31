@@ -77,7 +77,7 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
         offset: page * itemPerPage,
       })
     }
-  }, [page, itemPerPage, selectedLeaderboard])
+  }, [page, itemPerPage])
 
   const handleClickClaimPrize = async () => {
     try {
