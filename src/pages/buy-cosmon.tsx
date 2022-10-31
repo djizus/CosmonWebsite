@@ -13,11 +13,10 @@ import { useRouter } from 'next/router'
 import { useAirdropStore } from '../store/airdropStore'
 import { useCosmonStore } from '../store/cosmonStore'
 import UnmaskOnReach from '@components/UnmaskOnReach/UnmaskOnReach'
-import { AnimationType } from '@components/UnmaskOnReach/UnmaskOnReach.types'
-import { motion } from 'framer-motion'
+import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
 
 export default function Page() {
-  const { buyCosmon, isConnected, connect, address } = useWalletStore((state) => state)
+  const { buyCosmon, isConnected } = useWalletStore((state) => state)
 
   const { getAirdropData, airdropData, resetAirdropData } = useAirdropStore((state) => state)
 
@@ -26,13 +25,6 @@ export default function Page() {
   const { whitelistData, isSellOpen } = useCosmonStore((state) => state)
 
   const [isCurrentlyBuying, set_isCurrentlyBuying] = useState<Scarcity | null>(null)
-
-  const [cosmonPrices, set_cosmonPrices] = useState<
-    {
-      scarcity: Scarcity
-      amount: string
-    }[]
-  >()
 
   const [showCosmonAirdropModal, set_showCosmonAirdropModal] = useState(false)
   const [cosmonBought, set_cosmonBought] = useState<null | CosmonType>()
@@ -49,11 +41,6 @@ export default function Page() {
       set_isCurrentlyBuying(null)
     }
   }
-
-  useEffect(() => {
-    if (cosmonBought) {
-    }
-  }, [cosmonBought])
 
   useEffect(() => {
     if (airdropData !== undefined) {
@@ -253,11 +240,7 @@ export default function Page() {
                 <p className="px-10 text-[22px] font-semibold leading-[32px] text-white">
                   Connect your wallet to buy Cosmon
                 </p>
-                {!isConnected && (
-                  <Button onClick={connect} className="max-h-[42px]">
-                    Connect Wallet{' '}
-                  </Button>
-                )}
+                {!isConnected && <ButtonConnectWallet />}
               </div>
             )}
           </div>

@@ -14,11 +14,17 @@ import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
 import { AnimatePresence } from 'framer-motion'
 import BuyXKIModal from '@components/Modal/BuyXKIModal'
 import IBCCoinBreakdownPopup from './IBCCoinBreakdownPopup'
-import ConnectionSelectModal from '@components/Modal/ConnectionSelectModal'
 import { CONNECTION_TYPE } from 'types/Connection'
 import { isConnectionTypeHandled, wasPreviouslyConnected } from '@utils/connection'
-import { handleChangeAccount as handleChangeCosmostationAccount } from '@services/connection/cosmostation'
-import { handleChangeAccount as handleChangeKeplrAccount } from '@services/connection/keplr'
+import {
+  handleChangeAccount as handleChangeCosmostationAccount,
+  stopListenForChangeAccount as stopListenForChangeCosmostationAccount,
+} from '@services/connection/cosmostation'
+import {
+  handleChangeAccount as handleChangeKeplrAccount,
+  stopListenForChangeAccount as stopListenForChangeKeplrAccount,
+} from '@services/connection/keplr'
+import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -46,7 +52,6 @@ export default function Layout({ children }: LayoutProps) {
   const [showWalletPopup, set_showWalletPopup] = useState(false)
   const [showATOMBreakdownPopup, set_showATOMBreakdownPopup] = useState(false)
   const [showNoXKIModal, setShowNoXKIModal] = useState(false)
-  const [showConnectionSelectModal, setShowConnectionSelectModal] = useState(false)
   const [showDisconnectOrCopyPopup, set_showDisconnectOrCopyPopup] = useState(false)
 
   useEffect(() => {
@@ -66,17 +71,41 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, [isConnected])
 
+  // handle change wallet account
   useEffect(() => {
+    let event: any = null
     if (wasPreviouslyConnected()?.address && isConnected) {
       switch (wasPreviouslyConnected()?.type) {
-        case CONNECTION_TYPE.COSMOSTATION:
-          cosmosConnectionProvider && handleChangeCosmostationAccount(cosmosConnectionProvider)
+        case CONNECTION_TYPE.COSMOSTATION: {
+          if (cosmosConnectionProvider) {
+            event = handleChangeCosmostationAccount(cosmosConnectionProvider)
+          }
           break
+        }
+
         case CONNECTION_TYPE.KEPLR:
           handleChangeKeplrAccount()
           break
         default:
           break
+      }
+    }
+    return () => {
+      if (wasPreviouslyConnected()?.address && isConnected) {
+        switch (wasPreviouslyConnected()?.type) {
+          case CONNECTION_TYPE.COSMOSTATION: {
+            if (cosmosConnectionProvider && event) {
+              stopListenForChangeCosmostationAccount(cosmosConnectionProvider, event)
+            }
+            break
+          }
+
+          case CONNECTION_TYPE.KEPLR:
+            stopListenForChangeKeplrAccount()
+            break
+          default:
+            break
+        }
       }
     }
   }, [wasPreviouslyConnected()?.address, cosmosConnectionProvider, isConnected])
@@ -194,39 +223,10 @@ export default function Layout({ children }: LayoutProps) {
               )}
             </div>
           ) : (
-            <Button
-              className="max-h-[42px]"
-              type="secondary"
-              isLoading={isFetchingData}
-              onClick={() => {
-                setShowConnectionSelectModal(true)
-              }}
-            >
-              Connect wallet
-            </Button>
+            <ButtonConnectWallet buttonProps={{ type: 'secondary' }} />
           )}
         </div>
       </header>
-
-      <AnimatePresence>
-        {showConnectionSelectModal ? (
-          <ConnectionSelectModal
-            onRequestClose={() => {
-              setShowConnectionSelectModal(false)
-            }}
-            overrideWithKeplrInstallLink={!window.keplr ? 'https://www.keplr.app/' : undefined}
-            onSelectExtension={(type: CONNECTION_TYPE) => {
-              console.log('🚀 ~ file: Layout.tsx ~ line 219 ~ Layout ~ type', type)
-              setShowConnectionSelectModal(false)
-
-              connect(type)
-            }}
-            onSelectWalletConnect={() => {
-              setShowConnectionSelectModal(false)
-            }}
-          />
-        ) : null}
-      </AnimatePresence>
 
       <AnimatePresence>
         {showNoXKIModal ? (
