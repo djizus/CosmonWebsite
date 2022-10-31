@@ -90,3 +90,16 @@ const addChainIfNeeded = async (provider: CosmosConnectionProvider) => {
   }
   //
 }
+
+export const isCosmostationExtensionInstalled = async () => {
+  try {
+    await cosmos()
+    return true
+  } catch (e) {
+    if (e instanceof InstallError) {
+      console.log('not installed')
+      return false
+    }
+  }
+  return false
+}
