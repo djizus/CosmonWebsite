@@ -1,4 +1,4 @@
-import { makeUnsignedClient } from '@services/keplr'
+import { makeUnsignedClient } from '@services/connection/cosmos-clients'
 import { ArenaType } from 'types/Arena'
 import { useWalletStore } from '../../store/walletStore'
 

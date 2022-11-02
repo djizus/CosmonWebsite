@@ -2,12 +2,16 @@ import clsx from 'clsx'
 import { LeaderBoard, LeaderBoardItem, WalletInfos } from 'types/Arena'
 import { isMyWalletInCurrentPage } from './utils'
 import * as style from './Leaderboard.module.scss'
+import Button from '@components/Button/Button'
 
 interface Props {
   currentWalletAddress: string
   currentLeaderboard: LeaderBoard
   walletInfos: WalletInfos
   isOldLeaderboard: boolean
+  page: number
+  itemPerPage: number
+  handleChangePage: (value: number) => void
   className?: string
 }
 
@@ -16,12 +20,15 @@ const Leaderboard: React.FC<Props> = ({
   currentWalletAddress,
   walletInfos,
   isOldLeaderboard,
+  page,
+  itemPerPage,
+  handleChangePage,
   className,
 }) => {
   const displayMyWallet =
     !isMyWalletInCurrentPage(currentWalletAddress, currentLeaderboard) && !isOldLeaderboard
   const fights = walletInfos.victories + walletInfos.defeats + walletInfos.draws
-  const slicedLeaderboard = currentLeaderboard.slice(0, 5)
+  const slicedLeaderboard = currentLeaderboard.slice(0, 20)
 
   return (
     <div className={style.container}>
@@ -79,6 +86,24 @@ const Leaderboard: React.FC<Props> = ({
           ))}
         </tbody>
       </table>
+      <div className={style.leaderboardPagination}>
+        <Button
+          className={style.paginationButton}
+          type="ghost"
+          disabled={page === 0}
+          onClick={() => handleChangePage(page - 1)}
+        >
+          Previous
+        </Button>
+        <Button
+          type="ghost"
+          className={style.paginationButton}
+          disabled={currentLeaderboard.length < itemPerPage}
+          onClick={() => handleChangePage(page + 1)}
+        >
+          Next
+        </Button>
+      </div>
       <hr className={style.hr} />
     </div>
   )

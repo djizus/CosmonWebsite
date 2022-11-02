@@ -47,7 +47,7 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
   }, [isConnected])
 
   useEffect(() => {
-    if (cosmons && cosmons.length) {
+    if (cosmons && cosmons.length > 0) {
       fetchDecksList()
       if (selectedDeck) {
         updateCosmonsInSelectedDeck(selectedDeck, cosmons)

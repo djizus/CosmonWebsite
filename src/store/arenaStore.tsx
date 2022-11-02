@@ -14,6 +14,7 @@ interface ArenaState {
   currentLeaguePro: ArenaType | null
   oldLeaderboard: LeaderBoard
   currentLeaderboard: LeaderBoard
+  currentLeaderboardWallets: string[]
   walletInfos: WalletInfos
   arenaFees: any
   currentPrizePool: any
@@ -28,8 +29,28 @@ interface ArenaState {
   fetchNextPrizePool: (arenaAddress: string) => Promise<Coin[]>
   fetchPrizesForAddress: (arenaAddress: string) => Promise<Coin[]>
   fetchCurrentChampionshipNumber: (arenaAddress: string) => void
-  fetchCurrentLeaderBoard: (arenaAddress: string) => void
-  fetchOldLeaderBoard: (arenaAddress: string) => void
+  fetchCurrentLeaderBoard: (
+    arenaAddress: string,
+    {
+      page,
+      itemPerPage,
+      init,
+    }: {
+      page: number
+      itemPerPage: number
+      init: boolean
+    }
+  ) => void
+  fetchOldLeaderBoard: (
+    arenaAddress: string,
+    {
+      limit,
+      offset,
+    }: {
+      limit: number
+      offset: number
+    }
+  ) => void
   fetchWalletInfos: (arenaAddress: string, walletAddress: string) => void
   fetchWalletsInfos: (arenaAddress: string, walletsAddress: string[]) => void
   fetchDailyCombat: (arenaAddress: string, walletAddress: string) => void
@@ -50,6 +71,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   currentLeaguePro: null,
   oldLeaderboard: [],
   currentLeaderboard: [],
+  currentLeaderboardWallets: [],
   dailyCombatLimit: 0,
   maxDailyCombatLimit: 0,
   walletInfos: {
@@ -104,13 +126,18 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
   getPrizePool: async (arenaAddress: string) => {
     const { fetchCurrentPrizePool, fetchNextPrizePool } = get()
     const currPrize = await fetchCurrentPrizePool(arenaAddress)
-    if (currPrize?.length > 0) {
-      set({ prizePool: currPrize[0] })
-    }
     const nextPrize = await fetchNextPrizePool(arenaAddress)
-    if (nextPrize?.length > 0) {
-      set({ prizePool: nextPrize[0] })
+    if (currPrize?.length > 0 && nextPrize?.length > 0) {
+      set({
+        prizePool: {
+          denom: currPrize[0].denom,
+          amount: (+currPrize[0].amount + +nextPrize[0].amount).toString(),
+        } as Coin,
+      })
     }
+    /* if (nextPrize?.length > 0) {
+      set({ prizePool: nextPrize[0] })
+    } */
   },
   fetchPrizesForAddress: async (arenaAddress: string) => {
     try {
@@ -121,27 +148,43 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       console.error(error)
     }
   },
-  fetchCurrentLeaderBoard: async (arenaAddress: string) => {
+  fetchCurrentLeaderBoard: async (
+    arenaAddress: string,
+    {
+      page,
+      itemPerPage,
+      init,
+    }: {
+      page: number
+      itemPerPage: number
+      init: boolean
+    }
+  ) => {
     try {
-      // @TODO handle pagination later
-      const currentLeaderboard = await ArenaService.queries().fetchCurrentLeaderboard(
-        arenaAddress,
-        10,
-        null
+      let currentLeaderboard: string[] = []
+
+      if (init) {
+        const firstsLeaderBoard = await ArenaService.queries().fetchFirstsLeaderboard(
+          arenaAddress,
+          249
+        )
+        currentLeaderboard = [...firstsLeaderBoard]
+
+        set({
+          currentLeaderboardWallets: firstsLeaderBoard,
+        })
+      } else {
+        const { currentLeaderboardWallets } = useArenaStore.getState()
+        currentLeaderboard = [...currentLeaderboardWallets]
+      }
+
+      // we get the first twelve players
+      const addressesFromLeaderboard: string[] = [...currentLeaderboard].splice(
+        page * itemPerPage,
+        itemPerPage
       )
 
-      // @TODO : check with back if we rly need to reverse currentLeaderboard
-      const addressesFromLeaderboard: string[] = [...currentLeaderboard].reduce(
-        (acc: string[], curr: string[]) => {
-          if (curr.length > 0) {
-            return [...acc, ...curr]
-          }
-
-          return [...acc]
-        },
-        []
-      )
-
+      // we get wallet infos for displayed players
       const walletsInfos = await ArenaService.queries().fetchWalletsInfos(
         arenaAddress,
         addressesFromLeaderboard
@@ -154,7 +197,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
               ...acc,
               {
                 address: curr,
-                position: index + 1,
+                position: +currentLeaderboard.findIndex((addr) => addr === curr) + 1,
                 fights:
                   walletsInfos[index].victories +
                   walletsInfos[index].defeats +
@@ -176,14 +219,27 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       console.error(error)
     }
   },
-  fetchOldLeaderBoard: async (arenaAddress: string) => {
+  fetchOldLeaderBoard: async (
+    arenaAddress: string,
+    {
+      limit,
+      offset,
+    }: {
+      limit: number
+      offset: number
+    }
+  ) => {
     try {
-      const oldLeaderboard = await ArenaService.queries().fetchOldLeaderboard(arenaAddress)
+      const oldLeaderboard = await ArenaService.queries().fetchOldLeaderboard(
+        arenaAddress,
+        limit,
+        offset
+      )
 
       const formatedOldLeaderboard: LeaderBoard = oldLeaderboard.map((item: any, index: number) => {
         return {
           address: item[0],
-          position: index + 1,
+          position: offset + index + 1,
           fights: item[1].victories + item[1].defeats + item[1].draws,
           ...item[1],
         }

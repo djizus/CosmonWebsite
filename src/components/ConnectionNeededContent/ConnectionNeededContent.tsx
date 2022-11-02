@@ -6,19 +6,10 @@ type ConnectionNeededContentProps = {
   children: React.ReactNode
 }
 
-const ConnectionNeededContent = ({
-  connectPanelCmp,
-  children,
-}: ConnectionNeededContentProps) => {
-  const { connect, isConnected } = useWalletStore((state) => state)
+const ConnectionNeededContent = ({ connectPanelCmp, children }: ConnectionNeededContentProps) => {
+  const { isConnected } = useWalletStore()
 
-  return (
-    <>
-      {!isConnected
-        ? connectPanelCmp || <ConnectionPanel connect={connect} />
-        : children}
-    </>
-  )
+  return <>{!isConnected ? connectPanelCmp || <ConnectionPanel /> : children}</>
 }
 
 export default ConnectionNeededContent

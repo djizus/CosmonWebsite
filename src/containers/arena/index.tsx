@@ -247,7 +247,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                             150-199.<span className={style.tipPercent}>0.150%</span>
                           </p>
                           <p className={style.tipText}>
-                            200-250.<span className={style.tipPercent}>0.100%</span>
+                            200-249.<span className={style.tipPercent}>0.100%</span>
                           </p>
                         </div>
                       </>

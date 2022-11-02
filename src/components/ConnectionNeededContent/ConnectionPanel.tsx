@@ -1,19 +1,13 @@
 import React from 'react'
-import Button from '../Button/Button'
 import Image from 'next/image'
+import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
 
-type ConnectionPanelProps = {
-  connect: () => void
-}
+type ConnectionPanelProps = {}
 
-const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ connect }) => {
+const ConnectionPanel: React.FC<ConnectionPanelProps> = ({}) => {
   return (
     <div className="relative flex h-[500px] w-full items-center justify-center">
-      <Image
-        objectFit="fill"
-        layout="fill"
-        src="../blurry-bg-connect-wallet.png"
-      ></Image>
+      <Image objectFit="fill" layout="fill" src="../blurry-bg-connect-wallet.png"></Image>
 
       <div className="relative px-6">
         <p className="rounded-[20px] bg-[#312E5A] bg-opacity-50 px-6 py-10 text-[22px] font-semibold leading-8 text-white lg:hidden">
@@ -23,9 +17,7 @@ const ConnectionPanel: React.FC<ConnectionPanelProps> = ({ connect }) => {
           <p className="px-10 text-[22px] font-semibold leading-[32px] text-white">
             Connect your wallet to see your assets
           </p>
-          <Button onClick={connect} className="max-h-[42px]">
-            Connect Wallet{' '}
-          </Button>
+          <ButtonConnectWallet />
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { makeUnsignedClient } from '@services/keplr'
+import { makeUnsignedClient } from '@services/connection/cosmos-clients'
 import { useWalletStore } from '../../store/walletStore'
 
 /**
@@ -107,12 +107,11 @@ export const fetchCurrentLeaderboard = async (
  * Fetch old leaderboard
  * @retun oldLeaderboard
  */
-export const fetchOldLeaderboard = async (arenaAddress: string) => {
+export const fetchOldLeaderboard = async (arenaAddress: string, limit: number, offset: number) => {
   try {
     const { signingClient } = useWalletStore.getState()
-
     const oldLeaderboard = await signingClient?.queryContractSmart(arenaAddress, {
-      get_old_leaderboard: { limit: 10, offset: 1 },
+      get_old_leaderboard: { limit, offset },
     })
 
     return oldLeaderboard
@@ -211,6 +210,24 @@ export const fetchMaxDailyCombat = async (arenaAddress: string) => {
   }
 }
 
+/**
+ * Fetch firsts leaderboard
+ * @retun firsts leaderboard
+ */
+export const fetchFirstsLeaderboard = async (arenaAddress: string, limit: number) => {
+  try {
+    const { signingClient } = useWalletStore.getState()
+
+    const firstsLeaderboard = await signingClient?.queryContractSmart(arenaAddress, {
+      get_firsts_leaderboard: { number: limit },
+    })
+
+    return firstsLeaderboard
+  } catch (e) {
+    console.error(`Error while fetching max daily comnbat in league`, e)
+  }
+}
+
 export default {
   fetchArenaFees,
   fetchCurrentPrizePool,
@@ -224,4 +241,5 @@ export default {
   fetchCurrentChampionshipNumber,
   fetchDailyCombat,
   fetchMaxDailyCombat,
+  fetchFirstsLeaderboard,
 }

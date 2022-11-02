@@ -7,8 +7,10 @@ export const firstHr: string
 export const header: string
 export const headerCell: string
 export const hr: string
+export const leaderboardPagination: string
 export const line: string
 export const myWalletLine: string
+export const paginationButton: string
 export const positionCell: string
 export const table: string
 export const tbody: string

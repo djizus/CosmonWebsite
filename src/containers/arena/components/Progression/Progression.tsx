@@ -1,4 +1,3 @@
-import Dropdown from '@components/Dropdown/Dropdown'
 import { useArenaStore } from '@store/arenaStore'
 import { useWalletStore } from '@store/walletStore'
 import React, { useEffect, useState } from 'react'
@@ -48,17 +47,37 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
   const { address } = useWalletStore()
 
   const [selectedLeaderboard, setSelectedLeaderboard] = useState<SelectedLeaderboardType>('current')
+  const [page, setPage] = useState(0)
+  const [itemPerPage] = useState(20)
 
   useEffect(() => {
     try {
       fetchWalletInfos(currentLeaguePro.contract, address)
-      fetchCurrentLeaderBoard(currentLeaguePro.contract)
+      fetchCurrentLeaderBoard(currentLeaguePro.contract, { page, itemPerPage, init: true })
       fetchPrizesForAddress(currentLeaguePro.contract)
-      fetchOldLeaderBoard(currentLeaguePro.contract)
+      fetchOldLeaderBoard(currentLeaguePro.contract, {
+        limit: itemPerPage,
+        offset: page,
+      })
       fetchDailyCombat(currentLeaguePro.contract, address)
       fetchMaxDailyCombat(currentLeaguePro.contract)
     } catch (error) {}
   }, [currentLeaguePro])
+
+  useEffect(() => {
+    setPage(0)
+  }, [selectedLeaderboard])
+
+  useEffect(() => {
+    if (selectedLeaderboard === 'current' && currentLeaguePro) {
+      fetchCurrentLeaderBoard(currentLeaguePro.contract, { page, itemPerPage, init: false })
+    } else if (selectedLeaderboard === 'old' && currentLeaguePro) {
+      fetchOldLeaderBoard(currentLeaguePro.contract, {
+        limit: itemPerPage,
+        offset: page * itemPerPage,
+      })
+    }
+  }, [page, itemPerPage])
 
   const handleClickClaimPrize = async () => {
     try {
@@ -101,6 +120,9 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
               }
               walletInfos={walletInfos}
               isOldLeaderboard={selectedLeaderboard === 'old'}
+              page={page}
+              itemPerPage={itemPerPage}
+              handleChangePage={(value: number) => setPage(value)}
             />
           </>
         ) : (
@@ -111,6 +133,9 @@ const Progression: React.FC<ProgressionProps> = ({ currentLeaguePro }) => {
               currentLeaderboard={currentLeaderboard}
               walletInfos={walletInfos}
               isOldLeaderboard={selectedLeaderboard === 'old'}
+              page={page}
+              itemPerPage={itemPerPage}
+              handleChangePage={(value: number) => setPage(value)}
             />
           </>
         )}
