@@ -33,8 +33,9 @@ import { DeckService } from '@services/deck'
 import { CustomIndexedTx, IndexedTxMethodType } from 'types/IndexedTxMethodType'
 import { connectKeplr } from '@services/connection/keplr'
 import { connectWithCosmostation } from '@services/connection/cosmostation'
-import { CONNECTION_TYPE, CosmosConnectionProvider } from 'types/Connection'
-import { removeLastConnection, saveLastConnection, wasPreviouslyConnected } from '@utils/connection'
+import { CONNECTED_WITH, CONNECTION_TYPE, CosmosConnectionProvider } from 'types/Connection'
+import { removeLastConnection, saveLastConnection } from '@utils/connection'
+import { getMobileOfflineSignerWithConnectWallet } from '@services/connection/cosmostation-walletconnect'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
@@ -54,6 +55,7 @@ interface WalletState {
     max_claimable?: number
     num_already_claimed?: number
   }
+  connectedWith: string | null
   signingClient: SigningCosmWasmClient | null
   stargateSigningClient: SigningStargateClient | null
   ibcSigningClient: SigningStargateClient | null
@@ -106,6 +108,7 @@ const useWalletStore = create<WalletState>(
       cosmosConnectionProvider: null,
       hasSubscribed: false,
       isEligibleForAirdrop: null,
+      connectedWith: null,
 
       setHasSubscribed: (hasSubscribed) => {
         set({
@@ -128,7 +131,6 @@ const useWalletStore = create<WalletState>(
 
                 offlineSigner = keplrOfflineSigner
                 ibcOfflineSigner = keplrIbcOfflineSigner
-
                 break
               case CONNECTION_TYPE.COSMOSTATION:
                 const [cosmostationOfflineSigner, cosmostationIbcOfflineSigner, provider] =
@@ -137,7 +139,17 @@ const useWalletStore = create<WalletState>(
                 offlineSigner = cosmostationOfflineSigner
                 ibcOfflineSigner = cosmostationIbcOfflineSigner
 
-                set({ cosmosConnectionProvider: provider })
+                set({
+                  cosmosConnectionProvider: provider,
+                })
+
+                break
+              case CONNECTION_TYPE.COSMOSTATION_WALLET_CONNECT:
+                const [cosmostationWCOfflineSigner, cosmostationWCIbcOfflineSigner] =
+                  await getMobileOfflineSignerWithConnectWallet()
+
+                offlineSigner = cosmostationWCOfflineSigner
+                ibcOfflineSigner = cosmostationWCIbcOfflineSigner
 
                 break
               default:
@@ -149,14 +161,14 @@ const useWalletStore = create<WalletState>(
             return
           }
 
-          const client = await makeClient(offlineSigner!)
+          const signingClient = await makeClient(offlineSigner!)
+          const stargateSigningClient = await makeStargateClient(offlineSigner!)
+          const ibcSigningClient = await makeIbcClient(ibcOfflineSigner!)
 
           set({
-            signingClient: client,
-            stargateSigningClient:
-              (offlineSigner && (await makeStargateClient(offlineSigner!))) || null,
-            ibcSigningClient:
-              (ibcOfflineSigner && (await makeIbcClient(ibcOfflineSigner!))) || null,
+            signingClient,
+            stargateSigningClient,
+            ibcSigningClient,
           })
 
           // get user address
@@ -167,12 +179,12 @@ const useWalletStore = create<WalletState>(
             { address: '' },
           ]
 
-          console.log(accounts)
-
           set({
             address: accounts[0].address,
             ibcAddress: ibcAccounts[0].address,
             isConnected: true,
+            connectedWith:
+              type === CONNECTION_TYPE.KEPLR ? CONNECTED_WITH.KEPLR : CONNECTED_WITH.COSMOSTATION,
           })
 
           saveLastConnection({ type })

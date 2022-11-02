@@ -1,17 +1,12 @@
 import { useWalletStore } from '../../store/walletStore'
-import { RiFileCopy2Line } from 'react-icons/ri'
 import Button from '../Button/Button'
 
 type DisconnectOrCopyPopupProps = {
   onClosePopup: () => void
 }
 
-export default function DisconnectOrCopyPopup({
-  onClosePopup,
-}: DisconnectOrCopyPopupProps) {
-  const { address: walletAddress, disconnect } = useWalletStore(
-    (state) => state
-  )
+export default function DisconnectOrCopyPopup({ onClosePopup }: DisconnectOrCopyPopupProps) {
+  const { address: walletAddress, disconnect, connectedWith } = useWalletStore((state) => state)
 
   const copyAddressToClipboard = () => {
     navigator.clipboard.writeText(walletAddress).then(() => {})
@@ -33,7 +28,7 @@ export default function DisconnectOrCopyPopup({
 
         <div className="m-1 flex justify-between text-[#D1D2D8]">
           <div>Your Address</div>
-          <div className="font-normal">Connected with Keplr</div>
+          <div className="font-normal">Connected with {connectedWith}</div>
         </div>
 
         <div
@@ -47,10 +42,7 @@ export default function DisconnectOrCopyPopup({
         <div className="flex justify-around">
           <Button
             onClick={() =>
-              window.open(
-                `https://www.mintscan.io/ki-chain/account/${walletAddress}`,
-                '_blank'
-              )
+              window.open(`https://www.mintscan.io/ki-chain/account/${walletAddress}`, '_blank')
             }
             size="small"
             type="secondary"
