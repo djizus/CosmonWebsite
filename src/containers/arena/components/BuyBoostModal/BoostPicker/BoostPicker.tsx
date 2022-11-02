@@ -3,7 +3,7 @@ import Button from '@components/Button/Button'
 import * as style from './BoostPicker.module.scss'
 import { Boost } from 'types/Boost'
 import clsx from 'clsx'
-import { CurrentView } from '../BuyBoostModalType'
+import { BuyBoostModalOrigin, CurrentView } from '../BuyBoostModalType'
 import IconWithLabel from '../IconWithLabel/IconWithLabel'
 import { getIconForAttr, getStatAcronymFromBoost } from '@utils/boost'
 import Tooltip from '@components/Tooltip/Tooltip'
@@ -12,12 +12,14 @@ interface BoosterPickerProps {
   selectedBoost: Boost | null
   setSelectedBoost: Dispatch<SetStateAction<Boost | null>>
   setCurrentView: Dispatch<SetStateAction<CurrentView>>
+  origin: BuyBoostModalOrigin
 }
 
 const BoostPicker: React.FC<BoosterPickerProps> = ({
   selectedBoost,
   setSelectedBoost,
   setCurrentView,
+  origin,
 }) => {
   const boostsAvailable: Boost[] = [
     {
@@ -35,6 +37,14 @@ const BoostPicker: React.FC<BoosterPickerProps> = ({
       price: { denom: 'XKI', amount: '15' },
     },
   ]
+
+  const handleSubmit = () => {
+    if (origin === 'buyBoost') {
+      setCurrentView('leader')
+    } else {
+      setCurrentView('recap')
+    }
+  }
 
   return (
     <div className={style.container}>
@@ -77,7 +87,7 @@ const BoostPicker: React.FC<BoosterPickerProps> = ({
           )
         })}
       </div>
-      <Button disabled={!selectedBoost} onClick={() => setCurrentView('leader')}>
+      <Button disabled={!selectedBoost} onClick={handleSubmit}>
         Continue
       </Button>
     </div>

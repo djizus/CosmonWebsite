@@ -15,6 +15,7 @@ import numeral from 'numeral'
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import { ArenaType, Deck } from 'types'
 import BuyBoostModal from './components/BuyBoostModal/BuyBoostModal'
+import { BuyBoostModalOrigin } from './components/BuyBoostModal/BuyBoostModalType'
 import DeckBuilderModal from './components/DeckBuilder/DeckBuilderModal'
 import Decks from './components/Decks/Decks'
 import DeleteDeckModal from './components/DeleteDeckModal'
@@ -32,6 +33,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   const [buyBoostVisible, setBuyBoostVisible] = useState(false)
   const [deckToEdit, setDeckToEdit] = useState<Deck | undefined>()
   const [deckToDelete, setDeckToDelete] = useState<Deck | undefined>()
+  const [buyBoostModalOrigin, setBuyBoostModalOrigin] = useState<BuyBoostModalOrigin | null>(null)
   const { removeDeck, isRemovingDeck } = useDeckStore()
   const { arenasList, fetchArenasList } = useGameStore()
   const {
@@ -61,16 +63,6 @@ const Arena: React.FC<ArenaProps> = ({}) => {
     setDeckToDelete(deck)
   }, [])
 
-  const renderCurrentView = useMemo(() => {
-    switch (view) {
-      case 'decks':
-        return <Decks onEditDeck={handleClickEditDeck} onDeleteDeck={handleDeletetDeck} />
-      case 'progression':
-        // currentLeaguePro can't be null because if it is null we can't display it
-        return <Progression currentLeaguePro={currentLeaguePro as ArenaType} />
-    }
-  }, [view])
-
   const handleCloseDeckBuilderModal = useCallback(() => {
     setDeckToEdit(undefined)
     setDeckBuilderVisible(false)
@@ -80,12 +72,17 @@ const Arena: React.FC<ArenaProps> = ({}) => {
     setDeckBuilderVisible(true)
   }, [])
 
-  const handleOpenBuyBoostModal = useCallback(() => {
-    setBuyBoostVisible(true)
-  }, [])
+  const handleOpenBuyBoostModal = useCallback(
+    (origin: BuyBoostModalOrigin) => {
+      setBuyBoostVisible(true)
+      setBuyBoostModalOrigin(origin)
+    },
+    [buyBoostModalOrigin]
+  )
 
   const handleCloseBuyBoostModal = useCallback(() => {
     setBuyBoostVisible(false)
+    setBuyBoostModalOrigin(null)
   }, [])
 
   const handleConfirmDeleteDeck = useCallback(async () => {
@@ -136,6 +133,22 @@ const Arena: React.FC<ArenaProps> = ({}) => {
     fetchArenasList()
     setTime(getNextLeagueOpenTime())
   }
+
+  const renderCurrentView = useMemo(() => {
+    switch (view) {
+      case 'decks':
+        return (
+          <Decks
+            onOpenBoostModal={handleOpenBuyBoostModal}
+            onEditDeck={handleClickEditDeck}
+            onDeleteDeck={handleDeletetDeck}
+          />
+        )
+      case 'progression':
+        // currentLeaguePro can't be null because if it is null we can't display it
+        return <Progression currentLeaguePro={currentLeaguePro as ArenaType} />
+    }
+  }, [view])
 
   return (
     <div className="pt-[100px] lg:pt-[132px]">
@@ -307,7 +320,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
             <div>
               <Button
                 size="small"
-                onClick={handleOpenBuyBoostModal}
+                onClick={() => handleOpenBuyBoostModal('buyBoost')}
                 className={style.buyBoostButton}
               >
                 Buy a boost
@@ -320,15 +333,20 @@ const Arena: React.FC<ArenaProps> = ({}) => {
 
           <div>{renderCurrentView}</div>
           <AnimatePresence initial={false} exitBeforeEnter={true} onExitComplete={() => null}>
-            {buyBoostVisible && <BuyBoostModal handleCloseModal={handleCloseBuyBoostModal} />}
+            {buyBoostVisible && buyBoostModalOrigin ? (
+              <BuyBoostModal
+                origin={buyBoostModalOrigin}
+                handleCloseModal={handleCloseBuyBoostModal}
+              />
+            ) : null}
           </AnimatePresence>
           <AnimatePresence initial={false} exitBeforeEnter={true} onExitComplete={() => null}>
-            {deckBuilderVisible && (
+            {deckBuilderVisible ? (
               <DeckBuilderModal
                 deckToEdit={deckToEdit}
                 handleCloseModal={handleCloseDeckBuilderModal}
               />
-            )}
+            ) : null}
           </AnimatePresence>
 
           {deckToDelete ? (

@@ -17,7 +17,7 @@ import clsx from 'clsx'
 interface LeaderPickerProps {
   selectedLeaders: CosmonType[]
   selectedBoost: Boost
-  handleSelectLeader: (leader: CosmonType) => void
+  handleSelectLeader: (leader: CosmonType | null) => void
   setCurrentView: Dispatch<SetStateAction<CurrentView>>
 }
 
@@ -106,6 +106,12 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
             position: 'left',
           }}
         />
+        {selectedLeaders.length > 0 ? (
+          <div>
+            <p>{selectedLeaders.length} leader selected</p>
+            <Button onClick={() => handleSelectLeader(null)}>Clear all</Button>
+          </div>
+        ) : null}
         <div className={style.box}>
           <div>
             {formatedAndFiltredCosmons.map((cosmon) => (

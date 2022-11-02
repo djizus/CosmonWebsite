@@ -15,13 +15,15 @@ import ArenaDescriptionModal from '../ArenaDescriptionModal'
 import DeckContainer from './DeckContainer/DeckContainer'
 import DecksEmptyList from './DecksEmptyList'
 import { useArenaStore } from '@store/arenaStore'
+import { BuyBoostModalOrigin } from '../BuyBoostModal/BuyBoostModalType'
 
 interface DecksProps {
   onEditDeck: (deck: Deck) => void
   onDeleteDeck: (deck: Deck) => void
+  onOpenBoostModal: (origin: BuyBoostModalOrigin) => void
 }
 
-const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
+const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModal }) => {
   const { isConnected, cosmons, fetchCoin } = useWalletStore()
   const { fetchArenasList, registerToArena, fight } = useGameStore()
   const { decksList, fetchDecksList, fetchPersonalityAffinities, refreshCosmonsAndDecksList } =
@@ -166,6 +168,7 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck }) => {
                   onEditDeck={onEditDeck}
                   onClickDelete={onDeleteDeck}
                   onClickFight={handleClickFight}
+                  onOpenBoostModal={onOpenBoostModal}
                 />
               ))}
             </AnimatePresence>

@@ -15,12 +15,14 @@ import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
 import FlipCard from '@components/FlipCard/FlipCard'
 import Countdown from '@components/Countdown/Countdown'
 import { useArenaStore } from '@store/arenaStore'
+import { BuyBoostModalOrigin } from '../../BuyBoostModal/BuyBoostModalType'
 
 interface DeckContainerProps {
   deck: Deck
   onEditDeck: (deck: Deck) => void
   onClickDelete: (deck: Deck) => void
   onClickFight: (deck: Deck) => void
+  onOpenBoostModal: (origin: BuyBoostModalOrigin) => void
 }
 
 const DeckContainer: React.FC<DeckContainerProps> = ({
@@ -28,6 +30,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   onEditDeck,
   onClickDelete,
   onClickFight,
+  onOpenBoostModal,
 }) => {
   const { computeDeckAffinities } = useDeckStore()
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
@@ -122,6 +125,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
               />
 
               <CosmonFightPointsBar className="mt-[16px]" cosmon={cosmon} />
+              <Button onClick={() => onOpenBoostModal(cosmon)}>BUY BOOST</Button>
             </div>
           ))}
         </div>

@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import BoostPicker from './BoostPicker/BoostPicker'
 import * as style from './BuyBoostModal.module.scss'
-import { CurrentView } from './BuyBoostModalType'
+import { CurrentView, BuyBoostModalOrigin } from './BuyBoostModalType'
 import LeaderPicker from './LeaderPicker/LeaderPicker'
 import { Boost } from 'types/Boost'
 import Recap from './Recap/Recap'
@@ -31,14 +31,19 @@ const dropIn = {
 
 interface BuyBoostModalProps {
   handleCloseModal: () => void
+  origin: BuyBoostModalOrigin
 }
 
-const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal }) => {
+const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin }) => {
   const [currentView, setCurentView] = useState<CurrentView>('boost')
   const [selectedBoost, setSelectedBoost] = useState<Boost | null>(null)
   const [selectedLeaders, setSelectedLeaders] = useState<CosmonType[]>([])
 
-  const handleSelectLeader = (leader: CosmonType) => {
+  const handleSelectLeader = (leader: CosmonType | null) => {
+    if (leader === null) {
+      return setSelectedLeaders([])
+    }
+
     const leaderIndex = selectedLeaders.findIndex(
       (selectedLeader) => selectedLeader.id === leader.id
     )
@@ -87,6 +92,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal }) => {
             selectedBoost={selectedBoost}
             setSelectedBoost={setSelectedBoost}
             setCurrentView={setCurentView}
+            origin={origin}
           />
         )
       case 'leader':
