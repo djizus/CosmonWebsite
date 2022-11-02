@@ -6,6 +6,11 @@ export enum CONNECTION_TYPE {
   COSMOSTATION_WALLET_CONNECT = 'COSMOSTATION_WALLET_CONNECT',
 }
 
+export enum CONNECTED_WITH {
+  KEPLR = 'Keplr',
+  COSMOSTATION = 'Cosmostation',
+}
+
 export type Connection = {
   type: CONNECTION_TYPE
 }

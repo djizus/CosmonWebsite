@@ -16,8 +16,6 @@ export const connectWithWalletConnectCosmostation = async (): Promise<WalletConn
       qrcodeModal: new CosmostationWCModal(),
     })
 
-    await connector.createSession()
-
     return new Promise((resolve, reject) => {
       // void connector.killSession()
       void connector.createSession()
