@@ -40,82 +40,92 @@ const ConnectionSelectModal: React.FC<{
         <p className="text-[22px] text-white">Connect wallet</p>
       </div>
       <div className="mt-5 flex flex-col">
-        {isKeplrInstalled === true ? (
-          <button
-            className="flex items-center rounded-2xl bg-cosmon-blue-dark p-4"
-            onClick={(e) => {
-              e.preventDefault()
-              onSelectExtension(CONNECTION_TYPE.KEPLR)
-            }}
-          >
-            <Image src="../keplr-logo.png" alt="keplr logo" width={36} height={36} />
-            <div className="ml-5 flex flex-col items-start">
-              <h6 className="text-white">Keplr Wallet</h6>
-              <p className="body2 mt-1 text-xs ">Keplr Browser Extension</p>
-            </div>
-          </button>
-        ) : (
-          <button
-            className="bg-background flex items-center rounded-2xl p-4"
-            onClick={(e) => {
-              e.preventDefault()
-              window.open('https://www.keplr.app/', '_blank')
-            }}
-          >
-            <Image src="../keplr-logo.png" alt="keplr logo" width={36} height={36} />
-            <div className="ml-5 flex flex-col text-left">
-              <div className="flex items-center gap-2 text-white">
-                <h6>Install Keplr</h6>
-                <Image
-                  src="../icons/external-link-white.svg"
-                  alt="external link"
-                  width={14}
-                  height={14}
-                />
-              </div>
-            </div>
-          </button>
-        )}
+        {!isMobile() ? (
+          <>
+            {isKeplrInstalled === true ? (
+              <button
+                className="flex items-center rounded-2xl bg-cosmon-blue-dark p-4"
+                onClick={(e) => {
+                  e.preventDefault()
+                  onSelectExtension(CONNECTION_TYPE.KEPLR)
+                }}
+              >
+                <Image src="../keplr-logo.png" alt="keplr logo" width={36} height={36} />
+                <div className="ml-5 flex flex-col items-start">
+                  <h6 className="text-white">Keplr Wallet</h6>
+                  <p className="body2 mt-1 text-xs ">Keplr Browser Extension</p>
+                </div>
+              </button>
+            ) : (
+              <button
+                className="bg-background flex items-center rounded-2xl p-4"
+                onClick={(e) => {
+                  e.preventDefault()
+                  window.open('https://www.keplr.app/', '_blank')
+                }}
+              >
+                <Image src="../keplr-logo.png" alt="keplr logo" width={36} height={36} />
+                <div className="ml-5 flex flex-col text-left">
+                  <div className="flex items-center gap-2 text-white">
+                    <h6>Install Keplr</h6>
+                    <Image
+                      src="../icons/external-link-white.svg"
+                      alt="external link"
+                      width={14}
+                      height={14}
+                    />
+                  </div>
+                </div>
+              </button>
+            )}
 
-        {isCosmostationInstalled === true ? (
-          <button
-            className="mt-2 flex items-center rounded-2xl bg-cosmon-blue-dark p-4"
-            onClick={(e) => {
-              e.preventDefault()
-              onSelectExtension(CONNECTION_TYPE.COSMOSTATION)
-            }}
-          >
-            <Image src="../cosmostation-logo.png" alt="cosmostation logo" width={36} height={36} />
-            <div className="ml-5 flex flex-col items-start">
-              <h6 className="text-white">Cosmostation Wallet</h6>
-              <p className="body2 mt-1 text-xs">Cosmostation Browser Extension</p>
-            </div>
-          </button>
-        ) : (
-          <button
-            className="bg-background flex items-center rounded-2xl p-4"
-            onClick={(e) => {
-              e.preventDefault()
-              window.open(
-                'https://chrome.google.com/webstore/detail/cosmostation/fpkhgmpbidmiogeglndfbkegfdlnajnf',
-                '_blank'
-              )
-            }}
-          >
-            <Image src="../cosmostation-logo.png" alt="keplr logo" width={36} height={36} />
-            <div className="ml-5 flex flex-col text-left">
-              <div className="flex items-center gap-2 text-white">
-                <h6>Install Cosmostation</h6>
+            {isCosmostationInstalled === true ? (
+              <button
+                className="mt-2 flex items-center rounded-2xl bg-cosmon-blue-dark p-4"
+                onClick={(e) => {
+                  e.preventDefault()
+                  onSelectExtension(CONNECTION_TYPE.COSMOSTATION)
+                }}
+              >
                 <Image
-                  src="../icons/external-link-white.svg"
-                  alt="external link"
-                  width={14}
-                  height={14}
+                  src="../cosmostation-logo.png"
+                  alt="cosmostation logo"
+                  width={36}
+                  height={36}
                 />
-              </div>
-            </div>
-          </button>
-        )}
+                <div className="ml-5 flex flex-col items-start">
+                  <h6 className="text-white">Cosmostation Wallet</h6>
+                  <p className="body2 mt-1 text-xs">Cosmostation Browser Extension</p>
+                </div>
+              </button>
+            ) : (
+              <button
+                className="bg-background flex items-center rounded-2xl p-4"
+                onClick={(e) => {
+                  e.preventDefault()
+                  window.open(
+                    'https://chrome.google.com/webstore/detail/cosmostation/fpkhgmpbidmiogeglndfbkegfdlnajnf',
+                    '_blank'
+                  )
+                }}
+              >
+                <Image src="../cosmostation-logo.png" alt="keplr logo" width={36} height={36} />
+                <div className="ml-5 flex flex-col text-left">
+                  <div className="flex items-center gap-2 text-white">
+                    <h6>Install Cosmostation</h6>
+                    <Image
+                      src="../icons/external-link-white.svg"
+                      alt="external link"
+                      width={14}
+                      height={14}
+                    />
+                  </div>
+                </div>
+              </button>
+            )}
+          </>
+        ) : null}
+
         {IS_ACTIVE_WALLET_CONNECT === 'true' ? (
           <button
             className="mt-2 flex items-center rounded-2xl bg-cosmon-blue-dark p-4"

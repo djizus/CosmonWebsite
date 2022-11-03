@@ -39,11 +39,11 @@ export const connectWithWalletConnectCosmostation = async (): Promise<WalletConn
 export const getMobileOfflineSignerWithConnectWallet = async (): Promise<
   [OfflineSigner | null, OfflineSigner | null]
 > => {
-  const connector = await connectWithWalletConnectCosmostation()
+  /* const connector = await connectWithWalletConnectCosmostation()
   console.log('getMobileOfflineSignerWithConnectWallet ::', connector)
   if (!connector) {
     throw new Error('getMobileOfflineSignerWithConnect :: no connector')
-  }
+  } */
 
   try {
     return [
