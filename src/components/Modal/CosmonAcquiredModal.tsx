@@ -6,6 +6,7 @@ import Hover from 'react-3d-hover'
 import { Transition } from '@headlessui/react'
 import { useEffect, useState } from 'react'
 import { getScarcityByCosmon, getTrait } from '../../utils/cosmon'
+import { isMobile } from '@utils/browser'
 
 type CosmonAcquiredModalProps = {
   cosmon: CosmonType
@@ -41,7 +42,10 @@ export default function CosmonAcquiredModal({
             />
           </div>
         )}
-        <Modal onCloseModal={onCloseModal} width={600}>
+        <Modal
+          onCloseModal={onCloseModal}
+          {...(isMobile() ? { fullScreen: true } : { width: 600 })}
+        >
           <div className="flex flex-col items-center justify-center text-white">
             <Transition.Child
               enter="transition-opacity ease-linear duration-[2000ms] "

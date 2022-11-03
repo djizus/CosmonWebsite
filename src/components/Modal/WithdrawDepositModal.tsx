@@ -7,6 +7,7 @@ import Modal from './Modal'
 import { Coin } from '@cosmjs/amino/build/coins'
 import BigNumber from 'bignumber.js'
 import Tooltip from '@components/Tooltip/Tooltip'
+import { isMobile } from '@utils/browser'
 
 type WithdrawDepositModalProps = {
   onCloseModal: () => void
@@ -56,7 +57,7 @@ export default function WithdrawDepositModal({ onCloseModal }: WithdrawDepositMo
   }
 
   return (
-    <Modal onCloseModal={onCloseModal} width={600}>
+    <Modal onCloseModal={onCloseModal} {...(isMobile() ? { fullScreen: true } : { width: 600 })}>
       <Transition
         show={true}
         appear={true}

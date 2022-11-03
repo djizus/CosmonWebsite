@@ -1,11 +1,17 @@
 .container {
   width: 556px;
+  height: 208px;
   display: flex;
   flex-direction: row;
   border-radius: 12px;
   border: 1px solid theme('colors.cosmon.main.primary');
   background: rgba(159, 164, 221, 0.06);
-  height: 208px;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
 }
 
 .earningsContent {
@@ -16,6 +22,10 @@
   padding: 36px 38px 28px 38px;
   font-family: 'Poppins';
   color: white;
+
+  @media (max-width: 1024px) {
+    border-bottom: 1px solid theme('colors.cosmon.main.primary');
+  }
 }
 
 .scoreContent {
@@ -26,6 +36,10 @@
   padding: 36px 38px 28px 38px;
   border-left: 1px solid theme('colors.cosmon.main.primary');
   color: white;
+
+  @media (max-width: 1024px) {
+    border-left: 0;
+  }
 }
 
 .value {

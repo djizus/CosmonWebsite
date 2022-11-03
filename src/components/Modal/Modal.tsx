@@ -8,6 +8,7 @@ export type ModalProps = {
   fullScreen?: boolean
   hasCloseButton?: boolean
   containerClassname?: string
+  subContainerClassname?: string
   width?: number | string
   onCloseModal: () => void
 }
@@ -17,6 +18,7 @@ export default function Modal({
   fullScreen = false,
   hasCloseButton = true,
   containerClassname,
+  subContainerClassname,
   width,
   onCloseModal,
 }: ModalProps) {
@@ -54,7 +56,10 @@ export default function Modal({
           }}
           className={clsx(
             'fixed left-1/2 top-1/2 z-50 flex h-fit font-semibold',
-            { [`max-w-[533px]`]: width === undefined && !fullScreen },
+            {
+              [`max-h-[100vh] w-[98vw] max-w-[98vw] lg:max-w-[533px]`]:
+                width === undefined && !fullScreen,
+            },
             { 'top-0 left-0 h-screen w-screen max-w-[100vw]': fullScreen },
             containerClassname
           )}
@@ -63,7 +68,8 @@ export default function Modal({
           <div
             className={clsx(
               'border-shiny-gradient h-auto w-full rounded-xl bg-cosmon-main-secondary py-8 px-5',
-              { 'h-screen w-screen py-0 px-0': fullScreen }
+              { 'h-screen w-screen py-0 px-0': fullScreen },
+              subContainerClassname
             )}
           >
             {hasCloseButton && (

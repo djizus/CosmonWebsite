@@ -15,6 +15,7 @@ import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
 import FlipCard from '@components/FlipCard/FlipCard'
 import Countdown from '@components/Countdown/Countdown'
 import { useArenaStore } from '@store/arenaStore'
+import { useWindowSize } from 'react-use'
 
 interface DeckContainerProps {
   deck: Deck
@@ -34,6 +35,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   const [revealCards, setRevealCards] = useState(true)
   const { refreshCosmonsAndDecksList } = useDeckStore()
   const { hourlyFPNumber } = useArenaStore()
+  const { width } = useWindowSize()
 
   const affinities = useMemo(() => {
     return computeDeckAffinities(deck.cosmons)
@@ -83,21 +85,25 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { delay: 0.2, duration: 0.2 } }}
       exit={{ opacity: 0 }}
-      className="w-full overflow-visible rounded-[16px] bg-cosmon-main-quaternary px-[32px] py-[24px] transition-all hover:bg-[#29264B]"
+      className="w-full overflow-visible rounded-[16px] bg-cosmon-main-quaternary px-[20px] py-[16px] transition-all hover:bg-[#29264B] lg:py-[24px] lg:px-[32px]"
     >
       <div className="flex flex-col">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col items-start">
-            <p className="text-white ">Team</p>
-            <p className="text-xl font-semibold text-white">{deck.name}</p>
+        <div className="flex items-center justify-between ">
+          <div className="flex flex-col items-start overflow-hidden  whitespace-nowrap">
+            <p className="text-white">Team</p>
+            <p className="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap text-xl font-semibold text-white lg:max-w-full">
+              {deck.name}
+            </p>
           </div>
           <div className="flex items-center">
             <DeckAffinities deckAffinities={affinities} variant="short" />
-            <DeckDropdownMenu onClickDeleteDeck={onClickDeleteDeck} />
+            <div className="hidden lg:flex">
+              <DeckDropdownMenu onClickDeleteDeck={onClickDeleteDeck} />
+            </div>
           </div>
         </div>
         <div
-          className="mt-[30px] grid w-full grid-cols-3 gap-[30px]"
+          className="mt-[30px] grid w-full grid-cols-3 gap-[18px] lg:gap-[32px]"
           style={{ aspectRatio: '1.7' }}
         >
           {deck.cosmons.map((cosmon) => (
@@ -106,6 +112,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
                 card={
                   <CosmonCard
                     cosmon={cosmon}
+                    size={width < 640 ? 'sm' : 'md'}
                     showLevel
                     showPersonality
                     showNationality
@@ -126,7 +133,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
           ))}
         </div>
         <div className="mt-[30px] flex flex-1 gap-[12px]">
-          <div className="w-3/4">
+          <div className="w-full lg:w-3/4">
             <Button
               onClick={handleClickOnFight}
               disabled={missFp}
@@ -149,7 +156,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
               )}
             </Button>
           </div>
-          <div className="flex w-1/4 gap-[12px]">
+          <div className="hidden w-1/4 gap-[12px] lg:flex">
             <Button
               type="primaryBordered"
               size="small"

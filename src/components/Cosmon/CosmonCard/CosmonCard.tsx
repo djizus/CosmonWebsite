@@ -127,7 +127,7 @@ const CosmonCard: React.FC<
       {showScarcity ? (
         <div className={clsx(styles.scarcityContainer, styles[size])}>
           <img
-            className="m-1"
+            className="lg:m-1"
             src={`/rarity-levels/${getScarcityByCosmon(cosmon)!.toLowerCase()}.png`}
           />
           <p>{getScarcityByCosmon(cosmon)}</p>

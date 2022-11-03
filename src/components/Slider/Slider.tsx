@@ -7,7 +7,8 @@ interface SliderProps {
   children: ReactNode[]
   containerClassName?: string
   showPagination?: boolean
-  onEndReached: {
+  showNavigationButtons?: boolean
+  onEndReached?: {
     btnLabel: string
     onClick: () => void
   }
@@ -15,7 +16,7 @@ interface SliderProps {
 
 const variants = {
   enter: (direction: number) => ({
-    x: direction > 0 ? '-10%' : '10%',
+    x: direction > 0 ? 1000 : -1000,
     opacity: 0,
   }),
   center: {
@@ -25,15 +26,21 @@ const variants = {
   },
   exit: (direction: number) => ({
     zIndex: 0,
-    x: direction < 0 ? '-10%' : '10%',
+    x: direction < 0 ? 1000 : -1000,
     opacity: 0,
   }),
+}
+
+const swipeConfidenceThreshold = 10000
+const swipePower = (offset: number, velocity: number) => {
+  return Math.abs(offset) * velocity
 }
 
 const Slider: React.FC<SliderProps> = ({
   containerClassName,
   children,
   showPagination = true,
+  showNavigationButtons = true,
   onEndReached,
 }) => {
   const [[page, direction], setPage] = useState([0, 0])
@@ -57,7 +64,7 @@ const Slider: React.FC<SliderProps> = ({
   }
 
   return (
-    <div className="flex flex-col overflow-hidden">
+    <div className="flex h-full w-full flex-col overflow-hidden">
       <AnimatePresence initial={false} exitBeforeEnter custom={direction}>
         <motion.div
           key={page}
@@ -67,21 +74,27 @@ const Slider: React.FC<SliderProps> = ({
           animate="center"
           exit="exit"
           transition={{
-            x: {
-              type: 'spring',
-              stiffness: 800,
-              damping: 100,
-              duration: 0.1,
-            },
-            opacity: { duration: 0.6 },
+            x: { type: 'spring', stiffness: 300, damping: 30 },
+            opacity: { duration: 0.2 },
+          }}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={1}
+          onDragEnd={(e, { offset, velocity }) => {
+            const swipe = swipePower(offset.x, velocity.x)
+            if (swipe < -swipeConfidenceThreshold) {
+              paginate(1)
+            } else if (swipe > swipeConfidenceThreshold) {
+              paginate(-1)
+            }
           }}
           className={clsx(containerClassName)}
         >
           {children[page]}
         </motion.div>
       </AnimatePresence>
-      <div className={clsx('mt-[60px] flex justify-between')}>
-        {page > 0 ? (
+      <div className={clsx('mt-[20px] flex justify-between lg:mt-[60px]')}>
+        {page > 0 && showNavigationButtons ? (
           <div className="flex flex-1">
             <Button
               type="primary"
@@ -89,6 +102,7 @@ const Slider: React.FC<SliderProps> = ({
               onClick={() => {
                 paginate(-1)
               }}
+              containerClassname="mx-0 lg:mx-auto"
             >
               Previous
             </Button>
@@ -117,21 +131,26 @@ const Slider: React.FC<SliderProps> = ({
           </div>
         ) : null}
 
-        <div className="flex flex-1 justify-end">
-          <Button
-            type="primary"
-            size="small"
-            onClick={() => {
-              if (page === nbChildren - 1) {
-                onEndReached?.onClick()
-              } else {
-                paginate(1)
-              }
-            }}
-          >
-            {page === nbChildren - 1 ? onEndReached.btnLabel : 'Next'}
-          </Button>
-        </div>
+        {onEndReached && showNavigationButtons ? (
+          <div className="flex flex-1 justify-end">
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => {
+                if (page === nbChildren - 1) {
+                  onEndReached?.onClick()
+                } else {
+                  paginate(1)
+                }
+              }}
+              containerClassname="mx-0 lg:mx-auto"
+            >
+              {page === nbChildren - 1 ? onEndReached.btnLabel : 'Next'}
+            </Button>
+          </div>
+        ) : (
+          <div className="flex flex-1" />
+        )}
       </div>
     </div>
   )

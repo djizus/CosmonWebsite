@@ -1,4 +1,5 @@
 import { Transition } from '@headlessui/react'
+import { isMobile } from '@utils/browser'
 import { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { CosmonType } from '../../../types/Cosmon'
@@ -43,7 +44,7 @@ export default function TransferAssetModal({ onCloseModal, asset }: TransferAsse
   }, [destinationAddressDebounced])
 
   return (
-    <Modal onCloseModal={onCloseModal} width={550}>
+    <Modal onCloseModal={onCloseModal} {...(isMobile() ? { fullScreen: true } : { width: 550 })}>
       <Transition
         show={true}
         appear={true}

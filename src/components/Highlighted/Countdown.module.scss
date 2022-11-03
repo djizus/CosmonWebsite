@@ -50,6 +50,13 @@
     font-weight: 700;
     line-height: 60px;
   }
+  @media (max-width: 1024px) {
+    h3 {
+      font-size: 32px;
+      line-height: 35px;
+      font-style: italic;
+    }
+  }
 
   img {
     width: 60px;
