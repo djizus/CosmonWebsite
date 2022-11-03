@@ -135,3 +135,14 @@ input {
 .__react_component_tooltip.place-bottom::after {
   border-bottom: 0 solid transparent !important;
 }
+
+#cosmostation-wc-modal {
+  & > div {
+    z-index: 1;
+  }
+  h3 {
+    color: #413673;
+    font-weight: 600;
+  }
+  color: #413673;
+}

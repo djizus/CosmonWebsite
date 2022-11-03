@@ -1,5 +1,6 @@
 export const amount: string
 export const borderShinyGradient: string
+export const cosmostationWcModal: string
 export const darkText: string
 export const disabled: string
 export const maxWAuto: string

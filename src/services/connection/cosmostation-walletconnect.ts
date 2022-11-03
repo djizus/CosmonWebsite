@@ -3,7 +3,6 @@ import { OfflineSigner } from '@cosmjs/proto-signing'
 import { getMobileOfflineSignerWithConnect } from '@cosmostation/cosmos-client'
 import WalletConnect from '@walletconnect/client'
 import CosmostationWCModal from '@cosmostation/wc-modal'
-import { isMobile } from '@walletconnect/browser-utils'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
@@ -17,7 +16,7 @@ export const connectWithWalletConnectCosmostation = async (): Promise<WalletConn
     })
 
     return new Promise((resolve, reject) => {
-      // void connector.killSession()
+      void connector.killSession()
       void connector.createSession()
 
       connector.on('connect', (error) => {
@@ -41,7 +40,7 @@ export const getMobileOfflineSignerWithConnectWallet = async (): Promise<
   [OfflineSigner | null, OfflineSigner | null]
 > => {
   const connector = await connectWithWalletConnectCosmostation()
-
+  console.log('getMobileOfflineSignerWithConnectWallet ::', connector)
   if (!connector) {
     throw new Error('getMobileOfflineSignerWithConnect :: no connector')
   }

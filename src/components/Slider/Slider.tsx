@@ -102,6 +102,7 @@ const Slider: React.FC<SliderProps> = ({
               onClick={() => {
                 paginate(-1)
               }}
+              containerClassname="mx-0 lg:mx-auto"
             >
               Previous
             </Button>
@@ -142,6 +143,7 @@ const Slider: React.FC<SliderProps> = ({
                   paginate(1)
                 }
               }}
+              containerClassname="mx-0 lg:mx-auto"
             >
               {page === nbChildren - 1 ? onEndReached.btnLabel : 'Next'}
             </Button>

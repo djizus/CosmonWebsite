@@ -9,7 +9,7 @@ export type ModalProps = {
   hasCloseButton?: boolean
   containerClassname?: string
   subContainerClassname?: string
-  width?: number
+  width?: number | string
   onCloseModal: () => void
 }
 

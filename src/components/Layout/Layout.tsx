@@ -14,7 +14,6 @@ import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
 import { AnimatePresence } from 'framer-motion'
 import BuyXKIModal from '@components/Modal/BuyXKIModal'
 import IBCCoinBreakdownPopup from './IBCCoinBreakdownPopup'
-import { CONNECTION_TYPE } from 'types/Connection'
 import { isConnectionTypeHandled, wasPreviouslyConnected } from '@utils/connection'
 import {
   handleChangeAccount as handleChangeCosmostationAccount,
@@ -28,6 +27,8 @@ import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
 import { NavigationMenu } from '@components/Mobile'
 import { useRouter } from 'next/router'
 import HamburgerMenu from '@components/HamburgerMenu/hamburgerMenu'
+import { useDeckStore } from '@store/deckStore'
+import { CONNECTION_TYPE } from 'types/Connection'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -50,9 +51,10 @@ export default function Layout({ children }: LayoutProps) {
     showWithdrawDepositModal,
     setShowWithdrawDepositModal,
     cosmosConnectionProvider,
-  } = useWalletStore((state) => state)
+  } = useWalletStore()
 
-  const { getWhitelistData } = useCosmonStore((state) => state)
+  const { getWhitelistData } = useCosmonStore()
+  const { fetchPersonalityAffinities } = useDeckStore()
 
   const [isHamburgerActive, setIsHamburgerActive] = useState(false)
 
@@ -75,6 +77,7 @@ export default function Layout({ children }: LayoutProps) {
     if (isConnected) {
       fetchWalletData()
       getWhitelistData()
+      fetchPersonalityAffinities()
     }
   }, [isConnected])
 
@@ -176,7 +179,29 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
 
-        <div className="lg:hidden">
+        <div className="flex items-center gap-4 lg:hidden">
+          {isConnected ? (
+            <>
+              <div
+                onClick={(e) => {
+                  set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)
+                }}
+                className="flex h-full cursor-pointer items-center rounded-xl border border-[#9FA4DD] py-2 px-4 text-white"
+              >
+                {getShortAddress(walletAddress)}
+                <img className="ml-2 h-6 w-6" src="/avatar.png" alt="" />
+              </div>
+              <>
+                {showDisconnectOrCopyPopup && (
+                  <DisconnectOrCopyPopup
+                    onClosePopup={() => set_showDisconnectOrCopyPopup(false)}
+                  />
+                )}
+              </>
+            </>
+          ) : (
+            <ButtonConnectWallet buttonProps={{ type: 'secondary' }} />
+          )}
           <HamburgerMenu isActive={isHamburgerActive} onToggleMenu={setIsHamburgerActive} />
           <AnimatePresence>{isHamburgerActive ? <NavigationMenu /> : null}</AnimatePresence>
         </div>

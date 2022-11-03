@@ -1,5 +1,6 @@
 import { isCosmostationExtensionInstalled } from '@services/connection/cosmostation'
 import { isKeplrExtensionInstalled } from '@services/connection/keplr'
+import { isMobile } from '@utils/browser'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { CONNECTION_TYPE } from 'types/Connection'
@@ -30,7 +31,11 @@ const ConnectionSelectModal: React.FC<{
   }
 
   return (
-    <Modal hasCloseButton={false} onCloseModal={onRequestClose} width={'30%'}>
+    <Modal
+      hasCloseButton={false}
+      onCloseModal={onRequestClose}
+      {...(isMobile() ? { width: '100vw' } : { width: '30%' })}
+    >
       <div>
         <p className="text-[22px] text-white">Connect wallet</p>
       </div>
