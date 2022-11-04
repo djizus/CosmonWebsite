@@ -7,6 +7,7 @@ import { CONNECTION_TYPE } from 'types/Connection'
 import Modal from './Modal'
 
 const IS_ACTIVE_WALLET_CONNECT = process.env.NEXT_PUBLIC_IS_ACTIVE_WALLET_CONNECT
+const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION
 
 const ConnectionSelectModal: React.FC<{
   onSelectExtension: (type: CONNECTION_TYPE) => void
@@ -126,7 +127,7 @@ const ConnectionSelectModal: React.FC<{
           </>
         ) : null}
 
-        {IS_ACTIVE_WALLET_CONNECT === 'true' ? (
+        {IS_ACTIVE_WALLET_CONNECT === 'true' && IS_PRODUCTION === 'true' ? (
           <button
             className="mt-2 flex items-center rounded-2xl bg-cosmon-blue-dark p-4"
             onClick={(e) => {
