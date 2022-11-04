@@ -35,8 +35,7 @@ import { connectKeplr } from '@services/connection/keplr'
 import { connectWithCosmostation } from '@services/connection/cosmostation'
 import { CONNECTED_WITH, CONNECTION_TYPE, CosmosConnectionProvider } from 'types/Connection'
 import { removeLastConnection, saveLastConnection } from '@utils/connection'
-import { getMobileOfflineSignerWithConnectWallet } from '@services/connection/cosmostation-walletconnect'
-import { isMobile } from '@walletconnect/browser-utils'
+import { getOfflineSignerCosmostation } from '@services/connection/cosmostation-walletconnect'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
@@ -124,7 +123,7 @@ const useWalletStore = create<WalletState>(
         try {
           let offlineSigner = null,
             ibcOfflineSigner = null
-          console.log('HALLOOO type ::: ', type)
+
           if (type) {
             switch (type) {
               case CONNECTION_TYPE.KEPLR:
@@ -134,27 +133,20 @@ const useWalletStore = create<WalletState>(
                 ibcOfflineSigner = keplrIbcOfflineSigner
                 break
               case CONNECTION_TYPE.COSMOSTATION:
-                if (isMobile()) {
-                  const [cosmostationWCOfflineSigner, cosmostationWCIbcOfflineSigner] =
-                    await getMobileOfflineSignerWithConnectWallet()
-                  offlineSigner = cosmostationWCOfflineSigner
-                  ibcOfflineSigner = cosmostationWCIbcOfflineSigner
-                } else {
-                  const [cosmostationOfflineSigner, cosmostationIbcOfflineSigner, provider] =
-                    await connectWithCosmostation()
+                const [cosmostationOfflineSigner, cosmostationIbcOfflineSigner, provider] =
+                  await connectWithCosmostation()
 
-                  offlineSigner = cosmostationOfflineSigner
-                  ibcOfflineSigner = cosmostationIbcOfflineSigner
+                offlineSigner = cosmostationOfflineSigner
+                ibcOfflineSigner = cosmostationIbcOfflineSigner
 
-                  set({
-                    cosmosConnectionProvider: provider,
-                  })
-                }
+                set({
+                  cosmosConnectionProvider: provider,
+                })
 
                 break
               case CONNECTION_TYPE.COSMOSTATION_WALLET_CONNECT:
                 const [cosmostationWCOfflineSigner, cosmostationWCIbcOfflineSigner] =
-                  await getMobileOfflineSignerWithConnectWallet()
+                  await getOfflineSignerCosmostation()
                 offlineSigner = cosmostationWCOfflineSigner
                 ibcOfflineSigner = cosmostationWCIbcOfflineSigner
 
