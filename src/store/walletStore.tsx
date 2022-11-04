@@ -156,7 +156,7 @@ const useWalletStore = create<WalletState>(
             }
           }
 
-          if (!offlineSigner && !ibcOfflineSigner) {
+          if (!offlineSigner) {
             return
           }
 

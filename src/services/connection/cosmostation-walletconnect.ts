@@ -1,60 +1,68 @@
-import { InstallError } from '@cosmostation/extension-client'
-import { OfflineSigner } from '@cosmjs/proto-signing'
-import { getMobileOfflineSignerWithConnect, getOfflineSigner } from '@cosmostation/cosmos-client'
-import WalletConnect from '@walletconnect/client'
-import CosmostationWCModal from '@cosmostation/wc-modal'
-import { isMobile } from '@walletconnect/browser-utils'
+import { AminoSignResponse } from '@cosmjs/launchpad'
+import { AccountData, OfflineSigner } from '@cosmjs/proto-signing'
+import { connectWallet, CosmostationAccount } from '@cosmostation/cosmos-client'
+import { GetAccountError, MobileConnectError, SignError } from '@cosmostation/cosmos-client/error'
 import { useWalletStore } from '@store/walletStore'
+import { payloadId } from '@walletconnect/utils'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
-
-export const connectWithWalletConnectCosmostation = async (): Promise<WalletConnect | null> => {
-  try {
-    const connector = new WalletConnect({
-      bridge: 'https://bridge.walletconnect.org',
-      signingMethods: ['cosmostation_wc_accounts_v1', 'cosmostation_wc_sign_tx_v1'],
-      qrcodeModal: new CosmostationWCModal(),
-    })
-
-    return new Promise((resolve, reject) => {
-      void connector.killSession()
-      void connector.createSession()
-
-      connector.on('connect', (error) => {
-        if (error) {
-          return reject(error)
-        }
-        return resolve(connector)
-      })
-
-      connector.on('disconnect', (error, payload) => {
-        const { disconnect } = useWalletStore.getState()
-        disconnect()
-      })
-    })
-  } catch (e) {
-    if (e instanceof InstallError) {
-      console.log('not installed')
-    }
-    console.error(e)
-  }
-
-  return null
-}
 
 export const getOfflineSignerCosmostation = async (): Promise<
   [OfflineSigner | null, OfflineSigner | null]
 > => {
   try {
-    if (isMobile()) {
-      return [await getMobileOfflineSignerWithConnect(PUBLIC_CHAIN_ID!), null]
-    } else {
-      const connector = await connectWithWalletConnectCosmostation()
-      console.log('getOfflineSignerCosmostation :: ', connector)
+    const { disconnect } = useWalletStore.getState()
 
-      return [await getOfflineSigner(PUBLIC_CHAIN_ID!), null]
+    const connector = await connectWallet()
+
+    connector.on('disconnect', () => {
+      disconnect()
+    })
+
+    if (!connector) {
+      throw new MobileConnectError()
     }
+
+    const signer: OfflineSigner = {
+      getAccounts: async () => {
+        try {
+          const params = {
+            id: payloadId(),
+            jsonrpc: '2.0',
+            method: 'cosmostation_wc_accounts_v1',
+            params: [PUBLIC_CHAIN_ID!],
+          }
+          const keys = (await connector.sendCustomRequest(params)) as CosmostationAccount[]
+          const accounts = keys.map(
+            (key) =>
+              ({
+                address: key.bech32Address,
+                algo: 'secp256k1',
+                pubkey: key.pubKey,
+              } as AccountData)
+          )
+          return accounts
+        } catch (err) {
+          throw new GetAccountError()
+        }
+      },
+      signAmino: async (signerAddress, signDoc) => {
+        try {
+          const signedTx = (await connector.sendCustomRequest({
+            id: payloadId(),
+            jsonrpc: '2.0',
+            method: 'cosmostation_wc_sign_tx_v1',
+            params: [PUBLIC_CHAIN_ID!, signerAddress, signDoc],
+          })) as AminoSignResponse[]
+          return signedTx[0]
+        } catch (err) {
+          throw new SignError()
+        }
+      },
+    }
+
+    return [signer, null]
   } catch (err) {
     throw new Error(`getMobileOfflineSignerWithConnect :: error during :: ${err}`)
   }

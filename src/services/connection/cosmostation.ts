@@ -24,7 +24,7 @@ export const connectWithCosmostation = async (): Promise<
     ]
   } catch (e) {
     if (e instanceof InstallError) {
-      console.log('not installed')
+      // console.log('not installed')
     }
     console.error(e)
   }
@@ -97,7 +97,6 @@ export const isCosmostationExtensionInstalled = async () => {
     return true
   } catch (e) {
     if (e instanceof InstallError) {
-      console.log('not installed')
       return false
     }
   }
