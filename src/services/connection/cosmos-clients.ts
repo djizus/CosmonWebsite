@@ -8,10 +8,17 @@ const PUBLIC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT || ''
 const PUBLIC_IBC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_IBC_CHAIN_RPC_ENDPOINT || ''
 
 export const makeClient = async (offlineSigner: OfflineSigner) => {
-  return await SigningCosmWasmClient.connectWithSigner(PUBLIC_RPC_ENDPOINT, offlineSigner, {
-    prefix: process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX,
-    gasPrice: GasPrice.fromString(`0.025${process.env.NEXT_PUBLIC_STAKING_DENOM}`),
-  })
+  if (!offlineSigner) {
+    return null
+  }
+  try {
+    return await SigningCosmWasmClient.connectWithSigner(PUBLIC_RPC_ENDPOINT, offlineSigner, {
+      prefix: process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX,
+      gasPrice: GasPrice.fromString(`0.025${process.env.NEXT_PUBLIC_STAKING_DENOM}`),
+    })
+  } catch (error) {
+    return null
+  }
 }
 
 export const makeUnsignedClient = async () => {
@@ -19,10 +26,17 @@ export const makeUnsignedClient = async () => {
 }
 
 export const makeStargateClient = async (offlineSigner: OfflineSigner) => {
-  return await SigningStargateClient.connectWithSigner(PUBLIC_RPC_ENDPOINT, offlineSigner, {
-    prefix: process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX,
-    gasPrice: GasPrice.fromString(`0.025${process.env.NEXT_PUBLIC_STAKING_DENOM}`),
-  })
+  if (!offlineSigner) {
+    return null
+  }
+  try {
+    return await SigningStargateClient.connectWithSigner(PUBLIC_RPC_ENDPOINT, offlineSigner, {
+      prefix: process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX,
+      gasPrice: GasPrice.fromString(`0.025${process.env.NEXT_PUBLIC_STAKING_DENOM}`),
+    })
+  } catch (error) {
+    return null
+  }
 }
 
 export const makeStargateClientUnsigned = async (options?: StargateClientOptions) => {
@@ -30,8 +44,15 @@ export const makeStargateClientUnsigned = async (options?: StargateClientOptions
 }
 
 export const makeIbcClient = async (offlineSigner: OfflineSigner) => {
-  return await SigningStargateClient.connectWithSigner(PUBLIC_IBC_RPC_ENDPOINT, offlineSigner, {
-    prefix: process.env.NEXT_PUBLIC_IBC_CHAIN_BECH32_PREFIX,
-    gasPrice: GasPrice.fromString(`0.025${process.env.NEXT_PUBLIC_STAKING_IBC_DENOM}`),
-  })
+  if (!offlineSigner) {
+    return null
+  }
+  try {
+    return await SigningStargateClient.connectWithSigner(PUBLIC_IBC_RPC_ENDPOINT, offlineSigner, {
+      prefix: process.env.NEXT_PUBLIC_IBC_CHAIN_BECH32_PREFIX,
+      gasPrice: GasPrice.fromString(`0.025${process.env.NEXT_PUBLIC_STAKING_IBC_DENOM}`),
+    })
+  } catch (error) {
+    return null
+  }
 }

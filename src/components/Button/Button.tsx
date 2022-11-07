@@ -22,6 +22,7 @@ export type ButtonProps = {
   children: React.ReactNode
   disabled?: boolean
   className?: string
+  containerClassname?: string
   isLoading?: boolean
   fullWidth?: boolean
   active?: boolean
@@ -36,6 +37,7 @@ export default function Button({
   icon,
   disabled = false,
   className = '',
+  containerClassname = '',
   onClick,
   isLoading = false,
   active = false,
@@ -44,11 +46,13 @@ export default function Button({
 }: ButtonProps) {
   return (
     <div
-      className={
-        withoutContainer
-          ? ''
-          : `relative z-0 mx-auto mb-1 flex flex-row lg:m-0 ${fullWidth ? 'w-full' : 'w-fit'}`
-      }
+      className={clsx(
+        {
+          [`relative z-0 mx-auto mb-1 flex flex-row lg:m-0 ${fullWidth ? 'w-full' : 'w-fit'}`]:
+            !withoutContainer,
+        },
+        containerClassname
+      )}
     >
       <button
         onClick={onClick}

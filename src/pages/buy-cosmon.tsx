@@ -158,7 +158,7 @@ export default function Page() {
             </div>
           )}
 
-          <div className="mt-20 grid grid-cols-2 gap-y-[60px] lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-y-[60px] lg:mt-20 lg:grid-cols-5">
             {/* {scarcities.map((scarcity) => (
             <BuyableCard
               buy={() => buy(scarcity)}

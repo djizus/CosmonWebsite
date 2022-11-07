@@ -19,8 +19,6 @@
 }
 
 .toolTip {
-  // width: 480px;
-  // height: 200px;
   display: flex;
   flex-direction: column;
   background: #20164f !important;
@@ -31,6 +29,13 @@
   padding-top: 30px !important;
   padding-bottom: 20px !important;
   padding-right: 20px !important;
+
+  @media (max-width: 640px) {
+    font-size: large;
+    padding-left: 20px !important;
+    padding-top: 20px !important;
+    padding-right: 15px !important;
+  }
 }
 
 .tipTitle {
@@ -39,6 +44,10 @@
   color: white;
   text-align: left;
   margin-bottom: 20px;
+
+  @media (max-width: 640px) {
+    font-size: large;
+  }
 }
 
 $textSize: 15px;
@@ -62,6 +71,17 @@ $textSize: 15px;
   -webkit-text-fill-color: white;
 }
 
+.tipPercent,
+.tipText,
+.tipFirstText,
+.tipSecondText,
+.tipFourthText,
+.tipFifthText {
+  @media (max-width: 640px) {
+    font-size: medium;
+  }
+}
+
 .line {
   display: flex;
   flex-direction: row;
@@ -70,6 +90,10 @@ $textSize: 15px;
   width: 100%;
   margin-bottom: 8px;
   gap: 35px;
+
+  @media (max-width: 640px) {
+    justify-content: space-between;
+  }
 }
 
 .optionsContainer {

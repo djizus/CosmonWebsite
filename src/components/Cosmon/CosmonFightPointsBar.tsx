@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { CosmonType } from 'types/Cosmon'
+
 import styles from './CosmonFightPointsBar.module.scss'
 import Zap from '@public/icons/zap.svg'
 import clsx from 'clsx'
@@ -18,10 +19,20 @@ const CosmonFightPointsBar: React.FC<
 
   useEffect(() => {
     if (fightPointsContainerRef.current) {
+      updatePortionWidth()
+      window.addEventListener('resize', updatePortionWidth)
+    }
+    return () => {
+      window.removeEventListener('resize', updatePortionWidth)
+    }
+  }, [fightPointsContainerRef.current])
+
+  const updatePortionWidth = () => {
+    if (fightPointsContainerRef?.current) {
       const { width } = fightPointsContainerRef.current.getBoundingClientRect()
       setPortionWidth(width / +getCosmonStat(cosmon.stats!, 'Fp Max')?.value!)
     }
-  }, [fightPointsContainerRef.current])
+  }
 
   return (
     <div {...props} className={clsx('flex items-center', props.className)}>

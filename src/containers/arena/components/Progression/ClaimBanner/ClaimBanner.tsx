@@ -21,7 +21,7 @@ const ClaimBanner: React.FC<Props> = ({ prizesForAddress, onClickClaim, loading 
   return (
     <div className={style.claimBanner}>
       <p className={style.label}>{`Well played, you just won ${amountFormatted} XKI`}</p>
-      <div className="flex gap-[25px]">
+      <div className="mt-6 flex flex-col gap-[25px] lg:mt-0 lg:flex-row">
         <Button
           size="small"
           onClick={onClickClaim}

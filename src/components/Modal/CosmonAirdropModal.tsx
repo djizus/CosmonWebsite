@@ -7,6 +7,7 @@ import { CosmonType } from '../../../types/Cosmon'
 import CosmonAcquiredModal from './CosmonAcquiredModal'
 import { useRouter } from 'next/router'
 import { useAirdropStore } from '../../store/airdropStore'
+import { isMobile } from '@utils/browser'
 
 type CosmonAirdropModalProps = {
   onCloseModal: () => void
@@ -73,7 +74,10 @@ export default function CosmonAirdropModal({ onCloseModal }: CosmonAirdropModalP
           onCloseModal={() => set_cosmonClaimed(undefined)}
         />
       ) : (
-        <Modal onCloseModal={onCloseModal} width={600}>
+        <Modal
+          onCloseModal={onCloseModal}
+          {...(isMobile() ? { fullScreen: true } : { width: 600 })}
+        >
           <div className="flex min-w-[533px] flex-col items-center justify-center text-white">
             <h3 className="text-[22px] font-semibold leading-8">Cosmon airdrop </h3>
 

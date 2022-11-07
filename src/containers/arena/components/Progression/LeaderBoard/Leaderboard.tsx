@@ -3,6 +3,9 @@ import { LeaderBoard, LeaderBoardItem, WalletInfos } from 'types/Arena'
 import { isMyWalletInCurrentPage } from './utils'
 import * as style from './Leaderboard.module.scss'
 import Button from '@components/Button/Button'
+import { useWindowSize } from 'react-use'
+import { useMemo } from 'react'
+import { truncate } from '@utils/text'
 
 interface Props {
   currentWalletAddress: string
@@ -25,6 +28,13 @@ const Leaderboard: React.FC<Props> = ({
   handleChangePage,
   className,
 }) => {
+  const { width } = useWindowSize()
+  const isMobileOrTablet = useMemo(() => {
+    if (width < 1024) {
+      return true
+    }
+    return false
+  }, [width])
   const displayMyWallet =
     !isMyWalletInCurrentPage(currentWalletAddress, currentLeaderboard) && !isOldLeaderboard
   const fights = walletInfos.victories + walletInfos.defeats + walletInfos.draws
@@ -37,11 +47,11 @@ const Leaderboard: React.FC<Props> = ({
         <thead className={style.header}>
           <tr>
             <th className={style.headerCell}>Ranking</th>
-            <th className={style.headerCell}>Cosmon player</th>
-            <th className={style.headerCell}>Fights</th>
-            <th className={style.headerCell}>Victories</th>
-            <th className={style.headerCell}>Draw Games</th>
-            <th className={style.headerCell}>Defeats</th>
+            <th className={style.headerCell}>Player</th>
+            <th className={clsx(style.headerCell, 'hidden lg:table-cell')}>Fights</th>
+            <th className={clsx(style.headerCell, 'hidden lg:table-cell')}>Victories</th>
+            <th className={clsx(style.headerCell, 'hidden lg:table-cell')}>Draw Games</th>
+            <th className={clsx(style.headerCell, 'hidden lg:table-cell')}>Defeats</th>
             <th className={style.headerCell}>Score</th>
           </tr>
         </thead>
@@ -50,21 +60,25 @@ const Leaderboard: React.FC<Props> = ({
             <>
               <tr className={style.myWalletLine}>
                 <td className={style.positionCell}>{walletInfos.position}</td>
-                <td className={style.cell}>{currentWalletAddress}</td>
-                <td className={style.cell}>{fights}</td>
-                <td className={style.cell}>{walletInfos.victories}</td>
-                <td className={style.cell}>{walletInfos.draws}</td>
-                <td className={style.cell}>{walletInfos.defeats}</td>
-                <td className={style.cell}>{walletInfos.points}</td>
+                <td className={style.cell}>
+                  {isMobileOrTablet ? truncate(currentWalletAddress, 11) : currentWalletAddress}
+                </td>
+                <td className={clsx(style.cell, 'hidden lg:table-cell')}>{fights}</td>
+                <td className={clsx(style.cell, 'hidden lg:table-cell')}>
+                  {walletInfos.victories}
+                </td>
+                <td className={clsx(style.cell, 'hidden lg:table-cell')}>{walletInfos.draws}</td>
+                <td className={clsx(style.cell, 'hidden lg:table-cell')}>{walletInfos.defeats}</td>
+                <td className={clsx(style.cell, style.cellAlignedRight)}>{walletInfos.points}</td>
               </tr>
               <tr className={style.line}>
                 <td className={style.fakePositionCell}>...</td>
                 <td className={style.fakeCosmonCell}>...</td>
-                <td className={style.fakeCell}>...</td>
-                <td className={style.fakeCell}>...</td>
-                <td className={style.fakeCell}>...</td>
-                <td className={style.fakeCell}>...</td>
-                <td className={style.fakeCell}>...</td>
+                <td className={clsx(style.fakeCell, 'hidden lg:table-cell')}>...</td>
+                <td className={clsx(style.fakeCell, 'hidden lg:table-cell')}>...</td>
+                <td className={clsx(style.fakeCell, 'hidden lg:table-cell')}>...</td>
+                <td className={clsx(style.fakeCell, 'hidden lg:table-cell')}>...</td>
+                <td className={clsx(style.fakeCell, style.cellAlignedRight)}>...</td>
               </tr>
             </>
           )}
@@ -76,12 +90,14 @@ const Leaderboard: React.FC<Props> = ({
               })}
             >
               <td className={style.positionCell}>{wallet.position}</td>
-              <td className={style.cell}>{wallet.address}</td>
-              <td className={style.cell}>{wallet.fights}</td>
-              <td className={style.cell}>{wallet.victories}</td>
-              <td className={style.cell}>{wallet.draws}</td>
-              <td className={style.cell}>{wallet.defeats}</td>
-              <td className={style.cell}>{wallet.points}</td>
+              <td className={style.cell}>
+                {isMobileOrTablet ? truncate(wallet.address, 11) : wallet.address}
+              </td>
+              <td className={clsx(style.cell, 'hidden lg:table-cell')}>{wallet.fights}</td>
+              <td className={clsx(style.cell, 'hidden lg:table-cell')}>{wallet.victories}</td>
+              <td className={clsx(style.cell, 'hidden lg:table-cell')}>{wallet.draws}</td>
+              <td className={clsx(style.cell, 'hidden lg:table-cell')}>{wallet.defeats}</td>
+              <td className={clsx(style.cell, style.cellAlignedRight)}>{wallet.points}</td>
             </tr>
           ))}
         </tbody>

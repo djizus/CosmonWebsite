@@ -3,11 +3,12 @@ import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import Tooltip from '@components/Tooltip/Tooltip'
 import { useArenaStore } from '@store/arenaStore'
 import { useWalletStore } from '@store/walletStore'
+import { isMobile } from '@utils/browser'
 import { getCosmonStat } from '@utils/cosmon'
 import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react'
-import { useMount } from 'react-use'
+import React, { ReactNode, useContext, useMemo, useState, useEffect } from 'react'
+import { useMount, useWindowSize } from 'react-use'
 import { CosmonStatKeyType, CosmonStatType, CosmonType } from 'types'
 import { FightContext } from '../FightContext'
 import * as style from './CosmonsProgression.module.scss'
@@ -47,7 +48,7 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
   const cosmonsNonEvolved = battleOverTime?.me.cosmonsWithoutBonus
   const isMaxCombatReach = dailyCombatLimit === maxDailyCombatLimit
   return (
-    <div className="flex flex-col items-center">
+    <div className=" flex flex-col items-center md:relative">
       <p className="text-white">Cosmon evolution</p>
       <div className="mt-[20px] flex w-full flex-col justify-center gap-[20px] rounded-[20px] bg-[#282255] py-[32px] px-[40px]">
         {cosmonsNonEvolved?.map((cosmonNonEvolved, i) => (
@@ -63,7 +64,11 @@ const CosmonsProgression: React.FC<CosmonsProgressionProps> = ({ onClickNewFight
         className="absolute bottom-0 flex justify-center"
         data-tip="tootlip"
         data-for={`no-fp-available`}
-        style={{ bottom: '-17.2%', right: '29%' }}
+        style={
+          isMobile()
+            ? { bottom: '-7%', right: '6%', paddingBottom: '5%' }
+            : { bottom: '-17.2%', right: '29%' }
+        }
       >
         <Button
           size="small"
@@ -234,8 +239,8 @@ export const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
           ) : null}
         </div>
         <p className="relative">
-          {currentXp}
-          <span className="text-sm font-normal">/{currentXpMax}</span>
+          <span className="lg:text-md text-sm">{currentXp}</span>
+          <span className="text-xs font-normal lg:text-sm">/{currentXpMax}</span>
           <AnimatePresence>
             {levelUp ? (
               <motion.div
@@ -250,7 +255,11 @@ export const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
                 }}
                 style={{ position: 'absolute', top: 0, right: 0, zIndex: 950 }}
               >
-                <span className={clsx('whitespace-nowrap text-sm font-normal text-[#0DBB81]')}>
+                <span
+                  className={clsx(
+                    'whitespace-nowrap text-xs font-normal text-[#0DBB81] lg:text-sm'
+                  )}
+                >
                   Level Up !
                 </span>
               </motion.div>
@@ -295,24 +304,25 @@ export const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
   statToDisplay,
   className,
 }) => {
+  const { width } = useWindowSize()
   const statLabel = useMemo(() => {
     switch (statKey) {
       case 'Atq':
-        return 'Attack (ATK)'
+        return width > 640 ? 'Attack (ATK)' : 'ATK'
       case 'Def':
-        return 'Defense (DEF)'
+        return width > 640 ? 'Defense (DEF)' : 'DEF'
       case 'Spe':
-        return 'Speed (SPE)'
+        return width > 640 ? 'Speed (SPE)' : 'SPE'
       case 'Int':
-        return 'Intelligence (INT)'
+        return width > 640 ? 'Intelligence (INT)' : 'INT'
       case 'Luk':
-        return 'Chance (LUK)'
+        return width > 640 ? 'Chance (LUK)' : 'LUK'
       case 'Hp':
-        return 'Health Points (HP)'
+        return width > 640 ? 'Health Points (HP)' : 'HP'
       default:
         return ''
     }
-  }, [statKey])
+  }, [statKey, width])
 
   return (
     <div className={clsx('flex flex-1 justify-between', className)}>
@@ -351,5 +361,9 @@ const CosmonStatProgressionLabel: React.FC<CosmonStatProgressionLabelProps> = ({
   label,
   className,
 }) => {
-  return <span className={clsx('text-sm font-normal text-[#0DBB81]', className)}>{label}</span>
+  return (
+    <span className={clsx('text-xs font-normal text-[#0DBB81] lg:text-sm ', className)}>
+      {label}
+    </span>
+  )
 }

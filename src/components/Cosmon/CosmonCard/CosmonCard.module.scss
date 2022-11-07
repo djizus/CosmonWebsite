@@ -15,16 +15,17 @@
       line-height: 10px;
       font-family: 'Poppins';
       letter-spacing: 1px;
+      margin-top: 5px;
     }
 
     &.sm {
       img {
-        width: 5%;
-        height: 5%;
+        width: 11px;
+        height: 11px;
       }
       p {
-        font-size: 0.2em;
-        line-height: 0.2em;
+        font-size: 2.5px;
+        line-height: 2.5px;
       }
     }
     &.md {
@@ -72,8 +73,8 @@
 
     .flag {
       &.sm {
-        line-height: 9px;
-        font-size: 11px;
+        line-height: 5px;
+        font-size: 5px;
       }
       &.md {
         line-height: 9px;
@@ -92,7 +93,7 @@
 
       &.sm {
         font-size: 4px;
-        line-height: 10px;
+        line-height: 6px;
       }
 
       &.md {

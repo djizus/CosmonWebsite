@@ -31,13 +31,13 @@ const ButtonConnectWallet: React.FC<ButtonConnectWalletProps> = ({ buttonProps }
             onRequestClose={() => {
               setShowConnectionSelectModal(false)
             }}
-            overrideWithKeplrInstallLink={!window.keplr ? 'https://www.keplr.app/' : undefined}
             onSelectExtension={(type: CONNECTION_TYPE) => {
               setShowConnectionSelectModal(false)
               connect(type)
             }}
-            onSelectWalletConnect={() => {
+            onSelectWalletConnect={(type: CONNECTION_TYPE) => {
               setShowConnectionSelectModal(false)
+              connect(type)
             }}
           />
         ) : null}

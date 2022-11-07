@@ -25,7 +25,7 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
     <div className="fixed top-0 bottom-0 right-0  h-full w-full overflow-auto bg-cosmon-main-secondary pt-[60px] text-white">
       <div className="mx-auto max-w-[1120px]">
         <div className="flex w-full">
-          <div className="flex w-full items-center justify-center gap-x-4">
+          <div className="flex w-full flex-col items-center justify-center gap-x-4 lg:flex-row">
             <h2 className="text-[30px] font-semibold leading-[44px]">
               {cosmon.data.extension.name}
             </h2>
@@ -35,14 +35,14 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
           </div>
           <div
             onClick={onCloseModal}
-            className="fixed right-20 cursor-pointer rounded-full bg-cosmon-main-primary p-3"
+            className="fixed right-5 top-5 cursor-pointer rounded-full bg-cosmon-main-primary p-3 lg:top-10 lg:right-20"
           >
             <Close className="h-[24px] w-[24px]" />
           </div>
         </div>
 
-        <div className="mt-24 flex items-start gap-x-16">
-          <div className="sticky top-0 self-start">
+        <div className="mt-16 flex flex-col justify-center lg:mt-24 lg:flex-row lg:items-start lg:justify-start lg:gap-x-16">
+          <div className="self-center lg:sticky lg:top-0 lg:self-start">
             <Hover perspective={300} speed={10}>
               <CosmonCard
                 cosmon={cosmon}
@@ -55,7 +55,8 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               />
             </Hover>
           </div>
-          <div className="flex flex-col gap-y-5">
+
+          <div className="mt-10 flex flex-col gap-y-5 px-[20px] lg:mt-0 lg:px-0">
             <b>Biography</b>
             <p
               dangerouslySetInnerHTML={{
@@ -65,7 +66,7 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
             ></p>
           </div>
 
-          <div className="sticky top-0 flex min-w-[260px] flex-col gap-y-7 self-start text-[14px]">
+          <div className="top-0 flex min-w-[260px] flex-col gap-y-7 px-[20px] pb-10 text-[14px] lg:sticky lg:mt-0 lg:self-start lg:px-0 lg:pb-0">
             {/* Section 1 */}
             <div className="flex flex-col gap-y-1">
               <b className="text-[16px]">Main Data</b>

@@ -25,7 +25,9 @@ const HighlightedCountdown: React.FC<HighlightedCountdownProps> = () => {
         ) : (
           <h3>00</h3>
         )}
-        <p className="mt-[23px] text-sm">Just a few days to wait to fight for the prize pool</p>
+        <p className="mt-[20px] text-sm lg:mt-[23px]">
+          You still have time before the next League starts
+        </p>
       </div>
     </div>
   )

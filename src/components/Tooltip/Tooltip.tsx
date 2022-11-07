@@ -11,6 +11,7 @@ const Tooltip: React.FC<TooltipProps & ReactTooltipProps> = ({ ...props }) => {
       className={clsx(styles.tooltipContainer, props.className)}
       effect="solid"
       place="bottom"
+      arrowColor="transparent"
       offset={{
         top: props.place === 'bottom' ? 8 : 0,
         bottom: props.place === 'top' ? 8 : 0,

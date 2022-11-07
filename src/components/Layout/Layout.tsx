@@ -14,7 +14,6 @@ import WithdrawDepositModal from '../Modal/WithdrawDepositModal'
 import { AnimatePresence } from 'framer-motion'
 import BuyXKIModal from '@components/Modal/BuyXKIModal'
 import IBCCoinBreakdownPopup from './IBCCoinBreakdownPopup'
-import { CONNECTION_TYPE } from 'types/Connection'
 import { isConnectionTypeHandled, wasPreviouslyConnected } from '@utils/connection'
 import {
   handleChangeAccount as handleChangeCosmostationAccount,
@@ -25,6 +24,11 @@ import {
   stopListenForChangeAccount as stopListenForChangeKeplrAccount,
 } from '@services/connection/keplr'
 import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
+import { NavigationMenu } from '@components/Mobile'
+import { useRouter } from 'next/router'
+import HamburgerMenu from '@components/HamburgerMenu/hamburgerMenu'
+import { useDeckStore } from '@store/deckStore'
+import { CONNECTION_TYPE } from 'types/Connection'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -33,6 +37,8 @@ type LayoutProps = {
 const ARENA_IS_ACTIVE = Boolean(process.env.NEXT_PUBLIC_ARENA_IS_ACTIVE)
 
 export default function Layout({ children }: LayoutProps) {
+  const router = useRouter()
+
   const {
     address: walletAddress,
     connect,
@@ -45,9 +51,12 @@ export default function Layout({ children }: LayoutProps) {
     showWithdrawDepositModal,
     setShowWithdrawDepositModal,
     cosmosConnectionProvider,
-  } = useWalletStore((state) => state)
+  } = useWalletStore()
 
-  const { getWhitelistData } = useCosmonStore((state) => state)
+  const { getWhitelistData } = useCosmonStore()
+  const { fetchPersonalityAffinities } = useDeckStore()
+
+  const [isHamburgerActive, setIsHamburgerActive] = useState(false)
 
   const [showWalletPopup, set_showWalletPopup] = useState(false)
   const [showATOMBreakdownPopup, set_showATOMBreakdownPopup] = useState(false)
@@ -68,6 +77,7 @@ export default function Layout({ children }: LayoutProps) {
     if (isConnected) {
       fetchWalletData()
       getWhitelistData()
+      fetchPersonalityAffinities()
     }
   }, [isConnected])
 
@@ -111,6 +121,13 @@ export default function Layout({ children }: LayoutProps) {
   }, [wasPreviouslyConnected()?.address, cosmosConnectionProvider, isConnected])
 
   useEffect(() => {
+    if (isHamburgerActive) {
+      // close navigation when route changes
+      setIsHamburgerActive(!isHamburgerActive)
+    }
+  }, [router.asPath])
+
+  useEffect(() => {
     if (coins.length > 0) {
       const availableXki = getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins)
       if (availableXki <= 0) {
@@ -134,7 +151,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="flex">
           <Link href="/">
             <a>
-              <div className="relative h-[22px] w-[73px] lg:h-[40px] lg:w-[131px]">
+              <div className="relative z-[100] h-[22px] w-[73px] lg:h-[40px] lg:w-[131px]">
                 <Image priority={true} src={'../logo.png'} layout="fill" />
               </div>
             </a>
@@ -162,9 +179,32 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
 
-        {/* <div className="lg:hidden">
-          <HamburgerMenu />
-        </div> */}
+        <div className="flex items-center gap-4 lg:hidden">
+          {isConnected ? (
+            <>
+              <div
+                onClick={(e) => {
+                  set_showDisconnectOrCopyPopup(!showDisconnectOrCopyPopup)
+                }}
+                className="flex h-full cursor-pointer items-center rounded-xl border border-[#9FA4DD] py-2 px-4 text-white"
+              >
+                {getShortAddress(walletAddress)}
+                <img className="ml-2 h-6 w-6" src="/avatar.png" alt="" />
+              </div>
+              <>
+                {showDisconnectOrCopyPopup && (
+                  <DisconnectOrCopyPopup
+                    onClosePopup={() => set_showDisconnectOrCopyPopup(false)}
+                  />
+                )}
+              </>
+            </>
+          ) : (
+            <ButtonConnectWallet buttonProps={{ type: 'secondary' }} />
+          )}
+          <HamburgerMenu isActive={isHamburgerActive} onToggleMenu={setIsHamburgerActive} />
+          <AnimatePresence>{isHamburgerActive ? <NavigationMenu /> : null}</AnimatePresence>
+        </div>
 
         <div className="relative hidden items-center lg:flex">
           {isConnected ? (

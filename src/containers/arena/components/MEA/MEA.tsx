@@ -15,7 +15,7 @@ const MEA: React.FC<MEAProps> = ({ link, imgSrc }) => {
           style={{
             objectFit: 'contain',
             borderRadius: 16,
-            height: 235,
+            maxHeight: 235,
           }}
         />
       </a>

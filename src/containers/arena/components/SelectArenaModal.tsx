@@ -14,6 +14,8 @@ import { convertMicroDenomToDenom } from '@utils/conversion'
 import { useArenaStore } from '@store/arenaStore'
 import { useWalletStore } from '@store/walletStore'
 import * as style from './SelectArenaModal.module.scss'
+import { useWindowSize } from 'react-use'
+
 interface SelectArenaModalProps {
   loading?: boolean
   selectedArena?: ArenaType
@@ -29,7 +31,7 @@ const SelectArenaModal: React.FC<SelectArenaModalProps> = ({
 }) => {
   const { t } = useTranslation('arena')
   const { arenasList } = useGameStore()
-
+  const { width } = useWindowSize()
   const [internArena, setInternArena] = useState<ArenaType | undefined>()
 
   useEffect(() => {
@@ -49,7 +51,11 @@ const SelectArenaModal: React.FC<SelectArenaModalProps> = ({
   }, [internArena])
 
   return (
-    <Modal onCloseModal={onCloseModal} hasCloseButton={false}>
+    <Modal
+      onCloseModal={onCloseModal}
+      hasCloseButton={width < 1024}
+      subContainerClassname="overflow-y-auto lg:overflow-y-visible"
+    >
       <div className="flex flex-col items-center justify-center">
         <p className="text-xl font-semibold text-white">{t('selectArenaModal.title')}</p>
 
@@ -119,7 +125,7 @@ const ArenaContainer: React.FC<{
 
   const renderName = useMemo(() => {
     return (
-      <span className="text-xl font-normal leading-6 text-white">
+      <span className="text-[18px] font-normal leading-6 text-white lg:text-xl">
         <Trans i18nKey={`${camelCase(arena.name)}.name`} t={t} />
       </span>
     )
