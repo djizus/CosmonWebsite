@@ -132,8 +132,8 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
             </div>
           ))}
         </div>
-        <div className="mt-[30px] flex flex-1 gap-[12px]">
-          <div className="w-full lg:w-3/4">
+        <div className="mt-[30px] flex gap-[12px]">
+          <div className="flex flex-1">
             <Button
               onClick={handleClickOnFight}
               disabled={missFp}
@@ -156,7 +156,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
               )}
             </Button>
           </div>
-          <div className="hidden w-1/4 gap-[12px] lg:flex">
+          <div className="hidden gap-[12px] lg:flex">
             <Button
               type="primaryBordered"
               size="small"

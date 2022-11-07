@@ -95,14 +95,14 @@ const Slider: React.FC<SliderProps> = ({
       </AnimatePresence>
       <div className={clsx('mt-[20px] flex justify-between lg:mt-[60px]')}>
         {page > 0 && showNavigationButtons ? (
-          <div className="flex flex-1">
+          <div className="flex">
             <Button
               type="primary"
               size="small"
               onClick={() => {
                 paginate(-1)
               }}
-              containerClassname="mx-0 lg:mx-auto"
+              containerClassname="mx-0"
             >
               Previous
             </Button>
@@ -132,7 +132,7 @@ const Slider: React.FC<SliderProps> = ({
         ) : null}
 
         {onEndReached && showNavigationButtons ? (
-          <div className="flex flex-1 justify-end">
+          <div className="flex justify-end">
             <Button
               type="primary"
               size="small"
@@ -143,7 +143,7 @@ const Slider: React.FC<SliderProps> = ({
                   paginate(1)
                 }
               }}
-              containerClassname="mx-0 lg:mx-auto"
+              containerClassname="mx-0"
             >
               {page === nbChildren - 1 ? onEndReached.btnLabel : 'Next'}
             </Button>
