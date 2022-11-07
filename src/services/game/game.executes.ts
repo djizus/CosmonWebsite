@@ -143,8 +143,6 @@ const buyBoost = async (cosmon: CosmonTypeWithDecksAndBoosts, boost: Boost) => {
       throw new Error('Signing client unavailable')
     }
 
-    console.log('deckId', cosmon.deckId)
-
     const response = await signingClient.execute(
       address,
       PUBLIC_GAME_CONTRACT,

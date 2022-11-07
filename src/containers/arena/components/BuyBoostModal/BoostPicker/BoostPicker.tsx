@@ -43,7 +43,6 @@ const BoostPicker: React.FC<BoosterPickerProps> = ({
       setCurrentView('leader')
     } else {
       if (selectedBoost) {
-        console.log('buy', selectedLeaders[0], selectedBoost)
         await buyBoost(selectedLeaders[0], selectedBoost, handleCloseModal)
         setLoading(false)
         setCurrentView('recap')
