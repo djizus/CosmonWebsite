@@ -134,11 +134,11 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     const { fetchCurrentPrizePool, fetchNextPrizePool } = get()
     const currPrize = await fetchCurrentPrizePool(arenaAddress)
     const nextPrize = await fetchNextPrizePool(arenaAddress)
-    if (currPrize?.length > 0 && nextPrize?.length > 0) {
+    if (currPrize?.length > 0 || nextPrize?.length > 0) {
       set({
         prizePool: {
-          denom: currPrize[0].denom,
-          amount: (+currPrize[0].amount + +nextPrize[0].amount).toString(),
+          denom: currPrize[0]?.denom || nextPrize[0]?.denom,
+          amount: (+currPrize[0]?.amount ?? 0 + +nextPrize[0]?.amount ?? 0).toString(),
         } as Coin,
       })
     }
