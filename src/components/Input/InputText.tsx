@@ -7,25 +7,23 @@ interface InputTextProps {
     icon: ReactNode
     position: 'left' | 'right'
   }
+  borderClassName?: string
 }
 
 const InputText: React.FC<
   InputTextProps &
-    React.DetailedHTMLProps<
-      React.InputHTMLAttributes<HTMLInputElement>,
-      HTMLInputElement
-    >
-> = ({ icon, ...props }) => {
+    React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+> = ({ icon, borderClassName, ...props }) => {
   return (
     <div className={clsx(styles.inputText)}>
       {icon && icon.position === 'left' ? (
-        <div className={clsx(styles.inputLeftIcon)}>{icon.icon}</div>
+        <div className={clsx(styles.inputLeftIcon, borderClassName)}>{icon.icon}</div>
       ) : null}
 
       <input
         type="text"
         {...props}
-        className={clsx(props.className)}
+        className={clsx(props.className, borderClassName)}
         style={{
           ...(icon &&
             icon.position === 'left' && {
@@ -46,7 +44,7 @@ const InputText: React.FC<
       />
 
       {icon && icon.position === 'right' ? (
-        <div className={clsx(styles.inputRightIcon)}>{icon.icon}</div>
+        <div className={clsx(styles.inputRightIcon, borderClassName)}>{icon.icon}</div>
       ) : null}
     </div>
   )

@@ -1,0 +1,102 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  color: #b1a8b9;
+  margin-bottom: 24px;
+}
+
+.content {
+  width: 493px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  background: #282255;
+  border-radius: 20px;
+  padding: 32px 40px 24px;
+}
+
+.boost {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin-bottom: 16px;
+
+  &:last-of-type {
+    margin-bottom: 0px;
+  }
+}
+
+.leftBlock {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.rightBlock {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.boostButton {
+  margin-left: 0px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 13px;
+}
+
+.boostIcon {
+  margin-right: 10px;
+}
+
+.selectedBoost {
+  background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%) !important;
+}
+
+.attrContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: #222047;
+  border-radius: 8px;
+  padding: 8px;
+  margin-right: 24px;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  width: 59px;
+  height: 40px;
+}
+
+.price {
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+}
+
+.attrIcon {
+  color: white !important;
+}

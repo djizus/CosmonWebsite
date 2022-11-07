@@ -173,8 +173,8 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
               }}
             >
               <CosmonHealthBar
-                hp={getCosmonStat(cosmon.stats!, 'Hp')?.value!}
-                hpMax={cosmonHpMax.current!}
+                hp={Number(getCosmonStat(cosmon.stats!, 'Hp')?.value!)}
+                hpMax={Number(cosmonHpMax.current!)}
               />
             </motion.div>
           )}

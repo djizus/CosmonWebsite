@@ -1,0 +1,20 @@
+.icon {
+  color: white !important;
+  margin-right: 4px;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: #222047;
+  border-radius: 8px;
+  padding: 8px;
+  margin-right: 24px;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  width: auto;
+  height: 40px;
+}

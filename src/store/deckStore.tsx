@@ -10,7 +10,7 @@ import { getCosmonPersonalityAffinity, getTrait } from '@utils/cosmon'
 import { DeckService } from '@services/deck'
 
 interface DeckState {
-  decksList: any[]
+  decksList: Deck[]
   fetchDecksList: () => any
   isFetchingDecksList: boolean
   personalityAffinities: any

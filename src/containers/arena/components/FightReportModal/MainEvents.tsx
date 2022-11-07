@@ -72,7 +72,7 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
               <p className="font-normal text-white">⚡️ &nbsp;&nbsp;First to attack</p>
             ) : null}
             {battle.me.cosmons
-              .filter((c) => getCosmonStat(c.stats!, 'Hp')?.value === 0)
+              .filter((c) => getCosmonStat(c.stats!, 'Hp')?.value === '0')
               .map((c) => (
                 <p key={c.id} className="text-left font-normal text-white">
                   💥 &nbsp;&nbsp;{c.data.extension.name} is KO
@@ -87,7 +87,7 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
               <p className="font-normal text-white">⚡️ &nbsp;&nbsp;First to attack</p>
             ) : null}
             {battle.opponent.cosmons
-              .filter((c) => getCosmonStat(c.stats!, 'Hp')?.value === 0)
+              .filter((c) => getCosmonStat(c.stats!, 'Hp')?.value === '0')
               .map((c) => (
                 <p key={c.id} className="text-left font-normal text-white">
                   💥 &nbsp;&nbsp;{c.data.extension.name} is KO

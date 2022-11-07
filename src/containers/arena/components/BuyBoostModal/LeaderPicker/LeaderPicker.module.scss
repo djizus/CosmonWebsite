@@ -1,0 +1,110 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+  margin-bottom: 21px;
+}
+
+.boostDetails {
+  display: flex;
+  flex-direction: row;
+}
+
+.boostIcon {
+  width: auto;
+}
+
+.numberOfFights {
+  width: 103px;
+}
+
+.price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+}
+
+.kiLogo {
+  margin-right: 9px;
+}
+
+.content {
+  width: 506px;
+  display: flex !important;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+  background: #282255;
+  border-radius: 20px;
+  padding: 16px 30px 24px;
+  margin-top: 27px;
+}
+
+.searchIcon {
+  color: white !important;
+}
+
+.box {
+  display: flex;
+  max-height: 400px;
+  overflow: auto;
+  width: 100%;
+  margin-top: 14px;
+}
+
+.searchInput {
+  width: 374px;
+  color: theme('colors.cosmon.main.tertiary') !important;
+}
+
+.inputTextBorder {
+  border-color: white !important;
+}
+
+.card {
+  width: 446px;
+  height: 171px;
+}
+
+.selectedCard {
+  border: 1px solid #9fa4dd;
+  border-radius: 10px;
+}
+
+.clearAllContent {
+  width: 424px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.numberOfLeaders {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.clearAllButton {
+  margin-top: 14px;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    color: #999;
+
+    &:hover {
+      color: #999;
+    }
+  }
+}

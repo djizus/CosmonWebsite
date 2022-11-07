@@ -250,7 +250,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
       ...fightersTeam[defPos],
       stats: [
         ...fightersTeam[defPos]?.stats!.filter((k) => k.key !== 'Hp'),
-        { key: 'Hp', value: newHp },
+        { key: 'Hp', value: newHp.toString() },
       ],
     }
     return [...fightersTeam]

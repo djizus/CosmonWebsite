@@ -6,6 +6,8 @@ import { CosmonType, FightType } from 'types'
 import { ArenaType } from 'types/Arena'
 import { Deck } from 'types/Deck'
 import { calculateFee, GasPrice } from '@cosmjs/stargate'
+import { Boost } from 'types/Boost'
+import { CosmonTypeWithDecksAndBoosts } from '@containers/arena/components/BuyBoostModal/BuyBoostModalType'
 
 const PUBLIC_GAME_CONTRACT = process.env.NEXT_PUBLIC_GAME_CONTRACT!
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM
@@ -129,7 +131,42 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
   }
 }
 
+/**
+ * Buy a boost for a cosmon
+ * @param nft_id id of selected cosmon
+ * boosts array of boost_name
+ */
+const buyBoost = async (cosmon: CosmonTypeWithDecksAndBoosts, boost: Boost) => {
+  try {
+    const { signingClient, address } = useWalletStore.getState()
+    if (!signingClient) {
+      throw new Error('Signing client unavailable')
+    }
+
+    const response = await signingClient.execute(
+      address,
+      PUBLIC_GAME_CONTRACT,
+      {
+        buy_boosts: {
+          deck_id: cosmon.deckId === -1 ? null : cosmon.deckId,
+          nft_id: cosmon.id,
+          boosts: [boost.boost_name],
+        },
+      },
+      'auto',
+      `[COSMON] buy boost ${boost.boost_name}`,
+      (boost.price && [boost.price]) || null
+    )
+
+    return response
+  } catch (error) {
+    console.error(error)
+    throw new Error(`Error while buying a boost ${boost.boost_name}`)
+  }
+}
+
 export default {
   fight,
   registerToArena,
+  buyBoost,
 }

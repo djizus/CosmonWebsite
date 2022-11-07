@@ -1,0 +1,27 @@
+.pillsContainer {
+  display: flex;
+  flex-direction: row;
+  margin-left: 12px;
+  max-width: 210px;
+  margin-right: 12px;
+  overflow: auto;
+}
+
+.pills {
+  background: #413673;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px 8px;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  margin-right: 4px;
+}
+
+.pillsLabel {
+  font-weight: 400;
+  font-size: 8px;
+  color: white;
+}

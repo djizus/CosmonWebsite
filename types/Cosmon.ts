@@ -1,3 +1,5 @@
+import { Boost } from './Boost'
+
 export type CosmonTraitType =
   | 'scarcity'
   | 'asset_id'
@@ -25,7 +27,7 @@ export type CosmonStatKeyType =
 
 export type CosmonStatType = {
   key: CosmonStatKeyType
-  value: number
+  value: string
 }
 
 export type CosmonType = {
@@ -48,8 +50,11 @@ export type CosmonType = {
       name: string
       youtube_url: string
     }
-
     token_uri: null
   }
   stats?: CosmonStatType[]
+}
+
+export type CosmonTypeWithBoosts = CosmonType & {
+  boosts: [Boost | null, Boost | null, Boost | null]
 }

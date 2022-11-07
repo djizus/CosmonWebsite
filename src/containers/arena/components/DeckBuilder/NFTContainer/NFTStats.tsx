@@ -9,6 +9,7 @@ import Heart from '@public/cosmons/stats/heart.svg'
 import { getCosmonStat } from '@utils/cosmon'
 import { NFTId } from 'types'
 import Tooltip from '@components/Tooltip/Tooltip'
+import * as style from './NFTStats.module.scss'
 
 interface NFTStatsProps {
   nftStats: any
@@ -57,7 +58,7 @@ const NFTStats: React.FC<NFTStatsProps> = ({ nftStats, nftId }) => {
     >
       <div className="grid grid-cols-2 grid-rows-3 gap-[17px] gap-x-[9px]">
         <div className="flex items-center justify-center">
-          <Sword data-tip="tootlip" data-for={`${nftId}-stat-atq`} />
+          <Sword className={style.svgIcon} data-tip="tootlip" data-for={`${nftId}-stat-atq`} />
           <Tooltip id={`${nftId}-stat-atq`}>
             <p>Attack</p>
           </Tooltip>
@@ -66,7 +67,7 @@ const NFTStats: React.FC<NFTStatsProps> = ({ nftStats, nftId }) => {
           </p>
         </div>
         <div className="flex items-center justify-center">
-          <Heart data-tip="tootlip" data-for={`${nftId}-stat-hp`} />
+          <Heart className={style.svgIcon} data-tip="tootlip" data-for={`${nftId}-stat-hp`} />
           <Tooltip id={`${nftId}-stat-hp`}>
             <p>Health Points</p>
           </Tooltip>
@@ -75,7 +76,7 @@ const NFTStats: React.FC<NFTStatsProps> = ({ nftStats, nftId }) => {
           </p>
         </div>
         <div className="flex items-center justify-center">
-          <Shield data-tip="tootlip" data-for={`${nftId}-stat-def`} />
+          <Shield className={style.svgIcon} data-tip="tootlip" data-for={`${nftId}-stat-def`} />
           <Tooltip id={`${nftId}-stat-def`}>
             <p>Defense</p>
           </Tooltip>
@@ -84,7 +85,7 @@ const NFTStats: React.FC<NFTStatsProps> = ({ nftStats, nftId }) => {
           </p>
         </div>
         <div className="flex items-center justify-center">
-          <Zap data-tip="tootlip" data-for={`${nftId}-stat-spe`} />
+          <Zap className={style.svgIcon} data-tip="tootlip" data-for={`${nftId}-stat-spe`} />
           <Tooltip id={`${nftId}-stat-spe`}>
             <p>Speed</p>
           </Tooltip>
@@ -93,7 +94,7 @@ const NFTStats: React.FC<NFTStatsProps> = ({ nftStats, nftId }) => {
           </p>
         </div>
         <div className="flex items-center justify-center">
-          <Sparkles data-tip="tootlip" data-for={`${nftId}-stat-luk`} />
+          <Sparkles className={style.svgIcon} data-tip="tootlip" data-for={`${nftId}-stat-luk`} />
           <Tooltip id={`${nftId}-stat-luk`} place="top" offset={{ bottom: 10 }}>
             <p>Luck</p>
           </Tooltip>
@@ -102,7 +103,7 @@ const NFTStats: React.FC<NFTStatsProps> = ({ nftStats, nftId }) => {
           </p>
         </div>
         <div className="flex items-center justify-center">
-          <Light data-tip="tootlip" data-for={`${nftId}-stat-int`} />
+          <Light className={style.svgIcon} data-tip="tootlip" data-for={`${nftId}-stat-int`} />
           <Tooltip id={`${nftId}-stat-int`} place="top" offset={{ bottom: 10 }}>
             <p>Intelligence</p>
           </Tooltip>

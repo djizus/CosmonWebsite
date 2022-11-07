@@ -1,7 +1,7 @@
 import create from 'zustand'
 import { ArenaService } from '@services/arena'
 import { Coin } from '@cosmjs/proto-signing'
-import { WalletInfos, PrizesForAddress, LeaderBoard, ArenaType } from 'types'
+import { WalletInfos, PrizesForAddress, LeaderBoard, ArenaType, CosmonType } from 'types'
 import { toast } from 'react-toastify'
 import { ToastContainer } from '@components/ToastContainer/ToastContainer'
 import SuccessIcon from '@public/icons/success.svg'
@@ -9,6 +9,7 @@ import ErrorIcon from '@public/icons/error.svg'
 import { getNextMonday } from '@utils/date'
 import { useWalletStore } from './walletStore'
 import { XPRegistryService } from '@services/xp-registry'
+import { Boost, BoostForCosmon } from 'types/Boost'
 
 interface ArenaState {
   currentLeaguePro: ArenaType | null
@@ -16,6 +17,8 @@ interface ArenaState {
   currentLeaderboard: LeaderBoard
   currentLeaderboardWallets: string[]
   walletInfos: WalletInfos
+  boostsAvailable: Boost[]
+  boostsForCosmons: BoostForCosmon[]
   arenaFees: any
   currentPrizePool: any
   nextPrizePool: any
@@ -63,6 +66,8 @@ interface ArenaState {
   loading: boolean
   hourlyFPNumber: number
   fetchHourlyFPNumber: () => void
+  fetchBoosts: () => void
+  fetchBoostsForCosmons: (cosmons: CosmonType[]) => void
 }
 
 export const WINNER_IS_DRAW = 'DRAW'
@@ -81,6 +86,8 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     draws: 0,
     position: null,
   },
+  boostsAvailable: [],
+  boostsForCosmons: [],
   currentChampionshipNumber: 1,
   arenaFees: null,
   currentPrizePool: null,
@@ -375,5 +382,43 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     set({
       currentLeaguePro: leaguePro,
     })
+  },
+  fetchBoosts: async () => {
+    try {
+      const boosts = await XPRegistryService.queries().fetchBoosts()
+
+      set({
+        boostsAvailable: boosts,
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  fetchBoostsForCosmons: async (cosmons: CosmonType[]) => {
+    try {
+      const ids = cosmons.map((cosmon) => cosmon.id)
+      const boostsForCosmons = await XPRegistryService.queries().fecthBoostsForCosmons(ids)
+
+      const result = boostsForCosmons.map((item: Boost[], index: number) => {
+        let filledArray: (Boost | null)[] = [...item]
+
+        for (let i = 0; i < 3; i++) {
+          if (filledArray[i] === undefined) {
+            filledArray[i] = null
+          }
+        }
+
+        return {
+          id: ids[index],
+          boosts: filledArray as [Boost | null, Boost | null, Boost | null],
+        }
+      })
+
+      set({
+        boostsForCosmons: result,
+      })
+    } catch (error) {
+      console.error(error)
+    }
   },
 }))
