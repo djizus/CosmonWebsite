@@ -1,5 +1,5 @@
 import Button from '@components/Button/Button'
-import { Deck, CosmonType } from 'types'
+import { Deck, CosmonType, DeckWithBoosts } from 'types'
 import { useDeckStore } from '@store/deckStore'
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { useCallback, useMemo, useState } from 'react'
@@ -16,9 +16,12 @@ import FlipCard from '@components/FlipCard/FlipCard'
 import Countdown from '@components/Countdown/Countdown'
 import { useArenaStore } from '@store/arenaStore'
 import { BuyBoostModalOrigin } from '../../BuyBoostModal/BuyBoostModalType'
+import * as style from './DeckContainer.module.scss'
+import clsx from 'clsx'
+import { boost } from '../../BuyBoostModal/BoostPicker/BoostPicker.module.scss'
 
 interface DeckContainerProps {
-  deck: Deck
+  deck: DeckWithBoosts
   onEditDeck: (deck: Deck) => void
   onClickDelete: (deck: Deck) => void
   onClickFight: (deck: Deck) => void
@@ -125,7 +128,28 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
               />
 
               <CosmonFightPointsBar className="mt-[16px]" cosmon={cosmon} />
-              <Button onClick={() => onOpenBoostModal(cosmon)}>BUY BOOST</Button>
+              <div className={style.boostSlotContainer}>
+                {cosmon.boosts.map((item, index) => (
+                  <div
+                    key={`boost-${cosmon.data.extension.name}-${index}`}
+                    onClick={() => {
+                      if (!item) {
+                        onOpenBoostModal(cosmon)
+                      }
+                    }}
+                    className={clsx(style.boostSlot, {
+                      [style.fillBoostSlot]: item?.boost_name,
+                      [style.emptyBoostSlot]: !item?.boost_name,
+                    })}
+                  >
+                    {item?.boost_name ? (
+                      <img src={item.image_path} />
+                    ) : (
+                      <p className={style.plus}>+</p>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
@@ -140,7 +164,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
             >
               {missFp ? (
                 <p>
-                  +{hourlyFPNumber} Fight Points in &nbsp;
+                  +{hourlyFPNumber ?? 1} Fight Points in &nbsp;
                   <Countdown
                     from={new Date()}
                     to={nextHourDate}

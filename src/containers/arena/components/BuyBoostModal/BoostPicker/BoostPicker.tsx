@@ -1,48 +1,53 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import Button from '@components/Button/Button'
 import * as style from './BoostPicker.module.scss'
 import { Boost } from 'types/Boost'
 import clsx from 'clsx'
-import { BuyBoostModalOrigin, CurrentView } from '../BuyBoostModalType'
+import {
+  BuyBoostModalOrigin,
+  CosmonTypeWithDecksAndBoosts,
+  CurrentView,
+} from '../BuyBoostModalType'
 import IconWithLabel from '../IconWithLabel/IconWithLabel'
-import { getIconForAttr, getStatAcronymFromBoost } from '@utils/boost'
+import { getIconForAttr, getPotionNameFromBoostedStat, getStatAcronymFromBoost } from '@utils/boost'
 import Tooltip from '@components/Tooltip/Tooltip'
+import { convertMicroDenomToDenom } from '@utils/conversion'
+import { useGameStore } from '@store/gameStore'
 
 interface BoosterPickerProps {
   selectedBoost: Boost | null
+  selectedLeaders: CosmonTypeWithDecksAndBoosts[]
   setSelectedBoost: Dispatch<SetStateAction<Boost | null>>
   setCurrentView: Dispatch<SetStateAction<CurrentView>>
   origin: BuyBoostModalOrigin
+  boostsAvailable: Boost[]
+  handleCloseModal: () => void
 }
 
 const BoostPicker: React.FC<BoosterPickerProps> = ({
   selectedBoost,
+  selectedLeaders,
   setSelectedBoost,
   setCurrentView,
   origin,
+  boostsAvailable,
+  handleCloseModal,
 }) => {
-  const boostsAvailable: Boost[] = [
-    {
-      image_path: '/icons/yellow-gift.svg',
-      effect_time: 5,
-      name: 'Elixir',
-      inc_value: 5,
-      price: { denom: 'XKI', amount: '10' },
-    },
-    {
-      image_path: '/icons/yellow-gift.svg',
-      effect_time: 5,
-      name: 'Megaelixir',
-      inc_value: 5,
-      price: { denom: 'XKI', amount: '15' },
-    },
-  ]
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = () => {
+  const { buyBoost } = useGameStore()
+
+  const handleSubmit = async () => {
+    setLoading(true)
     if (origin === 'buyBoost') {
       setCurrentView('leader')
     } else {
-      setCurrentView('recap')
+      if (selectedBoost) {
+        console.log('buy', selectedLeaders[0], selectedBoost)
+        await buyBoost(selectedLeaders[0], selectedBoost, handleCloseModal)
+        setLoading(false)
+        setCurrentView('recap')
+      }
     }
   }
 
@@ -55,39 +60,38 @@ const BoostPicker: React.FC<BoosterPickerProps> = ({
         10 fights per Boost・3 Boosts per Leader
       </p>
       <div className={style.content}>
-        {boostsAvailable.map((boost) => {
-          const Icon = getIconForAttr(boost.name)
+        {boostsAvailable.map((boost, index) => {
+          const Icon = getIconForAttr(boost.boost_name)
+
           return (
-            <div key={boost.name} className={style.boost}>
+            <div key={`${boost.boost_name}-${index}`} className={style.boost}>
               <div className={style.leftBlock}>
                 <Button
                   withoutContainer
                   className={clsx(style.boostButton, {
-                    [style.selectedBoost]: boost.name === selectedBoost?.name,
+                    [style.selectedBoost]: boost.boost_name === selectedBoost?.boost_name,
                   })}
                   type="secondary"
                   onClick={() => setSelectedBoost(boost)}
                 >
-                  <img src={boost.image_path} />
-                  <span>{boost.name}</span>
+                  <img className={style.boostIcon} src={boost.image_path} />
+                  <span>{getPotionNameFromBoostedStat(boost.boost_name)}</span>
                 </Button>
               </div>
               <div className={style.rightBlock}>
-                <div data-tip="tootlip" data-for={boost.name}>
+                <div data-tip="tootlip" data-for={boost.boost_name}>
                   <IconWithLabel Icon={Icon} label={`+${boost.inc_value} %`} />
                 </div>
-                <Tooltip id={boost.name}>
-                  {boost.inc_value} % {getStatAcronymFromBoost(boost.name)}
+                <Tooltip id={boost.boost_name}>
+                  + {boost.inc_value} % {boost.boost_name}
                 </Tooltip>
-                <p className={style.price}>
-                  {boost.price.amount} {boost.price.denom}
-                </p>
+                <p className={style.price}>{convertMicroDenomToDenom(boost.price.amount)} XKI</p>
               </div>
             </div>
           )
         })}
       </div>
-      <Button disabled={!selectedBoost} onClick={handleSubmit}>
+      <Button disabled={!selectedBoost} onClick={handleSubmit} isLoading={loading}>
         Continue
       </Button>
     </div>

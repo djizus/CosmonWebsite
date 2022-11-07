@@ -72,6 +72,11 @@ $textSize: 15px;
   gap: 35px;
 }
 
+.optionsContainer {
+  display: flex;
+  flex-direction: row;
+}
+
 .buyBoostButton {
   background: conic-gradient(
     from 180deg at 50% 50%,
@@ -90,4 +95,5 @@ $textSize: 15px;
 
   filter: drop-shadow(0px 4px 50px rgba(0, 0, 0, 0.4)) !important;
   border-radius: 12px !important;
+  margin-right: 20px;
 }

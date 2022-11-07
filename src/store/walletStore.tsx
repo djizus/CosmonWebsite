@@ -167,8 +167,6 @@ const useWalletStore = create<WalletState>(
             { address: '' },
           ]
 
-          console.log(accounts)
-
           set({
             address: accounts[0].address,
             ibcAddress: ibcAccounts[0].address,

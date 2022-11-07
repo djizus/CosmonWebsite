@@ -3,75 +3,64 @@ import Button from '@components/Button/Button'
 import * as style from './LeaderPicker.module.scss'
 import { Boost } from 'types/Boost'
 import Flash from '@public/cosmons/stats/flash.svg'
-import { CurrentView } from '../BuyBoostModalType'
+import { CosmonTypeWithDecksAndBoosts, CurrentView } from '../BuyBoostModalType'
 import IconWithLabel from '../IconWithLabel/IconWithLabel'
-import { getIconForAttr } from '@utils/boost'
+import { getIconForAttr, getPotionNameFromBoostedStat } from '@utils/boost'
 import InputText from '@components/Input/InputText'
 import Search from '@public/icons/search.svg'
 import { useWalletStore } from '@store/walletStore'
-import { useDeckStore } from '@store/deckStore'
 import CardsWithStats from '../CardWithStats/CardWithStats'
-import { CosmonType } from 'types/Cosmon'
 import clsx from 'clsx'
+import { convertMicroDenomToDenom } from '@utils/conversion'
+import { useGameStore } from '@store/gameStore'
 
 interface LeaderPickerProps {
-  selectedLeaders: CosmonType[]
+  handleCloseModal: () => void
+  selectedLeaders: CosmonTypeWithDecksAndBoosts[]
+  cosmonsWithDeckInfo: CosmonTypeWithDecksAndBoosts[]
   selectedBoost: Boost
-  handleSelectLeader: (leader: CosmonType | null) => void
+  handleSelectLeader: (leader: CosmonTypeWithDecksAndBoosts | null) => void
   setCurrentView: Dispatch<SetStateAction<CurrentView>>
 }
 
 const LeaderPicker: React.FC<LeaderPickerProps> = ({
+  handleCloseModal,
   selectedLeaders,
+  cosmonsWithDeckInfo,
   selectedBoost,
   handleSelectLeader,
   setCurrentView,
 }) => {
   const [search, setSearch] = useState<string>('')
-  const { cosmons, fetchCosmons } = useWalletStore((state) => state)
-  const { fetchDecksList, decksList } = useDeckStore((state) => state)
+  const [loading, setLoading] = useState(false)
+
+  const { fetchCosmons } = useWalletStore((state) => state)
+  const { buyBoost } = useGameStore()
 
   useEffect(() => {
     fetchCosmons()
-    fetchDecksList()
   }, [])
 
-  const formatedAndFiltredCosmons = useMemo(() => {
-    return cosmons
-      .map((c, i) => {
-        if (c.isInDeck) {
-          const cosmonDecksName = decksList.reduce((acc: string[], curr) => {
-            const isCosmonInThisDeckIndex = curr.cosmons.findIndex((cosmon) => cosmon.id === c.id)
+  const handleSubmit = async () => {
+    setLoading(true)
+    if (selectedBoost) {
+      await buyBoost(selectedLeaders[0], selectedBoost, handleCloseModal)
+      setLoading(false)
+      setCurrentView('recap')
+    }
+  }
 
-            if (isCosmonInThisDeckIndex !== -1) {
-              return [...acc, curr.name]
-            }
+  const filtredCosmons: CosmonTypeWithDecksAndBoosts[] = useMemo(() => {
+    return cosmonsWithDeckInfo.filter((cosmon) => {
+      const has3Boosts = !cosmon.boosts.some((boost) => boost === null)
+      const filterByCosmonName = new RegExp(search, 'gi').test(cosmon.data.extension.name)
+      const filterByDeckName = new RegExp(search, 'gi').test(cosmon.deckName)
 
-            return acc
-          }, [])
+      return (filterByCosmonName || filterByDeckName) && !has3Boosts
+    })
+  }, [cosmonsWithDeckInfo, search])
 
-          return {
-            ...c,
-            decksName: cosmonDecksName,
-          }
-        }
-
-        return {
-          ...c,
-          decksName: [],
-        }
-      })
-      .filter((cosmon) => {
-        const filterByCosmonName = new RegExp(search, 'gi').test(cosmon.data.extension.name)
-        const filterByDeckName = cosmon.decksName.some((deckName) =>
-          new RegExp(search, 'gi').test(deckName)
-        )
-
-        return filterByCosmonName || filterByDeckName
-      })
-  }, [cosmons, decksList, search])
-
-  const BoostIcon = getIconForAttr(selectedBoost.name)
+  const BoostIcon = getIconForAttr(selectedBoost.boost_name)
 
   return (
     <div className={style.container}>
@@ -90,8 +79,10 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
         <div className={style.price}>
           <img className={style.kiLogo} src="/xki-logo.png" style={{ width: 30, height: 30 }} />
           <span>
-            {parseInt(selectedBoost.price.amount) * selectedLeaders.length}{' '}
-            {selectedBoost.price.denom}
+            {Math.round(
+              convertMicroDenomToDenom(selectedBoost.price.amount) * selectedLeaders.length * 10
+            ) / 10}{' '}
+            XKI
           </span>
         </div>
       </div>
@@ -106,15 +97,20 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
             position: 'left',
           }}
         />
-        {selectedLeaders.length > 0 ? (
-          <div>
-            <p>{selectedLeaders.length} leader selected</p>
-            <Button onClick={() => handleSelectLeader(null)}>Clear all</Button>
-          </div>
-        ) : null}
+        {/* <div className={style.clearAllContent}>
+          <p className={style.numberOfLeaders}>{selectedLeaders.length} leader(s) selected</p>
+          <Button
+            className={style.clearAllButton}
+            type="ghost"
+            disabled={selectedLeaders.length === 0}
+            onClick={() => handleSelectLeader(null)}
+          >
+            Clear all
+          </Button>
+        </div> */}
         <div className={style.box}>
           <div>
-            {formatedAndFiltredCosmons.map((cosmon) => (
+            {filtredCosmons.map((cosmon) => (
               <CardsWithStats
                 key={cosmon.id}
                 className={clsx(style.card, {
@@ -133,9 +129,10 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
       </div>
       <Button
         disabled={!selectedBoost || selectedLeaders.length <= 0}
-        onClick={() => setCurrentView('recap')}
+        isLoading={loading}
+        onClick={handleSubmit}
       >
-        Buy {selectedBoost.name}
+        Buy {getPotionNameFromBoostedStat(selectedBoost.boost_name)}
       </Button>
     </div>
   )

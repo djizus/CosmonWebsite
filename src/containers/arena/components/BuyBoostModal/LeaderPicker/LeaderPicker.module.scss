@@ -60,7 +60,7 @@
   max-height: 400px;
   overflow: auto;
   width: 100%;
-  margin-top: 27px;
+  margin-top: 14px;
 }
 
 .searchInput {
@@ -80,4 +80,31 @@
 .selectedCard {
   border: 1px solid #9fa4dd;
   border-radius: 10px;
+}
+
+.clearAllContent {
+  width: 424px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.numberOfLeaders {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.clearAllButton {
+  margin-top: 14px;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    color: #999;
+
+    &:hover {
+      color: #999;
+    }
+  }
 }

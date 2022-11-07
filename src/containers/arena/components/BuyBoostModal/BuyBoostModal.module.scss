@@ -9,7 +9,7 @@
   justify-content: center;
   z-index: 2;
   max-height: 95vh;
-  overflow: hidden;
+  overflow: auto;
 
   &::after {
     z-index: -1;

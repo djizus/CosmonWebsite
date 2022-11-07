@@ -4,7 +4,11 @@ import { toast } from 'react-toastify'
 import ErrorIcon from '@public/icons/error.svg'
 import SuccessIcon from '@public/icons/success.svg'
 import create from 'zustand'
-import { Deck, ArenaType, FightType } from 'types'
+import { Deck, ArenaType, FightType, CosmonType } from 'types'
+import { Boost } from 'types/Boost'
+import { useWalletStore } from './walletStore'
+import { useArenaStore } from './arenaStore'
+import { CosmonTypeWithDecksAndBoosts } from '@containers/arena/components/BuyBoostModal/BuyBoostModalType'
 
 interface GameState {
   arenasList: ArenaType[]
@@ -14,6 +18,7 @@ interface GameState {
   generatingBattle: boolean
   fight: (deck: Deck, arena: ArenaType) => Promise<any>
   battle: FightType | null
+  buyBoost: (cosmon: CosmonTypeWithDecksAndBoosts, boost: Boost, onError?: () => void) => void
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -122,6 +127,46 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({ generatingBattle: false, battle })
       return battle
     } catch (error) {}
+  },
+  buyBoost: async (cosmon, boost, onError) => {
+    try {
+      const response = await toast
+        .promise(GameService.executes().buyBoost(cosmon, boost), {
+          pending: {
+            render() {
+              return (
+                <ToastContainer type="pending">
+                  {`Please wait while buying your boost`}
+                </ToastContainer>
+              )
+            },
+          },
+          success: {
+            render() {
+              return <ToastContainer type={'success'}>Great! Your boost is actif</ToastContainer>
+            },
+            icon: SuccessIcon,
+          },
+          error: {
+            render({ data }: any) {
+              return <ToastContainer type="error">{data.message}</ToastContainer>
+            },
+            icon: ErrorIcon,
+          },
+        })
+        .then(async (resp: any) => {
+          const { cosmons } = useWalletStore.getState()
+          const { fetchBoostsForCosmons } = useArenaStore.getState()
+
+          await fetchBoostsForCosmons(cosmons)
+
+          return true
+        })
+
+      return response
+    } catch (error) {
+      onError && onError()
+    }
   },
   fetchArenaFees: () => {},
   fetchCurrentPrizePool: () => {},

@@ -1,37 +1,39 @@
 const ELIXIR = 'Elixir'
 const MEGAELIXIR = 'Megaelixir'
-const LIFE = 'Life Potion'
-const STAMINA = 'Stamina Potion'
-const POWER = 'Power Potion'
-const DEFENSE = 'Defense Potion'
-const SPEED = 'Speed Potion'
-const LUCK = 'Luck Potion'
-const MIND = 'Mind Potion'
+const LIFE = 'Life Plus'
+const STAMINA = 'Stamina Plus'
+const POWER = 'Power Plus'
+const DEFENSE = 'Defense Plus'
+const SPEED = 'Speed Plus'
+const LUCK = 'Luck Plus'
+const MIND = 'Mind Plus'
 
-import Light from '@public/cosmons/stats/light.svg'
+import Heart from '@public/cosmons/stats/heart.svg'
 import Shield from '@public/cosmons/stats/shield.svg'
 import Sparkles from '@public/cosmons/stats/sparkles.svg'
 import Sword from '@public/cosmons/stats/sword.svg'
 import Zap from '@public/cosmons/stats/zap.svg'
 import Spiral from '@public/cosmons/stats/spiral.svg'
 import { CosmonStatKeyType } from 'types/Cosmon'
+import { Boost, BoostForCosmon } from 'types/Boost'
+import { Deck, DeckWithBoosts } from 'types/Deck'
 
-export function getIconForAttr(boost: string) {
-  switch (boost) {
-    case ELIXIR:
-      return Light
-    case MEGAELIXIR:
+export function getIconForAttr(boostName: CosmonStatKeyType) {
+  switch (boostName) {
+    case 'Atq':
       return Sword
-    case POWER:
-      return Sword
-    case DEFENSE:
+    case 'Def':
       return Shield
-    case SPEED:
+    case 'Spe':
       return Zap
-    case MIND:
+    case 'Int':
       return Spiral
-    case LUCK:
+    case 'Luk':
       return Sparkles
+    case 'Hp':
+      return Heart
+    default:
+      return Sword
   }
 }
 
@@ -51,6 +53,25 @@ export function getStatAcronymFromBoost(boost: string): CosmonStatKeyType | unde
       return 'Ap'
     case LIFE:
       return 'Hp'
+  }
+}
+
+export function getPotionNameFromBoostedStat(boostedStat: CosmonStatKeyType): string | undefined {
+  switch (boostedStat) {
+    case 'Atq':
+      return POWER
+    case 'Def':
+      return DEFENSE
+    case 'Spe':
+      return SPEED
+    case 'Int':
+      return MIND
+    case 'Luk':
+      return LUCK
+    case 'Ap':
+      return STAMINA
+    case 'Hp':
+      return LIFE
   }
 }
 
@@ -74,5 +95,26 @@ export function getStatNameFromBoost(boost: string) {
       return 'luck'
     case STAMINA:
       return 'action points'
+  }
+}
+
+export function getDeckWithBoosts(deck: Deck, boostsForCosmons: BoostForCosmon[]): DeckWithBoosts {
+  return {
+    ...deck,
+    cosmons: deck.cosmons.map((cosmon) => {
+      const cosmonWithBoost = boostsForCosmons.find((item) => item.id === cosmon.id)?.boosts
+
+      if (cosmonWithBoost) {
+        return {
+          ...cosmon,
+          boosts: cosmonWithBoost as [Boost | null, Boost | null, Boost | null],
+        }
+      }
+
+      return {
+        ...cosmon,
+        boosts: [null, null, null] as [null, null, null],
+      }
+    }),
   }
 }

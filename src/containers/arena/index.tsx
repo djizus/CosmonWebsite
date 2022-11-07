@@ -6,6 +6,7 @@ import { getMEAs } from '@containers/arena/data'
 import { useArenaStore } from '@store/arenaStore'
 import { useDeckStore } from '@store/deckStore'
 import { useGameStore } from '@store/gameStore'
+import { useWalletStore } from '@store/walletStore'
 import { convertMicroDenomToDenom } from '@utils/conversion'
 import { sleep } from '@utils/sleep'
 import clsx from 'clsx'
@@ -28,6 +29,8 @@ interface ArenaProps {}
 type ViewType = 'decks' | 'progression'
 
 const Arena: React.FC<ArenaProps> = ({}) => {
+  const { cosmons } = useWalletStore()
+
   const [view, setView] = useState<ViewType>('decks')
   const [deckBuilderVisible, setDeckBuilderVisible] = useState(false)
   const [buyBoostVisible, setBuyBoostVisible] = useState(false)
@@ -44,7 +47,15 @@ const Arena: React.FC<ArenaProps> = ({}) => {
     getPrizePool,
     prizePool,
     setCurrentLeaguePro,
+    fetchBoostsForCosmons,
+    boostsForCosmons,
   } = useArenaStore()
+
+  useEffect(() => {
+    if (cosmons && cosmons.length > 0) {
+      fetchBoostsForCosmons(cosmons)
+    }
+  }, [cosmons])
 
   const handleClickDeck = useCallback(() => {
     setView('decks')
@@ -139,6 +150,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
       case 'decks':
         return (
           <Decks
+            boostsForCosmons={boostsForCosmons}
             onOpenBoostModal={handleOpenBuyBoostModal}
             onEditDeck={handleClickEditDeck}
             onDeleteDeck={handleDeletetDeck}
@@ -148,7 +160,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
         // currentLeaguePro can't be null because if it is null we can't display it
         return <Progression currentLeaguePro={currentLeaguePro as ArenaType} />
     }
-  }, [view])
+  }, [view, boostsForCosmons])
 
   return (
     <div className="pt-[100px] lg:pt-[132px]">
@@ -317,7 +329,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
                 Progression
               </Button>
             </div>
-            <div>
+            <div className={style.optionsContainer}>
               <Button
                 size="small"
                 onClick={() => handleOpenBuyBoostModal('buyBoost')}

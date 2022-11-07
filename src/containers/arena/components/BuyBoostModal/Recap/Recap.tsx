@@ -2,27 +2,28 @@ import { Boost } from 'types/Boost'
 import IconWithLabel from '../IconWithLabel/IconWithLabel'
 import * as style from './Recap.module.scss'
 import Flash from '@public/cosmons/stats/flash.svg'
-import { getIconForAttr, getStatNameFromBoost } from '@utils/boost'
+import { getIconForAttr } from '@utils/boost'
 import Button from '@components/Button/Button'
-import { CosmonType } from 'types/Cosmon'
 import clsx from 'clsx'
 import CardsWithStats from '../CardWithStats/CardWithStats'
+import { convertMicroDenomToDenom } from '@utils/conversion'
+import { CosmonTypeWithDecksAndBoosts } from '../BuyBoostModalType'
 
 interface Props {
-  selectedLeaders: CosmonType[]
+  selectedLeaders: CosmonTypeWithDecksAndBoosts[]
   selectedBoost: Boost
   closeModal: () => void
   resetModal: () => void
 }
 
 const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, resetModal }) => {
-  const BoostIcon = getIconForAttr(selectedBoost.name)
+  const BoostIcon = getIconForAttr(selectedBoost.boost_name)
 
   return (
     <div className={style.container}>
       <p className={style.title}>Recap</p>
       <div className={style.boostDetails}>
-        <IconWithLabel Icon={BoostIcon} label={`+${selectedBoost.inc_value}`} />
+        <IconWithLabel Icon={BoostIcon} label={`+${selectedBoost.inc_value} %`} />
         <IconWithLabel
           className={style.numberOfFights}
           Icon={() => <Flash />}
@@ -31,8 +32,10 @@ const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, re
         <div className={style.price}>
           <img className={style.kiLogo} src="/xki-logo.png" style={{ width: 30, height: 30 }} />
           <span>
-            {parseInt(selectedBoost.price.amount) * selectedLeaders.length}{' '}
-            {selectedBoost.price.denom}
+            {Math.round(
+              convertMicroDenomToDenom(selectedBoost.price.amount) * selectedLeaders.length * 10
+            ) / 10}{' '}
+            XKI
           </span>
         </div>
       </div>
@@ -46,11 +49,16 @@ const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, re
           />
         ))}
       </div>
-      {selectedLeaders.length === 1 && (
+      {selectedLeaders.length <= 1 ? (
         <p className={style.text}>
-          {selectedLeaders[0].data.extension.name} just boosted his{' '}
-          {getStatNameFromBoost(selectedBoost.name)} by {selectedBoost.inc_value} points!
+          {selectedLeaders[0].data.extension.name} just boosted his {selectedBoost.boost_name} by{' '}
+          {selectedBoost.inc_value} %!
           <br /> This potion will last {selectedBoost.effect_time} fights before disappearing.
+        </p>
+      ) : (
+        <p className={style.text}>
+          Your leaders just boosted their {selectedBoost.boost_name} by {selectedBoost.inc_value} %!
+          <br /> Those potions will last {selectedBoost.effect_time} fights before disappearing.
         </p>
       )}
       <div className={style.footer}>

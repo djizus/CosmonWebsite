@@ -2,11 +2,14 @@ export const boostDetails: string
 export const boostIcon: string
 export const box: string
 export const card: string
+export const clearAllButton: string
+export const clearAllContent: string
 export const container: string
 export const content: string
 export const inputTextBorder: string
 export const kiLogo: string
 export const numberOfFights: string
+export const numberOfLeaders: string
 export const price: string
 export const searchIcon: string
 export const searchInput: string

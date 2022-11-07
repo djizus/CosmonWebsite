@@ -61,6 +61,14 @@
 
 .boostButton {
   margin-left: 0px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 13px;
+}
+
+.boostIcon {
+  margin-right: 10px;
 }
 
 .selectedBoost {

@@ -2,11 +2,14 @@ import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import BoostPicker from './BoostPicker/BoostPicker'
 import * as style from './BuyBoostModal.module.scss'
-import { CurrentView, BuyBoostModalOrigin } from './BuyBoostModalType'
+import { CurrentView, BuyBoostModalOrigin, CosmonTypeWithDecksAndBoosts } from './BuyBoostModalType'
 import LeaderPicker from './LeaderPicker/LeaderPicker'
 import { Boost } from 'types/Boost'
 import Recap from './Recap/Recap'
-import { CosmonType } from 'types/Cosmon'
+import { useArenaStore } from '@store/arenaStore'
+import { useDeckStore } from '@store/deckStore'
+import { useWalletStore } from '@store/walletStore'
+import { addBoostAndDeckToCosmon } from './BuyBoostModalUtils'
 
 const dropIn = {
   hidden: {
@@ -37,24 +40,64 @@ interface BuyBoostModalProps {
 const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin }) => {
   const [currentView, setCurentView] = useState<CurrentView>('boost')
   const [selectedBoost, setSelectedBoost] = useState<Boost | null>(null)
-  const [selectedLeaders, setSelectedLeaders] = useState<CosmonType[]>([])
+  const [selectedLeaders, setSelectedLeaders] = useState<CosmonTypeWithDecksAndBoosts[]>([])
+  const [cosmonsWithDeckAndBoosts, setCosmonsWithDeckAndBoosts] = useState<
+    CosmonTypeWithDecksAndBoosts[]
+  >([])
+  const { fetchBoosts, boostsAvailable, boostsForCosmons } = useArenaStore()
+  const { fetchDecksList, decksList } = useDeckStore((state) => state)
+  const { cosmons, fetchCosmons } = useWalletStore((state) => state)
 
-  const handleSelectLeader = (leader: CosmonType | null) => {
+  useEffect(() => {
+    fetchBoosts()
+    fetchDecksList()
+    fetchCosmons()
+  }, [])
+
+  useEffect(() => {
+    if (origin !== 'buyBoost' && cosmonsWithDeckAndBoosts) {
+      const formatedOrigin: CosmonTypeWithDecksAndBoosts = cosmonsWithDeckAndBoosts.find(
+        (item) => item.id === origin.id
+      ) ?? {
+        ...origin,
+        deckName: '',
+        deckId: -1,
+        boosts: [null, null, null],
+      }
+
+      setSelectedLeaders([formatedOrigin])
+    }
+  }, [origin, cosmonsWithDeckAndBoosts])
+
+  useEffect(() => {
+    setCosmonsWithDeckAndBoosts(
+      addBoostAndDeckToCosmon({
+        cosmons,
+        boostsForCosmons,
+        decksList,
+      })
+    )
+  }, [cosmons, decksList])
+
+  const handleSelectLeader = (leader: CosmonTypeWithDecksAndBoosts | null) => {
     if (leader === null) {
       return setSelectedLeaders([])
     }
 
-    const leaderIndex = selectedLeaders.findIndex(
-      (selectedLeader) => selectedLeader.id === leader.id
-    )
-    const newArray = [...selectedLeaders]
+    return setSelectedLeaders([leader])
 
-    if (leaderIndex !== -1) {
-      newArray.splice(leaderIndex, 1)
-      return setSelectedLeaders(newArray)
-    } else {
-      return setSelectedLeaders([...selectedLeaders, leader])
-    }
+    // @TODO we comment it because sm dont handle multi leadrs right now
+    // const leaderIndex = selectedLeaders.findIndex(
+    //   (selectedLeader) => selectedLeader.id === leader.id
+    // )
+    // const newArray = [...selectedLeaders]
+
+    // if (leaderIndex !== -1) {
+    //   newArray.splice(leaderIndex, 1)
+    //   return setSelectedLeaders(newArray)
+    // } else {
+    //   return setSelectedLeaders([...selectedLeaders, leader])
+    // }
   }
 
   const handleKeyDown = useCallback(
@@ -89,15 +132,20 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
       case 'boost':
         return (
           <BoostPicker
+            boostsAvailable={boostsAvailable}
+            selectedLeaders={selectedLeaders}
             selectedBoost={selectedBoost}
             setSelectedBoost={setSelectedBoost}
             setCurrentView={setCurentView}
             origin={origin}
+            handleCloseModal={closeModal}
           />
         )
       case 'leader':
         return (
           <LeaderPicker
+            handleCloseModal={closeModal}
+            cosmonsWithDeckInfo={cosmonsWithDeckAndBoosts}
             selectedBoost={selectedBoost as Boost}
             setCurrentView={setCurentView}
             selectedLeaders={selectedLeaders}

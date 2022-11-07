@@ -1,4 +1,5 @@
 import { Coin } from '@cosmjs/proto-signing'
+import { CosmonStatKeyType } from './Cosmon'
 
 export enum BOOSTS {
   ELIXIR = 'Elixir',
@@ -20,9 +21,14 @@ export const boosts = [
 ] as const
 
 export interface Boost {
-  name: string
+  boost_name: CosmonStatKeyType
   effect_time: number
   inc_value: number
   price: Coin
   image_path: string
+}
+
+export interface BoostForCosmon {
+  id: string
+  boosts: Boost[]
 }

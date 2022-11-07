@@ -16,14 +16,22 @@ import DeckContainer from './DeckContainer/DeckContainer'
 import DecksEmptyList from './DecksEmptyList'
 import { useArenaStore } from '@store/arenaStore'
 import { BuyBoostModalOrigin } from '../BuyBoostModal/BuyBoostModalType'
+import { BoostForCosmon } from 'types/Boost'
+import { getDeckWithBoosts } from '@utils/boost'
 
 interface DecksProps {
+  boostsForCosmons: BoostForCosmon[]
   onEditDeck: (deck: Deck) => void
   onDeleteDeck: (deck: Deck) => void
   onOpenBoostModal: (origin: BuyBoostModalOrigin) => void
 }
 
-const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModal }) => {
+const Decks: React.FC<DecksProps> = ({
+  boostsForCosmons,
+  onEditDeck,
+  onDeleteDeck,
+  onOpenBoostModal,
+}) => {
   const { isConnected, cosmons, fetchCoin } = useWalletStore()
   const { fetchArenasList, registerToArena, fight } = useGameStore()
   const { decksList, fetchDecksList, fetchPersonalityAffinities, refreshCosmonsAndDecksList } =
@@ -161,16 +169,20 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
         <div className="mt-[40px]">
           <div className="grid w-full grid-cols-2 gap-[32px] overflow-visible">
             <AnimatePresence>
-              {decksList.map((deck) => (
-                <DeckContainer
-                  key={`deck-${deck.id}`}
-                  deck={deck}
-                  onEditDeck={onEditDeck}
-                  onClickDelete={onDeleteDeck}
-                  onClickFight={handleClickFight}
-                  onOpenBoostModal={onOpenBoostModal}
-                />
-              ))}
+              {decksList.map((deck) => {
+                const deckWithBoost = getDeckWithBoosts(deck, boostsForCosmons)
+
+                return (
+                  <DeckContainer
+                    key={`deck-${deck.id}`}
+                    deck={deckWithBoost}
+                    onEditDeck={onEditDeck}
+                    onClickDelete={onDeleteDeck}
+                    onClickFight={handleClickFight}
+                    onOpenBoostModal={onOpenBoostModal}
+                  />
+                )
+              })}
             </AnimatePresence>
           </div>
         </div>

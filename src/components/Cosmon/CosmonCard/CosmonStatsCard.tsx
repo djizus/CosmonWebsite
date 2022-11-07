@@ -10,8 +10,8 @@ interface CosmonStatsCardProps {
 
 const CosmonStatsCard: React.FC<CosmonStatsCardProps> = ({ cosmon }) => {
   const currentXpPercent = useMemo(() => {
-    const currentXp = getCosmonStat(cosmon.stats!, 'Xp')?.value
-    const xpMax = getCosmonStat(cosmon.stats!, 'Next Level')?.value
+    const currentXp = Number(getCosmonStat(cosmon.stats!, 'Xp')?.value)
+    const xpMax = Number(getCosmonStat(cosmon.stats!, 'Next Level')?.value)
     return (currentXp! / xpMax!) * 100
   }, [cosmon])
 

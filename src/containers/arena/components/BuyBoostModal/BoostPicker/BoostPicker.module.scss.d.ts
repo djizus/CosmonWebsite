@@ -2,6 +2,7 @@ export const attrContent: string
 export const attrIcon: string
 export const boost: string
 export const boostButton: string
+export const boostIcon: string
 export const container: string
 export const content: string
 export const leftBlock: string

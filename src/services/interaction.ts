@@ -16,8 +16,7 @@ const Height = require('long')
 const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
 const PUBLIC_REWARDS_CONTRACT = process.env.NEXT_PUBLIC_REWARDS_CONTRACT || ''
 const PUBLIC_NFT_CONTRACT = process.env.NEXT_PUBLIC_NFT_CONTRACT || ''
-const PUBLIC_WHITELIST_CONTRACT =
-  process.env.NEXT_PUBLIC_WHITELIST_CONTRACT || ''
+const PUBLIC_WHITELIST_CONTRACT = process.env.NEXT_PUBLIC_WHITELIST_CONTRACT || ''
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
 
@@ -47,8 +46,7 @@ export const executeBuyCosmon = (
       const tokenId =
         response.logs[0].events
           .find((event) => event.type === 'wasm')
-          ?.attributes?.find((attribute) => attribute?.key === 'token_id')
-          ?.value || null
+          ?.attributes?.find((attribute) => attribute?.key === 'token_id')?.value || null
 
       if (tokenId) {
         const cosmonBought: CosmonType = {
@@ -68,20 +66,17 @@ export const executeBuyCosmon = (
   })
 }
 
-export const executeCreditWalletWithFaucet =
-  (address: string) => async (): Promise<string> => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const faucetClient = new FaucetClient(
-          'https://faucet.cliffnet.cosmwasm.com'
-        )
-        await faucetClient.credit(address, PUBLIC_STAKING_DENOM)
-        return resolve('Credited successfully')
-      } catch (e: any) {
-        reject(handleTransactionError(e))
-      }
-    })
-  }
+export const executeCreditWalletWithFaucet = (address: string) => async (): Promise<string> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const faucetClient = new FaucetClient('https://faucet.cliffnet.cosmwasm.com')
+      await faucetClient.credit(address, PUBLIC_STAKING_DENOM)
+      return resolve('Credited successfully')
+    } catch (e: any) {
+      reject(handleTransactionError(e))
+    }
+  })
+}
 
 export const executeTransferNft = (
   signingClient: SigningCosmWasmClient,
@@ -125,12 +120,9 @@ export const queryGetMaxClaimableToken = async (
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await signingClient.queryContractSmart(
-        PUBLIC_SELL_CONTRACT,
-        {
-          get_max_claimable_token: {},
-        }
-      )
+      const response = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
+        get_max_claimable_token: {},
+      })
       return resolve(response)
     } catch (e) {
       console.error(`Error while fetching claimable token number`, e)
@@ -146,12 +138,9 @@ export const queryCosmonInfo = async (
   return new Promise(async (resolve, reject) => {
     if (cosmonId) {
       try {
-        const data = await signingClient.queryContractSmart(
-          PUBLIC_NFT_CONTRACT,
-          {
-            nft_info: { token_id: cosmonId },
-          }
-        )
+        const data = await signingClient.queryContractSmart(PUBLIC_NFT_CONTRACT, {
+          nft_info: { token_id: cosmonId },
+        })
         return resolve(data)
       } catch (e) {
         console.error(`Error while fetching cosmon ${cosmonId}`, e)
@@ -169,12 +158,9 @@ export const queryCosmonAvailableByScarcity = async (
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     if (scarcity) {
-      const data = await signingClient.queryContractSmart(
-        PUBLIC_SELL_CONTRACT,
-        {
-          get_cosmon_available_by_scarcity: { scarcity: scarcity },
-        }
-      )
+      const data = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
+        get_cosmon_available_by_scarcity: { scarcity: scarcity },
+      })
       return resolve(data)
     } else {
       return reject('Scarcity is missing')
@@ -182,17 +168,12 @@ export const queryCosmonAvailableByScarcity = async (
   })
 }
 
-export const queryPreSellOpen = async (
-  signingClient: SigningCosmWasmClient
-): Promise<any> => {
+export const queryPreSellOpen = async (signingClient: SigningCosmWasmClient): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     try {
-      const data = await signingClient.queryContractSmart(
-        PUBLIC_SELL_CONTRACT,
-        {
-          get_pre_sell_open: {},
-        }
-      )
+      const data = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
+        get_pre_sell_open: {},
+      })
       return resolve(data)
     } catch (e) {
       console.error(`Error while fetching info`, e)
@@ -201,17 +182,12 @@ export const queryPreSellOpen = async (
   })
 }
 
-export const querySellOpen = async (
-  signingClient: SigningCosmWasmClient
-): Promise<any> => {
+export const querySellOpen = async (signingClient: SigningCosmWasmClient): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     try {
-      const data = await signingClient.queryContractSmart(
-        PUBLIC_SELL_CONTRACT,
-        {
-          get_sell_open: {},
-        }
-      )
+      const data = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
+        get_sell_open: {},
+      })
       return resolve(data)
     } catch (e) {
       console.error(`Error while fetching info`, e)
@@ -226,12 +202,9 @@ export const queryCheckAirdropEligibility = async (
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     if (address) {
-      const data = await signingClient.queryContractSmart(
-        PUBLIC_WHITELIST_CONTRACT,
-        {
-          check_address_eligibility: { address: address },
-        }
-      )
+      const data = await signingClient.queryContractSmart(PUBLIC_WHITELIST_CONTRACT, {
+        check_address_eligibility: { address: address },
+      })
 
       setTimeout(() => {
         return resolve(data)
@@ -248,12 +221,9 @@ export const queryGetWhitelistInfo = async (
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     if (address) {
-      const data = await signingClient.queryContractSmart(
-        PUBLIC_SELL_CONTRACT,
-        {
-          get_whitelist_info_for_address: { address: address },
-        }
-      )
+      const data = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
+        get_whitelist_info_for_address: { address: address },
+      })
       setTimeout(() => {
         return resolve(data)
       }, 600)
@@ -269,12 +239,9 @@ export const queryGetClaimData = async (
 ): Promise<any> => {
   return new Promise(async (resolve, reject) => {
     if (address) {
-      const data = await signingClient.queryContractSmart(
-        PUBLIC_WHITELIST_CONTRACT,
-        {
-          get_claim_data: { address: address },
-        }
-      )
+      const data = await signingClient.queryContractSmart(PUBLIC_WHITELIST_CONTRACT, {
+        get_claim_data: { address: address },
+      })
       return resolve(data)
     } else {
       return reject('address is missing')
@@ -301,8 +268,7 @@ export const executeClaimAirdrop = async (
         const tokenId =
           response.logs[0].events
             .find((event) => event.type === 'wasm')
-            ?.attributes?.find((attribute) => attribute?.key === 'token_id')
-            ?.value || null
+            ?.attributes?.find((attribute) => attribute?.key === 'token_id')?.value || null
 
         if (tokenId) {
           const cosmonAirdropped: CosmonType = {
@@ -325,7 +291,6 @@ export const executeClaimAirdrop = async (
 }
 
 export const handleTransactionError = (error: any) => {
-  console.log('error', error)
   if (error.toString().includes('rejected')) {
     return {
       title: 'Action canceled',
@@ -357,10 +322,7 @@ export const initIbc = async (
         if (deposit) {
           let wantedIbcBalanceOnKi = new BigNumber(
             (
-              await kiClient.getBalance(
-                kiAddress,
-                process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
-              )
+              await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')
             ).amount
           )
           const tx = await ibcClient.sendIbcTokens(
@@ -373,9 +335,7 @@ export const initIbc = async (
             Math.floor(Date.now() / 1000) + 60,
             'auto'
           )
-          wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.plus(
-            new BigNumber(amount.amount)
-          )
+          wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.plus(new BigNumber(amount.amount))
 
           let balance = new BigNumber(0)
           do {
@@ -383,20 +343,14 @@ export const initIbc = async (
             await sleep(recheckInterval)
             balance = new BigNumber(
               (
-                await kiClient.getBalance(
-                  kiAddress,
-                  process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
-                )
+                await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')
               ).amount
             )
           } while (balance.isLessThan(wantedIbcBalanceOnKi) && i < nbRetry)
         } else {
           let wantedIbcBalanceOnKi = new BigNumber(
             (
-              await kiClient.getBalance(
-                kiAddress,
-                process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
-              )
+              await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')
             ).amount
           )
           const tx = await kiClient.sendIbcTokens(
@@ -409,19 +363,14 @@ export const initIbc = async (
             Math.floor(Date.now() / 1000) + 60,
             'auto'
           )
-          wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.minus(
-            new BigNumber(amount.amount)
-          )
+          wantedIbcBalanceOnKi = wantedIbcBalanceOnKi.minus(new BigNumber(amount.amount))
 
           let balance = new BigNumber(0)
           do {
             await sleep(recheckInterval)
             balance = new BigNumber(
               (
-                await kiClient.getBalance(
-                  kiAddress,
-                  process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
-                )
+                await kiClient.getBalance(kiAddress, process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '')
               ).amount
             )
           } while (balance.isGreaterThan(wantedIbcBalanceOnKi) && i < nbRetry)
@@ -460,10 +409,7 @@ export const claimReward = async (
   return true
 }
 
-export async function fetch_tokens(
-  signingClient: SigningCosmWasmClient,
-  address: string
-) {
+export async function fetch_tokens(signingClient: SigningCosmWasmClient, address: string) {
   const tokens: string[] = []
   let start_after = undefined
   while (true) {
@@ -508,12 +454,9 @@ export const getRewards = async (
   let tempRewards: { current_reward: Coin; total_rewards: Coin }[] = []
 
   for (const chunkOfCosmons of chunks) {
-    const fetchedRewards = await signingClient.queryContractSmart(
-      PUBLIC_REWARDS_CONTRACT,
-      {
-        available_rewards_for_nfts: { nfts: chunkOfCosmons.map((c) => c.id) },
-      }
-    )
+    const fetchedRewards = await signingClient.queryContractSmart(PUBLIC_REWARDS_CONTRACT, {
+      available_rewards_for_nfts: { nfts: chunkOfCosmons.map((c) => c.id) },
+    })
     tempRewards.push(fetchedRewards)
   }
 
@@ -521,15 +464,11 @@ export const getRewards = async (
     (prev, curr) => {
       return {
         current: {
-          amount: (
-            +prev?.current?.amount + +curr.current_reward.amount
-          ).toString(),
+          amount: (+prev?.current?.amount + +curr.current_reward.amount).toString(),
           denom: curr.current_reward.denom,
         } as Coin,
         total: {
-          amount: (
-            +prev?.total?.amount + +curr.total_rewards.amount
-          ).toString(),
+          amount: (+prev?.total?.amount + +curr.total_rewards.amount).toString(),
           denom: curr.total_rewards.denom,
         } as Coin,
       }

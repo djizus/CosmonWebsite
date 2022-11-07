@@ -9,20 +9,23 @@ import * as style from './CardsWithStats.module.scss'
 import { getCosmonStat } from '@utils/cosmon'
 import { CosmonType } from 'types/Cosmon'
 import { Boost } from 'types/Boost'
+import { CosmonTypeWithDecksAndBoosts } from '../BuyBoostModalType'
 
 interface Props {
   boost: Boost
-  cosmon: CosmonType
+  cosmon: CosmonTypeWithDecksAndBoosts
   className?: string
-  handleClick?: (cosmon: CosmonType) => void
+  handleClick?: (cosmon: CosmonTypeWithDecksAndBoosts) => void
 }
 
 const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick }) => {
-  const fakeStats = cosmon.stats!.map((stat) => {
-    if (stat.key === 'Hp') {
+  const evolvedStats = cosmon.stats!.map((stat) => {
+    if (stat.key === boost.boost_name) {
       return {
         ...stat,
-        value: Math.ceil((parseInt(stat.value) / 100) * 5 + parseInt(stat.value)).toString(),
+        value: Math.ceil(
+          (parseInt(stat.value) / 100) * boost.inc_value + parseInt(stat.value)
+        ).toString(),
       }
     }
 
@@ -34,7 +37,7 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
       onClick={() => handleClick && handleClick(cosmon)}
       className={clsx(style.content, className)}
     >
-      <div className={style.leftContent}>
+      <div>
         <FlipCard
           className={style.card}
           card={
@@ -63,7 +66,7 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
           }
           xpNextLevelEvolved={+getCosmonStat(cosmon.stats!, 'Next Level')?.value! || 0}
           floorXpEvolved={+getCosmonStat(cosmon.stats!, 'Floor Level')?.value! || 0}
-          decksName={cosmon.decksName}
+          deckName={cosmon.deckName}
         />
         <div className={style.stats}>
           <div className={style.firstColumn}>
@@ -73,7 +76,7 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
               statKey="Atq"
               stats={cosmon.stats!}
               statToDisplay={cosmon.stats!}
-              statsEvolved={fakeStats}
+              statsEvolved={evolvedStats}
             />
             <CosmonStatProgression
               className={style.stat}
@@ -81,7 +84,7 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
               statKey="Spe"
               stats={cosmon.stats!}
               statToDisplay={cosmon.stats!}
-              statsEvolved={cosmon.stats!}
+              statsEvolved={evolvedStats}
             />
             <CosmonStatProgression
               className={style.stat}
@@ -89,7 +92,7 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
               statKey="Luk"
               statToDisplay={cosmon.stats!}
               stats={cosmon.stats!}
-              statsEvolved={cosmon.stats!}
+              statsEvolved={evolvedStats}
             />
           </div>
           <div className={style.secondColumn}>
@@ -99,7 +102,7 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
               statKey="Hp"
               stats={cosmon.stats!}
               statToDisplay={cosmon.stats!}
-              statsEvolved={fakeStats}
+              statsEvolved={evolvedStats}
             />
             <CosmonStatProgression
               className={style.stat}
@@ -107,7 +110,7 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
               statKey="Def"
               stats={cosmon.stats!}
               statToDisplay={cosmon.stats!}
-              statsEvolved={cosmon.stats!}
+              statsEvolved={evolvedStats}
             />
             <CosmonStatProgression
               className={style.stat}
@@ -115,7 +118,7 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
               statKey="Int"
               stats={cosmon.stats!}
               statToDisplay={cosmon.stats!}
-              statsEvolved={cosmon.stats!}
+              statsEvolved={evolvedStats}
             />
           </div>
         </div>

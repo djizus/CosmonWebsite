@@ -173,7 +173,7 @@ interface CosmonXpProgressionProps {
   xpNextLevelEvolved: number
   floorXpEvolved: number
   className?: string
-  decksName?: string[]
+  deckName?: string
 }
 
 export const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
@@ -186,7 +186,7 @@ export const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
   xpNextLevelEvolved,
   floorXpEvolved,
   className,
-  decksName,
+  deckName,
 }) => {
   const [currentXp, setCurrentXp] = useState<number>(0)
   const [currentLevel, setCurrentLevel] = useState(levelStat)
@@ -219,13 +219,11 @@ export const CosmonXpProgression: React.FC<CosmonXpProgressionProps> = ({
       <div className="flex w-full items-center justify-between">
         <div className="relative flex">
           <p className="text-sm font-normal text-white">Level {currentLevel}</p>
-          {decksName && decksName.length > 0 && (
+          {deckName && (
             <div className={style.pillsContainer}>
-              {decksName.map((deckName, index) => (
-                <div key={`${deckName}-${index}`} className={style.pills}>
-                  <p className={style.pillsLabel}>{deckName}</p>
-                </div>
-              ))}
+              <div className={style.pills}>
+                <p className={style.pillsLabel}>{deckName}</p>
+              </div>
             </div>
           )}
           {xpStatEvolved > xpStat ? (

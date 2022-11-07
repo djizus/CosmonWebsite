@@ -1,3 +1,5 @@
+import { Boost } from './Boost'
+
 export type CosmonTraitType =
   | 'scarcity'
   | 'asset_id'
@@ -31,7 +33,6 @@ export type CosmonStatType = {
 export type CosmonType = {
   id: string
   isInDeck?: boolean
-  decksName?: string[]
   temporaryFree?: boolean // useful during the edition of deck, when we remove an nft from the deck before saving
   data: {
     extension: {
@@ -49,8 +50,11 @@ export type CosmonType = {
       name: string
       youtube_url: string
     }
-
     token_uri: null
   }
   stats?: CosmonStatType[]
+}
+
+export type CosmonTypeWithBoosts = CosmonType & {
+  boosts: [Boost | null, Boost | null, Boost | null]
 }
