@@ -56,7 +56,7 @@ const BoostPicker: React.FC<BoosterPickerProps> = ({
       <p className={style.subtitle}>
         Boosts are accessories that empowers your Cosmons.
         <br />
-        10 fights per Boost・3 Boosts per Leader
+        {boostsAvailable[0]?.effect_time} fights per Boost・3 Boosts per Leader
       </p>
       <div className={style.content}>
         {boostsAvailable.map((boost, index) => {

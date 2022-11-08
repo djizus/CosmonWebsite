@@ -55,6 +55,18 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
   }, [])
 
   useEffect(() => {
+    if (selectedLeaders.length > 0) {
+      const updatedLeader = cosmonsWithDeckAndBoosts.find(
+        (item) => item.id === selectedLeaders[0].id
+      )
+
+      if (updatedLeader) {
+        setSelectedLeaders([updatedLeader])
+      }
+    }
+  }, [cosmonsWithDeckAndBoosts, selectedLeaders])
+
+  useEffect(() => {
     if (origin !== 'buyBoost' && cosmonsWithDeckAndBoosts) {
       const formatedOrigin: CosmonTypeWithDecksAndBoosts = cosmonsWithDeckAndBoosts.find(
         (item) => item.id === origin.id
@@ -77,7 +89,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
         decksList,
       })
     )
-  }, [cosmons, decksList])
+  }, [cosmons, decksList, boostsForCosmons])
 
   const handleSelectLeader = (leader: CosmonTypeWithDecksAndBoosts | null) => {
     if (leader === null) {
@@ -121,10 +133,25 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
     handleCloseModal()
   }
 
-  const resetModal = () => {
-    setCurentView('boost')
-    setSelectedLeaders([])
-    setSelectedBoost(null)
+  const resetModal = async () => {
+    if (origin !== 'buyBoost') {
+      const formatedOrigin: CosmonTypeWithDecksAndBoosts = cosmonsWithDeckAndBoosts.find(
+        (item) => item.id === origin.id
+      ) ?? {
+        ...origin,
+        deckName: '',
+        deckId: -1,
+        boosts: [null, null, null],
+      }
+
+      setCurentView('boost')
+      setSelectedLeaders([formatedOrigin])
+      setSelectedBoost(null)
+    } else {
+      setCurentView('boost')
+      setSelectedLeaders([])
+      setSelectedBoost(null)
+    }
   }
 
   const renderCurrentView = () => {
