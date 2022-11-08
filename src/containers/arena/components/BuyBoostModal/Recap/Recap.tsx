@@ -8,6 +8,9 @@ import clsx from 'clsx'
 import CardsWithStats from '../CardWithStats/CardWithStats'
 import { convertMicroDenomToDenom } from '@utils/conversion'
 import { CosmonTypeWithDecksAndBoosts } from '../BuyBoostModalType'
+import { useArenaStore } from '@store/arenaStore'
+import { useWalletStore } from '@store/walletStore'
+import { useEffect } from 'react'
 
 interface Props {
   selectedLeaders: CosmonTypeWithDecksAndBoosts[]
@@ -18,6 +21,11 @@ interface Props {
 
 const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, resetModal }) => {
   const BoostIcon = getIconForAttr(selectedBoost.boost_name)
+  const { fetchBoostForCosmon } = useArenaStore((state) => state)
+
+  useEffect(() => {
+    fetchBoostForCosmon(selectedLeaders[0])
+  }, [])
 
   return (
     <div className={style.container}>
@@ -65,7 +73,9 @@ const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, re
         <Button onClick={closeModal} type="white">
           Close
         </Button>
-        <Button onClick={resetModal}>Buy a new potion</Button>
+        <Button disabled={selectedLeaders[0].boosts[2] !== null} onClick={resetModal}>
+          Buy a new potion
+        </Button>
       </div>
     </div>
   )

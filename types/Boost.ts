@@ -30,5 +30,5 @@ export interface Boost {
 
 export interface BoostForCosmon {
   id: string
-  boosts: Boost[]
+  boosts: (Boost | null)[]
 }
