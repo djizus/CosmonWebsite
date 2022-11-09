@@ -120,4 +120,33 @@ $textSize: 15px;
   filter: drop-shadow(0px 4px 50px rgba(0, 0, 0, 0.4)) !important;
   border-radius: 12px !important;
   margin-right: 20px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: conic-gradient(
+      from 180deg at 50% 50%,
+      #e5f908 0deg,
+      #55c72e 18.75deg,
+      rgba(125, 151, 40, 0.835867) 63.75deg,
+      rgba(0, 196, 55, 0.746961) 103.13deg,
+      rgba(230, 26, 26, 0.4) 150.97deg,
+      #9c00d3 219.37deg,
+      #e757ff 266.25deg,
+      #1844e3 312.9deg,
+      rgba(82, 60, 204, 0.9) 343.12deg,
+      rgba(213, 247, 5, 0.8) 359.75deg,
+      rgba(145, 50, 179, 0) 359.96deg,
+      #e5f908 360deg
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
 }

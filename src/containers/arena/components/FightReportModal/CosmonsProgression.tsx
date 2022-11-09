@@ -328,25 +328,35 @@ export const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
     <div className={clsx('flex flex-1 justify-between', className)}>
       <p className="text-sm font-normal">{statLabel}</p>
       <p className="text-sm">
-        {statToDisplay
-          ? getCosmonStat(statToDisplay, statKey)?.value
-          : getCosmonStat(statsEvolved, statKey)?.value}
-        {getCosmonStat(statsEvolved, statKey)?.value! > getCosmonStat(stats, statKey)?.value! ? (
-          <CosmonStatProgressionLabel
-            className="ml-[4px]"
-            label={
-              statToDisplay
-                ? `+${
-                    parseInt(getCosmonStat(statsEvolved, statKey)?.value!) -
-                    parseInt(getCosmonStat(statToDisplay, statKey)?.value!)
-                  }`
-                : `+${
-                    parseInt(getCosmonStat(statsEvolved, statKey)?.value!) -
-                    parseInt(getCosmonStat(stats, statKey)?.value!)
-                  }`
-            }
-          />
-        ) : null}
+        {statToDisplay ? (
+          <>
+            {getCosmonStat(statToDisplay, statKey)?.value}
+            {parseInt(getCosmonStat(statsEvolved, statKey)?.value!) >
+            parseInt(getCosmonStat(statToDisplay, statKey)?.value!) ? (
+              <CosmonStatProgressionLabel
+                className="ml-[4px]"
+                label={`+${
+                  parseInt(getCosmonStat(statsEvolved, statKey)?.value!) -
+                  parseInt(getCosmonStat(statToDisplay, statKey)?.value!)
+                }`}
+              />
+            ) : null}
+          </>
+        ) : (
+          <>
+            {getCosmonStat(statsEvolved, statKey)?.value}
+            {getCosmonStat(statsEvolved, statKey)?.value! >
+            getCosmonStat(stats, statKey)?.value! ? (
+              <CosmonStatProgressionLabel
+                className="ml-[4px]"
+                label={`+${
+                  parseInt(getCosmonStat(statsEvolved, statKey)?.value!) -
+                  parseInt(getCosmonStat(stats, statKey)?.value!)
+                }`}
+              />
+            ) : null}
+          </>
+        )}
       </p>
     </div>
   )

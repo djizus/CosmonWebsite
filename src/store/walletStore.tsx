@@ -358,6 +358,7 @@ const useWalletStore = create<WalletState>(
               tokens.map(async (token: string) => {
                 const cosmon = await queryCosmonInfo(signingClient, token)
                 const stats = await XPRegistryService.queries().getCosmonStats(token)
+
                 return {
                   id: token,
                   data: cosmon,
@@ -367,7 +368,7 @@ const useWalletStore = create<WalletState>(
               })
             )
 
-            if (myCosmons.length) {
+            if (myCosmons.length > 0) {
               const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(
                 myCosmons.map((c) => c.id)
               )
@@ -376,14 +377,11 @@ const useWalletStore = create<WalletState>(
                 ...c,
                 isInDeck: cosmonIdsAlreadyInDecks[i],
               }))
+
               set({
-                cosmons: sortCosmonsByScarcity(myCosmons).map(
-                  (cosmon) => get().cosmons.find((c) => c.id === cosmon.id) || cosmon
-                ),
+                cosmons: sortCosmonsByScarcity(myCosmons),
               })
-              return sortCosmonsByScarcity(myCosmons).map(
-                (cosmon) => get().cosmons.find((c) => c.id === cosmon.id) || cosmon
-              )
+              return sortCosmonsByScarcity(myCosmons)
             }
             return []
           } catch (e) {

@@ -155,6 +155,9 @@ export const useGameStore = create<GameState>((set, get) => ({
           },
         })
         .then(async (resp: any) => {
+          const { fetchCosmons } = useWalletStore.getState()
+          await fetchCosmons()
+
           const { cosmons } = useWalletStore.getState()
           const { fetchBoostsForCosmons } = useArenaStore.getState()
 

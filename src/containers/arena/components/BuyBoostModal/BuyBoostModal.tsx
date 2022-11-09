@@ -10,6 +10,8 @@ import { useArenaStore } from '@store/arenaStore'
 import { useDeckStore } from '@store/deckStore'
 import { useWalletStore } from '@store/walletStore'
 import { addBoostAndDeckToCosmon } from './BuyBoostModalUtils'
+import Button from '@components/Button/Button'
+import clsx from 'clsx'
 
 const dropIn = {
   hidden: {
@@ -44,7 +46,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
   const [cosmonsWithDeckAndBoosts, setCosmonsWithDeckAndBoosts] = useState<
     CosmonTypeWithDecksAndBoosts[]
   >([])
-  const { fetchBoosts, boostsAvailable, boostsForCosmons } = useArenaStore()
+  const { fetchBoosts, boostsAvailable, boostsForCosmons } = useArenaStore((state) => state)
   const { fetchDecksList, decksList } = useDeckStore((state) => state)
   const { cosmons, fetchCosmons } = useWalletStore((state) => state)
 
@@ -53,18 +55,6 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
     fetchDecksList()
     fetchCosmons()
   }, [])
-
-  useEffect(() => {
-    if (selectedLeaders.length > 0) {
-      const updatedLeader = cosmonsWithDeckAndBoosts.find(
-        (item) => item.id === selectedLeaders[0].id
-      )
-
-      if (updatedLeader) {
-        setSelectedLeaders([updatedLeader])
-      }
-    }
-  }, [cosmonsWithDeckAndBoosts, selectedLeaders])
 
   useEffect(() => {
     if (origin !== 'buyBoost' && cosmonsWithDeckAndBoosts) {
@@ -129,7 +119,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
     }
   }, [])
 
-  const closeModal = () => {
+  const closeModal = async () => {
     handleCloseModal()
   }
 
@@ -193,14 +183,27 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
 
   return (
     <motion.div
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        closeModal()
+        e.stopPropagation()
+      }}
       variants={dropIn}
       initial="hidden"
       animate="visible"
       exit="exit"
       className={style.overlay}
     >
-      <div className={style.modal}>{renderCurrentView()}</div>
+      <div onClick={(e) => e.stopPropagation()} className={clsx(style.modal, style.scrollbar)}>
+        <Button
+          withoutContainer
+          className={style.closeButton}
+          onClick={handleCloseModal}
+          type="ghost"
+        >
+          ╳
+        </Button>
+        <div className={clsx(style.modalContent, style.scrollbar)}>{renderCurrentView()}</div>
+      </div>
     </motion.div>
   )
 }

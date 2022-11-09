@@ -14,6 +14,13 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 99;
+
+  &:hover {
+    .effectTime {
+      display: flex !important;
+    }
+  }
 }
 
 .plus {
@@ -32,4 +39,35 @@
       color: white;
     }
   }
+}
+
+.potionContainer {
+  position: relative;
+}
+
+.effectTime {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  display: none;
+  cursor: default;
+  background: linear-gradient(180deg, #4b0978 0%, #74107f 100%);
+  background-size: 200% 200%;
+  color: #f8c11f;
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 4px transparent;
+}
+
+.potionImg {
+  height: 26px;
+  width: auto;
 }
