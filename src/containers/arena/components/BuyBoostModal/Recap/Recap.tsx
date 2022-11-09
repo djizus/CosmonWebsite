@@ -26,8 +26,6 @@ const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, re
     fetchBoostForCosmon(selectedLeaders[0])
   }, [])
 
-  console.log('allo', selectedBoost, selectedLeaders[0])
-
   return (
     <div className={style.container}>
       <p className={style.title}>Recap</p>

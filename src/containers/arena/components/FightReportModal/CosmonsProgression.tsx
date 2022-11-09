@@ -367,7 +367,7 @@ interface CosmonStatProgressionLabelProps {
   className?: string
 }
 
-const CosmonStatProgressionLabel: React.FC<CosmonStatProgressionLabelProps> = ({
+export const CosmonStatProgressionLabel: React.FC<CosmonStatProgressionLabelProps> = ({
   label,
   className,
 }) => {
