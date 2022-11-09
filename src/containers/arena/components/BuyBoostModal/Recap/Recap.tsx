@@ -9,7 +9,6 @@ import CardsWithStats from '../CardWithStats/CardWithStats'
 import { convertMicroDenomToDenom } from '@utils/conversion'
 import { CosmonTypeWithDecksAndBoosts } from '../BuyBoostModalType'
 import { useArenaStore } from '@store/arenaStore'
-import { useWalletStore } from '@store/walletStore'
 import { useEffect } from 'react'
 
 interface Props {
@@ -26,6 +25,8 @@ const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, re
   useEffect(() => {
     fetchBoostForCosmon(selectedLeaders[0])
   }, [])
+
+  console.log('allo', selectedBoost, selectedLeaders[0])
 
   return (
     <div className={style.container}>
@@ -54,13 +55,14 @@ const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, re
             className={clsx(style.card)}
             cosmon={selectedLeader}
             boost={selectedBoost}
+            variation="recap"
           />
         ))}
       </div>
       {selectedLeaders.length <= 1 ? (
         <p className={style.text}>
-          {selectedLeaders[0].data.extension.name} just boosted his {selectedBoost.boost_name} by{' '}
-          {selectedBoost.inc_value} %!
+          {selectedLeaders[0].data.extension.name} just boosted his{' '}
+          {selectedBoost.boost_name.toUpperCase()} by {selectedBoost.inc_value} %!
           <br /> This potion will last {selectedBoost.effect_time} fights before disappearing.
         </p>
       ) : (

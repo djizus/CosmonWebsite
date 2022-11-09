@@ -1,5 +1,5 @@
 import Button from '@components/Button/Button'
-import { Deck, CosmonType, DeckWithBoosts } from 'types'
+import { Deck, CosmonType, DeckWithBoosts, CosmonTypeWithBoosts } from 'types'
 import { useDeckStore } from '@store/deckStore'
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { useCallback, useMemo, useState } from 'react'
@@ -19,6 +19,9 @@ import { BuyBoostModalOrigin } from '../../BuyBoostModal/BuyBoostModalType'
 import * as style from './DeckContainer.module.scss'
 import clsx from 'clsx'
 import { useWindowSize } from 'react-use'
+import Tooltip from '@components/Tooltip/Tooltip'
+import { getPotionNameFromBoostedStat } from '@utils/boost'
+import { boost } from '../../BuyBoostModal/BoostPicker/BoostPicker.module.scss'
 
 interface DeckContainerProps {
   deck: DeckWithBoosts
@@ -36,7 +39,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   onOpenBoostModal,
 }) => {
   const { computeDeckAffinities } = useDeckStore()
-  const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
+  const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonTypeWithBoosts | null>()
   const [revealCards, setRevealCards] = useState(true)
   const { refreshCosmonsAndDecksList } = useDeckStore()
   const { hourlyFPNumber } = useArenaStore()
@@ -135,26 +138,45 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
 
               <CosmonFightPointsBar className="mt-[16px]" cosmon={cosmon} />
               <div className={style.boostSlotContainer}>
-                {cosmon.boosts.map((item, index) => (
-                  <div
-                    key={`boost-${cosmon.data.extension.name}-${index}`}
-                    onClick={() => {
-                      if (!item) {
-                        onOpenBoostModal(cosmon)
-                      }
-                    }}
-                    className={clsx(style.boostSlot, {
-                      [style.fillBoostSlot]: item?.boost_name,
-                      [style.emptyBoostSlot]: !item?.boost_name,
-                    })}
-                  >
-                    {item?.boost_name ? (
-                      <img src={item.image_path} />
-                    ) : (
-                      <p className={style.plus}>+</p>
-                    )}
-                  </div>
-                ))}
+                {cosmon.boosts.map((item, index) => {
+                  return (
+                    <div key={`boost-${cosmon.data.extension.name}-${index}`}>
+                      <div
+                        onClick={() => {
+                          if (!item) {
+                            onOpenBoostModal(cosmon)
+                          }
+                        }}
+                        data-tip={`${cosmon.id}-${item?.boost_name}-${index}`}
+                        data-for={`${cosmon.id}-${item?.boost_name}-${index}`}
+                        className={clsx(style.boostSlot, {
+                          [style.fillBoostSlot]: item?.boost_name,
+                          [style.emptyBoostSlot]: !item?.boost_name,
+                        })}
+                      >
+                        {item ? (
+                          <div className={style.potionContainer}>
+                            <img className={style.potionImg} src={item.image_path} />
+                            <p className={style.effectTime}>{item.effect_time}</p>
+                          </div>
+                        ) : (
+                          <p className={style.plus}>+</p>
+                        )}
+                      </div>
+                      {item && (
+                        <Tooltip
+                          data-id={`${cosmon.id}-${item?.boost_name}-${index}`}
+                          id={`${cosmon.id}-${item?.boost_name}-${index}`}
+                        >
+                          <p>
+                            {getPotionNameFromBoostedStat(item?.boost_name)} (+
+                            {item.inc_value}% {item.boost_name.toUpperCase()})
+                          </p>
+                        </Tooltip>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             </div>
           ))}

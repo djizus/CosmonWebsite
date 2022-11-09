@@ -122,6 +122,7 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
                 handleClick={handleSelectLeader}
                 cosmon={cosmon}
                 boost={selectedBoost}
+                variation="leaderpicker"
               />
             ))}
           </div>

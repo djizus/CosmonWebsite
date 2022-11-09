@@ -113,10 +113,6 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
                 <div className="text-[#D8D1E7]">Action Point</div>
                 <div>{cosmon.stats ? getCosmonStat(cosmon.stats, 'Ap')?.value : '-'}</div>
               </div>
-              <div className="flex justify-between">
-                <div className="text-[#D8D1E7]">Boost</div>
-                <div>Coming soon</div>
-              </div>
             </div>
 
             {/* Section 3 */}
