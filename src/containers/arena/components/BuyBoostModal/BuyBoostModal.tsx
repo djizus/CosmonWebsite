@@ -193,7 +193,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
       exit="exit"
       className={style.overlay}
     >
-      <div onClick={(e) => e.stopPropagation()} className={clsx(style.modal, style.scrollbar)}>
+      <div onClick={(e) => e.stopPropagation()} className={clsx(style.modal)}>
         <Button
           withoutContainer
           className={style.closeButton}
@@ -202,7 +202,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
         >
           ╳
         </Button>
-        <div className={clsx(style.modalContent, style.scrollbar)}>{renderCurrentView()}</div>
+        <div className={clsx(style.modalContent)}>{renderCurrentView()}</div>
       </div>
     </motion.div>
   )
