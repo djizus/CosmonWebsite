@@ -1,13 +1,13 @@
-import { CosmonType } from '../../../types/Cosmon'
+import { CosmonStatType, CosmonType, CosmonTypeWithBoosts } from '../../../types/Cosmon'
 import { getCosmonPersonalityAffinity, getCosmonStat, getTrait } from '../../utils/cosmon'
 import Close from '/public/icons/close.svg'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Hover from 'react-3d-hover'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
+import { CosmonStatProgressionLabel } from '@containers/arena/components/FightReportModal/CosmonsProgression'
 
 type CosmonFullModalProps = {
-  cosmon: CosmonType
+  cosmon: CosmonTypeWithBoosts
   onCloseModal: () => void
 }
 
@@ -20,6 +20,32 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
       document.getElementsByTagName('body')[0].className = ''
     }
   }, [])
+
+  const statBeforeBoosts = useMemo(() => {
+    return cosmon.stats!.reduce<CosmonStatType[]>((acc, stat) => {
+      const isStatBoosted = cosmon.boosts.filter((boost) => boost?.boost_name === stat.key)
+
+      if (isStatBoosted.length > 0) {
+        const computedValue = isStatBoosted.reduce<number>((result, curr) => {
+          if (curr) {
+            return Math.floor(result - (curr.inc_value / 100) * result)
+          }
+
+          return result
+        }, parseInt(stat.value))
+
+        return [
+          ...acc,
+          {
+            key: stat.key,
+            value: Math.round(computedValue).toString(),
+          },
+        ]
+      }
+
+      return [...acc, stat]
+    }, [])
+  }, [cosmon.stats, cosmon.boosts])
 
   return (
     <div className="fixed top-0 bottom-0 right-0  h-full w-full overflow-auto bg-cosmon-main-secondary pt-[60px] text-white">
@@ -94,24 +120,62 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               <div className="mt-3 flex justify-between">
                 <div className="text-[#D8D1E7]">Level</div>
                 <div className="capitalize">
-                  {cosmon.stats ? getCosmonStat(cosmon.stats, 'Level')?.value : '-'}
+                  {statBeforeBoosts ? getCosmonStat(statBeforeBoosts, 'Level')?.value : '-'}
                 </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Experience Point</div>
-                <div>{cosmon.stats ? getCosmonStat(cosmon.stats, 'Xp')?.value : '-'}</div>
+                <div>{statBeforeBoosts ? getCosmonStat(statBeforeBoosts, 'Xp')?.value : '-'}</div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Health Point</div>
-                <div>{cosmon.stats ? getCosmonStat(cosmon.stats, 'Hp')?.value : '-'}</div>
+                <div>
+                  {statBeforeBoosts ? (
+                    <>
+                      {getCosmonStat(statBeforeBoosts, 'Hp')?.value}
+                      {parseInt(getCosmonStat(cosmon.stats!, 'Hp')?.value!) -
+                        parseInt(getCosmonStat(statBeforeBoosts, 'Hp')?.value!) >
+                      0 ? (
+                        <CosmonStatProgressionLabel
+                          className="ml-[4px]"
+                          label={`+${
+                            parseInt(getCosmonStat(cosmon.stats!, 'Hp')?.value!) -
+                            parseInt(getCosmonStat(statBeforeBoosts, 'Hp')?.value!)
+                          }`}
+                        />
+                      ) : null}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Fight Point</div>
-                <div>{cosmon.stats ? getCosmonStat(cosmon.stats, 'Fp')?.value : '-'}</div>
+                <div>{statBeforeBoosts ? getCosmonStat(statBeforeBoosts, 'Fp')?.value : '-'}</div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Action Point</div>
-                <div>{cosmon.stats ? getCosmonStat(cosmon.stats, 'Ap')?.value : '-'}</div>
+                <div>
+                  {statBeforeBoosts ? (
+                    <>
+                      {getCosmonStat(statBeforeBoosts, 'Ap')?.value}
+                      {parseInt(getCosmonStat(cosmon.stats!, 'Ap')?.value!) -
+                        parseInt(getCosmonStat(statBeforeBoosts, 'Ap')?.value!) >
+                      0 ? (
+                        <CosmonStatProgressionLabel
+                          className="ml-[4px]"
+                          label={`+${
+                            parseInt(getCosmonStat(cosmon.stats!, 'Ap')?.value!) -
+                            parseInt(getCosmonStat(statBeforeBoosts, 'Ap')?.value!)
+                          }`}
+                        />
+                      ) : null}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </div>
               </div>
             </div>
 
@@ -120,23 +184,118 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               <b className="text-[16px]">Secondary caracteristics</b>
               <div className="mt-3 flex justify-between">
                 <div className="text-[#D8D1E7]">Attack (ATQ)</div>
-                <div>{cosmon.stats ? getCosmonStat(cosmon.stats, 'Atq')?.value : '-'}</div>
+                <div>
+                  {statBeforeBoosts ? (
+                    <>
+                      {getCosmonStat(statBeforeBoosts, 'Atq')?.value}
+                      {parseInt(getCosmonStat(cosmon.stats!, 'Atq')?.value!) -
+                        parseInt(getCosmonStat(statBeforeBoosts, 'Atq')?.value!) >
+                      0 ? (
+                        <CosmonStatProgressionLabel
+                          className="ml-[4px]"
+                          label={`+${
+                            parseInt(getCosmonStat(cosmon.stats!, 'Atq')?.value!) -
+                            parseInt(getCosmonStat(statBeforeBoosts, 'Atq')?.value!)
+                          }`}
+                        />
+                      ) : null}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Defense (DEF)</div>
-                <div>{cosmon.stats ? getCosmonStat(cosmon.stats, 'Def')?.value : '-'}</div>
+                <div>
+                  {statBeforeBoosts ? (
+                    <>
+                      {getCosmonStat(statBeforeBoosts, 'Def')?.value}
+                      {parseInt(getCosmonStat(cosmon.stats!, 'Def')?.value!) -
+                        parseInt(getCosmonStat(statBeforeBoosts, 'Def')?.value!) >
+                      0 ? (
+                        <CosmonStatProgressionLabel
+                          className="ml-[4px]"
+                          label={`+${
+                            parseInt(getCosmonStat(cosmon.stats!, 'Def')?.value!) -
+                            parseInt(getCosmonStat(statBeforeBoosts, 'Def')?.value!)
+                          }`}
+                        />
+                      ) : null}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Intelligence (INT)</div>
-                <div>{cosmon.stats ? getCosmonStat(cosmon.stats, 'Int')?.value : '-'}</div>
+                <div>
+                  {statBeforeBoosts ? (
+                    <>
+                      {getCosmonStat(statBeforeBoosts, 'Int')?.value}
+                      {parseInt(getCosmonStat(cosmon.stats!, 'Int')?.value!) -
+                        parseInt(getCosmonStat(statBeforeBoosts, 'Int')?.value!) >
+                      0 ? (
+                        <CosmonStatProgressionLabel
+                          className="ml-[4px]"
+                          label={`+${
+                            parseInt(getCosmonStat(cosmon.stats!, 'Int')?.value!) -
+                            parseInt(getCosmonStat(statBeforeBoosts, 'Int')?.value!)
+                          }`}
+                        />
+                      ) : null}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Speed (SPE)</div>
-                <div>{cosmon.stats ? getCosmonStat(cosmon.stats, 'Spe')?.value : '-'}</div>
+                <div>
+                  {statBeforeBoosts ? (
+                    <>
+                      {getCosmonStat(statBeforeBoosts, 'Spe')?.value}
+                      {parseInt(getCosmonStat(cosmon.stats!, 'Spe')?.value!) -
+                        parseInt(getCosmonStat(statBeforeBoosts, 'Spe')?.value!) >
+                      0 ? (
+                        <CosmonStatProgressionLabel
+                          className="ml-[4px]"
+                          label={`+${
+                            parseInt(getCosmonStat(cosmon.stats!, 'Spe')?.value!) -
+                            parseInt(getCosmonStat(statBeforeBoosts, 'Spe')?.value!)
+                          }`}
+                        />
+                      ) : null}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Chance (LUK)</div>
-                <div>{cosmon.stats ? getCosmonStat(cosmon.stats, 'Luk')?.value : '-'}</div>
+                <div>
+                  {statBeforeBoosts ? (
+                    <>
+                      {getCosmonStat(statBeforeBoosts, 'Luk')?.value}
+                      {parseInt(getCosmonStat(cosmon.stats!, 'Luk')?.value!) -
+                        parseInt(getCosmonStat(statBeforeBoosts, 'Luk')?.value!) >
+                      0 ? (
+                        <CosmonStatProgressionLabel
+                          className="ml-[4px]"
+                          label={`+${
+                            parseInt(getCosmonStat(cosmon.stats!, 'Luk')?.value!) -
+                            parseInt(getCosmonStat(statBeforeBoosts, 'Luk')?.value!)
+                          }`}
+                        />
+                      ) : null}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </div>
               </div>
             </div>
           </div>

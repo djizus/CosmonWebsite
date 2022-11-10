@@ -27,16 +27,9 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
     } else {
       return cosmon.stats!.map((stat) => {
         if (stat.key === boost.boost_name) {
-          if (stat.key === 'Atq') {
-            console.log(
-              Math.round(
-                parseInt(stat.value) - (boost.inc_value / 100) * parseInt(stat.value)
-              ).toString()
-            )
-          }
           return {
             ...stat,
-            value: Math.round(
+            value: Math.floor(
               parseInt(stat.value) - (boost.inc_value / 100) * parseInt(stat.value)
             ).toString(),
           }
@@ -46,8 +39,6 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
       })
     }
   }, [cosmon, variation, boost])
-
-  console.log(currentStats)
 
   return (
     <div
