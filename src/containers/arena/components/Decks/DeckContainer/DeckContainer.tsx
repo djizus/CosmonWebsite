@@ -39,7 +39,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   onOpenBoostModal,
 }) => {
   const { computeDeckAffinities } = useDeckStore()
-  const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonTypeWithBoosts | null>()
+  const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonTypeWithBoosts | null>(null)
   const [revealCards, setRevealCards] = useState(true)
   const { refreshCosmonsAndDecksList } = useDeckStore()
   const { hourlyFPNumber } = useArenaStore()

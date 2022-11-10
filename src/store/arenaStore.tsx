@@ -67,8 +67,6 @@ interface ArenaState {
   hourlyFPNumber: number
   fetchHourlyFPNumber: () => void
   fetchBoosts: () => void
-  fetchBoostsForCosmons: (cosmons: CosmonType[]) => void
-  fetchBoostForCosmon: (cosmon: CosmonType) => void
 }
 
 export const WINNER_IS_DRAW = 'DRAW'
@@ -88,7 +86,6 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
     position: null,
   },
   boostsAvailable: [],
-  boostsForCosmons: [],
   currentChampionshipNumber: 1,
   arenaFees: null,
   currentPrizePool: null,
@@ -390,75 +387,6 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
 
       set({
         boostsAvailable: boosts,
-      })
-    } catch (error) {
-      console.error(error)
-    }
-  },
-  fetchBoostsForCosmons: async (cosmons: CosmonType[]) => {
-    try {
-      const ids = cosmons.map((cosmon) => cosmon.id)
-      const boostsForCosmons = await XPRegistryService.queries().fecthBoostsForCosmons(ids)
-
-      const result = boostsForCosmons.map((item: Boost[], index: number) => {
-        let filledArray: (Boost | null)[] = [...item]
-
-        for (let i = 0; i < 3; i++) {
-          if (filledArray[i] === undefined) {
-            filledArray[i] = null
-          }
-        }
-
-        return {
-          id: ids[index],
-          boosts: filledArray as [Boost | null, Boost | null, Boost | null],
-        }
-      })
-
-      set({
-        boostsForCosmons: result,
-      })
-    } catch (error) {
-      console.error(error)
-    }
-  },
-  fetchBoostForCosmon: async (cosmon: CosmonType) => {
-    try {
-      const boostsForCosmon = await XPRegistryService.queries().fecthBoostsForCosmon(cosmon)
-
-      const { boostsForCosmons } = get()
-
-      const boostIndex = boostsForCosmons.findIndex((item) => item.id === cosmon.id)
-
-      if (boostIndex !== -1) {
-        const updatedBoostsForCosmons = [...boostsForCosmons]
-
-        let filledArray: (Boost | null)[] = [...boostsForCosmon]
-
-        for (let i = 0; i < 3; i++) {
-          if (filledArray[i] === undefined) {
-            filledArray[i] = null
-          }
-        }
-
-        updatedBoostsForCosmons[boostIndex] = {
-          id: cosmon.id,
-          boosts: filledArray as [Boost | null, Boost | null, Boost | null],
-        }
-
-        set({
-          boostsForCosmons: updatedBoostsForCosmons,
-        })
-      }
-
-      set({
-        boostsForCosmons: [
-          ...boostsForCosmons,
-          {
-            id: cosmon.id,
-            boosts: boostsForCosmon,
-          },
-        ],
       })
     } catch (error) {
       console.error(error)

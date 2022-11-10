@@ -5,8 +5,7 @@ export type CurrentView = 'boost' | 'leader' | 'recap'
 
 export type BuyBoostModalOrigin = 'buyBoost' | CosmonType
 
-export type CosmonTypeWithDecksAndBoosts = CosmonType & {
+export type CosmonTypeWithDecks = CosmonType & {
   deckName: string
   deckId: number
-  boosts: [Boost | null, Boost | null, Boost | null]
 }

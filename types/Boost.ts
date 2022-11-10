@@ -27,8 +27,3 @@ export interface Boost {
   price: Coin
   image_path: string
 }
-
-export interface BoostForCosmon {
-  id: string
-  boosts: (Boost | null)[]
-}

@@ -36,6 +36,7 @@ import { connectWithCosmostation } from '@services/connection/cosmostation'
 import { CONNECTED_WITH, CONNECTION_TYPE, CosmosConnectionProvider } from 'types/Connection'
 import { removeLastConnection, saveLastConnection } from '@utils/connection'
 import { getOfflineSignerCosmostation } from '@services/connection/cosmostation-walletconnect'
+import { fillBoosts } from '@utils/boost'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
@@ -358,12 +359,14 @@ const useWalletStore = create<WalletState>(
               tokens.map(async (token: string) => {
                 const cosmon = await queryCosmonInfo(signingClient, token)
                 const stats = await XPRegistryService.queries().getCosmonStats(token)
+                const boosts = await XPRegistryService.queries().fecthBoostsForCosmon(token)
 
                 return {
                   id: token,
                   data: cosmon,
                   isInDeck: false,
                   stats,
+                  boosts: fillBoosts(boosts),
                 }
               })
             )

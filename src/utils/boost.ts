@@ -118,3 +118,15 @@ export function getDeckWithBoosts(deck: Deck, boostsForCosmons: BoostForCosmon[]
     }),
   }
 }
+
+export function fillBoosts(boosts: (Boost | null)[]): [Boost | null, Boost | null, Boost | null] {
+  let filledArray: (Boost | null)[] = [...boosts]
+
+  for (let i = 0; i < 3; i++) {
+    if (filledArray[i] === undefined) {
+      filledArray[i] = null
+    }
+  }
+
+  return filledArray as [Boost | null, Boost | null, Boost | null]
+}

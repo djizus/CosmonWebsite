@@ -53,18 +53,18 @@ export const fetchBoosts = async () => {
 /**
  * Get boosts for a cosmon
  */
-export const fecthBoostsForCosmon = async (cosmon: CosmonType) => {
+export const fecthBoostsForCosmon = async (cosmonId: string) => {
   try {
     const { signingClient } = useWalletStore.getState()
     const response = await signingClient?.queryContractSmart(PUBLIC_XP_REGISTRY_CONTRACT, {
       get_boosts_for_nft: {
-        nft_id: cosmon.id,
+        nft_id: cosmonId,
       },
     })
 
     return response
   } catch (e) {
-    console.error(`Error while fetching boosts for cosmon ${cosmon.data.extension.name}`, e)
+    console.error(`Error while fetching boosts for cosmon ${cosmonId}`, e)
   }
 }
 

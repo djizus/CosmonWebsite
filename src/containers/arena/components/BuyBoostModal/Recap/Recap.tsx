@@ -23,7 +23,7 @@ const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, re
   const { fetchBoostForCosmon } = useArenaStore((state) => state)
 
   useEffect(() => {
-    fetchBoostForCosmon(selectedLeaders[0])
+    fetchBoostForCosmon(selectedLeaders[0].id)
   }, [])
 
   return (
