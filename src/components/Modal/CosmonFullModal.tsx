@@ -1,13 +1,10 @@
-import { CosmonStatType, CosmonTypeWithBoosts } from '../../../types/Cosmon'
+import { CosmonStatType, CosmonType, CosmonTypeWithBoosts } from '../../../types/Cosmon'
 import { getCosmonPersonalityAffinity, getCosmonStat, getTrait } from '../../utils/cosmon'
 import Close from '/public/icons/close.svg'
 import Hover from 'react-3d-hover'
 import { useEffect, useMemo } from 'react'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
-import {
-  CosmonStatProgression,
-  CosmonStatProgressionLabel,
-} from '@containers/arena/components/FightReportModal/CosmonsProgression'
+import { CosmonStatProgressionLabel } from '@containers/arena/components/FightReportModal/CosmonsProgression'
 
 type CosmonFullModalProps = {
   cosmon: CosmonTypeWithBoosts
