@@ -8,7 +8,8 @@ export const getMEAs = (): MEAType[] => [
   //   link: 'https://medium.com/ki-foundation/cosmon-whats-next-2154af7de5be',
   // },
   {
-    imgSrc: '/raffle/raffle-uncommon.png',
-    link: 'https://www.stargaze.zone/launchpad/stars1e42datgky9emwfryqp2n82lsglvqa2tpsx8m7ljfgqhsd8epxvzsaxzrtn',
+    imgSrc: '/raffle/raffle-rare.png',
+    link: 'https://www.stargaze.zone/launchpad/stars1m9ttnsyzlyhzf4dxxc90c45a32x4ls3cx49zgtqqxhr58m49j72s0pgpht',
+    linkInfo: 'https://docs.cosmon.ki/how-cosmon-works/weekly-raffles',
   },
 ]
