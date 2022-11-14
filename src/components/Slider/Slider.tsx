@@ -64,7 +64,7 @@ const Slider: React.FC<SliderProps> = ({
   }
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden">
+    <div className="flex h-full w-full flex-col overflow-auto">
       <AnimatePresence initial={false} exitBeforeEnter custom={direction}>
         <motion.div
           key={page}
