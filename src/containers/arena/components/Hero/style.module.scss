@@ -99,6 +99,10 @@ $textSize: 15px;
 .optionsContainer {
   display: flex;
   flex-direction: row;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
 }
 
 .buyBoostButton {
