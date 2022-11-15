@@ -3,6 +3,10 @@
   flex-direction: row;
   justify-content: space-between;
   margin-top: 10px;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
 }
 
 .boostSlot {
