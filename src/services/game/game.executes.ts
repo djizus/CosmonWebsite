@@ -66,6 +66,8 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
       return fightAttributes?.find((fa) => fa.key === key)?.value!
     }
 
+    const isBot = getAttrValue('bot')
+
     const getOpponentCosmonsList = async () => {
       let myCosmons: CosmonType[] = await Promise.all(
         getAttrValue('opponent_nfts')
@@ -102,7 +104,9 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
       arena,
       opponent: {
         identity: getAttrValue('opponent') || '',
-        deckName: await DeckService.queries().getName(+getAttrValue('opponent_deck_id')),
+        deckName: isBot
+          ? getAttrValue('opponent') || ''
+          : await DeckService.queries().getName(+getAttrValue('opponent_deck_id')),
         cosmons:
           [cosmonsWithAffinityBonus[0], cosmonsWithAffinityBonus[1], cosmonsWithAffinityBonus[2]] ||
           [],
