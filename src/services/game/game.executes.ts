@@ -66,7 +66,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
       return fightAttributes?.find((fa) => fa.key === key)?.value!
     }
 
-    const isBot = getAttrValue('bot')
+    const isBot = getAttrValue('bot') === 'true'
 
     const getOpponentCosmonsList = async () => {
       let myCosmons: CosmonType[] = await Promise.all(
