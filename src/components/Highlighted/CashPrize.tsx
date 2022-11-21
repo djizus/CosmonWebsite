@@ -18,7 +18,7 @@ const CashPrize: React.FC<CashPrizeProps> = ({ prize }) => {
           <h3>{numeral(convertMicroDenomToDenom(prize.amount)).format('0,0')}</h3>
         </div>
         <p className="mt-[18px] text-sm">
-          The prize pool will be distributed among the 5 best players every week
+          The prize pool will be distributed among the 250 best players every week
         </p>
       </div>
     </div>
