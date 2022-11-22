@@ -2,9 +2,6 @@ import { OfflineSigner } from '@cosmjs/proto-signing'
 import { chainInfo } from 'src/config'
 import { deconnectAndConnect } from './global'
 
-const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
-const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
-
 // extend window with CosmosJS and Keplr properties
 interface CosmosKeplrWindow extends Window {
   keplr: any
@@ -13,9 +10,10 @@ interface CosmosKeplrWindow extends Window {
 
 declare let window: CosmosKeplrWindow
 
-export const connectKeplr = async (): Promise<[OfflineSigner | null, OfflineSigner | null]> => {
+export const connectKeplr = async (): Promise<OfflineSigner | null> => {
   if (window.keplr.experimentalSuggestChain) {
     try {
+      const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
       // Keplr v0.6.4 introduces an experimental feature that supports the feature to suggests the chain from a webpage.
       // cosmoshub-3 is integrated to Keplr so the code should return without errors.
       // The code below is not needed for cosmoshub-3, but may be helpful if you’re adding a custom chain.
@@ -29,21 +27,31 @@ export const connectKeplr = async (): Promise<[OfflineSigner | null, OfflineSign
 
       // enable website to access keplr
       await (window as any).keplr.enable(PUBLIC_CHAIN_ID)
-      await (window as any).keplr.enable(PUBLIC_IBC_CHAIN_ID)
 
       // return offlineSigner
-      return [
-        await (window as any).getOfflineSignerAuto(PUBLIC_CHAIN_ID),
-        await (window as any).getOfflineSignerAuto(PUBLIC_IBC_CHAIN_ID),
-      ]
+      return await (window as any).getOfflineSignerAuto(PUBLIC_CHAIN_ID)
     } catch (e) {
       alert('Failed to suggest the chain')
       console.log('error details', e)
     }
   } else {
     alert('Please use the recent version of keplr extension')
+    return null
   }
-  return [null, null]
+  return null
+}
+
+export const connectIbcClientWithKeplr = async (): Promise<OfflineSigner | null> => {
+  if (window.keplr.experimentalSuggestChain) {
+    try {
+      const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
+      await (window as any).keplr.enable(PUBLIC_IBC_CHAIN_ID)
+      return await (window as any).getOfflineSignerAuto(PUBLIC_IBC_CHAIN_ID)
+    } catch (err) {}
+  } else {
+    return null
+  }
+  return null
 }
 
 export const handleChangeAccount = () => {

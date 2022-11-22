@@ -1,9 +1,11 @@
 import Button from '@components/Button/Button'
+import LoadingIcon from '@components/LoadingIcon/LoadingIcon'
+import Tooltip from '@components/Tooltip/Tooltip'
 import { Coin } from '@cosmjs/proto-signing'
 import { useWalletStore } from '@store/walletStore'
 import { getAmountFromDenom } from '@utils'
 import { isMobile } from '@utils/browser'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 
 interface IBCBalanceProps {}
 
@@ -50,6 +52,18 @@ const IBCBalanceDesktop: React.FC<IBCBalanceCommonProps> = ({
   onClickDeposit,
   onClickWithdraw,
 }) => {
+  const { getIbcSigningClient, ibcSigningClient, isLoadingIbcClientConnection } = useWalletStore()
+
+  useEffect(() => {
+    initIbcClient()
+    return () => {}
+  }, [])
+
+  const initIbcClient = async () => {
+    try {
+      await getIbcSigningClient()
+    } catch (error) {}
+  }
   return (
     <tr className="h-[72px]">
       <td>
@@ -62,12 +76,31 @@ const IBCBalanceDesktop: React.FC<IBCBalanceCommonProps> = ({
       <td></td>
       <td>
         <div className="flex gap-x-6">
-          <Button size="small" type="secondary" onClick={onClickDeposit}>
-            Deposit
-          </Button>
-          <Button size="small" type="secondary" onClick={onClickWithdraw}>
-            Withdraw
-          </Button>
+          <div data-tip="tootlip" data-for={`ibcclient-not-available`}>
+            <Button
+              size="small"
+              type="secondary"
+              onClick={onClickDeposit}
+              disabled={!ibcSigningClient}
+            >
+              {isLoadingIbcClientConnection ? <LoadingIcon /> : 'Deposit'}
+            </Button>
+          </div>
+          <div data-tip="tootlip" data-for={`ibcclient-not-available`}>
+            <Button
+              size="small"
+              type="secondary"
+              onClick={onClickWithdraw}
+              disabled={!ibcSigningClient}
+            >
+              {isLoadingIbcClientConnection ? <LoadingIcon /> : 'Withdraw'}
+            </Button>
+          </div>
+          {!ibcSigningClient ? (
+            <Tooltip id={`ibcclient-not-available`} place="top">
+              <p>IBC Client not available</p>
+            </Tooltip>
+          ) : null}
         </div>
       </td>
     </tr>

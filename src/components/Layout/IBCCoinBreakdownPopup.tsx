@@ -1,15 +1,35 @@
 import Button from '@components/Button/Button'
+import LoadingIcon from '@components/LoadingIcon/LoadingIcon'
+import Tooltip from '@components/Tooltip/Tooltip'
 import { useWalletStore } from '@store/walletStore'
 import { getAmountFromDenom } from '@utils'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 interface IBCCoinBreakdownPopupProps {
   onClosePopup: () => void
 }
 
 const IBCCoinBreakdownPopup: React.FC<IBCCoinBreakdownPopupProps> = ({ onClosePopup }) => {
-  const { ibcDenom, coins, setShowWithdrawDepositModal, ibcSigningClient, stargateSigningClient } =
-    useWalletStore()
+  const {
+    ibcDenom,
+    coins,
+    setShowWithdrawDepositModal,
+    ibcSigningClient,
+    isLoadingIbcClientConnection,
+    stargateSigningClient,
+    getIbcSigningClient,
+  } = useWalletStore()
+
+  useEffect(() => {
+    initIbcClient()
+    return () => {}
+  }, [])
+
+  const initIbcClient = async () => {
+    try {
+      await getIbcSigningClient()
+    } catch (error) {}
+  }
 
   return (
     <>
@@ -31,22 +51,31 @@ const IBCCoinBreakdownPopup: React.FC<IBCCoinBreakdownPopupProps> = ({ onClosePo
           </div>
 
           <div className="flex justify-between pt-4">
-            <Button
-              onClick={() => setShowWithdrawDepositModal('deposit')}
-              size="small"
-              type="secondary"
-              disabled={!ibcSigningClient || !stargateSigningClient}
-            >
-              Deposit
-            </Button>
-            <Button
-              onClick={() => setShowWithdrawDepositModal('withdraw')}
-              size="small"
-              type="secondary"
-              disabled={!ibcSigningClient || !stargateSigningClient}
-            >
-              Withdraw
-            </Button>
+            <div data-tip="tootlip" data-for={`ibcclient-not-available`}>
+              <Button
+                onClick={() => setShowWithdrawDepositModal('deposit')}
+                size="small"
+                type="secondary"
+                disabled={!ibcSigningClient || !stargateSigningClient}
+              >
+                {isLoadingIbcClientConnection ? <LoadingIcon /> : 'Deposit'}
+              </Button>
+            </div>
+            <div data-tip="tootlip" data-for={`ibcclient-not-available`}>
+              <Button
+                onClick={() => setShowWithdrawDepositModal('withdraw')}
+                size="small"
+                type="secondary"
+                disabled={!ibcSigningClient || !stargateSigningClient}
+              >
+                {isLoadingIbcClientConnection ? <LoadingIcon /> : 'Withdraw'}
+              </Button>
+            </div>
+            {!ibcSigningClient ? (
+              <Tooltip id={`ibcclient-not-available`} place="top">
+                <p>IBC Client not available</p>
+              </Tooltip>
+            ) : null}
           </div>
         </div>
       </div>

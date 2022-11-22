@@ -9,11 +9,8 @@ type WalletPopupProps = {
 }
 
 export default function WalletPopup({ onClosePopup }: WalletPopupProps) {
-  const { initIbc, isFetchingData, coins, setShowWithdrawDepositModal } = useWalletStore(
-    (state) => state
-  )
-
-  const { rewardsData, claimRewards } = useRewardStore((state) => state)
+  const { coins } = useWalletStore()
+  const { rewardsData, claimRewards } = useRewardStore()
 
   const hasRewards = () => {
     return getAmountFromDenom(process.env.NEXT_PUBLIC_STAKING_DENOM || '', coins) !== 0
