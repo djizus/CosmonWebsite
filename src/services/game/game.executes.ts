@@ -104,9 +104,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
       arena,
       opponent: {
         identity: getAttrValue('opponent') || '',
-        deckName: isBot
-          ? getAttrValue('opponent') || ''
-          : await DeckService.queries().getName(+getAttrValue('opponent_deck_id')),
+        deckName: await DeckService.queries().getName(+getAttrValue('opponent_deck_id')),
         cosmons:
           [cosmonsWithAffinityBonus[0], cosmonsWithAffinityBonus[1], cosmonsWithAffinityBonus[2]] ||
           [],
