@@ -1,5 +1,5 @@
 import Button from '@components/Button/Button'
-import { Deck, CosmonType, DeckWithBoosts, CosmonTypeWithBoosts } from 'types'
+import { CosmonType, Deck } from 'types'
 import { useDeckStore } from '@store/deckStore'
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { useCallback, useMemo, useState } from 'react'
@@ -21,10 +21,9 @@ import clsx from 'clsx'
 import { useWindowSize } from 'react-use'
 import Tooltip from '@components/Tooltip/Tooltip'
 import { getPotionNameFromBoostedStat } from '@utils/boost'
-import { boost } from '../../BuyBoostModal/BoostPicker/BoostPicker.module.scss'
 
 interface DeckContainerProps {
-  deck: DeckWithBoosts
+  deck: Deck
   onEditDeck: (deck: Deck) => void
   onClickDelete: (deck: Deck) => void
   onClickFight: (deck: Deck) => void
@@ -39,7 +38,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   onOpenBoostModal,
 }) => {
   const { computeDeckAffinities } = useDeckStore()
-  const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonTypeWithBoosts | null>(null)
+  const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>(null)
   const [revealCards, setRevealCards] = useState(true)
   const { refreshCosmonsAndDecksList } = useDeckStore()
   const { hourlyFPNumber } = useArenaStore()

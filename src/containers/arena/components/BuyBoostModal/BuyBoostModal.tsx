@@ -2,14 +2,14 @@ import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import BoostPicker from './BoostPicker/BoostPicker'
 import * as style from './BuyBoostModal.module.scss'
-import { CurrentView, BuyBoostModalOrigin, CosmonTypeWithDecksAndBoosts } from './BuyBoostModalType'
+import { CurrentView, BuyBoostModalOrigin, CosmonTypeWithDecks } from './BuyBoostModalType'
 import LeaderPicker from './LeaderPicker/LeaderPicker'
 import { Boost } from 'types/Boost'
 import Recap from './Recap/Recap'
 import { useArenaStore } from '@store/arenaStore'
 import { useDeckStore } from '@store/deckStore'
 import { useWalletStore } from '@store/walletStore'
-import { addBoostAndDeckToCosmon } from './BuyBoostModalUtils'
+import { addDeckToCosmon } from './BuyBoostModalUtils'
 import Button from '@components/Button/Button'
 import clsx from 'clsx'
 
@@ -42,11 +42,9 @@ interface BuyBoostModalProps {
 const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin }) => {
   const [currentView, setCurentView] = useState<CurrentView>('boost')
   const [selectedBoost, setSelectedBoost] = useState<Boost | null>(null)
-  const [selectedLeaders, setSelectedLeaders] = useState<CosmonTypeWithDecksAndBoosts[]>([])
-  const [cosmonsWithDeckAndBoosts, setCosmonsWithDeckAndBoosts] = useState<
-    CosmonTypeWithDecksAndBoosts[]
-  >([])
-  const { fetchBoosts, boostsAvailable, boostsForCosmons } = useArenaStore((state) => state)
+  const [selectedLeaders, setSelectedLeaders] = useState<CosmonTypeWithDecks[]>([])
+  const [cosmonsWithDeck, setCosmonsWithDeck] = useState<CosmonTypeWithDecks[]>([])
+  const { fetchBoosts, boostsAvailable } = useArenaStore((state) => state)
   const { fetchDecksList, decksList } = useDeckStore((state) => state)
   const { cosmons, fetchCosmons } = useWalletStore((state) => state)
 
@@ -57,8 +55,8 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
   }, [])
 
   useEffect(() => {
-    if (origin !== 'buyBoost' && cosmonsWithDeckAndBoosts) {
-      const formatedOrigin: CosmonTypeWithDecksAndBoosts = cosmonsWithDeckAndBoosts.find(
+    if (origin !== 'buyBoost' && cosmonsWithDeck) {
+      const formatedOrigin: CosmonTypeWithDecks = cosmonsWithDeck.find(
         (item) => item.id === origin.id
       ) ?? {
         ...origin,
@@ -69,19 +67,26 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
 
       setSelectedLeaders([formatedOrigin])
     }
-  }, [origin, cosmonsWithDeckAndBoosts])
+
+    if (origin === 'buyBoost' && cosmonsWithDeck) {
+      const formatedOrigin = cosmonsWithDeck.find((item) => item.id === selectedLeaders[0]?.id)
+
+      if (formatedOrigin) {
+        setSelectedLeaders([formatedOrigin])
+      }
+    }
+  }, [origin, cosmonsWithDeck])
 
   useEffect(() => {
-    setCosmonsWithDeckAndBoosts(
-      addBoostAndDeckToCosmon({
+    setCosmonsWithDeck(
+      addDeckToCosmon({
         cosmons,
-        boostsForCosmons,
         decksList,
       })
     )
-  }, [cosmons, decksList, boostsForCosmons])
+  }, [cosmons, decksList])
 
-  const handleSelectLeader = (leader: CosmonTypeWithDecksAndBoosts | null) => {
+  const handleSelectLeader = (leader: CosmonTypeWithDecks | null) => {
     if (leader === null) {
       return setSelectedLeaders([])
     }
@@ -125,7 +130,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
 
   const resetModal = async () => {
     if (origin !== 'buyBoost') {
-      const formatedOrigin: CosmonTypeWithDecksAndBoosts = cosmonsWithDeckAndBoosts.find(
+      const formatedOrigin: CosmonTypeWithDecks = cosmonsWithDeck.find(
         (item) => item.id === origin.id
       ) ?? {
         ...origin,
@@ -162,7 +167,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
         return (
           <LeaderPicker
             handleCloseModal={closeModal}
-            cosmonsWithDeckInfo={cosmonsWithDeckAndBoosts}
+            cosmonsWithDeckInfo={cosmonsWithDeck}
             selectedBoost={selectedBoost as Boost}
             setCurrentView={setCurentView}
             selectedLeaders={selectedLeaders}
@@ -172,6 +177,7 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
       case 'recap':
         return (
           <Recap
+            origin={origin}
             resetModal={resetModal}
             closeModal={closeModal}
             selectedLeaders={selectedLeaders}

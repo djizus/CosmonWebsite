@@ -7,23 +7,30 @@ import Button from '@components/Button/Button'
 import clsx from 'clsx'
 import CardsWithStats from '../CardWithStats/CardWithStats'
 import { convertMicroDenomToDenom } from '@utils/conversion'
-import { CosmonTypeWithDecksAndBoosts } from '../BuyBoostModalType'
-import { useArenaStore } from '@store/arenaStore'
 import { useEffect } from 'react'
+import { useWalletStore } from '@store/walletStore'
+import { BuyBoostModalOrigin, CosmonTypeWithDecks } from '../BuyBoostModalType'
 
 interface Props {
-  selectedLeaders: CosmonTypeWithDecksAndBoosts[]
+  selectedLeaders: CosmonTypeWithDecks[]
   selectedBoost: Boost
   closeModal: () => void
   resetModal: () => void
+  origin: BuyBoostModalOrigin
 }
 
-const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, resetModal }) => {
+const Recap: React.FC<Props> = ({
+  selectedBoost,
+  selectedLeaders,
+  closeModal,
+  resetModal,
+  origin,
+}) => {
   const BoostIcon = getIconForAttr(selectedBoost.boost_name)
-  const { fetchBoostForCosmon } = useArenaStore((state) => state)
+  const { fetchCosmons } = useWalletStore()
 
   useEffect(() => {
-    fetchBoostForCosmon(selectedLeaders[0].id)
+    fetchCosmons()
   }, [])
 
   return (
@@ -73,7 +80,10 @@ const Recap: React.FC<Props> = ({ selectedBoost, selectedLeaders, closeModal, re
         <Button onClick={closeModal} type="white">
           Close
         </Button>
-        <Button disabled={selectedLeaders[0].boosts[2] !== null} onClick={resetModal}>
+        <Button
+          disabled={selectedLeaders[0].boosts[2] !== null && origin !== 'buyBoost'}
+          onClick={resetModal}
+        >
           Buy a new potion
         </Button>
       </div>

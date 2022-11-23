@@ -1,7 +1,7 @@
 import { CosmonType, Deck } from 'types'
 import { CosmonTypeWithDecks } from './BuyBoostModalType'
 
-const addBoostAndDeckToCosmon = ({
+const addDeckToCosmon = ({
   cosmons,
   decksList,
 }: {
@@ -50,4 +50,4 @@ const addBoostAndDeckToCosmon = ({
   })
 }
 
-export { addBoostAndDeckToCosmon }
+export { addDeckToCosmon }

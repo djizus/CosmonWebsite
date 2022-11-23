@@ -9,7 +9,7 @@ import ErrorIcon from '@public/icons/error.svg'
 import { getNextMonday } from '@utils/date'
 import { useWalletStore } from './walletStore'
 import { XPRegistryService } from '@services/xp-registry'
-import { Boost, BoostForCosmon } from 'types/Boost'
+import { Boost } from 'types/Boost'
 
 interface ArenaState {
   currentLeaguePro: ArenaType | null
@@ -18,7 +18,6 @@ interface ArenaState {
   currentLeaderboardWallets: string[]
   walletInfos: WalletInfos
   boostsAvailable: Boost[]
-  boostsForCosmons: BoostForCosmon[]
   arenaFees: any
   currentPrizePool: any
   nextPrizePool: any

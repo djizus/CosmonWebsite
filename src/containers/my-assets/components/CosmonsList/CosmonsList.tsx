@@ -3,12 +3,12 @@ import Tooltip from '@components/Tooltip/Tooltip'
 import { Transition } from '@headlessui/react'
 import clsx from 'clsx'
 import React from 'react'
-import { CosmonType, CosmonTypeWithBoosts } from 'types'
+import { CosmonType } from 'types'
 
 interface CosmonsListProps {
-  cosmons: (CosmonType | CosmonTypeWithBoosts)[]
-  onClickTransfer: (cosmon: CosmonType | CosmonTypeWithBoosts) => void
-  onClickShowDetails: (cosmon: CosmonType | CosmonTypeWithBoosts) => void
+  cosmons: CosmonType[]
+  onClickTransfer: (cosmon: CosmonType) => void
+  onClickShowDetails: (cosmon: CosmonType) => void
 }
 
 const CosmonsList: React.FC<CosmonsListProps> = ({

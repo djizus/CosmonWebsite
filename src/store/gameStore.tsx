@@ -7,8 +7,7 @@ import create from 'zustand'
 import { Deck, ArenaType, FightType, CosmonType } from 'types'
 import { Boost } from 'types/Boost'
 import { useWalletStore } from './walletStore'
-import { useArenaStore } from './arenaStore'
-import { CosmonTypeWithDecksAndBoosts } from '@containers/arena/components/BuyBoostModal/BuyBoostModalType'
+import { CosmonTypeWithDecks } from '@containers/arena/components/BuyBoostModal/BuyBoostModalType'
 
 interface GameState {
   arenasList: ArenaType[]
@@ -18,7 +17,7 @@ interface GameState {
   generatingBattle: boolean
   fight: (deck: Deck, arena: ArenaType) => Promise<any>
   battle: FightType | null
-  buyBoost: (cosmon: CosmonTypeWithDecksAndBoosts, boost: Boost, onError?: () => void) => void
+  buyBoost: (cosmon: CosmonTypeWithDecks, boost: Boost, onError?: () => void) => void
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -157,11 +156,6 @@ export const useGameStore = create<GameState>((set, get) => ({
         .then(async (resp: any) => {
           const { fetchCosmons } = useWalletStore.getState()
           await fetchCosmons()
-
-          const { cosmons } = useWalletStore.getState()
-          const { fetchBoostsForCosmons } = useArenaStore.getState()
-
-          await fetchBoostsForCosmons(cosmons)
 
           return true
         })

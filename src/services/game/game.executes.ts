@@ -7,7 +7,8 @@ import { ArenaType } from 'types/Arena'
 import { Deck } from 'types/Deck'
 import { calculateFee, GasPrice } from '@cosmjs/stargate'
 import { Boost } from 'types/Boost'
-import { CosmonTypeWithDecksAndBoosts } from '@containers/arena/components/BuyBoostModal/BuyBoostModalType'
+import { CosmonTypeWithDecks } from '@containers/arena/components/BuyBoostModal/BuyBoostModalType'
+import { computeStatsWithoutBoosts, fillBoosts } from '@utils/boost'
 
 const PUBLIC_GAME_CONTRACT = process.env.NEXT_PUBLIC_GAME_CONTRACT!
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM
@@ -75,11 +76,15 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
           .map(async (token: string) => {
             const cosmon = await queryCosmonInfo(signingClient, token)
             const stats = await XPRegistryService.queries().getCosmonStats(token)
+            const boosts = await XPRegistryService.queries().fecthBoostsForCosmon(token)
+
             return {
               id: token,
               data: cosmon,
               isInDeck: false,
               stats,
+              statsWithoutBoosts: computeStatsWithoutBoosts(stats, boosts),
+              boosts: fillBoosts(boosts),
             }
           })
       )
@@ -140,7 +145,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
  * @param nft_id id of selected cosmon
  * boosts array of boost_name
  */
-const buyBoost = async (cosmon: CosmonTypeWithDecksAndBoosts, boost: Boost) => {
+const buyBoost = async (cosmon: CosmonTypeWithDecks, boost: Boost) => {
   try {
     const { signingClient, address } = useWalletStore.getState()
     if (!signingClient) {
