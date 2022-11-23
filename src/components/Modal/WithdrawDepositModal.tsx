@@ -24,7 +24,7 @@ export default function WithdrawDepositModal({ onCloseModal }: WithdrawDepositMo
     coins,
     ibcCoins,
     showWithdrawDepositModal,
-  } = useWalletStore((state) => state)
+  } = useWalletStore()
 
   const [amountToTransfer, set_amountToTransfer] = useState<string>()
 

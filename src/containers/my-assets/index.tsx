@@ -36,7 +36,7 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
         {showCosmonDetail && (
           <CosmonFullModal
             onCloseModal={() => set_showCosmonDetail(null)}
-            cosmon={showCosmonDetail && showCosmonDetail}
+            cosmon={showCosmonDetail && { ...showCosmonDetail, boosts: [null, null, null] }}
           />
         )}
       </Transition>

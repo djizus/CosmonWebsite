@@ -6,11 +6,8 @@ import { useWalletStore } from '@store/walletStore'
 import { payloadId } from '@walletconnect/utils'
 
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
-const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
 
-export const getOfflineSignerCosmostation = async (): Promise<
-  [OfflineSigner | null, OfflineSigner | null]
-> => {
+export const getOfflineSignerCosmostation = async (): Promise<OfflineSigner> => {
   try {
     const { disconnect } = useWalletStore.getState()
 
@@ -62,7 +59,7 @@ export const getOfflineSignerCosmostation = async (): Promise<
       },
     }
 
-    return [signer, null]
+    return signer
   } catch (err) {
     throw new Error(`getMobileOfflineSignerWithConnect :: error during :: ${err}`)
   }

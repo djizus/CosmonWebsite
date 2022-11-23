@@ -31,10 +31,13 @@ import { NFTId, CosmonType, Scarcity } from 'types'
 import { XPRegistryService } from '@services/xp-registry'
 import { DeckService } from '@services/deck'
 import { CustomIndexedTx, IndexedTxMethodType } from 'types/IndexedTxMethodType'
-import { connectKeplr } from '@services/connection/keplr'
-import { connectWithCosmostation } from '@services/connection/cosmostation'
+import { connectIbcClientWithKeplr, connectKeplr } from '@services/connection/keplr'
+import {
+  connectIbcClientWithCosmostation,
+  connectWithCosmostation,
+} from '@services/connection/cosmostation'
 import { CONNECTED_WITH, CONNECTION_TYPE, CosmosConnectionProvider } from 'types/Connection'
-import { removeLastConnection, saveLastConnection } from '@utils/connection'
+import { getConnectedWithByType, removeLastConnection, saveLastConnection } from '@utils/connection'
 import { getOfflineSignerCosmostation } from '@services/connection/cosmostation-walletconnect'
 import { fillBoosts } from '@utils/boost'
 
@@ -50,13 +53,15 @@ interface WalletState {
   ibcDenom: string
   isFetchingData: boolean
   isFetchingCosmons: boolean
+  isLoadingIbcClientConnection: boolean
   airdropData?: {
     isEligible: boolean
     address?: string
     max_claimable?: number
     num_already_claimed?: number
   }
-  connectedWith: string | null
+  connectedWith: CONNECTED_WITH | undefined
+  connectionClientType: CONNECTION_TYPE | undefined
   signingClient: SigningCosmWasmClient | null
   stargateSigningClient: SigningStargateClient | null
   ibcSigningClient: SigningStargateClient | null
@@ -88,6 +93,7 @@ interface WalletState {
   resetClaimData: () => void
   searchTx: (txMethodType: IndexedTxMethodType) => Promise<CustomIndexedTx>
   setShowWithdrawDepositModal: (type?: 'withdraw' | 'deposit') => void
+  getIbcSigningClient: () => Promise<SigningStargateClient | null>
 }
 
 const useWalletStore = create<WalletState>(
@@ -104,13 +110,14 @@ const useWalletStore = create<WalletState>(
       isCurrentlyIbcTransferring: false,
       signingClient: null,
       stargateSigningClient: null,
+      isLoadingIbcClientConnection: false,
       ibcSigningClient: null,
       isConnected: false,
       cosmosConnectionProvider: null,
       hasSubscribed: false,
       isEligibleForAirdrop: null,
-      connectedWith: null,
-
+      connectedWith: undefined,
+      connectionClientType: undefined,
       setHasSubscribed: (hasSubscribed) => {
         set({
           hasSubscribed: hasSubscribed,
@@ -122,35 +129,22 @@ const useWalletStore = create<WalletState>(
         })
 
         try {
-          let offlineSigner = null,
-            ibcOfflineSigner = null
+          let offlineSigner = null
 
           if (type) {
             switch (type) {
               case CONNECTION_TYPE.KEPLR:
-                const [keplrOfflineSigner, keplrIbcOfflineSigner] = await connectKeplr()
-
-                offlineSigner = keplrOfflineSigner
-                ibcOfflineSigner = keplrIbcOfflineSigner
+                offlineSigner = await connectKeplr()
                 break
               case CONNECTION_TYPE.COSMOSTATION:
-                const [cosmostationOfflineSigner, cosmostationIbcOfflineSigner, provider] =
-                  await connectWithCosmostation()
-
+                const [cosmostationOfflineSigner, provider] = await connectWithCosmostation()
                 offlineSigner = cosmostationOfflineSigner
-                ibcOfflineSigner = cosmostationIbcOfflineSigner
-
                 set({
                   cosmosConnectionProvider: provider,
                 })
-
                 break
               case CONNECTION_TYPE.COSMOSTATION_WALLET_CONNECT:
-                const [cosmostationWCOfflineSigner, cosmostationWCIbcOfflineSigner] =
-                  await getOfflineSignerCosmostation()
-                offlineSigner = cosmostationWCOfflineSigner
-                ibcOfflineSigner = cosmostationWCIbcOfflineSigner
-
+                offlineSigner = await getOfflineSignerCosmostation()
                 break
               default:
                 break
@@ -163,28 +157,22 @@ const useWalletStore = create<WalletState>(
 
           const signingClient = await makeClient(offlineSigner!)
           const stargateSigningClient = await makeStargateClient(offlineSigner!)
-          const ibcSigningClient = await makeIbcClient(ibcOfflineSigner!)
 
           set({
             signingClient,
             stargateSigningClient,
-            ibcSigningClient,
           })
 
           // get user address
           const accounts = (offlineSigner && (await offlineSigner!.getAccounts())) || [
             { address: '' },
           ]
-          const ibcAccounts = (ibcOfflineSigner && (await ibcOfflineSigner!.getAccounts())) || [
-            { address: '' },
-          ]
 
           set({
             address: accounts[0].address,
-            ibcAddress: ibcAccounts[0].address,
             isConnected: true,
-            connectedWith:
-              type === CONNECTION_TYPE.KEPLR ? CONNECTED_WITH.KEPLR : CONNECTED_WITH.COSMOSTATION,
+            connectionClientType: type ?? undefined,
+            connectedWith: (type && getConnectedWithByType(type)) || undefined,
           })
 
           saveLastConnection({ type })
@@ -196,6 +184,50 @@ const useWalletStore = create<WalletState>(
           })
         }
       },
+
+      getIbcSigningClient: async () => {
+        const { ibcSigningClient, connectionClientType } = get()
+        if (!ibcSigningClient) {
+          try {
+            set({ isLoadingIbcClientConnection: true })
+            let ibcOfflineSigner = null
+            switch (connectionClientType) {
+              case CONNECTION_TYPE.KEPLR:
+                ibcOfflineSigner = await connectIbcClientWithKeplr()
+                break
+              case CONNECTION_TYPE.COSMOSTATION:
+                ibcOfflineSigner = await connectIbcClientWithCosmostation()
+                break
+              case CONNECTION_TYPE.COSMOSTATION_WALLET_CONNECT:
+                // You cannot make more than 1 connection at a time with cosmostation mobile
+                // and we are already connected with the KiChain => return null
+                // /!\ => Deposit & Withdraw not available with this type of connection
+                ibcOfflineSigner = null
+                break
+              default:
+                ibcOfflineSigner = null
+                break
+            }
+            if (ibcOfflineSigner) {
+              const ibcAccounts = (ibcOfflineSigner && (await ibcOfflineSigner!.getAccounts())) || [
+                { address: '' },
+              ]
+              const ibcClient = await makeIbcClient(ibcOfflineSigner)
+              set({
+                ibcSigningClient: ibcClient,
+                isLoadingIbcClientConnection: false,
+                ibcAddress: ibcAccounts[0].address,
+              })
+              return ibcClient
+            }
+          } catch (error) {
+          } finally {
+            set({ isLoadingIbcClientConnection: false })
+          }
+        }
+        return ibcSigningClient
+      },
+
       setCosmons: (cosmons) => {
         set({ cosmons })
       },
@@ -233,9 +265,11 @@ const useWalletStore = create<WalletState>(
           isFetchingData: false,
         })
       },
+
       initIbc: async (amount: Coin, deposit: boolean) => {
         const { stargateSigningClient, ibcSigningClient, fetchWalletData, ibcAddress, address } =
           get()
+
         if (stargateSigningClient && address && ibcSigningClient && ibcAddress) {
           set({
             isCurrentlyIbcTransferring: true,
@@ -291,6 +325,7 @@ const useWalletStore = create<WalletState>(
           // return response
         }
       },
+
       fetchWalletData: async () => {
         set({
           isFetchingData: true,
@@ -308,8 +343,10 @@ const useWalletStore = create<WalletState>(
           isFetchingData: false,
         })
       },
+
       fetchCoin: async () => {
         const { signingClient, ibcSigningClient, address, ibcAddress, coins, ibcCoins } = get()
+
         if (signingClient && address) {
           try {
             const mainCoin = await signingClient.getBalance(address, PUBLIC_STAKING_DENOM)
@@ -345,6 +382,7 @@ const useWalletStore = create<WalletState>(
           }
         }
       },
+
       fetchCosmons: async () => {
         set({
           isFetchingCosmons: true,

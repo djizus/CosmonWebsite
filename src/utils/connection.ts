@@ -1,4 +1,4 @@
-import { CONNECTION_TYPE } from 'types/Connection'
+import { CONNECTED_WITH, CONNECTION_TYPE } from 'types/Connection'
 
 export const LS_KEY_WALLET_STATE = 'wallet'
 export const LS_KEY_LAST_CONNECTION = 'last-connection'
@@ -43,4 +43,16 @@ export const isConnectionTypeHandled = (type: CONNECTION_TYPE) => {
     return true
   }
   return false
+}
+
+export const getConnectedWithByType = (type: CONNECTION_TYPE) => {
+  switch (type) {
+    case CONNECTION_TYPE.COSMOSTATION:
+    case CONNECTION_TYPE.COSMOSTATION_WALLET_CONNECT:
+      return CONNECTED_WITH.COSMOSTATION
+    case CONNECTION_TYPE.KEPLR:
+      return CONNECTED_WITH.KEPLR
+    default:
+      return undefined
+  }
 }

@@ -5,31 +5,38 @@ import { getOfflineSigner } from '@cosmostation/cosmos-client'
 import { useWalletStore } from '@store/walletStore'
 import { CONNECTION_TYPE, CosmosConnectionProvider } from 'types/Connection'
 
-const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
-const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
-
 export const connectWithCosmostation = async (): Promise<
-  [OfflineSigner | null, OfflineSigner | null, CosmosConnectionProvider | null]
+  [OfflineSigner | null, CosmosConnectionProvider | null]
 > => {
   try {
+    const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
     const provider = await cosmos()
     // Add needed chains if not present in cosmostation
     await addChainIfNeeded(provider)
     // Request authorization (display cosmostation popin)
     await provider.requestAccount(PUBLIC_CHAIN_ID!)
-    return [
-      await getOfflineSigner(PUBLIC_CHAIN_ID!),
-      await getOfflineSigner(PUBLIC_IBC_CHAIN_ID!),
-      provider,
-    ]
+    return [await getOfflineSigner(PUBLIC_CHAIN_ID!), provider]
   } catch (e) {
-    if (e instanceof InstallError) {
-      // console.log('not installed')
-    }
     console.error(e)
   }
 
-  return [null, null, null]
+  return [null, null]
+}
+
+export const connectIbcClientWithCosmostation = async (): Promise<OfflineSigner | null> => {
+  try {
+    const PUBLIC_IBC_CHAIN_ID = process.env.NEXT_PUBLIC_IBC_CHAIN_ID
+    const provider = await cosmos()
+    // Add needed chains if not present in cosmostation
+    await addChainIfNeeded(provider)
+    // Request authorization (display cosmostation popin)
+    await provider.requestAccount(PUBLIC_IBC_CHAIN_ID!)
+    return await getOfflineSigner(PUBLIC_IBC_CHAIN_ID!)
+  } catch (e) {
+    console.error(e)
+  }
+
+  return null
 }
 
 export const handleChangeAccount = (provider: CosmosConnectionProvider) => {
