@@ -8,12 +8,12 @@ import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import { DeckBuilderContext } from '../DeckBuilderContext'
 import DeckSlot from './DeckSlot'
 import FlipIcon from '@public/icons/flip.svg'
+import { CosmonTypeWithMalus } from 'types/Malus'
 
 interface DeckSlotsContainerProps {}
 
 const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
-  const { deck, deckName, setDeck, setDeckName, handleCloseModal, deckToEdit } =
-    useContext(DeckBuilderContext)
+  const { deck, setDeck, handleCloseModal, deckToEdit } = useContext(DeckBuilderContext)
 
   const [errors, setErrors] = useState<string[]>([])
   const [revealStats, setRevealStats] = useState(true)
@@ -24,30 +24,34 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
 
   const handleClickSaveDeck = useCallback(async () => {
     try {
-      if (checkDeckErrors(deck, deckName) === false) {
+      if (checkDeckErrors(deck.cosmons, deck.name) === false) {
         return
       }
 
       if (deckToEdit === undefined) {
         await createDeck(
-          deckName,
-          deck.map((d) => d?.id!)
+          deck.name,
+          deck.cosmons.map((d) => d?.id!)
         )
       } else {
         await updateDeck(
           deckToEdit.id,
-          deckName,
-          deck.map((d) => d?.id!)
+          deck.name,
+          deck.cosmons.map((d) => d?.id!)
         )
       }
 
       handleCloseModal()
-      setDeck([])
-      setDeckName('')
+      setDeck({
+        id: -1,
+        name: '',
+        cosmons: [],
+        hasMalus: false,
+      })
     } catch (error) {
       console.error(error)
     }
-  }, [deck, deckName, handleCloseModal, deckToEdit, errors])
+  }, [deck, handleCloseModal, deckToEdit, errors])
 
   const checkDeckErrors = (deck: (CosmonType | undefined)[], deckName: string) => {
     let es = []
@@ -62,9 +66,11 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
   }
 
   const affinities = useMemo(() => {
-    return deck?.filter((d) => d !== undefined).length > 1
-      ? computeDeckAffinities(deck as CosmonType[])
-      : undefined
+    const filtredCosmons = deck.cosmons.filter(
+      (item) => item !== undefined
+    ) as CosmonTypeWithMalus[]
+
+    return filtredCosmons.length > 1 ? computeDeckAffinities(filtredCosmons) : undefined
   }, [deck])
 
   const handleHoverAffinity = useCallback((affinityData: Set<NFTId>, affinity: AFFINITY_TYPES) => {
@@ -107,7 +113,7 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
           ) : null}
         </div>
         <div className="mt-[30px] flex gap-[40px]">
-          {deck.map((deckSlot, i) => (
+          {deck.cosmons.map((deckSlot, i) => (
             <DeckSlot
               key={`deckSlot-${i}`}
               slotIdx={i}
@@ -129,7 +135,7 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
             size="small"
             active={!revealStats}
             onClick={handleClickFlipCards}
-            disabled={deck.every((c) => c === undefined)}
+            disabled={deck.cosmons.every((c) => c === undefined)}
           >
             <FlipIcon />
             <p>Flip</p>

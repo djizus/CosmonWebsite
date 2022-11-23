@@ -7,10 +7,10 @@ import styles from './DeckBuilderNameSetter.module.scss'
 interface DeckBuilderNameSetterProps {}
 
 const DeckBuilderNameSetter: React.FC<DeckBuilderNameSetterProps> = ({}) => {
-  const { deckName, setDeckName } = useContext(DeckBuilderContext)
+  const { deck, setDeck } = useContext(DeckBuilderContext)
 
   const handleChangeName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setDeckName(e.target.value)
+    setDeck({ ...deck, name: e.target.value })
   }, [])
 
   return (
@@ -18,7 +18,7 @@ const DeckBuilderNameSetter: React.FC<DeckBuilderNameSetterProps> = ({}) => {
       <input
         type="text"
         placeholder="Choose a team name"
-        value={deckName}
+        value={deck.name}
         onChange={handleChangeName}
         className={clsx(styles.inputNameSetter)}
       />

@@ -11,6 +11,8 @@ import { useWalletStore } from '@store/walletStore'
 import FlipCard from '@components/FlipCard/FlipCard'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
+import { computeAverageMalusPercent, computeStatsWithMalus, getLowestCosmon } from '@utils/malus'
+import { CosmonTypeWithMalus } from 'types/Malus'
 
 interface DeckSlotProps {
   slotIdx: number
@@ -23,25 +25,41 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight, revealSta
   const { deck, setDeck, deckToEdit } = useContext(DeckBuilderContext)
   const { markCosmonAsTemporaryFree } = useWalletStore()
 
-  const [collectedProps, drop] = useDrop(
+  const [_collectedProps, drop] = useDrop(
     () => ({
       accept: ['COSMON', 'SWAPPING_COSMON'],
       canDrop: (item: CosmonType) => {
-        return deck[slotIdx] === undefined || deck[slotIdx]?.id !== item.id
+        return deck?.cosmons[slotIdx] === undefined || deck?.cosmons[slotIdx]?.id !== item.id
       },
       drop: (item: CosmonType) => {
-        let deckTemp = [...deck]
+        let cosmonsTemp = [...deck.cosmons]
         // If already in deck => swap
-        if (deck.findIndex((d) => d?.id === item.id) !== -1) {
-          deckTemp[deck.findIndex((d) => d?.id === item.id)] = deck[slotIdx]
+        if (deck && deck.cosmons.findIndex((d) => d?.id === item.id) !== -1) {
+          cosmonsTemp[deck.cosmons.findIndex((d) => d?.id === item.id)] = deck.cosmons[slotIdx]
         } else {
           // If we replace a cosmon by a new one, we mark the one we replaced as temporary free
-          if (deckToEdit && deck[slotIdx] !== undefined) {
-            markCosmonAsTemporaryFree(deck[slotIdx]?.id!)
+          if (deckToEdit && deck?.cosmons[slotIdx] !== undefined) {
+            markCosmonAsTemporaryFree(deck.cosmons[slotIdx]?.id!)
           }
         }
-        deckTemp[slotIdx] = item
-        setDeck(deckTemp as CosmonType[])
+
+        const filtredCosmons = deck.cosmons.filter(
+          (item) => item !== undefined
+        ) as CosmonTypeWithMalus[]
+
+        const lowestCosmon = getLowestCosmon([...filtredCosmons, item])
+        const statsWithMalus = computeStatsWithMalus(item, lowestCosmon)
+
+        cosmonsTemp[slotIdx] = {
+          ...item,
+          malusPercent: computeAverageMalusPercent(item.stats, statsWithMalus),
+          statsWithMalus: statsWithMalus,
+        }
+
+        setDeck({
+          ...deck,
+          cosmons: cosmonsTemp,
+        })
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -51,7 +69,7 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight, revealSta
     [slotIdx, deck, data, deckToEdit]
   )
 
-  const [{ isDragging }, drag, dragPreview] = useDrag(
+  const [{ isDragging: _isDragging }, drag, dragPreview] = useDrag(
     () => ({
       type: 'SWAPPING_COSMON',
       item: data,
@@ -63,16 +81,22 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight, revealSta
   )
 
   const firstFreeSlotIdx = useMemo(() => {
-    return deck.findIndex((d) => d === undefined)
+    return deck.cosmons.findIndex((d) => d === undefined)
   }, [deck])
 
   const handleRemoveNftFromDeck = useCallback(() => {
-    let deckTemp = [...deck]
+    let cosmonsTemps = [...deck.cosmons]
+
     if (deckToEdit) {
-      markCosmonAsTemporaryFree(deckTemp[slotIdx]?.id!)
+      markCosmonAsTemporaryFree(cosmonsTemps[slotIdx]?.id!)
     }
-    deckTemp[slotIdx] = undefined
-    setDeck(deckTemp as CosmonType[])
+
+    cosmonsTemps[slotIdx] = undefined
+
+    setDeck({
+      ...deck,
+      cosmons: cosmonsTemps,
+    })
   }, [deck, slotIdx, deckToEdit])
 
   return (

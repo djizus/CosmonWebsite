@@ -8,6 +8,7 @@ import ErrorIcon from '@public/icons/error.svg'
 import SuccessIcon from '@public/icons/success.svg'
 import { getCosmonPersonalityAffinity, getTrait } from '@utils/cosmon'
 import { DeckService } from '@services/deck'
+import { computeMalusForCosmons } from '@utils/malus'
 
 interface DeckState {
   decksList: Deck[]
@@ -52,10 +53,13 @@ export const useDeckStore = create<DeckState>((set, get) => ({
                 return cosmons.find((cosmon: CosmonType) => cosmon.id === nftId)
               })
 
+              const nftsListWithMalus = computeMalusForCosmons(nftsList)
+
               decks.push({
                 id: deckId,
-                cosmons: nftsList,
+                cosmons: nftsListWithMalus,
                 name: deckName,
+                hasMalus: nftsListWithMalus.some((cosmon) => cosmon.malusPercent > 0),
               })
             }
           }

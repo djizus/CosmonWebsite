@@ -1,12 +1,17 @@
-import { CosmonType } from 'types/Cosmon'
+import { CosmonTypeWithMalus } from './Malus'
 
 export type DeckId = number
 export type NFTId = string
 
 export type Deck = {
   id: number
-  cosmons: CosmonType[]
+  cosmons: CosmonTypeWithMalus[]
   name: string
+  hasMalus: boolean
+}
+
+export type DeckWithoutCosmons = Omit<Deck, 'cosmons'> & {
+  cosmons: (CosmonTypeWithMalus | undefined)[]
 }
 
 export enum AFFINITY_TYPES {

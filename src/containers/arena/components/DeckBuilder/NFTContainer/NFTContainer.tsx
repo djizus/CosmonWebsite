@@ -9,6 +9,8 @@ import NFTStats from './NFTStats'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDrag, DragPreviewImage } from 'react-dnd'
 import Tooltip from '@components/Tooltip/Tooltip'
+import { getLowestCosmon, computeStatsWithMalus, computeAverageMalusPercent } from '@utils/malus'
+import { CosmonTypeWithMalus } from 'types/Malus'
 
 interface NFTContainerProps {
   nft: CosmonType
@@ -33,7 +35,7 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
   )
 
   const firstFreeSlotIdx = useMemo(() => {
-    return deck.findIndex((d) => d === undefined)
+    return deck.cosmons.findIndex((d) => d === undefined)
   }, [deck])
 
   // Add an NFT to a deck on double click
@@ -41,11 +43,23 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
     if (
       firstFreeSlotIdx !== -1 &&
       nft.isInDeck === false &&
-      deck.findIndex((d) => d?.id === nft.id) === -1
+      deck.cosmons.findIndex((d) => d?.id === nft.id) === -1
     ) {
-      let deckTemp = [...deck]
-      deckTemp[firstFreeSlotIdx] = nft
-      setDeck(deckTemp as CosmonType[])
+      let cosmonsTemp = [...deck.cosmons]
+
+      const filtredCosmons = deck.cosmons.filter(
+        (item) => item !== undefined
+      ) as CosmonTypeWithMalus[]
+
+      const lowestCosmon = getLowestCosmon([...filtredCosmons, nft])
+      const statsWithMalus = computeStatsWithMalus(nft, lowestCosmon)
+
+      cosmonsTemp[firstFreeSlotIdx] = {
+        ...nft,
+        malusPercent: computeAverageMalusPercent(nft.stats, statsWithMalus),
+        statsWithMalus: statsWithMalus,
+      }
+      setDeck({ ...deck, cosmons: cosmonsTemp })
     }
   }, [nft, firstFreeSlotIdx])
 
@@ -78,7 +92,9 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
       <div
         className={styles.container}
         style={{
-          ...(deck.includes(nft) || (nft.isInDeck === true && !nft.temporaryFree)
+          //@TODO: check how to handle this shit
+          ...(deck.cosmons.find((cosmon) => cosmon?.id === nft.id) ||
+          (nft.isInDeck === true && !nft.temporaryFree)
             ? { opacity: 0.7 }
             : null),
           ...(nft.isInDeck === true && !nft.temporaryFree
