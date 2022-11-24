@@ -103,7 +103,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
             </p>
           </div>
           <div className="flex items-center">
-            <DeckAffinities deckAffinities={affinities} variant="short" />
+            <DeckAffinities cosmons={deck.cosmons} deckAffinities={affinities} variant="short" />
             <div className="hidden lg:flex">
               <DeckDropdownMenu onClickDeleteDeck={onClickDeleteDeck} />
             </div>

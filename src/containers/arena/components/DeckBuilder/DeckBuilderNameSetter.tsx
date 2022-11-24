@@ -9,9 +9,12 @@ interface DeckBuilderNameSetterProps {}
 const DeckBuilderNameSetter: React.FC<DeckBuilderNameSetterProps> = ({}) => {
   const { deck, setDeck } = useContext(DeckBuilderContext)
 
-  const handleChangeName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setDeck({ ...deck, name: e.target.value })
-  }, [])
+  const handleChangeName = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setDeck({ ...deck, name: e.target.value })
+    },
+    [deck]
+  )
 
   return (
     <div className="flex flex-1">

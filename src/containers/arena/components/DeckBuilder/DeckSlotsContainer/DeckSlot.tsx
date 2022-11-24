@@ -6,12 +6,13 @@ import clsx from 'clsx'
 import styles from './DeckSlot.module.scss'
 import { AnimatePresence, motion } from 'framer-motion'
 import TopLeftCorner from '@public/deck/top-left-corner.svg'
+import TopLeftCornerMalus from '@public/deck/top-left-corner-malus.svg'
 import Plus from '@public/icons/plus.svg'
 import { useWalletStore } from '@store/walletStore'
 import FlipCard from '@components/FlipCard/FlipCard'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
-import { computeAverageMalusPercent, computeStatsWithMalus, getLowestCosmon } from '@utils/malus'
+import { computeMalusForDeck, deckHasMalus } from '@utils/malus'
 import { CosmonTypeWithMalus } from 'types/Malus'
 
 interface DeckSlotProps {
@@ -19,9 +20,16 @@ interface DeckSlotProps {
   data: CosmonType | undefined
   highlight?: boolean
   revealStats?: boolean
+  isAffinityHighlightMalus?: boolean
 }
 
-const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight, revealStats = false }) => {
+const DeckSlot: React.FC<DeckSlotProps> = ({
+  data,
+  slotIdx,
+  highlight,
+  revealStats = false,
+  isAffinityHighlightMalus,
+}) => {
   const { deck, setDeck, deckToEdit } = useContext(DeckBuilderContext)
   const { markCosmonAsTemporaryFree } = useWalletStore()
 
@@ -43,22 +51,16 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight, revealSta
           }
         }
 
-        const filtredCosmons = deck.cosmons.filter(
+        const filtredCosmons = cosmonsTemp.filter(
           (item) => item !== undefined
         ) as CosmonTypeWithMalus[]
 
-        const lowestCosmon = getLowestCosmon([...filtredCosmons, item])
-        const statsWithMalus = computeStatsWithMalus(item, lowestCosmon)
-
-        cosmonsTemp[slotIdx] = {
-          ...item,
-          malusPercent: computeAverageMalusPercent(item.stats, statsWithMalus),
-          statsWithMalus: statsWithMalus,
-        }
+        const computedCosmons = computeMalusForDeck([...filtredCosmons, item])
 
         setDeck({
           ...deck,
-          cosmons: cosmonsTemp,
+          hasMalus: deckHasMalus(computedCosmons),
+          cosmons: computedCosmons,
         })
       },
       collect: (monitor) => ({
@@ -85,17 +87,22 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight, revealSta
   }, [deck])
 
   const handleRemoveNftFromDeck = useCallback(() => {
-    let cosmonsTemps = [...deck.cosmons]
+    let cosmonsTemp = [...deck.cosmons]
 
     if (deckToEdit) {
-      markCosmonAsTemporaryFree(cosmonsTemps[slotIdx]?.id!)
+      markCosmonAsTemporaryFree(cosmonsTemp[slotIdx]?.id!)
     }
 
-    cosmonsTemps[slotIdx] = undefined
+    cosmonsTemp[slotIdx] = undefined
+
+    const filtredCosmons = cosmonsTemp.filter((item) => item !== undefined) as CosmonTypeWithMalus[]
+
+    const computedCosmons = computeMalusForDeck([...filtredCosmons])
 
     setDeck({
       ...deck,
-      cosmons: cosmonsTemps,
+      hasMalus: deckHasMalus(computedCosmons),
+      cosmons: computedCosmons,
     })
   }, [deck, slotIdx, deckToEdit])
 
@@ -105,14 +112,29 @@ const DeckSlot: React.FC<DeckSlotProps> = ({ data, slotIdx, highlight, revealSta
         {firstFreeSlotIdx === slotIdx || highlight ? (
           <div className={styles.deckSlotCorners}>
             <div className="flex h-full w-full flex-col justify-between">
-              <div className="flex flex-row justify-between">
-                <TopLeftCorner />
-                <TopLeftCorner style={{ transform: 'rotate(90deg)' }} />
-              </div>
-              <div className="flex flex-row justify-between">
-                <TopLeftCorner style={{ transform: 'rotate(270deg)' }} />
-                <TopLeftCorner style={{ transform: 'rotate(180deg)' }} />
-              </div>
+              {isAffinityHighlightMalus && data ? (
+                <>
+                  <div className="flex flex-row justify-between">
+                    <TopLeftCornerMalus />
+                    <TopLeftCornerMalus style={{ transform: 'rotate(90deg)' }} />
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <TopLeftCornerMalus style={{ transform: 'rotate(270deg)' }} />
+                    <TopLeftCornerMalus style={{ transform: 'rotate(180deg)' }} />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex flex-row justify-between">
+                    <TopLeftCorner />
+                    <TopLeftCorner style={{ transform: 'rotate(90deg)' }} />
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <TopLeftCorner style={{ transform: 'rotate(270deg)' }} />
+                    <TopLeftCorner style={{ transform: 'rotate(180deg)' }} />
+                  </div>
+                </>
+              )}
             </div>
           </div>
         ) : null}

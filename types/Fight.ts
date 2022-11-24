@@ -1,11 +1,11 @@
 import { ArenaType } from './Arena'
-import { CosmonType } from './Cosmon'
+import { CosmonTypeWithMalus } from './Malus'
 
 export type FightPlayerType = {
   identity: string
   deckName?: string
-  cosmons: CosmonType[]
-  cosmonsWithoutBonus: CosmonType[]
+  cosmons: CosmonTypeWithMalus[]
+  cosmonsWithoutBonus: CosmonTypeWithMalus[]
   deckScore: number
 }
 

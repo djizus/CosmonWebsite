@@ -9,7 +9,7 @@ import NFTStats from './NFTStats'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDrag, DragPreviewImage } from 'react-dnd'
 import Tooltip from '@components/Tooltip/Tooltip'
-import { getLowestCosmon, computeStatsWithMalus, computeAverageMalusPercent } from '@utils/malus'
+import { computeMalusForDeck, deckHasMalus } from '@utils/malus'
 import { CosmonTypeWithMalus } from 'types/Malus'
 
 interface NFTContainerProps {
@@ -20,7 +20,7 @@ interface NFTContainerProps {
 const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
   const { listFilter, deck, setDeck } = useContext(DeckBuilderContext)
 
-  const [{ isDragging }, drag, dragPreview] = useDrag(
+  const [{ isDragging: _isDragging }, drag, dragPreview] = useDrag(
     () => ({
       type: 'COSMON',
       item: nft,
@@ -47,21 +47,25 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
     ) {
       let cosmonsTemp = [...deck.cosmons]
 
-      const filtredCosmons = deck.cosmons.filter(
+      cosmonsTemp[firstFreeSlotIdx] = {
+        ...nft,
+        malusPercent: 0,
+        statsWithMalus: [...nft.stats],
+      }
+
+      const filtredCosmons = cosmonsTemp.filter(
         (item) => item !== undefined
       ) as CosmonTypeWithMalus[]
 
-      const lowestCosmon = getLowestCosmon([...filtredCosmons, nft])
-      const statsWithMalus = computeStatsWithMalus(nft, lowestCosmon)
+      const computedCosmons = computeMalusForDeck([...filtredCosmons])
 
-      cosmonsTemp[firstFreeSlotIdx] = {
-        ...nft,
-        malusPercent: computeAverageMalusPercent(nft.stats, statsWithMalus),
-        statsWithMalus: statsWithMalus,
-      }
-      setDeck({ ...deck, cosmons: cosmonsTemp })
+      setDeck({
+        ...deck,
+        hasMalus: deckHasMalus(computedCosmons),
+        cosmons: computedCosmons,
+      })
     }
-  }, [nft, firstFreeSlotIdx])
+  }, [deck, nft, firstFreeSlotIdx])
 
   return (
     <motion.div
@@ -92,7 +96,6 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
       <div
         className={styles.container}
         style={{
-          //@TODO: check how to handle this shit
           ...(deck.cosmons.find((cosmon) => cosmon?.id === nft.id) ||
           (nft.isInDeck === true && !nft.temporaryFree)
             ? { opacity: 0.7 }

@@ -8,7 +8,8 @@ import ErrorIcon from '@public/icons/error.svg'
 import SuccessIcon from '@public/icons/success.svg'
 import { getCosmonPersonalityAffinity, getTrait } from '@utils/cosmon'
 import { DeckService } from '@services/deck'
-import { computeMalusForCosmons } from '@utils/malus'
+import { computeMalusForCosmons, getLowestCosmon } from '@utils/malus'
+import { CosmonTypeWithMalus } from 'types/Malus'
 
 interface DeckState {
   decksList: Deck[]
@@ -22,7 +23,7 @@ interface DeckState {
   updatingDeck: boolean
   removeDeck: (deckId: DeckId) => any
   isRemovingDeck: boolean
-  computeDeckAffinities: (nfts: CosmonType[]) => DeckAffinitiesType
+  computeDeckAffinities: (nfts: CosmonTypeWithMalus[]) => DeckAffinitiesType
   refreshCosmonsAndDecksList: () => Promise<void>
 }
 
@@ -164,7 +165,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
       console.error(error)
     }
   },
-  computeDeckAffinities: (nfts: CosmonType[]) => {
+  computeDeckAffinities: (nfts: CosmonTypeWithMalus[]) => {
     const cosmons = nfts?.filter((c) => c !== undefined)
 
     // Geographical
@@ -209,10 +210,21 @@ export const useDeckStore = create<DeckState>((set, get) => ({
       }
     }
 
+    //Malus
+    let malusAffinity: Set<NFTId> = new Set()
+    for (let i = 0; i < cosmons.length; i++) {
+      const cosmon = cosmons[i]
+
+      if (cosmon.malusPercent > 0) {
+        malusAffinity.add(cosmon.id)
+      }
+    }
+
     return {
       [AFFINITY_TYPES.GEOGRAPHICAL]: geoAffinity,
       [AFFINITY_TYPES.TIME]: timeAffinity,
       [AFFINITY_TYPES.PERSONALITY]: personalityAffinity,
+      [AFFINITY_TYPES.MALUS]: malusAffinity,
     }
   },
   removeDeck: async (deckId: DeckId) => {

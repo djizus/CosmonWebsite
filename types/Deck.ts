@@ -18,10 +18,12 @@ export enum AFFINITY_TYPES {
   PERSONALITY = 'Personality',
   GEOGRAPHICAL = 'Geographical',
   TIME = 'Time',
+  MALUS = 'Malus',
 }
 
 export type DeckAffinitiesType = {
   [AFFINITY_TYPES.GEOGRAPHICAL]?: Set<NFTId>
   [AFFINITY_TYPES.PERSONALITY]?: Set<NFTId[]>
   [AFFINITY_TYPES.TIME]?: Set<NFTId>
+  [AFFINITY_TYPES.MALUS]?: Set<NFTId>
 }
