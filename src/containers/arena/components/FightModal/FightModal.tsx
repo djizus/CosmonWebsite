@@ -275,8 +275,6 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
 
   const computeIsDeckSlotHighlighted = useCallback(
     (cosmon: CosmonTypeWithMalus) => {
-      console.log(cosmon)
-
       if (!highlightNftsWithAffinity) return
       const hasChildrenArray = Array.isArray(highlightNftsWithAffinity[0])
       if (!hasChildrenArray) {
