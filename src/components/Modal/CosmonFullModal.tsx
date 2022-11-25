@@ -1,4 +1,4 @@
-import { CosmonStatType, CosmonType, CosmonTypeWithBoosts } from '../../../types/Cosmon'
+import { CosmonType } from '../../../types/Cosmon'
 import { getCosmonPersonalityAffinity, getCosmonStat, getTrait } from '../../utils/cosmon'
 import Close from '/public/icons/close.svg'
 import Hover from 'react-3d-hover'
@@ -7,7 +7,7 @@ import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import { CosmonStatProgressionLabel } from '@containers/arena/components/FightReportModal/CosmonsProgression'
 
 type CosmonFullModalProps = {
-  cosmon: CosmonTypeWithBoosts
+  cosmon: CosmonType
   onCloseModal: () => void
 }
 
@@ -20,32 +20,6 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
       document.getElementsByTagName('body')[0].className = ''
     }
   }, [])
-
-  const statBeforeBoosts = useMemo(() => {
-    return cosmon.stats!.reduce<CosmonStatType[]>((acc, stat) => {
-      const isStatBoosted = cosmon.boosts.filter((boost) => boost?.boost_name === stat.key)
-
-      if (isStatBoosted.length > 0) {
-        const computedValue = isStatBoosted.reduce<number>((result, curr) => {
-          if (curr) {
-            return Math.floor(result - (curr.inc_value / 100) * result)
-          }
-
-          return result
-        }, parseInt(stat.value))
-
-        return [
-          ...acc,
-          {
-            key: stat.key,
-            value: Math.round(computedValue).toString(),
-          },
-        ]
-      }
-
-      return [...acc, stat]
-    }, [])
-  }, [cosmon.stats, cosmon.boosts])
 
   return (
     <div className="fixed top-0 bottom-0 right-0  h-full w-full overflow-auto bg-cosmon-main-secondary pt-[60px] text-white">
@@ -120,27 +94,33 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               <div className="mt-3 flex justify-between">
                 <div className="text-[#D8D1E7]">Level</div>
                 <div className="capitalize">
-                  {statBeforeBoosts ? getCosmonStat(statBeforeBoosts, 'Level')?.value : '-'}
+                  {cosmon.statsWithoutBoosts
+                    ? getCosmonStat(cosmon.statsWithoutBoosts, 'Level')?.value
+                    : '-'}
                 </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Experience Point</div>
-                <div>{statBeforeBoosts ? getCosmonStat(statBeforeBoosts, 'Xp')?.value : '-'}</div>
+                <div>
+                  {cosmon.statsWithoutBoosts
+                    ? getCosmonStat(cosmon.statsWithoutBoosts, 'Xp')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Health Point</div>
                 <div>
-                  {statBeforeBoosts ? (
+                  {cosmon.statsWithoutBoosts ? (
                     <>
-                      {getCosmonStat(statBeforeBoosts, 'Hp')?.value}
+                      {getCosmonStat(cosmon.statsWithoutBoosts, 'Hp')?.value}
                       {parseInt(getCosmonStat(cosmon.stats!, 'Hp')?.value!) -
-                        parseInt(getCosmonStat(statBeforeBoosts, 'Hp')?.value!) >
+                        parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Hp')?.value!) >
                       0 ? (
                         <CosmonStatProgressionLabel
                           className="ml-[4px]"
                           label={`+${
                             parseInt(getCosmonStat(cosmon.stats!, 'Hp')?.value!) -
-                            parseInt(getCosmonStat(statBeforeBoosts, 'Hp')?.value!)
+                            parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Hp')?.value!)
                           }`}
                         />
                       ) : null}
@@ -152,22 +132,26 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Fight Point</div>
-                <div>{statBeforeBoosts ? getCosmonStat(statBeforeBoosts, 'Fp')?.value : '-'}</div>
+                <div>
+                  {cosmon.statsWithoutBoosts
+                    ? getCosmonStat(cosmon.statsWithoutBoosts, 'Fp')?.value
+                    : '-'}
+                </div>
               </div>
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Action Point</div>
                 <div>
-                  {statBeforeBoosts ? (
+                  {cosmon.statsWithoutBoosts ? (
                     <>
-                      {getCosmonStat(statBeforeBoosts, 'Ap')?.value}
+                      {getCosmonStat(cosmon.statsWithoutBoosts, 'Ap')?.value}
                       {parseInt(getCosmonStat(cosmon.stats!, 'Ap')?.value!) -
-                        parseInt(getCosmonStat(statBeforeBoosts, 'Ap')?.value!) >
+                        parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Ap')?.value!) >
                       0 ? (
                         <CosmonStatProgressionLabel
                           className="ml-[4px]"
                           label={`+${
                             parseInt(getCosmonStat(cosmon.stats!, 'Ap')?.value!) -
-                            parseInt(getCosmonStat(statBeforeBoosts, 'Ap')?.value!)
+                            parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Ap')?.value!)
                           }`}
                         />
                       ) : null}
@@ -185,17 +169,17 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               <div className="mt-3 flex justify-between">
                 <div className="text-[#D8D1E7]">Attack (ATQ)</div>
                 <div>
-                  {statBeforeBoosts ? (
+                  {cosmon.statsWithoutBoosts ? (
                     <>
-                      {getCosmonStat(statBeforeBoosts, 'Atq')?.value}
+                      {getCosmonStat(cosmon.statsWithoutBoosts, 'Atq')?.value}
                       {parseInt(getCosmonStat(cosmon.stats!, 'Atq')?.value!) -
-                        parseInt(getCosmonStat(statBeforeBoosts, 'Atq')?.value!) >
+                        parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Atq')?.value!) >
                       0 ? (
                         <CosmonStatProgressionLabel
                           className="ml-[4px]"
                           label={`+${
                             parseInt(getCosmonStat(cosmon.stats!, 'Atq')?.value!) -
-                            parseInt(getCosmonStat(statBeforeBoosts, 'Atq')?.value!)
+                            parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Atq')?.value!)
                           }`}
                         />
                       ) : null}
@@ -208,17 +192,17 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Defense (DEF)</div>
                 <div>
-                  {statBeforeBoosts ? (
+                  {cosmon.statsWithoutBoosts ? (
                     <>
-                      {getCosmonStat(statBeforeBoosts, 'Def')?.value}
+                      {getCosmonStat(cosmon.statsWithoutBoosts, 'Def')?.value}
                       {parseInt(getCosmonStat(cosmon.stats!, 'Def')?.value!) -
-                        parseInt(getCosmonStat(statBeforeBoosts, 'Def')?.value!) >
+                        parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Def')?.value!) >
                       0 ? (
                         <CosmonStatProgressionLabel
                           className="ml-[4px]"
                           label={`+${
                             parseInt(getCosmonStat(cosmon.stats!, 'Def')?.value!) -
-                            parseInt(getCosmonStat(statBeforeBoosts, 'Def')?.value!)
+                            parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Def')?.value!)
                           }`}
                         />
                       ) : null}
@@ -231,17 +215,17 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Intelligence (INT)</div>
                 <div>
-                  {statBeforeBoosts ? (
+                  {cosmon.statsWithoutBoosts ? (
                     <>
-                      {getCosmonStat(statBeforeBoosts, 'Int')?.value}
+                      {getCosmonStat(cosmon.statsWithoutBoosts, 'Int')?.value}
                       {parseInt(getCosmonStat(cosmon.stats!, 'Int')?.value!) -
-                        parseInt(getCosmonStat(statBeforeBoosts, 'Int')?.value!) >
+                        parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Int')?.value!) >
                       0 ? (
                         <CosmonStatProgressionLabel
                           className="ml-[4px]"
                           label={`+${
                             parseInt(getCosmonStat(cosmon.stats!, 'Int')?.value!) -
-                            parseInt(getCosmonStat(statBeforeBoosts, 'Int')?.value!)
+                            parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Int')?.value!)
                           }`}
                         />
                       ) : null}
@@ -254,17 +238,17 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Speed (SPE)</div>
                 <div>
-                  {statBeforeBoosts ? (
+                  {cosmon.statsWithoutBoosts ? (
                     <>
-                      {getCosmonStat(statBeforeBoosts, 'Spe')?.value}
+                      {getCosmonStat(cosmon.statsWithoutBoosts, 'Spe')?.value}
                       {parseInt(getCosmonStat(cosmon.stats!, 'Spe')?.value!) -
-                        parseInt(getCosmonStat(statBeforeBoosts, 'Spe')?.value!) >
+                        parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Spe')?.value!) >
                       0 ? (
                         <CosmonStatProgressionLabel
                           className="ml-[4px]"
                           label={`+${
                             parseInt(getCosmonStat(cosmon.stats!, 'Spe')?.value!) -
-                            parseInt(getCosmonStat(statBeforeBoosts, 'Spe')?.value!)
+                            parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Spe')?.value!)
                           }`}
                         />
                       ) : null}
@@ -277,17 +261,17 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               <div className="flex justify-between">
                 <div className="text-[#D8D1E7]">Chance (LUK)</div>
                 <div>
-                  {statBeforeBoosts ? (
+                  {cosmon.statsWithoutBoosts ? (
                     <>
-                      {getCosmonStat(statBeforeBoosts, 'Luk')?.value}
+                      {getCosmonStat(cosmon.statsWithoutBoosts, 'Luk')?.value}
                       {parseInt(getCosmonStat(cosmon.stats!, 'Luk')?.value!) -
-                        parseInt(getCosmonStat(statBeforeBoosts, 'Luk')?.value!) >
+                        parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Luk')?.value!) >
                       0 ? (
                         <CosmonStatProgressionLabel
                           className="ml-[4px]"
                           label={`+${
                             parseInt(getCosmonStat(cosmon.stats!, 'Luk')?.value!) -
-                            parseInt(getCosmonStat(statBeforeBoosts, 'Luk')?.value!)
+                            parseInt(getCosmonStat(cosmon.statsWithoutBoosts, 'Luk')?.value!)
                           }`}
                         />
                       ) : null}

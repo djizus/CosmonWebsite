@@ -1,16 +1,13 @@
 import { CosmonType, Deck } from 'types'
-import { Boost, BoostForCosmon } from 'types/Boost'
-import { CosmonTypeWithDecksAndBoosts } from './BuyBoostModalType'
+import { CosmonTypeWithDecks } from './BuyBoostModalType'
 
-const addBoostAndDeckToCosmon = ({
+const addDeckToCosmon = ({
   cosmons,
   decksList,
-  boostsForCosmons,
 }: {
   cosmons: CosmonType[]
   decksList: Deck[]
-  boostsForCosmons: BoostForCosmon[]
-}): CosmonTypeWithDecksAndBoosts[] => {
+}): CosmonTypeWithDecks[] => {
   return cosmons.map((c) => {
     if (c.isInDeck) {
       const cosmonDeckNameAndId = decksList.reduce(
@@ -38,24 +35,10 @@ const addBoostAndDeckToCosmon = ({
         }
       )
 
-      const cosmonWithBoost = boostsForCosmons.find(
-        (boostsForCosmon) => boostsForCosmon.id === c.id
-      )?.boosts
-
-      if (cosmonWithBoost) {
-        return {
-          ...c,
-          deckId: cosmonDeckNameAndId.deckId,
-          deckName: cosmonDeckNameAndId.deckName,
-          boosts: cosmonWithBoost as [Boost | null, Boost | null, Boost | null],
-        }
-      }
-
       return {
         ...c,
         deckId: cosmonDeckNameAndId.deckId,
         deckName: cosmonDeckNameAndId.deckName,
-        boosts: [null, null, null],
       }
     }
 
@@ -63,9 +46,8 @@ const addBoostAndDeckToCosmon = ({
       ...c,
       deckId: -1,
       deckName: '',
-      boosts: [null, null, null],
     }
   })
 }
 
-export { addBoostAndDeckToCosmon }
+export { addDeckToCosmon }

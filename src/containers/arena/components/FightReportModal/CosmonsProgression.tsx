@@ -293,7 +293,7 @@ interface CosmonStatProgressionProps {
   statKey: CosmonStatKeyType
   stats: CosmonStatType[]
   statsEvolved: CosmonStatType[]
-  statToDisplay?: CosmonStatType[]
+  statsToDisplay?: CosmonStatType[]
   className?: string
 }
 
@@ -301,7 +301,7 @@ export const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
   statKey,
   stats,
   statsEvolved,
-  statToDisplay,
+  statsToDisplay,
   className,
 }) => {
   const { width } = useWindowSize()
@@ -328,16 +328,16 @@ export const CosmonStatProgression: React.FC<CosmonStatProgressionProps> = ({
     <div className={clsx('flex flex-1 justify-between', className)}>
       <p className="text-sm font-normal">{statLabel}</p>
       <p className="text-sm">
-        {statToDisplay ? (
+        {statsToDisplay ? (
           <>
-            {getCosmonStat(statToDisplay, statKey)?.value}
+            {getCosmonStat(statsToDisplay, statKey)?.value}
             {parseInt(getCosmonStat(statsEvolved, statKey)?.value!) >
-            parseInt(getCosmonStat(statToDisplay, statKey)?.value!) ? (
+            parseInt(getCosmonStat(statsToDisplay, statKey)?.value!) ? (
               <CosmonStatProgressionLabel
                 className="ml-[4px]"
                 label={`+${
                   parseInt(getCosmonStat(statsEvolved, statKey)?.value!) -
-                  parseInt(getCosmonStat(statToDisplay, statKey)?.value!)
+                  parseInt(getCosmonStat(statsToDisplay, statKey)?.value!)
                 }`}
               />
             ) : null}

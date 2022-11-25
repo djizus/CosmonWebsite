@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import React, { useCallback, useState, useEffect } from 'react'
-import { CosmonType, Deck } from 'types'
+import { CosmonType, Deck, DeckWithoutCosmons } from 'types'
 import DeckBuilderContainer from './DeckBuilderContainer'
 import { DeckBuilderContext, NftsListFilter } from './DeckBuilderContext'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -37,10 +37,14 @@ interface DeckBuilderModalProps {
 const DeckBuilderModal: React.FC<DeckBuilderModalProps> = ({ deckToEdit, handleCloseModal }) => {
   const { cosmons, resetAllCosmonsTemporaryFree } = useWalletStore((state) => state)
   const [affinities, setAffinities] = useState<any>([])
-  const [deckName, setDeckName] = useState(deckToEdit?.name || '')
   const [nfts, setNfts] = useState<CosmonType[]>(cosmons)
-  const [deck, setDeck] = useState<CosmonType[] | undefined[]>(
-    deckToEdit?.cosmons || [undefined, undefined, undefined]
+  const [deck, setDeck] = useState<Deck | DeckWithoutCosmons>(
+    deckToEdit || {
+      id: -1,
+      cosmons: [undefined, undefined, undefined],
+      name: '',
+      hasMalus: false,
+    }
   )
   const [listFilter, setListFilter] = useState<NftsListFilter>({
     search: '',
@@ -79,8 +83,12 @@ const DeckBuilderModal: React.FC<DeckBuilderModalProps> = ({ deckToEdit, handleC
   const closeModal = () => {
     handleCloseModal()
     setAffinities([])
-    setDeckName('')
-    setDeck([undefined, undefined, undefined])
+    setDeck({
+      id: -1,
+      cosmons: [],
+      name: '',
+      hasMalus: false,
+    })
     if (deckToEdit) {
       resetAllCosmonsTemporaryFree()
     }
@@ -91,8 +99,6 @@ const DeckBuilderModal: React.FC<DeckBuilderModalProps> = ({ deckToEdit, handleC
       value={{
         affinities,
         setAffinities,
-        deckName,
-        setDeckName,
         nfts,
         setNfts,
         listFilter,

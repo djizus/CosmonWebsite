@@ -52,6 +52,9 @@ export const executeBuyCosmon = (
         const cosmonBought: CosmonType = {
           id: tokenId,
           data: await queryCosmonInfo(signingClient, tokenId),
+          stats: [],
+          statsWithoutBoosts: [],
+          boosts: [null, null, null],
         }
         return resolve({
           message: 'Bought successfully',
@@ -274,6 +277,9 @@ export const executeClaimAirdrop = async (
           const cosmonAirdropped: CosmonType = {
             id: tokenId,
             data: await queryCosmonInfo(signingClient, tokenId),
+            stats: [],
+            statsWithoutBoosts: [],
+            boosts: [null, null, null],
           }
 
           return resolve({

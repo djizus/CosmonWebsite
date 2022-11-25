@@ -52,9 +52,7 @@ export type CosmonType = {
     }
     token_uri: null
   }
-  stats?: CosmonStatType[]
-}
-
-export type CosmonTypeWithBoosts = CosmonType & {
+  stats: CosmonStatType[]
+  statsWithoutBoosts: CosmonStatType[]
   boosts: [Boost | null, Boost | null, Boost | null]
 }

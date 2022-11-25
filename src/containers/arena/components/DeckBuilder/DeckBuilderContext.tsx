@@ -1,4 +1,4 @@
-import { Deck, CosmonType, Scarcity } from 'types'
+import { Deck, CosmonType, Scarcity, DeckWithoutCosmons } from 'types'
 import React from 'react'
 
 export type NftsListFilter = {
@@ -9,16 +9,14 @@ export type NftsListFilter = {
 }
 
 export const DeckBuilderContext = React.createContext({
-  deckName: '',
-  setDeckName: (name: string) => {},
   nfts: [] as CosmonType[],
   setNfts: (nfts: CosmonType[]) => {},
   affinities: [],
   setAffinities: (affinities: any[]) => {},
   listFilter: {} as NftsListFilter,
   setListFilter: (listFilter: NftsListFilter) => {},
-  deck: [] as (CosmonType | undefined)[],
-  setDeck: (nfts: CosmonType[]) => {},
+  deck: {} as Deck | DeckWithoutCosmons,
+  setDeck: (deck: Deck | DeckWithoutCosmons) => {},
   deckToEdit: {} as Deck | undefined,
   handleCloseModal: () => {},
 })

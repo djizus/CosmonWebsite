@@ -3,7 +3,7 @@ import Button from '@components/Button/Button'
 import * as style from './LeaderPicker.module.scss'
 import { Boost } from 'types/Boost'
 import Flash from '@public/cosmons/stats/flash.svg'
-import { CosmonTypeWithDecksAndBoosts, CurrentView } from '../BuyBoostModalType'
+import { CosmonTypeWithDecks, CurrentView } from '../BuyBoostModalType'
 import IconWithLabel from '../IconWithLabel/IconWithLabel'
 import { getIconForAttr, getPotionNameFromBoostedStat } from '@utils/boost'
 import InputText from '@components/Input/InputText'
@@ -16,10 +16,10 @@ import { useGameStore } from '@store/gameStore'
 
 interface LeaderPickerProps {
   handleCloseModal: () => void
-  selectedLeaders: CosmonTypeWithDecksAndBoosts[]
-  cosmonsWithDeckInfo: CosmonTypeWithDecksAndBoosts[]
+  selectedLeaders: CosmonTypeWithDecks[]
+  cosmonsWithDeckInfo: CosmonTypeWithDecks[]
   selectedBoost: Boost
-  handleSelectLeader: (leader: CosmonTypeWithDecksAndBoosts | null) => void
+  handleSelectLeader: (leader: CosmonTypeWithDecks | null) => void
   setCurrentView: Dispatch<SetStateAction<CurrentView>>
 }
 
@@ -34,7 +34,7 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
   const [search, setSearch] = useState<string>('')
   const [loading, setLoading] = useState(false)
 
-  const { fetchCosmons } = useWalletStore((state) => state)
+  const { fetchCosmons } = useWalletStore()
   const { buyBoost } = useGameStore()
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const LeaderPicker: React.FC<LeaderPickerProps> = ({
     }
   }
 
-  const filtredCosmons: CosmonTypeWithDecksAndBoosts[] = useMemo(() => {
+  const filtredCosmons: CosmonTypeWithDecks[] = useMemo(() => {
     return cosmonsWithDeckInfo.filter((cosmon) => {
       const has3Boosts = !cosmon.boosts.some((boost) => boost === null)
       const filterByCosmonName = new RegExp(search, 'gi').test(cosmon.data.extension.name)

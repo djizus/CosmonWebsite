@@ -22,6 +22,7 @@ import ButtonPlay from '@components/Button/ButtonPlay'
 import FightDeckAffinities from './FightDeckAffinities'
 import Badge from '@components/Badge/Badge'
 import { WINNER_IS_DRAW } from '@store/arenaStore'
+import { CosmonTypeWithMalus } from 'types/Malus'
 
 interface FightModalProps {
   onCloseModal: () => void
@@ -54,6 +55,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
   const [currentFightEvent, setCurrentFightEvent] = useState<FightEventType>()
   const [fightSpeed, setFightSpeed] = useState(FIGHT_PLAY_SPEED)
   const [highlightNftsWithAffinity, setHighlightNftsWithAffinity] = useState<string[] | undefined>()
+  const [malusAffinityHover, setMalusAffinityHover] = useState<boolean>(false)
 
   useEffect(() => {
     if (battle) {
@@ -258,15 +260,21 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
 
   const handleHoverAffinity = useCallback((affinityData: Set<NFTId>, affinity: AFFINITY_TYPES) => {
     const affinityDatas = Array.from(affinityData)
-    setHighlightNftsWithAffinity(affinityDatas)
+    if (affinity === AFFINITY_TYPES.MALUS) {
+      setMalusAffinityHover(true)
+      setHighlightNftsWithAffinity(affinityDatas)
+    } else {
+      setHighlightNftsWithAffinity(affinityDatas)
+    }
   }, [])
 
   const handleHoverStopAffinity = useCallback(() => {
+    setMalusAffinityHover(false)
     setHighlightNftsWithAffinity(undefined)
   }, [])
 
   const computeIsDeckSlotHighlighted = useCallback(
-    (cosmon: CosmonType) => {
+    (cosmon: CosmonTypeWithMalus) => {
       if (!highlightNftsWithAffinity) return
       const hasChildrenArray = Array.isArray(highlightNftsWithAffinity[0])
       if (!hasChildrenArray) {
@@ -365,6 +373,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
                   currentFightEvent={currentFightEvent}
                   animationsSpeed={fightSpeed}
                   highlightSameAffinity={computeIsDeckSlotHighlighted(opponentCosmon)}
+                  malusAffinityHover={malusAffinityHover}
                 />
               ))}
 
@@ -387,6 +396,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
                   currentFightEvent={currentFightEvent}
                   animationsSpeed={fightSpeed}
                   highlightSameAffinity={computeIsDeckSlotHighlighted(meCosmon)}
+                  malusAffinityHover={malusAffinityHover}
                 />
               ))}
             </div>

@@ -3,11 +3,7 @@ import Button from '@components/Button/Button'
 import * as style from './BoostPicker.module.scss'
 import { Boost } from 'types/Boost'
 import clsx from 'clsx'
-import {
-  BuyBoostModalOrigin,
-  CosmonTypeWithDecksAndBoosts,
-  CurrentView,
-} from '../BuyBoostModalType'
+import { BuyBoostModalOrigin, CosmonTypeWithDecks, CurrentView } from '../BuyBoostModalType'
 import IconWithLabel from '../IconWithLabel/IconWithLabel'
 import { getIconForAttr, getPotionNameFromBoostedStat, getStatAcronymFromBoost } from '@utils/boost'
 import Tooltip from '@components/Tooltip/Tooltip'
@@ -18,7 +14,7 @@ import { useWalletStore } from '@store/walletStore'
 
 interface BoosterPickerProps {
   selectedBoost: Boost | null
-  selectedLeaders: CosmonTypeWithDecksAndBoosts[]
+  selectedLeaders: CosmonTypeWithDecks[]
   setSelectedBoost: Dispatch<SetStateAction<Boost | null>>
   setCurrentView: Dispatch<SetStateAction<CurrentView>>
   origin: BuyBoostModalOrigin

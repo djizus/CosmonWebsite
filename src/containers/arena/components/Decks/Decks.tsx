@@ -16,22 +16,14 @@ import DeckContainer from './DeckContainer/DeckContainer'
 import DecksEmptyList from './DecksEmptyList'
 import { useArenaStore } from '@store/arenaStore'
 import { BuyBoostModalOrigin } from '../BuyBoostModal/BuyBoostModalType'
-import { BoostForCosmon } from 'types/Boost'
-import { getDeckWithBoosts } from '@utils/boost'
 
 interface DecksProps {
-  boostsForCosmons: BoostForCosmon[]
   onEditDeck: (deck: Deck) => void
   onDeleteDeck: (deck: Deck) => void
   onOpenBoostModal: (origin: BuyBoostModalOrigin) => void
 }
 
-const Decks: React.FC<DecksProps> = ({
-  boostsForCosmons,
-  onEditDeck,
-  onDeleteDeck,
-  onOpenBoostModal,
-}) => {
+const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModal }) => {
   const { isConnected, cosmons, fetchCoin } = useWalletStore()
   const { fetchArenasList, registerToArena, fight } = useGameStore()
   const { decksList, fetchDecksList, fetchPersonalityAffinities, refreshCosmonsAndDecksList } =
@@ -170,12 +162,10 @@ const Decks: React.FC<DecksProps> = ({
           <div className="grid w-full grid-cols-1 gap-[32px] overflow-visible lg:grid-cols-2">
             <AnimatePresence>
               {decksList.map((deck) => {
-                const deckWithBoost = getDeckWithBoosts(deck, boostsForCosmons)
-
                 return (
                   <DeckContainer
                     key={`deck-${deck.id}`}
-                    deck={deckWithBoost}
+                    deck={deck}
                     onEditDeck={onEditDeck}
                     onClickDelete={onDeleteDeck}
                     onClickFight={handleClickFight}

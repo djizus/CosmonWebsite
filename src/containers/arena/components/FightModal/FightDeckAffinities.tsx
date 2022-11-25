@@ -1,10 +1,11 @@
 import { useDeckStore } from '@store/deckStore'
 import React, { useMemo } from 'react'
 import { AFFINITY_TYPES, CosmonType } from 'types'
+import { CosmonTypeWithMalus } from 'types/Malus'
 import DeckAffinities from '../DeckAffinities/DeckAffinities'
 
 interface FightDeckAffinitiesProps {
-  cosmons: CosmonType[]
+  cosmons: CosmonTypeWithMalus[]
   side: 'opponent' | 'me'
   onHoverAffinity?: (affinityData: Set<string>, affinity: AFFINITY_TYPES) => void
   onHoverStopAffinity?: () => void
@@ -40,6 +41,7 @@ const FightDeckAffinities: React.FC<FightDeckAffinitiesProps> = ({
         }}
       />
       <DeckAffinities
+        cosmons={cosmons}
         deckAffinities={affinities}
         variant="badge"
         direction="column"

@@ -7,18 +7,21 @@ import styles from './DeckBuilderNameSetter.module.scss'
 interface DeckBuilderNameSetterProps {}
 
 const DeckBuilderNameSetter: React.FC<DeckBuilderNameSetterProps> = ({}) => {
-  const { deckName, setDeckName } = useContext(DeckBuilderContext)
+  const { deck, setDeck } = useContext(DeckBuilderContext)
 
-  const handleChangeName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setDeckName(e.target.value)
-  }, [])
+  const handleChangeName = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setDeck({ ...deck, name: e.target.value })
+    },
+    [deck]
+  )
 
   return (
     <div className="flex flex-1">
       <input
         type="text"
         placeholder="Choose a team name"
-        value={deckName}
+        value={deck.name}
         onChange={handleChangeName}
         className={clsx(styles.inputNameSetter)}
       />

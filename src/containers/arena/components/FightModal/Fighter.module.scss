@@ -2,3 +2,9 @@
   box-shadow: 0 0 0.2rem #fff, 0 0 0.2rem #fff, 0 0 0.3rem #f0e063, 0 0 0.8rem #f0e063,
     0 0 1rem #f0e063, inset 0 0 0.4rem #f0e063;
 }
+
+.malusHighlighted {
+  box-shadow: 0 0 0.2rem rgba(90, 31, 59, 1), 0 0 0.2rem rgba(90, 31, 59, 1),
+    0 0 0.3rem rgba(90, 31, 59, 1), 0 0 0.8rem rgba(90, 31, 59, 1), 0 0 1rem rgba(90, 31, 59, 1),
+    inset 0 0 0.4rem rgba(90, 31, 59, 1);
+}

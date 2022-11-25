@@ -7,21 +7,39 @@ import {
 } from '../../FightReportModal/CosmonsProgression'
 import * as style from './CardsWithStats.module.scss'
 import { getCosmonStat } from '@utils/cosmon'
-import { CosmonType } from 'types/Cosmon'
 import { Boost } from 'types/Boost'
-import { CosmonTypeWithDecksAndBoosts } from '../BuyBoostModalType'
+import { CosmonTypeWithDecks } from '../BuyBoostModalType'
 import { useMemo } from 'react'
 
 interface Props {
   boost: Boost
-  cosmon: CosmonTypeWithDecksAndBoosts
+  cosmon: CosmonTypeWithDecks
   className?: string
-  handleClick?: (cosmon: CosmonTypeWithDecksAndBoosts) => void
+  handleClick?: (cosmon: CosmonTypeWithDecks) => void
   variation: 'recap' | 'leaderpicker'
 }
 
 const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick, variation }) => {
-  const currentStats = useMemo(() => {
+  const statsEvolved = useMemo(() => {
+    if (variation === 'leaderpicker') {
+      return cosmon.stats!.map((stat) => {
+        if (stat.key === boost.boost_name) {
+          return {
+            ...stat,
+            value: Math.ceil(
+              parseInt(stat.value) + (boost.inc_value / 100) * parseInt(stat.value)
+            ).toString(),
+          }
+        }
+
+        return stat
+      })
+    } else {
+      return cosmon.stats!
+    }
+  }, [cosmon, variation, boost])
+
+  const statsToDisplay = useMemo(() => {
     if (variation === 'leaderpicker') {
       return cosmon.stats!
     } else {
@@ -83,24 +101,24 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
               key={`${cosmon.id}-Atq`}
               statKey="Atq"
               stats={cosmon.stats!}
-              statToDisplay={currentStats}
-              statsEvolved={cosmon.stats!}
+              statsToDisplay={statsToDisplay}
+              statsEvolved={statsEvolved}
             />
             <CosmonStatProgression
               className={style.stat}
               key={`${cosmon.id}-Spe`}
               statKey="Spe"
               stats={cosmon.stats!}
-              statToDisplay={currentStats}
-              statsEvolved={cosmon.stats!}
+              statsToDisplay={statsToDisplay}
+              statsEvolved={statsEvolved}
             />
             <CosmonStatProgression
               className={style.stat}
               key={`${cosmon.id}-Luk`}
               statKey="Luk"
               stats={cosmon.stats!}
-              statToDisplay={currentStats}
-              statsEvolved={cosmon.stats!}
+              statsToDisplay={statsToDisplay}
+              statsEvolved={statsEvolved}
             />
           </div>
           <div className={style.secondColumn}>
@@ -109,24 +127,24 @@ const CardsWithStats: React.FC<Props> = ({ boost, cosmon, className, handleClick
               key={`${cosmon.id}-Hp`}
               statKey="Hp"
               stats={cosmon.stats!}
-              statToDisplay={currentStats}
-              statsEvolved={cosmon.stats!}
+              statsToDisplay={statsToDisplay}
+              statsEvolved={statsEvolved}
             />
             <CosmonStatProgression
               className={style.stat}
               key={`${cosmon.id}-Def`}
               statKey="Def"
               stats={cosmon.stats!}
-              statToDisplay={currentStats}
-              statsEvolved={cosmon.stats!}
+              statsToDisplay={statsToDisplay}
+              statsEvolved={statsEvolved}
             />
             <CosmonStatProgression
               className={style.stat}
               key={`${cosmon.id}-Int`}
               statKey="Int"
               stats={cosmon.stats!}
-              statToDisplay={currentStats}
-              statsEvolved={cosmon.stats!}
+              statsToDisplay={statsToDisplay}
+              statsEvolved={statsEvolved}
             />
           </div>
         </div>

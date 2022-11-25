@@ -1,16 +1,24 @@
-import { AFFINITY_TYPES, DeckAffinitiesType, NFTId } from 'types'
+import { AFFINITY_TYPES, Deck, DeckAffinitiesType, NFTId } from 'types'
 import React, { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Geographical from '@public/icons/geographical.svg'
+import Warning from '@public/icons/warning.svg'
 import Time from '@public/icons/time.svg'
 import Personality from '@public/icons/personality.svg'
 import Hexagon, { HexagonProps } from '@components/Hexagon/Hexagon'
 import { AnimatePresence, motion } from 'framer-motion'
 import clsx from 'clsx'
 import styles from './DeckAffinities.module.scss'
+import { CosmonTypeWithMalus } from 'types/Malus'
+import {
+  computeAverageMalusPercentForDeck,
+  getAffinitiesWithoutMalus,
+  getMalusInAffinities,
+} from '@utils/malus'
 
 export type BadgeOptions = HexagonProps
 
 interface DeckAffinitiesProps {
+  cosmons: CosmonTypeWithMalus[]
   deckAffinities: DeckAffinitiesType
   variant: 'pills' | 'short' | 'badge'
   direction?: 'row' | 'column'
@@ -22,6 +30,7 @@ interface DeckAffinitiesProps {
 }
 
 const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
+  cosmons,
   deckAffinities,
   variant,
   direction = 'row',
@@ -41,6 +50,16 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
         return <Personality style={{ width: size, height: size }} />
       case AFFINITY_TYPES.TIME:
         return <Time style={{ width: size, height: size }} />
+      case AFFINITY_TYPES.MALUS:
+        return (
+          <Warning
+            style={{
+              width: size + 1,
+              height: size,
+              color: variant === 'badge' ? '#DF4547' : 'white',
+            }}
+          />
+        )
     }
   }, [])
 
@@ -65,11 +84,12 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
         return `Cosmon have +${
           nbAffinities === 2 ? '10' : nbAffinities === 3 ? '20' : ''
         }% HP bonus`
-
       case AFFINITY_TYPES.TIME:
         return `Cosmon have +${nbAffinities === 2 ? '1' : nbAffinities === 3 ? '2' : ''} AP bonus`
       case AFFINITY_TYPES.PERSONALITY:
         return `+10% bonus on all fighting abilities`
+      case AFFINITY_TYPES.MALUS:
+        return `Cosmon have an average malus of -${computeAverageMalusPercentForDeck(cosmons)}%`
     }
   }
 
@@ -80,7 +100,12 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
           {Object.keys(deckAffinities).map((affinity, i) =>
             (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0 ? (
               <div
-                className="flex cursor-help items-center rounded-xl bg-cosmon-main-quinary px-[11px] py-[8px]"
+                className={clsx(
+                  'flex cursor-help items-center rounded-xl bg-cosmon-main-quinary px-[11px] py-[8px]',
+                  {
+                    [styles.malusPills]: affinity === AFFINITY_TYPES.MALUS,
+                  }
+                )}
                 key={affinity + '-' + i}
                 onMouseEnter={() => {
                   if (onHoverAffinity) {
@@ -96,11 +121,19 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                   }
                 }}
               >
-                <p className="font-semibold text-white">
-                  +{(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}
-                </p>
+                {affinity === AFFINITY_TYPES.MALUS ? (
+                  <p className="font-semibold text-white">
+                    -{computeAverageMalusPercentForDeck(cosmons)}% in all stats
+                  </p>
+                ) : (
+                  <p className="font-semibold text-white">
+                    +{(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}
+                  </p>
+                )}
                 &nbsp;
-                <p className="font-semibold text-[#B1A8B9]">{affinity}</p>
+                {affinity !== AFFINITY_TYPES.MALUS ? (
+                  <p className="font-semibold text-[#B1A8B9]">{affinity}</p>
+                ) : null}
                 &nbsp;
                 {renderAffinityIcon(affinity as AFFINITY_TYPES)}
               </div>
@@ -109,13 +142,16 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
         </div>
       </div>
     )
-  }, [deckAffinities])
+  }, [deckAffinities, cosmons])
 
   const renderShort = useMemo(() => {
+    const affinitiesWithoutMalus = getAffinitiesWithoutMalus(deckAffinities)
+    const malusAffinity = getMalusInAffinities(deckAffinities)
+
     return (
       <div className="flex items-center" style={containerStyle}>
         <div className="flex rounded-[8px] bg-cosmon-main-quinary px-[10px] py-[12px] ">
-          {Object.keys(deckAffinities)
+          {affinitiesWithoutMalus
             .map((affinity, i) => (
               <div key={affinity + '-' + i} className="flex items-center">
                 {renderAffinityIcon(affinity as AFFINITY_TYPES)}
@@ -136,17 +172,38 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                 ] as any
             )}
         </div>
+        {malusAffinity.map((affinity) => {
+          if ((deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0) {
+            return (
+              <div className={styles.malusShort}>
+                {renderAffinityIcon(affinity as AFFINITY_TYPES)}
+              </div>
+            )
+          }
+        })}
       </div>
     )
-  }, [deckAffinities])
+  }, [deckAffinities, cosmons])
 
   const renderBadge = useMemo(() => {
+    const affinitesWithoutMalus = getAffinitiesWithoutMalus(deckAffinities)
+    const malusAffinity = getMalusInAffinities(deckAffinities)
+    const getAffinities = () => {
+      const result = affinitesWithoutMalus
+
+      if ((deckAffinities[malusAffinity[0] as AFFINITY_TYPES] as Set<string>).size > 0) {
+        return [...result, ...malusAffinity]
+      }
+
+      return result
+    }
+
     return (
       <div
         className={clsx(`absolute flex gap-[12px]`, { 'flex-col': direction === 'column' })}
         style={containerStyle}
       >
-        {Object.keys(deckAffinities).map((affinity, i) => (
+        {getAffinities().map((affinity, i) => (
           <div
             key={affinity + '-' + i}
             className={`relative flex items-center justify-${
@@ -184,7 +241,14 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                 setShowBonusTooltip(undefined)
               }}
             >
-              <Hexagon width={59} height={67} {...options}>
+              <Hexagon
+                className={clsx({
+                  [styles.redHexagon]: affinity === AFFINITY_TYPES.MALUS,
+                })}
+                width={59}
+                height={67}
+                {...options}
+              >
                 <div
                   style={{
                     opacity:
@@ -204,9 +268,11 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: labelPosition === 'right' ? -10 : 10 }}
                     transition={{ type: 'tween' }}
-                    className={clsx(styles.affinityTooltip, styles[labelPosition])}
+                    className={clsx(styles.affinityTooltip, styles[labelPosition], {
+                      [styles.redTooltip]: affinity === AFFINITY_TYPES.MALUS,
+                    })}
                   >
-                    <p className="text-xs font-normal text-white">
+                    <p className={'text-xs font-normal text-white'}>
                       {getAffinityBonusSentence(
                         affinity as AFFINITY_TYPES,
                         (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size
@@ -223,19 +289,22 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
               <p
                 className="py-[7px] px-[8px] text-sm font-semibold text-white"
                 style={{
-                  background: 'rgba(78, 72, 136, 0.7)',
+                  background:
+                    affinity === AFFINITY_TYPES.MALUS ? '#5A1F3B' : 'rgba(78, 72, 136, 0.7)',
                   borderTopRightRadius: 5,
                   borderBottomRightRadius: 5,
                 }}
               >
-                +{(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}
+                {affinity === AFFINITY_TYPES.MALUS
+                  ? `-${computeAverageMalusPercentForDeck(cosmons)}%`
+                  : `+${(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}`}
               </p>
             ) : null}
           </div>
         ))}
       </div>
     )
-  }, [deckAffinities, showBonusTooltip, labelPosition])
+  }, [deckAffinities, showBonusTooltip, labelPosition, cosmons])
 
   const renderVariant = useMemo(() => {
     switch (variant) {

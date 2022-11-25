@@ -14,9 +14,8 @@ import Sparkles from '@public/cosmons/stats/sparkles.svg'
 import Sword from '@public/cosmons/stats/sword.svg'
 import Zap from '@public/cosmons/stats/zap.svg'
 import Spiral from '@public/cosmons/stats/spiral.svg'
-import { CosmonStatKeyType } from 'types/Cosmon'
-import { Boost, BoostForCosmon } from 'types/Boost'
-import { Deck, DeckWithBoosts } from 'types/Deck'
+import { CosmonStatKeyType, CosmonStatType, CosmonType } from 'types/Cosmon'
+import { Boost } from 'types/Boost'
 
 export function getIconForAttr(boostName: CosmonStatKeyType) {
   switch (boostName) {
@@ -98,23 +97,40 @@ export function getStatNameFromBoost(boost: string) {
   }
 }
 
-export function getDeckWithBoosts(deck: Deck, boostsForCosmons: BoostForCosmon[]): DeckWithBoosts {
-  return {
-    ...deck,
-    cosmons: deck.cosmons.map((cosmon) => {
-      const cosmonWithBoost = boostsForCosmons.find((item) => item.id === cosmon.id)?.boosts
+export function fillBoosts(boosts: (Boost | null)[]): [Boost | null, Boost | null, Boost | null] {
+  let filledArray: (Boost | null)[] = [...boosts]
 
-      if (cosmonWithBoost) {
-        return {
-          ...cosmon,
-          boosts: cosmonWithBoost as [Boost | null, Boost | null, Boost | null],
-        }
-      }
-
-      return {
-        ...cosmon,
-        boosts: [null, null, null] as [null, null, null],
-      }
-    }),
+  for (let i = 0; i < 3; i++) {
+    if (filledArray[i] === undefined) {
+      filledArray[i] = null
+    }
   }
+
+  return filledArray as [Boost | null, Boost | null, Boost | null]
+}
+
+export function computeStatsWithoutBoosts(stats: CosmonStatType[], boosts: (Boost | null)[]) {
+  return stats.reduce<CosmonStatType[]>((acc, stat) => {
+    const isStatBoosted = boosts.filter((boost) => boost?.boost_name === stat.key)
+
+    if (isStatBoosted.length > 0) {
+      const computedValue = isStatBoosted.reduce<number>((result, curr) => {
+        if (curr) {
+          return Math.floor(result - (curr.inc_value / 100) * result)
+        }
+
+        return result
+      }, parseInt(stat.value))
+
+      return [
+        ...acc,
+        {
+          key: stat.key,
+          value: Math.round(computedValue).toString(),
+        },
+      ]
+    }
+
+    return [...acc, stat]
+  }, [])
 }

@@ -1,0 +1,52 @@
+.malusModal {
+  position: absolute;
+  left: calc(50% - 196px);
+  top: calc(50% - 36px);
+  width: 393px;
+  height: 175px;
+  border-radius: 12px;
+  background: #20164f;
+  padding: 20px;
+  z-index: 9;
+
+  &::after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+  }
+}
+
+.malusTip {
+  text-align: left;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.mediumLink {
+  text-decoration: underline;
+}
+
+.cosmonWithMalusContainer {
+  margin-bottom: 10px;
+}
+
+.cosmonWithMalus {
+  font-weight: 400;
+  text-align: left;
+  font-size: 14px;
+}
+
+.redMalus {
+  color: rgba(223, 69, 71, 1);
+}

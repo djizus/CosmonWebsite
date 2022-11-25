@@ -9,6 +9,8 @@ import NFTStats from './NFTStats'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDrag, DragPreviewImage } from 'react-dnd'
 import Tooltip from '@components/Tooltip/Tooltip'
+import { computeMalusForDeck, deckHasMalus } from '@utils/malus'
+import { CosmonTypeWithMalus } from 'types/Malus'
 
 interface NFTContainerProps {
   nft: CosmonType
@@ -18,7 +20,7 @@ interface NFTContainerProps {
 const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
   const { listFilter, deck, setDeck } = useContext(DeckBuilderContext)
 
-  const [{ isDragging }, drag, dragPreview] = useDrag(
+  const [{ isDragging: _isDragging }, drag, dragPreview] = useDrag(
     () => ({
       type: 'COSMON',
       item: nft,
@@ -33,7 +35,7 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
   )
 
   const firstFreeSlotIdx = useMemo(() => {
-    return deck.findIndex((d) => d === undefined)
+    return deck.cosmons.findIndex((d) => d === undefined)
   }, [deck])
 
   // Add an NFT to a deck on double click
@@ -41,13 +43,29 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
     if (
       firstFreeSlotIdx !== -1 &&
       nft.isInDeck === false &&
-      deck.findIndex((d) => d?.id === nft.id) === -1
+      deck.cosmons.findIndex((d) => d?.id === nft.id) === -1
     ) {
-      let deckTemp = [...deck]
-      deckTemp[firstFreeSlotIdx] = nft
-      setDeck(deckTemp as CosmonType[])
+      let cosmonsTemp = [...deck.cosmons]
+
+      cosmonsTemp[firstFreeSlotIdx] = {
+        ...nft,
+        malusPercent: 0,
+        statsWithMalus: [...nft.stats],
+      }
+
+      const filtredCosmons = cosmonsTemp.filter(
+        (item) => item !== undefined
+      ) as CosmonTypeWithMalus[]
+
+      const computedCosmons = computeMalusForDeck([...filtredCosmons])
+
+      setDeck({
+        ...deck,
+        hasMalus: deckHasMalus(computedCosmons),
+        cosmons: computedCosmons,
+      })
     }
-  }, [nft, firstFreeSlotIdx])
+  }, [deck, nft, firstFreeSlotIdx])
 
   return (
     <motion.div
@@ -78,7 +96,8 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
       <div
         className={styles.container}
         style={{
-          ...(deck.includes(nft) || (nft.isInDeck === true && !nft.temporaryFree)
+          ...(deck.cosmons.find((cosmon) => cosmon?.id === nft.id) ||
+          (nft.isInDeck === true && !nft.temporaryFree)
             ? { opacity: 0.7 }
             : null),
           ...(nft.isInDeck === true && !nft.temporaryFree
