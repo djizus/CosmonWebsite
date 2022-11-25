@@ -8,6 +8,7 @@ export interface HexagonProps {
   width?: number
   height?: number
   reverseHover?: boolean
+  className?: string
 }
 
 const Hexagon: React.FC<HexagonProps> = ({
@@ -15,6 +16,7 @@ const Hexagon: React.FC<HexagonProps> = ({
   width = 200,
   height = 200,
   reverseHover = false,
+  className,
 }) => {
   const elRef = useRef<HTMLDivElement>(null)
   const isHovered = useHover(elRef)
@@ -22,10 +24,14 @@ const Hexagon: React.FC<HexagonProps> = ({
   return (
     <div
       ref={elRef}
-      className={clsx(styles.hexagon, {
-        [styles.hexagonPlain]: (reverseHover && isHovered) || (!reverseHover && !isHovered),
-        [styles.hexagonEmpty]: (reverseHover && !isHovered) || (!reverseHover && isHovered),
-      })}
+      className={clsx(
+        styles.hexagon,
+        {
+          [styles.hexagonPlain]: (reverseHover && isHovered) || (!reverseHover && !isHovered),
+          [styles.hexagonEmpty]: (reverseHover && !isHovered) || (!reverseHover && isHovered),
+        },
+        className
+      )}
       style={{ width, height }}
     >
       <div className={`z-5 absolute top-0 left-0 flex h-full w-full items-center justify-center`}>

@@ -22,6 +22,7 @@ type FighterProps = {
   currentFightEvent: FightEventType | undefined
   animationsSpeed?: number
   highlightSameAffinity?: boolean
+  malusAffinityHover?: boolean
 } & HTMLMotionProps<'div'>
 
 const Fighter = forwardRef<HTMLDivElement, FighterProps>(
@@ -40,6 +41,7 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
       currentFightEvent,
       animationsSpeed = 1,
       highlightSameAffinity = false,
+      malusAffinityHover = false,
       ...divProps
     },
     ref
@@ -91,7 +93,10 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
           `relative h-full w-full rounded-[4px] border-[0.5px] border-[#ffffff]/[0.2] p-[5px] transition-shadow`,
           { 'border-[#ffffff]/[0.6]': isAttacker },
           { 'border-[#f07273]': isDefender },
-          { [styles.fighterHighlighted]: highlightSameAffinity },
+          {
+            [styles.fighterHighlighted]: highlightSameAffinity && !malusAffinityHover,
+            [styles.malusHighlighted]: highlightSameAffinity && malusAffinityHover,
+          },
           divProps.className
         )}
         variants={cardVariants}
