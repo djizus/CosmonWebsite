@@ -186,7 +186,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                 <Tooltip id={`affinity-${affinity}`} place="bottom">
                   <p>
                     {getAffinityBonusSentence(
-                      affinity,
+                      affinity as AFFINITY_TYPES,
                       (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size
                     )}
                   </p>
