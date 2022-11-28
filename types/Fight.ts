@@ -31,7 +31,9 @@ export enum FightEventActionType {
 export type FightType = {
   arena: ArenaType
   me: FightPlayerType
-  opponent: FightPlayerType
+  opponent: FightPlayerType & {
+    isBot: boolean
+  }
   winner: Omit<FightPlayerType, 'cosmons' | 'cosmonsWithoutBonus' | 'deckScore'>
   events: FightEventType[]
 }

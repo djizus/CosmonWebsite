@@ -341,6 +341,19 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
           <section className="flex items-center">
             <p className="text-md text-white lg:text-3xl ">
               {battleOverTime?.opponent.deckName ?? ''}
+              {process.env.NEXT_PUBLIC_IS_PRODUCTION && battleOverTime?.opponent.isBot ? (
+                <>
+                  {' '}
+                  <span
+                    style={{
+                      fontWeight: '300',
+                      fontStyle: 'italic',
+                    }}
+                  >
+                    (bot)
+                  </span>
+                </>
+              ) : null}
             </p>
             <Badge className="ml-[20px] flex items-center justify-center">
               <p className="text-sm font-semibold text-white">
