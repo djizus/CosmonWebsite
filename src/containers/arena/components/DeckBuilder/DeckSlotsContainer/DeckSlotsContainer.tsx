@@ -228,14 +228,13 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
             ))}
           </div>
           <p className={styles.malusTip}>
-            Decks made up of cards with more than 3 levels of
-            <br />
-            difference between the cards have a penalty. To
-            <br />
+            Decks made up of cards with more than 3 levels of difference between the cards have a
+            penalty.
+            {/* To
             find out more about penalties :<br />
             <a className={styles.mediumLink} target="_blank" href="https://www.medium.com/Cosmon">
               www.medium.com/Cosmon
-            </a>
+            </a> */}
           </p>
         </motion.div>
       ) : null}

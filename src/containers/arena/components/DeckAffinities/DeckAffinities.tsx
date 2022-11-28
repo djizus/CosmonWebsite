@@ -14,6 +14,7 @@ import {
   getAffinitiesWithoutMalus,
   getMalusInAffinities,
 } from '@utils/malus'
+import Tooltip from '@components/Tooltip/Tooltip'
 
 export type BadgeOptions = HexagonProps
 
@@ -172,11 +173,24 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                 ] as any
             )}
         </div>
-        {malusAffinity.map((affinity) => {
+        {malusAffinity.map((affinity, i) => {
           if ((deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0) {
             return (
-              <div className={styles.malusShort}>
+              <div
+                key={affinity + '-' + i}
+                data-tip="tootlip"
+                data-for={`affinity-${affinity}`}
+                className={styles.malusShort}
+              >
                 {renderAffinityIcon(affinity as AFFINITY_TYPES)}
+                <Tooltip id={`affinity-${affinity}`} place="bottom">
+                  <p>
+                    {getAffinityBonusSentence(
+                      affinity,
+                      (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size
+                    )}
+                  </p>
+                </Tooltip>
               </div>
             )
           }
@@ -203,105 +217,109 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
         className={clsx(`absolute flex gap-[12px]`, { 'flex-col': direction === 'column' })}
         style={containerStyle}
       >
-        {getAffinities().map((affinity, i) => (
-          <div
-            key={affinity + '-' + i}
-            className={`relative flex items-center justify-${
-              labelPosition === 'left' ? 'end' : 'start'
-            }`}
-          >
-            {showBonusTooltip !== affinity &&
-            labelPosition === 'left' &&
-            (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0 ? (
-              <p
-                className="py-[6px] px-[8px] text-sm font-semibold text-white"
-                style={{
-                  background: 'transparent',
-                  border: '1px solid #4E4888',
-                  borderRight: 0,
-                  borderTopLeftRadius: 5,
-                  borderBottomLeftRadius: 5,
-                }}
-              >
-                +{(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}
-              </p>
-            ) : null}
+        {getAffinities().map((affinity, i) => {
+          return (
             <div
-              style={{
-                cursor:
-                  (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0
-                    ? 'help'
-                    : 'auto',
-                position: 'relative',
-              }}
-              onMouseEnter={() => {
-                setShowBonusTooltip(affinity as AFFINITY_TYPES)
-              }}
-              onMouseLeave={() => {
-                setShowBonusTooltip(undefined)
-              }}
+              key={affinity + '-' + i}
+              className={`relative flex items-center justify-${
+                labelPosition === 'left' ? 'end' : 'start'
+              }`}
             >
-              <Hexagon
-                className={clsx({
-                  [styles.redHexagon]: affinity === AFFINITY_TYPES.MALUS,
-                })}
-                width={59}
-                height={67}
-                {...options}
-              >
-                <div
+              {showBonusTooltip !== affinity &&
+              labelPosition === 'left' &&
+              (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0 ? (
+                <p
+                  className="py-[6px] px-[8px] text-sm font-semibold text-white"
                   style={{
-                    opacity:
-                      (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0
-                        ? 1
-                        : 0.4,
+                    background: 'transparent',
+                    border: '1px solid #4E4888',
+                    borderRight: 0,
+                    borderTopLeftRadius: 5,
+                    borderBottomLeftRadius: 5,
                   }}
                 >
-                  {renderAffinityIcon(affinity as AFFINITY_TYPES, 28)}
-                </div>
-              </Hexagon>
-              <AnimatePresence>
-                {showBonusTooltip === affinity &&
-                (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0 ? (
-                  <motion.div
-                    initial={{ opacity: 0, x: labelPosition === 'right' ? -10 : 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: labelPosition === 'right' ? -10 : 10 }}
-                    transition={{ type: 'tween' }}
-                    className={clsx(styles.affinityTooltip, styles[labelPosition], {
-                      [styles.redTooltip]: affinity === AFFINITY_TYPES.MALUS,
-                    })}
-                  >
-                    <p className={'text-xs font-normal text-white'}>
-                      {getAffinityBonusSentence(
-                        affinity as AFFINITY_TYPES,
-                        (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size
-                      )}
-                    </p>
-                  </motion.div>
-                ) : null}
-              </AnimatePresence>
-            </div>
-
-            {showBonusTooltip !== affinity &&
-            labelPosition === 'right' &&
-            (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0 ? (
-              <p
-                className="py-[7px] px-[8px] text-sm font-semibold text-white"
+                  {affinity === AFFINITY_TYPES.MALUS
+                    ? `-${computeAverageMalusPercentForDeck(cosmons)}%`
+                    : `+${(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}`}
+                </p>
+              ) : null}
+              <div
                 style={{
-                  background:
-                    affinity === AFFINITY_TYPES.MALUS ? '#5A1F3B' : 'rgba(78, 72, 136, 0.7)',
-                  borderTopRightRadius: 5,
-                  borderBottomRightRadius: 5,
+                  cursor:
+                    (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0
+                      ? 'help'
+                      : 'auto',
+                  position: 'relative',
+                }}
+                onMouseEnter={() => {
+                  setShowBonusTooltip(affinity as AFFINITY_TYPES)
+                }}
+                onMouseLeave={() => {
+                  setShowBonusTooltip(undefined)
                 }}
               >
-                {affinity === AFFINITY_TYPES.MALUS
-                  ? `-${computeAverageMalusPercentForDeck(cosmons)}%`
-                  : `+${(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}`}
-              </p>
-            ) : null}
-          </div>
-        ))}
+                <Hexagon
+                  className={clsx({
+                    [styles.redHexagon]: affinity === AFFINITY_TYPES.MALUS,
+                  })}
+                  width={59}
+                  height={67}
+                  {...options}
+                >
+                  <div
+                    style={{
+                      opacity:
+                        (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0
+                          ? 1
+                          : 0.4,
+                    }}
+                  >
+                    {renderAffinityIcon(affinity as AFFINITY_TYPES, 28)}
+                  </div>
+                </Hexagon>
+                <AnimatePresence>
+                  {showBonusTooltip === affinity &&
+                  (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0 ? (
+                    <motion.div
+                      initial={{ opacity: 0, x: labelPosition === 'right' ? -10 : 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: labelPosition === 'right' ? -10 : 10 }}
+                      transition={{ type: 'tween' }}
+                      className={clsx(styles.affinityTooltip, styles[labelPosition], {
+                        [styles.redTooltip]: affinity === AFFINITY_TYPES.MALUS,
+                      })}
+                    >
+                      <p className={'text-xs font-normal text-white'}>
+                        {getAffinityBonusSentence(
+                          affinity as AFFINITY_TYPES,
+                          (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size
+                        )}
+                      </p>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+
+              {showBonusTooltip !== affinity &&
+              labelPosition === 'right' &&
+              (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0 ? (
+                <p
+                  className="py-[7px] px-[8px] text-sm font-semibold text-white"
+                  style={{
+                    background:
+                      affinity === AFFINITY_TYPES.MALUS ? '#5A1F3B' : 'rgba(78, 72, 136, 0.7)',
+                    borderTopRightRadius: 5,
+                    borderBottomRightRadius: 5,
+                  }}
+                >
+                  {affinity === AFFINITY_TYPES.MALUS
+                    ? `-${computeAverageMalusPercentForDeck(cosmons)}%`
+                    : `+${(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}`}
+                </p>
+              ) : null}
+            </div>
+          )
+        })}
       </div>
     )
   }, [deckAffinities, showBonusTooltip, labelPosition, cosmons])
