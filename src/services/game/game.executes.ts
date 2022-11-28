@@ -117,6 +117,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
         cosmons:
           [cosmonsWithAffinityBonus[0], cosmonsWithAffinityBonus[1], cosmonsWithAffinityBonus[2]] ||
           [],
+        isBot: isBot,
         cosmonsWithoutBonus: opponentCosmonsList || [],
         deckScore: isBot
           ? +getAttrValue('bot_power') || 0
