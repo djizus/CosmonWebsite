@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import 'react-lazy-load-image-component/src/effects/opacity.css'
 import { Transition } from '@headlessui/react'
 import { useWalletStore } from '@store/walletStore'
@@ -13,13 +13,39 @@ import ScarcityFilter from './components/ScarcityFilter'
 import AssetsBalance from './components/AssetsBalance/AssetsBalance'
 import { isMobile } from '@utils/browser'
 import CosmonsList from './components/CosmonsList/CosmonsList'
+import Button from '@components/Button/Button'
+import clsx from 'clsx'
+import * as style from './style.module.scss'
 
 interface MyAssetsProps {}
+
+type Sections = 'all' | 'enrolled'
 
 const MyAssets: React.FC<MyAssetsProps> = ({}) => {
   const { cosmons } = useWalletStore()
   const [assetToTransfer, set_assetToTransfer] = useState<null | CosmonType>()
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
+  const [currentSection, setCurrentSection] = useState<Sections>('all')
+
+  const enrolledCosmons = useMemo(() => {
+    return cosmons.filter((cosmon) => cosmon.isInDeck)
+  }, [cosmons])
+
+  const filtredCosmons = useMemo(() => {
+    switch (currentSection) {
+      case 'all': {
+        return cosmons
+      }
+
+      case 'enrolled': {
+        return enrolledCosmons
+      }
+
+      default: {
+        return cosmons
+      }
+    }
+  }, [cosmons, enrolledCosmons, currentSection])
 
   return (
     <>
@@ -54,9 +80,32 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
           </div>
 
           {isMobile() ? <AssetsBalance /> : null}
+          <div className={style.optionsContainer}>
+            <Button
+              className={clsx(style.button, {
+                [style.activeButton]: currentSection === 'all',
+              })}
+              type="quaternary"
+              size="small"
+              onClick={() => setCurrentSection('all')}
+            >
+              {`All (${cosmons.length})`}
+            </Button>
+            <Button
+              type="quaternary"
+              size="small"
+              className={clsx('ml-[32px]', style.button, {
+                [style.activeButton]: currentSection === 'enrolled',
+              })}
+              onClick={() => setCurrentSection('enrolled')}
+            >
+              {`Enrolled cards (${enrolledCosmons.length})`}
+            </Button>
+          </div>
 
           <CosmonsList
-            cosmons={cosmons}
+            className={style.cosmonsList}
+            cosmons={filtredCosmons}
             onClickShowDetails={set_showCosmonDetail}
             onClickTransfer={set_assetToTransfer}
           />
