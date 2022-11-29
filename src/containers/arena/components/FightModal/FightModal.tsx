@@ -23,6 +23,7 @@ import FightDeckAffinities from './FightDeckAffinities'
 import Badge from '@components/Badge/Badge'
 import { WINNER_IS_DRAW } from '@store/arenaStore'
 import { CosmonTypeWithMalus } from 'types/Malus'
+import { isMobile } from '@walletconnect/browser-utils'
 
 interface FightModalProps {
   onCloseModal: () => void
@@ -37,8 +38,8 @@ const FIGHT_FORWARD_SPEED = 1.5
 
 const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => {
   const { t } = useTranslation(['arenas', 'arena', 'fight'])
-  const { battle, battleOverTime, setBattleOverTime } = useContext(FightContext)
-
+  const { battle, battleOverTime, setBattleOverTime, skipTheFight } = useContext(FightContext)
+  const mountedRef = useRef(false)
   const fighters = useRef<CosmonType[]>()
 
   const { width, height } = useWindowSize()
@@ -56,6 +57,13 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
   const [fightSpeed, setFightSpeed] = useState(FIGHT_PLAY_SPEED)
   const [highlightNftsWithAffinity, setHighlightNftsWithAffinity] = useState<string[] | undefined>()
   const [malusAffinityHover, setMalusAffinityHover] = useState<boolean>(false)
+
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
 
   useEffect(() => {
     if (battle) {
@@ -122,13 +130,19 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
     }
     setIsFightEnd(true)
     onFightEnd()
-  }, [fightSpeed, iWin, isDraw])
+  }, [fightSpeed, iWin, isDraw, onFightEnd])
 
   const playBattle = useCallback(async () => {
     const { opponent, me, events } = battleOverTime!
 
+    // cancel events if cmp is dismount (e.g. on mobile, user close fight modal)
+    if (!mountedRef.current) return
+
     // sleep
     await sleep(CARDS_REVEAL_START_AFTER / fightSpeed)
+
+    // as the method continues to exec if the cmp is dismount, we have to check after each call to cancel next action
+    if (!mountedRef.current) return
 
     // cards revelation
     await Promise.all([
@@ -136,20 +150,31 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
       initCardsRevelation(me.cosmons, setRevealMyCards, CARD_REVEAL_INTERVAL),
     ])
 
+    if (!mountedRef.current) return
+
     // who start
     await announceWhoStart()
+
+    if (!mountedRef.current) return
 
     // shine starting cards
     await highlightStartingDeck()
 
+    if (!mountedRef.current) return
+
     // sleep
     await sleep(1700 / fightSpeed)
+
+    if (!mountedRef.current) return
 
     // fight start
     setIsFightEnd(false)
 
+    if (!mountedRef.current) return
+
     // play every events
     for (const event of events) {
+      if (!mountedRef.current) return
       const sent = await playEventAndGetCorrespondingSentence(event)
       setSentence(sent)
 
@@ -157,12 +182,16 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
       await sleep(FIGHT_EVENT_DURATION / fightSpeed)
     }
 
+    if (!mountedRef.current) return
+
     // sleep
     await sleep(1000 / fightSpeed)
 
+    if (!mountedRef.current) return
+
     // winner
     await announceWinner()
-  }, [battleOverTime, fightSpeed])
+  }, [battleOverTime, fightSpeed, mountedRef.current])
 
   const playEventAndGetCorrespondingSentence = useCallback(
     async (event: FightEventType) => {
@@ -286,7 +315,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
   )
 
   return (
-    <Modal fullScreen hasCloseButton={false} onCloseModal={onCloseModal}>
+    <Modal fullScreen hasCloseButton={isMobile()} onCloseModal={onCloseModal}>
       {showConfetti && (
         <div className="fixed z-[500]">
           <Confetti

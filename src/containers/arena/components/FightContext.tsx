@@ -5,6 +5,8 @@ export type FightContextType = {
   battle: FightType | undefined
   setBattle: (battle: FightType) => void
   battleOverTime: FightType | undefined
+  skipTheFight: boolean
+  setSkipTheFight: (skip: boolean) => void
   setBattleOverTime: React.Dispatch<React.SetStateAction<FightType | undefined>>
   handleCloseFightModal: () => void
   handleCloseFightReportModal: () => void
