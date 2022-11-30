@@ -4,3 +4,6 @@ export const combatLimitMessage: string
 export const combatLimitOverlay: string
 export const countdown: string
 export const fire: string
+export const missFpBoldMessage: string
+export const missFpMessage: string
+export const missFpOverlay: string

@@ -15,9 +15,13 @@ import { useArenaStore } from '@store/arenaStore'
 import { useWalletStore } from '@store/walletStore'
 import * as style from './SelectArenaModal.module.scss'
 import { useWindowSize } from 'react-use'
+import { Deck } from 'types'
+import { getCosmonStat } from '@utils/cosmon'
+import { useDeckStore } from '@store/deckStore'
 
 interface SelectArenaModalProps {
   loading?: boolean
+  deck: Deck
   selectedArena?: ArenaType
   onSelectArena: (selectedArena: ArenaType) => void
   onCloseModal: () => void
@@ -25,6 +29,7 @@ interface SelectArenaModalProps {
 
 const SelectArenaModal: React.FC<SelectArenaModalProps> = ({
   loading,
+  deck,
   selectedArena,
   onSelectArena,
   onCloseModal,
@@ -66,6 +71,7 @@ const SelectArenaModal: React.FC<SelectArenaModalProps> = ({
               arena={arena}
               isSelected={arena === internArena}
               onSelectArena={handleSelectFightMode}
+              deck={deck}
             />
           ))
           .reverse()}
@@ -103,9 +109,12 @@ const ArenaContainer: React.FC<{
   arena: ArenaType
   isSelected: boolean
   onSelectArena: (arena: ArenaType) => void
-}> = ({ arena, isSelected, onSelectArena }) => {
+  deck: Deck
+}> = ({ arena, isSelected, onSelectArena, deck }) => {
   const { t } = useTranslation('arenas')
   const [nextLeagueStartDate, setNextLeagueStartDate] = useState<Date>()
+  const { hourlyFPNumber } = useArenaStore()
+  const { refreshCosmonsAndDecksList } = useDeckStore()
 
   const {
     fetchDailyCombat,
@@ -122,6 +131,12 @@ const ArenaContainer: React.FC<{
       fetchMaxDailyCombat(currentLeaguePro.contract)
     }
   }, [])
+
+  const missFp = useMemo(() => {
+    if (deck) {
+      return deck.cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0)
+    }
+  }, [deck])
 
   const renderName = useMemo(() => {
     return (
@@ -142,7 +157,9 @@ const ArenaContainer: React.FC<{
 
   const isTrainingMode = arena.name == 'Training'
   const notAllowed =
-    arena.arena_open === false || (maxDailyCombatLimit === dailyCombatLimit && !isTrainingMode)
+    arena.arena_open === false ||
+    (maxDailyCombatLimit === dailyCombatLimit && !isTrainingMode) ||
+    (missFp && !isTrainingMode)
 
   const now = new Date()
   const getNextRefill = () => {
@@ -158,6 +175,59 @@ const ArenaContainer: React.FC<{
     return date
   }
 
+  const nextHourDate = useMemo(() => {
+    const now = new Date()
+    const nextHour = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      now.getHours() + 1,
+      0,
+      20 // we add 20 sec to let the script that refill FPs to run
+    )
+    return nextHour
+  }, [])
+
+  const handleCountdownReached = async () => {
+    await refreshCosmonsAndDecksList()
+  }
+
+  const renderContentLeagueMessage = () => {
+    // DAILY COMBAT LIMIT
+    if (dailyCombatLimit === maxDailyCombatLimit && !isTrainingMode) {
+      return (
+        <div className={style.combatLimitOverlay}>
+          <p className={style.combatLimit}>
+            💥 {dailyCombatLimit}/{maxDailyCombatLimit}
+          </p>
+          <p className={style.combatLimitMessage}>
+            You reached the maximum number of fights you can do in 24h. Please wait until the next
+            refill:
+          </p>
+          <Countdown className={style.countdown} from={now} to={getNextRefill()} />
+        </div>
+      )
+    }
+
+    // NO FP ON THE DECK
+    if (!isTrainingMode && missFp) {
+      return (
+        <div className={style.missFpOverlay}>
+          <p className={style.missFpMessage}>
+            You don't have enough FP on selected deck to fight in this league.
+          </p>
+          <p className={style.missFpBoldMessage}>+{hourlyFPNumber ?? 1} Fight Points in :</p>
+          <Countdown
+            className={style.countdown}
+            from={new Date()}
+            to={nextHourDate}
+            onCountdownReached={handleCountdownReached}
+          />
+        </div>
+      )
+    }
+  }
+
   return (
     <>
       <div
@@ -168,7 +238,9 @@ const ArenaContainer: React.FC<{
             'hover:bg-[#282255]': arena.arena_open === true,
             'cursor-not-allowed': notAllowed,
             'bg-transparent': isSelected === false,
-            'border-none': dailyCombatLimit === maxDailyCombatLimit && !isTrainingMode,
+            'border-none':
+              (dailyCombatLimit === maxDailyCombatLimit && !isTrainingMode) ||
+              (missFp && !isTrainingMode),
           }
         )}
         onClick={() => {
@@ -177,7 +249,12 @@ const ArenaContainer: React.FC<{
               onSelectArena(arena)
             }
           } else {
-            if (arena.arena_open && maxDailyCombatLimit !== dailyCombatLimit && !isTrainingMode) {
+            if (
+              arena.arena_open &&
+              maxDailyCombatLimit !== dailyCombatLimit &&
+              !isTrainingMode &&
+              !missFp
+            ) {
               onSelectArena(arena)
             }
           }
@@ -224,18 +301,7 @@ const ArenaContainer: React.FC<{
         <p className="mt-[16px] text-sm font-normal leading-6 text-white">
           <Trans i18nKey={`${camelCase(arena.name)}.description`} t={t} />
         </p>
-        {dailyCombatLimit === maxDailyCombatLimit && !isTrainingMode && (
-          <div className={style.combatLimitOverlay}>
-            <p className={style.combatLimit}>
-              💥 {dailyCombatLimit}/{maxDailyCombatLimit}
-            </p>
-            <p className={style.combatLimitMessage}>
-              You reached the maximum number of fights you can do in 24h. Please wait until the next
-              refill:
-            </p>
-            <Countdown className={style.countdown} from={now} to={getNextRefill()} />
-          </div>
-        )}
+        {renderContentLeagueMessage()}
       </div>
     </>
   )

@@ -202,8 +202,9 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
 
       {/* Modals */}
       <AnimatePresence>
-        {showSelectArenaModal ? (
+        {showSelectArenaModal && selectedDeck ? (
           <SelectArenaModal
+            deck={selectedDeck}
             loading={false}
             selectedArena={selectedArena}
             onSelectArena={handleLaunchFight}
