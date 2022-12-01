@@ -5,7 +5,11 @@ import { CosmonTypeWithMalus } from 'types/Malus'
 export const StatsKeyCanHaveMalus: string[] = ['Atq', 'Def', 'Spe', 'Hp', 'Luk', 'Int']
 
 export function deckHasMalus(cosmons: (CosmonTypeWithMalus | undefined)[]): boolean {
-  return cosmons.some((cosmon) => (cosmon?.malusPercent ?? 0 > 0 ? true : false))
+  return cosmons.some((cosmon) => (cosmon?.malusPercent ?? 0 < 0 ? true : false))
+}
+
+export function getOnlyCosmonsWithMalus(cosmons: CosmonTypeWithMalus[]): CosmonTypeWithMalus[] {
+  return cosmons.filter((cosmon) => cosmon?.malusPercent < 0)
 }
 
 export function getLowestCosmon(
@@ -37,7 +41,7 @@ export function computeStatsWithMalus(
         ...stat,
         value: (
           parseInt(stat.value) -
-          (parseInt(stat.value) - parseInt(lowestCosmonStat.value)) * 0.8
+          Math.trunc((parseInt(stat.value) - parseInt(lowestCosmonStat.value)) * 0.8)
         ).toString(),
       }
     }
@@ -57,13 +61,13 @@ export function computeAverageMalusPercent(
       const intStat = parseInt(stat.value)
       const intStatWithMalus = parseInt(statWithMalus.value)
 
-      return [...acc, ((intStat - intStatWithMalus) / ((intStat + intStatWithMalus) / 2)) * 100]
+      return [...acc, Math.trunc(((intStatWithMalus - intStat) / intStat) * 100)]
     }
 
     return acc
   }, [])
 
-  return Math.round(
+  return Math.trunc(
     diffBetweenStatsAndStatsWithMalus.reduce((partialSum, value) => partialSum + value, 0) /
       diffBetweenStatsAndStatsWithMalus.length
   )
@@ -151,10 +155,10 @@ export function computeMalusForDeck(
 }
 
 export function computeAverageMalusPercentForDeck(cosmons: CosmonTypeWithMalus[]): number {
-  const cosmonsWithMalus = cosmons.filter((cosmon) => cosmon.malusPercent > 0)
+  const cosmonsWithMalus = getOnlyCosmonsWithMalus(cosmons)
   const result = cosmonsWithMalus.reduce((acc, curr) => acc + curr.malusPercent, 0)
 
-  return Math.round(result / cosmonsWithMalus.length)
+  return Math.trunc(result / cosmonsWithMalus.length)
 }
 
 export function getAffinitiesWithoutMalus(affinities: DeckAffinitiesType) {

@@ -2,14 +2,15 @@ import Alert from '@components/Alert/Alert'
 import Button from '@components/Button/Button'
 import { AFFINITY_TYPES, NFTId, CosmonType } from 'types'
 import { useDeckStore } from '@store/deckStore'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import { DeckBuilderContext } from '../DeckBuilderContext'
 import DeckSlot from './DeckSlot'
 import FlipIcon from '@public/icons/flip.svg'
 import { CosmonTypeWithMalus } from 'types/Malus'
-import * as styles from './DeckSlotContainer.module.scss'
+import MalusInfoModal from '../../MalusInfoModal/MalusInfoModal'
+import { getOnlyCosmonsWithMalus } from '@utils/malus'
 
 interface DeckSlotsContainerProps {}
 
@@ -130,9 +131,11 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
   }, [])
 
   const cosmonsWithMalus = useMemo(() => {
-    return deck.cosmons.filter(
-      (cosmon) => cosmon && cosmon.malusPercent > 0
+    const filtredCosmons = deck.cosmons.filter(
+      (item) => item !== undefined
     ) as CosmonTypeWithMalus[]
+
+    return getOnlyCosmonsWithMalus(filtredCosmons)
   }, [deck.cosmons])
 
   return (
@@ -209,35 +212,7 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
         </Button>
       </div>
       {isAffinityHighlightMalus && cosmonsWithMalus ? (
-        <motion.div
-          onClick={(e) => {
-            e.stopPropagation()
-          }}
-          variants={dropIn}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className={styles.malusModal}
-        >
-          <div className={styles.cosmonWithMalusContainer}>
-            {cosmonsWithMalus.map((cosmon) => (
-              <p className={styles.cosmonWithMalus} key={cosmon.id}>
-                {cosmon.data.extension.name} :{' '}
-                <span className={styles.redMalus}>-{cosmon.malusPercent}%</span>
-              </p>
-            ))}
-          </div>
-          <p className={styles.malusTip}>
-            Decks made up of cards with more than 3 levels of
-            <br />
-            difference between the cards have a penalty. To
-            <br />
-            find out more about penalties :<br />
-            <a className={styles.mediumLink} target="_blank" href="https://www.medium.com/Cosmon">
-              www.medium.com/Cosmon
-            </a>
-          </p>
-        </motion.div>
+        <MalusInfoModal cosmonsWithMalus={cosmonsWithMalus} />
       ) : null}
     </div>
   )

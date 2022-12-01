@@ -64,7 +64,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { delay: 0.2, duration: 0.2 } }}
       exit={{ opacity: 0 }}
-      className="w-full overflow-visible rounded-[16px] bg-cosmon-main-quaternary px-[20px] py-[16px] transition-all hover:bg-[#29264B] lg:py-[24px] lg:px-[32px]"
+      className="relative w-full overflow-visible rounded-[16px] bg-cosmon-main-quaternary px-[20px] py-[16px] transition-all hover:bg-[#29264B] lg:py-[24px] lg:px-[32px]"
     >
       <div className="flex flex-col">
         <div className="flex items-center justify-between ">

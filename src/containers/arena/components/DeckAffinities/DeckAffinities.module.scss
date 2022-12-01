@@ -43,6 +43,10 @@ $tooltipWidth: 230px;
   margin-left: 8px;
   background-color: rgba(90, 31, 59, 1);
   border-radius: 8px;
+
+  &:hover {
+    cursor: help;
+  }
 }
 
 .redHexagon {
@@ -52,4 +56,9 @@ $tooltipWidth: 230px;
 .redTooltip {
   background: #5a1f3b !important;
   border-color: rgba(223, 69, 71, 1) !important;
+}
+
+.malusInfoModal {
+  position: absolute;
+  top: 83px !important;
 }
