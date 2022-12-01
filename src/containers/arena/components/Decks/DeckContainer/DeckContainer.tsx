@@ -59,8 +59,6 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
     setRevealCards((prev) => !prev)
   }, [])
 
-  console.log(deck)
-
   return (
     <motion.div
       initial={{ opacity: 0 }}

@@ -151,8 +151,6 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
     const affinitiesWithoutMalus = getAffinitiesWithoutMalus(deckAffinities)
     const malusAffinity = getMalusInAffinities(deckAffinities)
 
-    console.log(deckAffinities, malusAffinity)
-
     return (
       <div className="flex items-center" style={containerStyle}>
         <div className="flex rounded-[8px] bg-cosmon-main-quinary px-[10px] py-[12px] ">
