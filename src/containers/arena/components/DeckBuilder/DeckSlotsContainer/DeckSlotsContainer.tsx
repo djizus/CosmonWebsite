@@ -2,7 +2,7 @@ import Alert from '@components/Alert/Alert'
 import Button from '@components/Button/Button'
 import { AFFINITY_TYPES, NFTId, CosmonType } from 'types'
 import { useDeckStore } from '@store/deckStore'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import { DeckBuilderContext } from '../DeckBuilderContext'
@@ -10,6 +10,7 @@ import DeckSlot from './DeckSlot'
 import FlipIcon from '@public/icons/flip.svg'
 import { CosmonTypeWithMalus } from 'types/Malus'
 import MalusInfoModal from '../../MalusInfoModal/MalusInfoModal'
+import { getOnlyCosmonsWithMalus } from '@utils/malus'
 
 interface DeckSlotsContainerProps {}
 
@@ -130,9 +131,11 @@ const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
   }, [])
 
   const cosmonsWithMalus = useMemo(() => {
-    return deck.cosmons.filter(
-      (cosmon) => cosmon && cosmon.malusPercent > 0
+    const filtredCosmons = deck.cosmons.filter(
+      (item) => item !== undefined
     ) as CosmonTypeWithMalus[]
+
+    return getOnlyCosmonsWithMalus(filtredCosmons)
   }, [deck.cosmons])
 
   return (

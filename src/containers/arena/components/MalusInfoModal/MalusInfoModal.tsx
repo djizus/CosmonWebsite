@@ -46,7 +46,7 @@ const MalusInfoModal: React.FC<MalusInfoModalProps> = ({ cosmonsWithMalus, class
         {cosmonsWithMalus.map((cosmon) => (
           <p className={styles.cosmonWithMalus} key={cosmon.id}>
             {cosmon.data.extension.name} :{' '}
-            <span className={styles.redMalus}>-{cosmon.malusPercent}%</span>
+            <span className={styles.redMalus}>{cosmon.malusPercent}%</span>
           </p>
         ))}
       </div>

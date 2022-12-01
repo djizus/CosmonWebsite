@@ -13,6 +13,7 @@ import {
   computeAverageMalusPercentForDeck,
   getAffinitiesWithoutMalus,
   getMalusInAffinities,
+  getOnlyCosmonsWithMalus,
 } from '@utils/malus'
 import MalusInfoModal from '../MalusInfoModal/MalusInfoModal'
 
@@ -91,7 +92,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
       case AFFINITY_TYPES.PERSONALITY:
         return `+10% bonus on all fighting abilities`
       case AFFINITY_TYPES.MALUS:
-        return `Cosmon have an average malus of -${computeAverageMalusPercentForDeck(cosmons)}%`
+        return `Cosmon have an average malus of ${computeAverageMalusPercentForDeck(cosmons)}%`
     }
   }
 
@@ -125,7 +126,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
               >
                 {affinity === AFFINITY_TYPES.MALUS ? (
                   <p className="font-semibold text-white">
-                    -{computeAverageMalusPercentForDeck(cosmons)}% in all stats
+                    {computeAverageMalusPercentForDeck(cosmons)}% in all stats
                   </p>
                 ) : (
                   <p className="font-semibold text-white">
@@ -149,6 +150,8 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
   const renderShort = useMemo(() => {
     const affinitiesWithoutMalus = getAffinitiesWithoutMalus(deckAffinities)
     const malusAffinity = getMalusInAffinities(deckAffinities)
+
+    console.log(deckAffinities, malusAffinity)
 
     return (
       <div className="flex items-center" style={containerStyle}>
@@ -188,7 +191,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                 {displayMalusInfoModal ? (
                   <MalusInfoModal
                     className={styles.malusInfoModal}
-                    cosmonsWithMalus={cosmons.filter((cosmon) => cosmon.malusPercent > 0)}
+                    cosmonsWithMalus={getOnlyCosmonsWithMalus(cosmons)}
                   />
                 ) : null}
               </div>
@@ -239,7 +242,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                   }}
                 >
                   {affinity === AFFINITY_TYPES.MALUS
-                    ? `-${computeAverageMalusPercentForDeck(cosmons)}%`
+                    ? `${computeAverageMalusPercentForDeck(cosmons)}%`
                     : `+${(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}`}
                 </p>
               ) : null}
@@ -313,7 +316,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                   }}
                 >
                   {affinity === AFFINITY_TYPES.MALUS
-                    ? `-${computeAverageMalusPercentForDeck(cosmons)}%`
+                    ? `${computeAverageMalusPercentForDeck(cosmons)}%`
                     : `+${(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}`}
                 </p>
               ) : null}
