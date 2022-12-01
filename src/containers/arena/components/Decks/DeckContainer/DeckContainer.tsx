@@ -7,14 +7,11 @@ import DeckDropdownMenu from './DeckDropdownMenu'
 import DeckAffinities from '../../DeckAffinities/DeckAffinities'
 import CosmonFullModal from '@components/Modal/CosmonFullModal'
 import CosmonFightPointsBar from '@components/Cosmon/CosmonFightPointsBar'
-import { getCosmonStat } from '@utils/cosmon'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import EditIcon from '@public/icons/edit.svg'
 import FlipIcon from '@public/icons/flip.svg'
 import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
 import FlipCard from '@components/FlipCard/FlipCard'
-import Countdown from '@components/Countdown/Countdown'
-import { useArenaStore } from '@store/arenaStore'
 import { BuyBoostModalOrigin } from '../../BuyBoostModal/BuyBoostModalType'
 import * as style from './DeckContainer.module.scss'
 import clsx from 'clsx'
@@ -40,8 +37,6 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   const { computeDeckAffinities } = useDeckStore()
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>(null)
   const [revealCards, setRevealCards] = useState(true)
-  const { refreshCosmonsAndDecksList } = useDeckStore()
-  const { hourlyFPNumber } = useArenaStore()
   const { width } = useWindowSize()
 
   const affinities = useMemo(() => {
@@ -63,29 +58,6 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
   const onClickFlipCards = useCallback(() => {
     setRevealCards((prev) => !prev)
   }, [])
-
-  const missFp = useMemo(() => {
-    if (deck) {
-      return deck.cosmons.some((c) => +getCosmonStat(c.stats!, 'Fp')?.value! === 0)
-    }
-  }, [deck])
-
-  const nextHourDate = useMemo(() => {
-    const now = new Date()
-    const nextHour = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      now.getHours() + 1,
-      0,
-      20 // we add 20 sec to let the script that refill FPs to run
-    )
-    return nextHour
-  }, [])
-
-  const handleCountdownReached = async () => {
-    await refreshCosmonsAndDecksList()
-  }
 
   return (
     <motion.div
@@ -182,26 +154,8 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
         </div>
         <div className="mt-[30px] flex gap-[12px]">
           <div className="flex flex-1">
-            <Button
-              onClick={handleClickOnFight}
-              disabled={missFp}
-              type="primary"
-              size="small"
-              fullWidth
-            >
-              {missFp ? (
-                <p>
-                  +{hourlyFPNumber ?? 1} Fight Points in &nbsp;
-                  <Countdown
-                    from={new Date()}
-                    to={nextHourDate}
-                    tag="span"
-                    onCountdownReached={handleCountdownReached}
-                  />
-                </p>
-              ) : (
-                'Fight'
-              )}
+            <Button onClick={handleClickOnFight} type="primary" size="small" fullWidth>
+              Fight
             </Button>
           </div>
           <div className="hidden gap-[12px] lg:flex">

@@ -1,0 +1,20 @@
+.button {
+  background-color: theme('colors.cosmon.main.secondary') !important;
+}
+
+.activeButton {
+  background-color: theme('colors.cosmon.main.primary') !important;
+}
+
+.optionsContainer {
+  display: flex;
+  flex-direction: row;
+  max-width: 1120px;
+  margin: auto;
+  margin-top: 38px;
+}
+
+.cosmonsList {
+  margin-top: 38px;
+  align-items: center;
+}

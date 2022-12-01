@@ -16,6 +16,8 @@ import DeckContainer from './DeckContainer/DeckContainer'
 import DecksEmptyList from './DecksEmptyList'
 import { useArenaStore } from '@store/arenaStore'
 import { BuyBoostModalOrigin } from '../BuyBoostModal/BuyBoostModalType'
+import SkipFightModal from '../SkipFightModal/SkipFightModal'
+import { isMobile } from '@walletconnect/browser-utils'
 
 interface DecksProps {
   onEditDeck: (deck: Deck) => void
@@ -33,7 +35,9 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
   const [showSelectArenaModal, setShowSelectArenaModal] = useState(false)
   const [showLearnMoreModal, setShowLearnMoreModal] = useState(false)
   const [showFightReportModal, setShowFightReportModal] = useState(false)
+  const [showSkipFightModal, setShowSkipFightModal] = useState(false)
 
+  const [skipTheFight, setSkipTheFight] = useState(false)
   const [battle, setBattle] = useState<FightType | undefined>()
   const [battleOverTime, setBattleOverTime] = useState<FightType | undefined>()
 
@@ -65,6 +69,7 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
         setShowLearnMoreModal(true)
         return
       }
+      setSkipTheFight(false)
       try {
         if (selectedDeck) {
           const newBattle = await fight(selectedDeck, arena)
@@ -143,16 +148,31 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
     }
   }
 
+  // this method is only called in mobile context
+  // when user wants to skip the fight
+  // (we only show the close btn on mobile context)
   const handleCloseFightModal = () => {
-    setBattle(undefined)
-    setSelectedArena(undefined)
-    setShowFightReportModal(false)
+    if (isMobile()) {
+      setShowSkipFightModal(true)
+    }
   }
 
   const handleCloseFightReportModal = () => {
     setBattle(undefined)
     setSelectedArena(undefined)
     setShowFightReportModal(false)
+  }
+
+  const handleCancelSkipFight = () => {
+    setShowSkipFightModal(false)
+  }
+
+  const handleAcceptSkipFight = async () => {
+    setSkipTheFight(true)
+    setBattle(undefined)
+    setSelectedArena(undefined)
+    await refreshCosmonsAndDecksList()
+    setShowSkipFightModal(false)
   }
 
   return (
@@ -182,8 +202,9 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
 
       {/* Modals */}
       <AnimatePresence>
-        {showSelectArenaModal ? (
+        {showSelectArenaModal && selectedDeck ? (
           <SelectArenaModal
+            deck={selectedDeck}
             loading={false}
             selectedArena={selectedArena}
             onSelectArena={handleLaunchFight}
@@ -214,6 +235,8 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
           setBattle,
           battleOverTime,
           setBattleOverTime,
+          skipTheFight,
+          setSkipTheFight,
           handleClickNewFight,
           handleCloseFightModal,
           handleCloseFightReportModal,
@@ -230,15 +253,24 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
             />
           ) : null}
         </AnimatePresence>
-
         <AnimatePresence>
-          {showFightReportModal ? (
+          {showFightReportModal && !skipTheFight ? (
             <FightReportModal
               onClickNewFight={handleClickNewFight}
               onCloseModal={handleCloseFightReportModal}
             />
           ) : null}
         </AnimatePresence>
+        {isMobile() ? (
+          <AnimatePresence>
+            {showSkipFightModal ? (
+              <SkipFightModal
+                onClickAccept={handleAcceptSkipFight}
+                onClickCancel={handleCancelSkipFight}
+              />
+            ) : null}
+          </AnimatePresence>
+        ) : null}
       </FightContext.Provider>
     </div>
   )

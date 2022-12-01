@@ -9,12 +9,14 @@ interface CosmonsListProps {
   cosmons: CosmonType[]
   onClickTransfer: (cosmon: CosmonType) => void
   onClickShowDetails: (cosmon: CosmonType) => void
+  className?: string
 }
 
 const CosmonsList: React.FC<CosmonsListProps> = ({
   cosmons,
   onClickTransfer,
   onClickShowDetails,
+  className,
 }) => {
   return (
     <Transition show={true} appear={true}>
@@ -22,7 +24,10 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
         style={{
           gridTemplateColumns: 'repeat(auto-fit, minmax(167px, max-content))',
         }}
-        className="mx-auto mt-[40px] grid max-w-[1180px] justify-center gap-[60px] px-8 lg:mt-40 lg:justify-start"
+        className={clsx(
+          'mx-auto mt-[40px] grid max-w-[1180px] justify-center gap-[60px] px-8 lg:mt-40 lg:justify-start',
+          className
+        )}
       >
         {cosmons.map((cosmon) => (
           <div
