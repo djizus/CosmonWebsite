@@ -37,7 +37,7 @@ export function computeStatsWithMalus(
         ...stat,
         value: (
           parseInt(stat.value) -
-          (parseInt(stat.value) - parseInt(lowestCosmonStat.value)) * 0.8
+          Math.trunc((parseInt(stat.value) - parseInt(lowestCosmonStat.value)) * 0.8)
         ).toString(),
       }
     }
@@ -63,7 +63,7 @@ export function computeAverageMalusPercent(
     return acc
   }, [])
 
-  return Math.round(
+  return Math.trunc(
     diffBetweenStatsAndStatsWithMalus.reduce((partialSum, value) => partialSum + value, 0) /
       diffBetweenStatsAndStatsWithMalus.length
   )
@@ -154,7 +154,7 @@ export function computeAverageMalusPercentForDeck(cosmons: CosmonTypeWithMalus[]
   const cosmonsWithMalus = cosmons.filter((cosmon) => cosmon.malusPercent > 0)
   const result = cosmonsWithMalus.reduce((acc, curr) => acc + curr.malusPercent, 0)
 
-  return Math.round(result / cosmonsWithMalus.length)
+  return Math.trunc(result / cosmonsWithMalus.length)
 }
 
 export function getAffinitiesWithoutMalus(affinities: DeckAffinitiesType) {

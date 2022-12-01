@@ -14,7 +14,7 @@ import {
   getAffinitiesWithoutMalus,
   getMalusInAffinities,
 } from '@utils/malus'
-import Tooltip from '@components/Tooltip/Tooltip'
+import MalusInfoModal from '../MalusInfoModal/MalusInfoModal'
 
 export type BadgeOptions = HexagonProps
 
@@ -42,6 +42,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
   onStopHoverAffinity,
 }) => {
   const [showBonusTooltip, setShowBonusTooltip] = useState<AFFINITY_TYPES>()
+  const [displayMalusInfoModal, setDisplayMalusInfoModal] = useState(false)
 
   const renderAffinityIcon = useCallback((affinity: AFFINITY_TYPES, size = 17) => {
     switch (affinity) {
@@ -176,28 +177,27 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
         {malusAffinity.map((affinity, i) => {
           if ((deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size > 0) {
             return (
-              <div
-                key={affinity + '-' + i}
-                data-tip="tootlip"
-                data-for={`affinity-${affinity}`}
-                className={styles.malusShort}
-              >
-                {renderAffinityIcon(affinity as AFFINITY_TYPES)}
-                <Tooltip id={`affinity-${affinity}`} place="bottom">
-                  <p>
-                    {getAffinityBonusSentence(
-                      affinity as AFFINITY_TYPES,
-                      (deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size
-                    )}
-                  </p>
-                </Tooltip>
+              <div key={affinity + '-' + i}>
+                <div
+                  onMouseEnter={() => setDisplayMalusInfoModal(true)}
+                  onMouseLeave={() => setDisplayMalusInfoModal(false)}
+                  className={styles.malusShort}
+                >
+                  {renderAffinityIcon(affinity as AFFINITY_TYPES)}
+                </div>
+                {displayMalusInfoModal ? (
+                  <MalusInfoModal
+                    className={styles.malusInfoModal}
+                    cosmonsWithMalus={cosmons.filter((cosmon) => cosmon.malusPercent > 0)}
+                  />
+                ) : null}
               </div>
             )
           }
         })}
       </div>
     )
-  }, [deckAffinities, cosmons])
+  }, [displayMalusInfoModal, deckAffinities, cosmons])
 
   const renderBadge = useMemo(() => {
     const affinitesWithoutMalus = getAffinitiesWithoutMalus(deckAffinities)
@@ -335,7 +335,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
       default:
         return null
     }
-  }, [variant, deckAffinities, showBonusTooltip, labelPosition])
+  }, [variant, deckAffinities, displayMalusInfoModal, showBonusTooltip, labelPosition])
 
   return renderVariant
 }
