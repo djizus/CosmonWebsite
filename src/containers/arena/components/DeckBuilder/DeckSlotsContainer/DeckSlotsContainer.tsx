@@ -14,27 +14,6 @@ import { getOnlyCosmonsWithMalus } from '@utils/malus'
 
 interface DeckSlotsContainerProps {}
 
-const dropIn = {
-  hidden: {
-    y: '100vh',
-    opacity: 0,
-  },
-  visible: {
-    y: '0',
-    opacity: 1,
-    transition: {
-      duration: 0.2,
-    },
-  },
-  exit: {
-    y: '100vh',
-    opacity: 0,
-    transition: {
-      duration: 0.2,
-    },
-  },
-}
-
 const DeckSlotsContainer: React.FC<DeckSlotsContainerProps> = ({}) => {
   const { deck, setDeck, handleCloseModal, deckToEdit } = useContext(DeckBuilderContext)
 

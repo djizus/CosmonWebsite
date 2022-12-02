@@ -10,7 +10,7 @@ import clsx from 'clsx'
 import styles from './DeckAffinities.module.scss'
 import { CosmonTypeWithMalus } from 'types/Malus'
 import {
-  computeAverageMalusPercentForDeck,
+  computeCosmonMalusPercentForDeck,
   getAffinitiesWithoutMalus,
   getMalusInAffinities,
   getOnlyCosmonsWithMalus,
@@ -92,7 +92,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
       case AFFINITY_TYPES.PERSONALITY:
         return `+10% bonus on all fighting abilities`
       case AFFINITY_TYPES.MALUS:
-        return `Cosmon have an average malus of ${computeAverageMalusPercentForDeck(cosmons)}%`
+        return `Cosmon have an average malus of ${computeCosmonMalusPercentForDeck(cosmons)}%`
     }
   }
 
@@ -126,7 +126,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
               >
                 {affinity === AFFINITY_TYPES.MALUS ? (
                   <p className="font-semibold text-white">
-                    {computeAverageMalusPercentForDeck(cosmons)}% in all stats
+                    {computeCosmonMalusPercentForDeck(cosmons)}% in all stats
                   </p>
                 ) : (
                   <p className="font-semibold text-white">
@@ -240,7 +240,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                   }}
                 >
                   {affinity === AFFINITY_TYPES.MALUS
-                    ? `${computeAverageMalusPercentForDeck(cosmons)}%`
+                    ? `${computeCosmonMalusPercentForDeck(cosmons)}%`
                     : `+${(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}`}
                 </p>
               ) : null}
@@ -314,7 +314,7 @@ const DeckAffinities: React.FC<DeckAffinitiesProps> = ({
                   }}
                 >
                   {affinity === AFFINITY_TYPES.MALUS
-                    ? `${computeAverageMalusPercentForDeck(cosmons)}%`
+                    ? `${computeCosmonMalusPercentForDeck(cosmons)}%`
                     : `+${(deckAffinities[affinity as AFFINITY_TYPES] as Set<string>).size}`}
                 </p>
               ) : null}

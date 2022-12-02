@@ -13,10 +13,11 @@ import FlipCard from '@components/FlipCard/FlipCard'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import CosmonStatsCard from '@components/Cosmon/CosmonCard/CosmonStatsCard'
 import {
-  computeAverageMalusPercent,
+  computeCosmonMalusPercent,
   computeMalusForDeck,
   computeStatsWithMalus,
   deckHasMalus,
+  getCosmonPower,
   getLowestCosmon,
 } from '@utils/malus'
 import { CosmonTypeWithMalus } from 'types/Malus'
@@ -61,8 +62,12 @@ const DeckSlot: React.FC<DeckSlotProps> = ({
             (item) => item !== undefined
           ) as CosmonTypeWithMalus[]
 
-          const lowestCosmon = getLowestCosmon(filtredCosmons)
-          const statsWithMalus = computeStatsWithMalus(item, lowestCosmon)
+          let statsWithMalus = item.stats
+
+          if (filtredCosmons.length > 0) {
+            const lowestCosmon = getLowestCosmon(filtredCosmons)
+            statsWithMalus = computeStatsWithMalus(item, lowestCosmon)
+          }
 
           // mark old card as free on edit
           if (deckToEdit && cosmonsTemp[slotIdx]?.id) {
@@ -72,7 +77,9 @@ const DeckSlot: React.FC<DeckSlotProps> = ({
           cosmonsTemp[slotIdx] = {
             ...item,
             statsWithMalus: statsWithMalus,
-            malusPercent: computeAverageMalusPercent(item.stats, statsWithMalus),
+            malusPercent: computeCosmonMalusPercent(item.stats, statsWithMalus),
+            cosmonPower: getCosmonPower(item.stats),
+            cosmonPowerWithMalus: getCosmonPower(statsWithMalus),
           }
 
           const computedCosmons = computeMalusForDeck(cosmonsTemp)

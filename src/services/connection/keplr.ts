@@ -32,7 +32,7 @@ export const connectKeplr = async (): Promise<OfflineSigner | null> => {
       return await (window as any).getOfflineSignerAuto(PUBLIC_CHAIN_ID)
     } catch (e) {
       alert('Failed to suggest the chain')
-      console.log('error details', e)
+      console.error('error details', e)
     }
   } else {
     alert('Please use the recent version of keplr extension')

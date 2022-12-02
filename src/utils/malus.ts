@@ -50,27 +50,29 @@ export function computeStatsWithMalus(
   })
 }
 
-export function computeAverageMalusPercent(
-  stats: CosmonStatType[],
-  statsWithMalus: CosmonStatType[]
-): number {
-  const diffBetweenStatsAndStatsWithMalus: number[] = stats.reduce((acc: number[], stat) => {
-    const statWithMalus = getCosmonStat(statsWithMalus, stat.key)
-
-    if (statWithMalus && StatsKeyCanHaveMalus.includes(statWithMalus.key)) {
-      const intStat = parseInt(stat.value)
-      const intStatWithMalus = parseInt(statWithMalus.value)
-
-      return [...acc, Math.trunc(((intStatWithMalus - intStat) / intStat) * 100)]
+export function getCosmonPower(stats: CosmonStatType[]): number {
+  return stats.reduce((acc, stat) => {
+    if (stat && StatsKeyCanHaveMalus.includes(stat.key)) {
+      return acc + parseInt(stat.value)
     }
 
     return acc
-  }, [])
+  }, 0)
+}
 
-  return Math.trunc(
-    diffBetweenStatsAndStatsWithMalus.reduce((partialSum, value) => partialSum + value, 0) /
-      diffBetweenStatsAndStatsWithMalus.length
-  )
+export function computeCosmonMalusPercent(
+  stats: CosmonStatType[],
+  statsWithMalus: CosmonStatType[]
+): number {
+  const cosmonPowerWithoutMalus = getCosmonPower(stats)
+  const cosmonPowerWithMalus = getCosmonPower(statsWithMalus)
+
+  const result =
+    Math.round(
+      ((cosmonPowerWithMalus - cosmonPowerWithoutMalus) / cosmonPowerWithoutMalus) * 100 * 100
+    ) / 100
+
+  return +result.toFixed(2)
 }
 
 export function computeMalusForCosmons(cosmons: CosmonType[]): CosmonTypeWithMalus[] {
@@ -91,7 +93,9 @@ export function computeMalusForCosmons(cosmons: CosmonType[]): CosmonTypeWithMal
       return {
         ...cosmon,
         statsWithMalus: statsWithMalus,
-        malusPercent: computeAverageMalusPercent(cosmon.stats, statsWithMalus),
+        malusPercent: computeCosmonMalusPercent(cosmon.stats, statsWithMalus),
+        cosmonPower: getCosmonPower(cosmon.stats),
+        cosmonPowerWithMalus: getCosmonPower(statsWithMalus),
       }
     }
 
@@ -99,6 +103,8 @@ export function computeMalusForCosmons(cosmons: CosmonType[]): CosmonTypeWithMal
       ...cosmon,
       statsWithMalus: [...cosmon.stats],
       malusPercent: 0,
+      cosmonPower: getCosmonPower(cosmon.stats),
+      cosmonPowerWithMalus: getCosmonPower(cosmon.stats),
     }
   })
 }
@@ -140,7 +146,9 @@ export function computeMalusForDeck(
       return {
         ...cosmon,
         statsWithMalus: statsWithMalus,
-        malusPercent: computeAverageMalusPercent(cosmon.stats, statsWithMalus),
+        malusPercent: computeCosmonMalusPercent(cosmon.stats, statsWithMalus),
+        cosmonPower: getCosmonPower(cosmon.stats),
+        cosmonPowerWithMalus: getCosmonPower(statsWithMalus),
       }
     }
 
@@ -148,17 +156,21 @@ export function computeMalusForDeck(
       ...cosmon,
       statsWithMalus: [...cosmon.stats],
       malusPercent: 0,
+      cosmonPower: getCosmonPower(cosmon.stats),
+      cosmonPowerWithMalus: getCosmonPower(cosmon.stats),
     }
   }) as CosmonTypeWithMalus[]
 
   return fillDeckCosmons(cosmonsWithMalus)
 }
 
-export function computeAverageMalusPercentForDeck(cosmons: CosmonTypeWithMalus[]): number {
-  const cosmonsWithMalus = getOnlyCosmonsWithMalus(cosmons)
-  const result = cosmonsWithMalus.reduce((acc, curr) => acc + curr.malusPercent, 0)
+export function computeCosmonMalusPercentForDeck(cosmons: CosmonTypeWithMalus[]): number {
+  const deckPower = cosmons.reduce((acc, curr) => acc + curr.cosmonPower, 0)
+  const deckPowerWithMalus = cosmons.reduce((acc, curr) => acc + curr.cosmonPowerWithMalus, 0)
 
-  return Math.trunc(result / cosmonsWithMalus.length)
+  const result = Math.round(((deckPowerWithMalus - deckPower) / deckPower) * 100 * 100) / 100
+
+  return +result.toFixed(2)
 }
 
 export function getAffinitiesWithoutMalus(affinities: DeckAffinitiesType) {

@@ -114,7 +114,6 @@ export const queryCosmonPrice = async (
   const price = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
     get_price_by_scarcity: { scarcity: scarcity },
   })
-  // console.log(`price of ${scarcity}`, price)
   return price.amount
 }
 
