@@ -80,18 +80,6 @@ const CosmonCard: React.FC<
     }
   }
 
-  /* const handleLoadImage = (e: any) => {
-    console.log('handleLoadImage :: ', e)
-    setImageLoaded(true)
-  }
-
-  useEffect(() => {
-    console.log('imageLoaded :: ', imageLoaded)
-    if (imageLoaded === true) {
-      controls.start('appear')
-    }
-  }, [imageLoaded]) */
-
   return (
     <div
       {...divProps}

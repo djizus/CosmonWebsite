@@ -29,11 +29,7 @@ const NFTsList: React.FC<NFTsListProps> = ({}) => {
     }
 
     if (listFilter.showUnused === true) {
-      nftsList = [
-        ...nftsList.filter(
-          (nft) => nft.isInDeck === false || nft.temporaryFree === true
-        ),
-      ]
+      nftsList = [...nftsList.filter((nft) => nft.isInDeck === false || nft.temporaryFree === true)]
     } else {
       nftsList = [
         ...nftsList.filter((nft) => nft.isInDeck === false),
@@ -63,9 +59,9 @@ const NFTsList: React.FC<NFTsListProps> = ({}) => {
       <div className="w-full flex-1 flex-col overflow-y-scroll pb-[12px] ">
         <AnimatePresence>
           {(nftsList?.length > 0 &&
-            nftsList.map((nft, i) => (
-              <NFTContainer key={nft.id} nft={nft} listIdx={i} />
-            ))) || <NFTsEmptyList />}
+            nftsList.map((nft, i) => <NFTContainer key={nft.id} nft={nft} listIdx={i} />)) || (
+            <NFTsEmptyList />
+          )}
         </AnimatePresence>
       </div>
     </div>

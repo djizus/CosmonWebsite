@@ -30,7 +30,7 @@ export default function CosmonAirdropModal({ onCloseModal }: CosmonAirdropModalP
       set_cosmonClaimed(undefined)
       set_cosmonClaimed(cosmonClaimed)
     } catch (e: any) {
-      console.log('Error! ', e)
+      console.error('Error! ', e)
     } finally {
     }
   }

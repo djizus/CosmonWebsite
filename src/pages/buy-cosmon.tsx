@@ -36,7 +36,7 @@ export default function Page() {
       set_cosmonBought(await buyCosmon(scarcity, price))
       getWhitelistData()
     } catch (e: any) {
-      console.log('Error! ', e)
+      console.error('Error! ', e)
     } finally {
       set_isCurrentlyBuying(null)
     }

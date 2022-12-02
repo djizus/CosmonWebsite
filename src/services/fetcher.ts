@@ -23,13 +23,6 @@ type FetcherType = {
   payload: Record<string, unknown>
 }
 
-// export const fetcher = (...args: any[]) => {
-//   console.log('here', args)
-//   return {
-//     lol: true,
-//   }
-// }
-
 export const chainFetcher = async ({
   type,
   contractAddress,

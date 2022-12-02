@@ -9,7 +9,7 @@ import NFTStats from './NFTStats'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDrag, DragPreviewImage } from 'react-dnd'
 import Tooltip from '@components/Tooltip/Tooltip'
-import { computeMalusForDeck, deckHasMalus } from '@utils/malus'
+import { computeMalusForDeck, deckHasMalus, getCosmonPower } from '@utils/malus'
 import { CosmonTypeWithMalus } from 'types/Malus'
 
 interface NFTContainerProps {
@@ -42,7 +42,7 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
   const handleDoubleClick = useCallback(() => {
     if (
       firstFreeSlotIdx !== -1 &&
-      nft.isInDeck === false &&
+      (nft.isInDeck === false || nft.temporaryFree === true) &&
       deck.cosmons.findIndex((d) => d?.id === nft.id) === -1
     ) {
       let cosmonsTemp = [...deck.cosmons]
@@ -51,6 +51,8 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
         ...nft,
         malusPercent: 0,
         statsWithMalus: [...nft.stats],
+        cosmonPower: getCosmonPower(nft.stats),
+        cosmonPowerWithMalus: getCosmonPower(nft.stats),
       }
 
       const filtredCosmons = cosmonsTemp.filter(
