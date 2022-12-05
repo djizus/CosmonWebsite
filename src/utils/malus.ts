@@ -72,7 +72,7 @@ export function computeCosmonMalusPercent(
       ((cosmonPowerWithMalus - cosmonPowerWithoutMalus) / cosmonPowerWithoutMalus) * 100 * 100
     ) / 100
 
-  return +result.toFixed(2)
+  return +result.toFixed(1)
 }
 
 export function computeMalusForCosmons(cosmons: CosmonType[]): CosmonTypeWithMalus[] {
@@ -170,7 +170,7 @@ export function computeCosmonMalusPercentForDeck(cosmons: CosmonTypeWithMalus[])
 
   const result = Math.round(((deckPowerWithMalus - deckPower) / deckPower) * 100 * 100) / 100
 
-  return +result.toFixed(2)
+  return +result.toFixed(1)
 }
 
 export function getAffinitiesWithoutMalus(affinities: DeckAffinitiesType) {
