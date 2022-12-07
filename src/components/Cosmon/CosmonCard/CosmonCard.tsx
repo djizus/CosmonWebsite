@@ -2,7 +2,7 @@ import React, { CSSProperties, useMemo, useRef, useState } from 'react'
 import { getCosmonStat, getScarcityByCosmon, getTrait, indexByCharacter } from '@utils/cosmon'
 import countries from '@utils/countries'
 import clsx from 'clsx'
-import { motion, useMotionValue, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useTransform, HTMLMotionProps } from 'framer-motion'
 import { CosmonType } from 'types'
 import styles from './CosmonCard.module.scss'
 import { round } from '@utils/math'
@@ -20,9 +20,7 @@ interface CosmonCardProps {
   size?: 'sm' | 'md' | 'lg'
 }
 
-const CosmonCard: React.FC<
-  CosmonCardProps & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
-> = ({
+const CosmonCard: React.FC<CosmonCardProps & HTMLMotionProps<'div'>> = ({
   cosmon,
   containerStyle,
   imgStyle,
