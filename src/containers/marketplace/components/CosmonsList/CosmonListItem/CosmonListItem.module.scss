@@ -1,0 +1,84 @@
+.cosmonListItem {
+    position: relative;
+    width: 196px;
+    border: 1px solid rgba(159, 164, 221, 0.6);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.cardContainer {
+    height: calc(325px - 9px);
+    overflow: hidden;
+    margin-bottom: 9px;
+}
+
+.cosmonCard {
+    height: 325px;
+    width: 194px;
+
+    > * {
+        border-bottom-left-radius: 0px !important;
+    }
+}
+
+.cosmonListItemFooter {
+    display: flex;
+    flex-direction: column;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 14px;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.label {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 23px;
+    margin-bottom: 3px;
+    color: white;
+}
+
+.priceContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.kiLogo {
+    width: 15px;
+    height: 15px;
+    max-width: unset;
+    margin-right: 11px;
+}
+
+.priceValue {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 23px;
+    color: white;
+}
+
+.flipButton {
+    position: absolute;
+    top: -20px;
+    z-index: 1;
+    right: -20px;
+    height: 40px;
+    width: 40px;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: #20164f !important;
+    border: 0.5px solid #413673 !important;
+
+    &:hover {
+        cursor: pointer;
+        background: linear-gradient(180deg, rgba(169, 150, 255, 1), rgba(118, 96, 216, 1) 100%) !important;
+    }
+}
+
+.flip {
+    margin-top: -1px;
+}

@@ -1,7 +1,7 @@
 import create from 'zustand'
 import { ArenaService } from '@services/arena'
 import { Coin } from '@cosmjs/proto-signing'
-import { WalletInfos, PrizesForAddress, LeaderBoard, ArenaType, CosmonType } from 'types'
+import { WalletInfos, PrizesForAddress, LeaderBoard, ArenaType } from 'types'
 import { toast } from 'react-toastify'
 import { ToastContainer } from '@components/ToastContainer/ToastContainer'
 import SuccessIcon from '@public/icons/success.svg'

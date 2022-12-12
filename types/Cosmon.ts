@@ -33,6 +33,7 @@ export type CosmonStatType = {
 export type CosmonType = {
   id: string
   isInDeck?: boolean
+  isListed: boolean
   temporaryFree?: boolean // useful during the edition of deck, when we remove an nft from the deck before saving
   data: {
     extension: {
@@ -55,4 +56,11 @@ export type CosmonType = {
   stats: CosmonStatType[]
   statsWithoutBoosts: CosmonStatType[]
   boosts: [Boost | null, Boost | null, Boost | null]
+}
+
+export type CosmonMarketPlaceType = CosmonType & {
+  price?: number
+  collection?: string
+  expire?: any
+  owner?: string
 }

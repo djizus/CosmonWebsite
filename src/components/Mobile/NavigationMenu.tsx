@@ -1,4 +1,3 @@
-import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
 import { useWalletStore } from '@store/walletStore'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'

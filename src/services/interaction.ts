@@ -19,6 +19,7 @@ const PUBLIC_NFT_CONTRACT = process.env.NEXT_PUBLIC_NFT_CONTRACT || ''
 const PUBLIC_WHITELIST_CONTRACT = process.env.NEXT_PUBLIC_WHITELIST_CONTRACT || ''
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
+const PUBLIC_MARKETPLACE_CONTRACT = process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT || ''
 
 export const executeBuyCosmon = (
   signingClient: SigningCosmWasmClient,
@@ -53,6 +54,7 @@ export const executeBuyCosmon = (
           id: tokenId,
           data: await queryCosmonInfo(signingClient, tokenId),
           stats: [],
+          isListed: false,
           statsWithoutBoosts: [],
           boosts: [null, null, null],
         }
@@ -277,6 +279,7 @@ export const executeClaimAirdrop = async (
             id: tokenId,
             data: await queryCosmonInfo(signingClient, tokenId),
             stats: [],
+            isListed: false,
             statsWithoutBoosts: [],
             boosts: [null, null, null],
           }
@@ -424,7 +427,7 @@ export async function fetch_tokens(signingClient: SigningCosmWasmClient, address
         tokens: {
           owner: address,
           start_after,
-          limit: 10,
+          limit: 20,
         },
       }
     )
@@ -433,7 +436,7 @@ export async function fetch_tokens(signingClient: SigningCosmWasmClient, address
       tokens.push(token)
     }
 
-    if (response.tokens.length < 10) {
+    if (response.tokens.length < 20) {
       break
     }
 
@@ -441,6 +444,64 @@ export async function fetch_tokens(signingClient: SigningCosmWasmClient, address
   }
 
   return tokens
+}
+
+export async function approveNft(
+  signingClient: SigningCosmWasmClient,
+  address: string,
+  nftId: string
+) {
+  const response = await signingClient.execute(
+    address,
+    process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
+    {
+      approve: {
+        spender: PUBLIC_MARKETPLACE_CONTRACT,
+        token_id: nftId,
+      },
+    },
+    'auto',
+    '[COSMON] approve a nft'
+  )
+
+  return response
+}
+
+export async function approveAll(signingClient: SigningCosmWasmClient, address: string) {
+  try {
+    const response = await signingClient.execute(
+      address,
+      process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
+      {
+        approve_all: {
+          operator: PUBLIC_MARKETPLACE_CONTRACT,
+        },
+      },
+      'auto',
+      '[COSMON] approve all'
+    )
+
+    return response
+  } catch (error) {
+    console.error('Error while approve all', error)
+  }
+}
+
+export async function approval(signingClient: SigningCosmWasmClient, token_id: string) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await signingClient.queryContractSmart(PUBLIC_NFT_CONTRACT, {
+        approval: {
+          token_id,
+          spender: PUBLIC_MARKETPLACE_CONTRACT ?? '',
+        },
+      })
+      return resolve(data)
+    } catch (e) {
+      console.error(`Error while fetching approval`, e)
+      return reject(`Error while fetching approval`)
+    }
+  })
 }
 
 export const getRewards = async (

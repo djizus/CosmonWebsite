@@ -1,0 +1,10 @@
+.cosmonListItem {
+    position: relative;
+}
+
+.dropdown {
+    position: absolute;
+    right: calc(0px - 16px);
+    top: calc(0px - 16px);
+    z-index: 2;
+}

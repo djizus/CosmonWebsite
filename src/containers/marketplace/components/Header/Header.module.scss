@@ -1,0 +1,111 @@
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    padding: 15px 13px 16px 42px;
+    border: 1px solid rgba(159, 164, 221, 0.6);
+    border-radius: 8px;
+    height: 147px;
+    align-items: center;
+}
+
+.logo {
+    width: 131px;
+    height: 40px;
+    margin-right: 6px;
+}
+
+.collectionInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 126px;
+    padding: 10px 10px 48px 39px;
+}
+
+.collectionTitle {
+    font-weight: 700;
+    font-size: 28px;
+    color: white;
+    line-height: 34px;
+    margin-bottom: 10px;
+}
+
+.collectionAddress {
+    color: white;
+    font-weight: 400;
+    font-size: 11px;
+    text-align: left;
+    line-height: 23px;
+}
+
+.separatorContainer {
+    width: 176px;
+    height: 101px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.separator {
+    width: 1px;
+    height: 91px;
+    display: block;
+    background-color: rgba(159, 164, 221, 0.6);
+    border: none;
+}
+
+.info {
+    height: 84px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 10px;
+
+    &:first-of-type {
+        margin-left: 42px;
+    }
+}
+
+.label {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 23px;
+    text-align: center;
+    color: white;
+    margin-bottom: 10px;
+    font-family: "Poppins";
+}
+
+.value {
+    font-family: "Poppins";
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 23px;
+    color: white;
+}
+
+.floorPriceValue {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.floorPriceValueImg {
+    width: 12px !important;
+    height: 12px !important;
+    max-width: auto;
+    justify-self: flex-end;
+    margin-right: 4px;
+}
+
+.floorPriceValueText {
+    font-family: "Poppins";
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 23px;
+    color: white;
+}

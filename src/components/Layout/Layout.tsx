@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 import Button from '../Button/Button'
 import Footer from '../Footer/Footer'
@@ -152,7 +151,7 @@ export default function Layout({ children }: LayoutProps) {
           <Link href="/">
             <a>
               <div className="relative z-[100] h-[22px] w-[73px] lg:h-[40px] lg:w-[131px]">
-                <Image priority={true} src={'../logo.png'} layout="fill" />
+                <img src={'/logo.png'} />
               </div>
             </a>
           </Link>
@@ -162,8 +161,8 @@ export default function Layout({ children }: LayoutProps) {
             <Link href="/buy-cosmon">
               <a>Buy Cosmon</a>
             </Link>
-            <Link href="https://docs.cosmon.ki/">
-              <a target="_blank">Documentation</a>
+            <Link href="/marketplace">
+              <a>Marketplace</a>
             </Link>
             <Link href="/my-assets">
               <a>

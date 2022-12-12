@@ -40,6 +40,8 @@ import { CONNECTED_WITH, CONNECTION_TYPE, CosmosConnectionProvider } from 'types
 import { getConnectedWithByType, removeLastConnection, saveLastConnection } from '@utils/connection'
 import { getOfflineSignerCosmostation } from '@services/connection/cosmostation-walletconnect'
 import { computeStatsWithoutBoosts, fillBoosts } from '@utils/boost'
+import { useMarketPlaceStore } from './marketPlaceStore'
+import { MarketPlaceService } from '@services/marketplace'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
@@ -332,11 +334,13 @@ const useWalletStore = create<WalletState>(
         })
         const { fetchSellData } = useCosmonStore.getState()
         const { getRewardsData } = useRewardStore.getState()
+        const { fetchKPI } = useMarketPlaceStore.getState()
         await fetchSellData()
         const { fetchCoin, fetchCosmons } = get()
         await fetchCosmons()
         await fetchCoin()
         await getRewardsData()
+        await fetchKPI()
         // await fetchRewards()
         set({
           // maxClaimableToken: maxClaimableToken,
@@ -390,6 +394,8 @@ const useWalletStore = create<WalletState>(
         if (signingClient && address) {
           try {
             const tokens: string[] = await fetch_tokens(signingClient, address)
+            const listedNftsId =
+              (await MarketPlaceService.queries().fetchSellingNftFromAddress(address)) ?? []
 
             // getting cosmon details
             let myCosmons: CosmonType[] = await Promise.all(
@@ -397,12 +403,17 @@ const useWalletStore = create<WalletState>(
                 const cosmon = await queryCosmonInfo(signingClient, token)
                 const stats = await XPRegistryService.queries().getCosmonStats(token)
                 const boosts = await XPRegistryService.queries().fecthBoostsForCosmon(token)
+                const isListed =
+                  listedNftsId.length > 0
+                    ? listedNftsId.findIndex((nft) => nft.nft === token) !== -1
+                    : false
 
                 return {
                   id: token,
                   data: cosmon,
                   isInDeck: false,
                   stats,
+                  isListed: isListed,
                   statsWithoutBoosts: computeStatsWithoutBoosts(stats, boosts),
                   boosts: fillBoosts(boosts),
                 }
