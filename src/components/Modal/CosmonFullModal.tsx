@@ -1,8 +1,7 @@
 import { CosmonType } from '../../../types/Cosmon'
 import { getCosmonPersonalityAffinity, getCosmonStat, getTrait } from '../../utils/cosmon'
 import Close from '/public/icons/close.svg'
-import Hover from 'react-3d-hover'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import { CosmonStatProgressionLabel } from '@containers/arena/components/FightReportModal/CosmonsProgression'
 
@@ -43,17 +42,17 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
 
         <div className="mt-16 flex flex-col justify-center lg:mt-24 lg:flex-row lg:items-start lg:justify-start lg:gap-x-16">
           <div className="self-center lg:sticky lg:top-0 lg:self-start">
-            <Hover perspective={300} speed={10}>
-              <CosmonCard
-                cosmon={cosmon}
-                showLevel
-                showPersonality
-                showScarcity
-                showNationality
-                size="lg"
-                containerStyle={{ height: 530, width: 315 }}
-              />
-            </Hover>
+            <CosmonCard
+              cosmon={cosmon}
+              showLevel
+              showPersonality
+              showScarcity
+              showNationality
+              showGlareAnimation
+              showPerspectiveAnimation
+              size="lg"
+              containerStyle={{ height: 530, width: 315 }}
+            />
           </div>
 
           <div className="mt-10 flex flex-col gap-y-5 px-[20px] lg:mt-0 lg:px-0">
