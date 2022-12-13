@@ -7,6 +7,7 @@ import LoadingIcon from '@components/LoadingIcon/LoadingIcon'
 import CosmonDetails from './components/CosmonDetails/CosmonDetails'
 import { useWalletStore } from '@store/walletStore'
 import { KiInformationResponse } from 'types'
+import { convertDenomToMicroDenom } from '@utils/conversion'
 
 interface ListedCosmonDetailsProps {
   kiData: KiInformationResponse
@@ -19,10 +20,15 @@ const ListedCosmonDetails: React.FC<ListedCosmonDetailsProps> = ({ kiData }) => 
     useMarketPlaceStore()
 
   const handleBuyNft = async (nftId: string) => {
-    const response = await buyNft(nftId)
+    if (detailedCosmon?.price) {
+      const response = await buyNft(nftId, {
+        amount: convertDenomToMicroDenom(detailedCosmon.price),
+        denom: process.env.NEXT_PUBLIC_STAKING_DENOM!,
+      })
 
-    if (response) {
-      router.push('/marketplace')
+      if (response) {
+        router.push('/marketplace')
+      }
     }
   }
 

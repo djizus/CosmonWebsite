@@ -2,7 +2,6 @@ import { Coin } from '@cosmjs/proto-signing'
 import { useWalletStore } from '@store/walletStore'
 
 const PUBLIC_MARKETPLACE_CONTRACT = process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT!
-
 /**
  * List a nft
  * @param nftId id of the nft
@@ -61,7 +60,7 @@ export const unlistNft = async (nftId: string) => {
  * Buy a nft
  * @param nftId id of the nft
  */
-export const buyNft = async (nftId: string) => {
+export const buyNft = async (nftId: string, price: Coin) => {
   try {
     const { signingClient, address } = useWalletStore.getState()
     const response = await signingClient?.execute(
@@ -73,7 +72,8 @@ export const buyNft = async (nftId: string) => {
         },
       },
       'auto',
-      '[COSMON] buy nft'
+      '[COSMON] buy nft',
+      price ? [price] : []
     )
 
     return response

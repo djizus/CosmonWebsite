@@ -25,7 +25,7 @@ interface MarketPlaceState {
   listNftLoading: boolean
   unlistNftLoading: boolean
   unlistNft: (nftId: string) => void
-  buyNft: (nftId: string) => Promise<boolean>
+  buyNft: (nftId: string, price: Coin) => Promise<boolean>
   fetchSellingNftFromAddress: (walletAddress: string) => void
   fetchKPI: () => void
   cosmonsForMarketPlaceLoading: boolean
@@ -122,11 +122,11 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       console.error(error)
     }
   },
-  buyNft: async (nftId: string): Promise<boolean> => {
+  buyNft: async (nftId: string, price: Coin): Promise<boolean> => {
     try {
       set({ buyNftLoading: true })
       await toast
-        .promise(MarketPlaceService.executes().buyNft(nftId), {
+        .promise(MarketPlaceService.executes().buyNft(nftId, price), {
           pending: {
             render() {
               return <ToastContainer type="pending">Buying your cosmon</ToastContainer>
