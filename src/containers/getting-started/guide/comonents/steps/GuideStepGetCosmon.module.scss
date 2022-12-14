@@ -12,7 +12,7 @@
 .blackBoxesContainer {
   display: flex;
   gap: 160px;
-  margin-top: 60px;
+  margin-top: 90px;
 
   .blackBoxContainer {
     display: flex;
@@ -31,12 +31,11 @@
       color: rgba(#ffffff, 0.9);
     }
 
+    .imgStarterPack,
     img {
       height: 239px;
       width: 100%;
       object-fit: contain;
-      margin-top: 25px;
-      margin-bottom: 35px;
     }
 
     .title {
@@ -57,7 +56,6 @@
       max-width: 280px;
       img {
         height: 181px;
-        margin-bottom: 53px;
       }
     }
   }

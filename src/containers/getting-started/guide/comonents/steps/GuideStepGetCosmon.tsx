@@ -1,8 +1,9 @@
 import React from 'react'
+import Button from '@components/Button/Button'
+import AnimatedImage from '@components/AnimatedImage/AnimatedImage'
 
 import commonStyles from './GuideStep.module.scss'
 import styles from './GuideStepGetCosmon.module.scss'
-import Button from '@components/Button/Button'
 
 interface GuideStepGetCosmonProps {}
 
@@ -27,7 +28,9 @@ const GuideStepGetCosmon: React.FC<GuideStepGetCosmonProps> = ({}) => {
       <div className={styles.blackBoxesContainer}>
         <div className={styles.blackBoxContainer}>
           <img src="/getting-started/raffle-one-card.png" alt="" />
-          <p className={styles.title}>Open a potion and receive a random card by scarsity</p>
+          <p className={styles.title} style={{ marginTop: 53 }}>
+            Open a potion and receive a random card by scarsity
+          </p>
           <a href={`${window.location.origin}/buy-cosmon`} target={'_blank'}>
             <Button type="secondary" size="small">
               Buy cosmon
@@ -35,8 +38,13 @@ const GuideStepGetCosmon: React.FC<GuideStepGetCosmonProps> = ({}) => {
           </a>
         </div>
         <div className={styles.blackBoxContainer}>
-          <img src="/getting-started/raffle-one-deck.png" alt="" />
-          <p className={styles.title}>Be ready for figth with 3 commun cards</p>
+          <AnimatedImage
+            imgSrc="/getting-started/raffle-one-deck.png"
+            imgClassName={styles.imgStarterPack}
+          />
+          <p className={styles.title} style={{ marginTop: 27 }}>
+            Be ready for figth with 3 commun cards
+          </p>
           <a href={`${window.location.origin}/buy-cosmon`} target={'_blank'}>
             <Button type="secondary" size="small">
               Buy cosmon
