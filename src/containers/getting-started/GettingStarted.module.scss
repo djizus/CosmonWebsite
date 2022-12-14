@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 160px;
+
+  .title {
+    font-family: 'Poppins';
+    font-size: 40px;
+    color: white;
+    font-weight: 600;
+    line-height: 18px;
+  }
+
+  .subtitle {
+    margin-top: 40px;
+    padding: 30px 0;
+    font-family: 'Poppins';
+    font-size: 20px;
+    line-height: 30x;
+    font-weight: 400;
+    color: white;
+    max-width: 836px;
+  }
+}
+
+.discoveryModesContainer {
+  display: flex;
+  justify-content: center;
+  gap: 95px;
+
+  .discoveryModeContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    max-width: 310px;
+    margin-top: 50px;
+
+    img {
+      height: 200px;
+      width: 100%;
+      object-fit: contain;
+    }
+
+    .discoveryModeTitleContainer {
+      display: flex;
+      margin: 40px 0 30px 0;
+
+      span {
+        text-align: center;
+        font-family: 'Montserrat';
+        font-size: 18;
+        line-height: 26x;
+        font-weight: 500;
+        color: white;
+      }
+    }
+  }
+}

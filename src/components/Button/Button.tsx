@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import ArrowRight from '/public/icons/arrow-right.svg'
 import * as style from './Button.module.scss'
 import LoadingIcon from '../LoadingIcon/LoadingIcon'
-import { DetailedHTMLProps, HTMLAttributes } from 'react'
+import { DetailedHTMLProps, HTMLAttributes, MouseEventHandler } from 'react'
 
 export type ButtonProps = {
   type?:
@@ -18,7 +18,7 @@ export type ButtonProps = {
     position: 'left' | 'right'
     direction: 'left' | 'right'
   }
-  onClick?: () => void
+  onClick?: (e: any) => void
   children: React.ReactNode
   disabled?: boolean
   className?: string

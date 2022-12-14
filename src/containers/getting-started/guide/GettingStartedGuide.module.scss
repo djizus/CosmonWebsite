@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  max-width: 1064px;
+  padding-top: 160px;
+  margin: 0 auto;
+
+  .stepContainer {
+    padding-top: 66px;
+    width: 100%;
+    min-height: 200;
+  }
+
+  .nextOrLastButtonContainer {
+    margin-top: 70px;
+    width: 260px;
+    justify-content: center;
+  }
+}
