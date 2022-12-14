@@ -158,7 +158,7 @@ export default function Layout({ children }: LayoutProps) {
           </Link>
           {/* MVP - Remove navigation */}
 
-          <div className="ml-20 hidden items-center gap-x-[60px] lg:flex">
+          <div className="ml-20 hidden items-center gap-x-[25px] lg:flex">
             <Link href="/buy-cosmon">
               <a>Buy Cosmon</a>
             </Link>
