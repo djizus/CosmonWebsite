@@ -6,3 +6,4 @@ export const container: string
 export const deckContainer: string
 export const description: string
 export const rightDeckContainer: string
+export const imgStarterPack: string
