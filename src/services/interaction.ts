@@ -69,6 +69,63 @@ export const executeBuyCosmon = (
   })
 }
 
+export const executeMintDeck = (
+  signingClient: SigningCosmWasmClient,
+  price: string,
+  address: string
+) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await signingClient.execute(
+        address,
+        PUBLIC_SELL_CONTRACT,
+        { mint_deck: {} },
+        'auto',
+        'memo',
+        [
+          {
+            amount: convertDenomToMicroDenom(price),
+            denom: PUBLIC_IBC_DENOM,
+          },
+        ]
+      )
+
+      console.log(
+        'allo',
+        response?.logs[0]?.events.find((event) => event?.type === 'wasm')?.attributes
+      )
+
+      const tokensId = response.logs[0].events
+        .find((event) => event.type === 'wasm')
+        ?.attributes?.filter((attribute) => attribute?.key === 'token_id')
+        .map((token_id) => token_id.value)
+
+      if (tokensId) {
+        const result: CosmonType[] = await Promise.all(
+          tokensId.map(async (tokenId) => {
+            return {
+              id: tokenId,
+              data: await queryCosmonInfo(signingClient, tokenId),
+              stats: [],
+              statsWithoutBoosts: [],
+              boosts: [null, null, null],
+            }
+          })
+        )
+
+        return resolve({
+          message: 'Bought successfully',
+          cosmons: result,
+        })
+      } else {
+        reject(handleTransactionError('No tokens id received from the cosmon'))
+      }
+    } catch (e: any) {
+      reject(handleTransactionError(e))
+    }
+  })
+}
+
 export const executeCreditWalletWithFaucet = (address: string) => async (): Promise<string> => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -143,6 +200,9 @@ export const queryCosmonInfo = async (
         const data = await signingClient.queryContractSmart(PUBLIC_NFT_CONTRACT, {
           nft_info: { token_id: cosmonId },
         })
+
+        console.log('allo', data)
+
         return resolve(data)
       } catch (e) {
         console.error(`Error while fetching cosmon ${cosmonId}`, e)

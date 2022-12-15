@@ -1,0 +1,63 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    margin-top: 76px;
+    margin-bottom: 60px;
+}
+
+.deckContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.rightDeckContainer {
+    display: flex;
+    flex-direction: column;
+    margin-left: 70px;
+}
+
+.buyableCosmonsContainer {
+    width: 100%;
+}
+
+.description {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    color: white;
+    margin-bottom: 29px;
+}
+
+.buyDeckButton {
+    padding: 16px 20px !important;
+    height: 42px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.connectButton {
+    height: 42px;
+}
+
+.connectButton {
+    height: 42px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.buyRandomCardButton {
+    padding: 16px 20px !important;
+    height: 42px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+}

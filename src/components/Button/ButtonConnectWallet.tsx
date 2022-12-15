@@ -1,5 +1,6 @@
 import ConnectionSelectModal from '@components/Modal/ConnectionSelectModal'
 import { useWalletStore } from '@store/walletStore'
+import clsx from 'clsx'
 import { AnimatePresence } from 'framer-motion'
 import React, { useState } from 'react'
 import { CONNECTION_TYPE } from 'types/Connection'
@@ -7,16 +8,17 @@ import Button, { ButtonProps } from './Button'
 
 interface ButtonConnectWalletProps {
   buttonProps?: Omit<ButtonProps, 'children'>
+  className?: string
 }
 
-const ButtonConnectWallet: React.FC<ButtonConnectWalletProps> = ({ buttonProps }) => {
+const ButtonConnectWallet: React.FC<ButtonConnectWalletProps> = ({ buttonProps, className }) => {
   const [showConnectionSelectModal, setShowConnectionSelectModal] = useState(false)
   const { connect, isFetchingData } = useWalletStore()
 
   return (
     <>
       <Button
-        className="max-h-[42px]"
+        className={clsx('max-h-[42px]', className)}
         isLoading={isFetchingData}
         onClick={() => {
           setShowConnectionSelectModal(true)
