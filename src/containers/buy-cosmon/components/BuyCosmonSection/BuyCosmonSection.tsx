@@ -13,6 +13,7 @@ import * as style from './BuyCosmonSection.module.scss'
 import BuyDeckModal from './BuyDeckModal/BuyDeckModal'
 import BigNumber from 'bignumber.js'
 import { getAmountFromDenom } from '@utils'
+import AnimatedImage from '@components/AnimatedImage/AnimatedImage'
 
 interface Props {}
 
@@ -85,14 +86,14 @@ const BuyCosmonSection: React.FC<Props> = () => {
   }
 
   const hasEnoughCoinsToBuyDeck = useMemo(() => {
-    if (deckPrice !== 'XX') {
+    if (deckPrice !== 'XX' && coins) {
       const availableBalance = getAmountFromDenom(
         process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
         coins
       )
       return availableBalance > +deckPrice
     }
-  }, [deckPrice])
+  }, [deckPrice, coins])
 
   const handleShowCosmonModal = () => {
     setDisplayBuyCosmonModal(true)
@@ -114,7 +115,10 @@ const BuyCosmonSection: React.FC<Props> = () => {
   return (
     <div className={style.container}>
       <div className={style.deckContainer}>
-        <img src="/deck/deck-package.png" alt="deck" />
+        <AnimatedImage
+          imgSrc="/getting-started/raffle-one-deck.png"
+          imgClassName={style.imgStarterPack}
+        />
         <div className={style.rightDeckContainer}>
           <p className={style.description}>Buy a full deck with 3 common cards</p>
           {isConnected ? (
