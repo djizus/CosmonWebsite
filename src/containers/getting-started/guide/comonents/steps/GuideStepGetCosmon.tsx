@@ -8,7 +8,6 @@ import styles from './GuideStepGetCosmon.module.scss'
 interface GuideStepGetCosmonProps {}
 
 const GuideStepGetCosmon: React.FC<GuideStepGetCosmonProps> = ({}) => {
-  console.log(window?.location)
   return (
     <div className={styles.container}>
       <h1 className={commonStyles.title}>Get your Leader to join the fight!</h1>
