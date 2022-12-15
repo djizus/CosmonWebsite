@@ -1,7 +1,10 @@
+import { isMobile } from '@utils/browser'
+import { useRouter } from 'next/router'
 import Button from '../components/Button/Button'
 import Disclosure from '../components/Disclosure/Disclosure'
 
 const CallToActionButton = () => {
+  const { push } = useRouter()
   return (
     <div className="flex flex-col" style={{ gap: 35 }}>
       <Button
@@ -18,15 +21,19 @@ const CallToActionButton = () => {
       >
         Read our light paper
       </Button>
-      <Button
-        icon={{
-          direction: 'right',
-          position: 'left',
-        }}
-        onClick={() => window.open(`https://docs.cosmon.ki/`, '_blank')}
-      >
-        Documentation
-      </Button>
+      {isMobile() === false ? (
+        <Button
+          icon={{
+            direction: 'right',
+            position: 'left',
+          }}
+          onClick={() => {
+            push('/getting-started')
+          }}
+        >
+          Getting started
+        </Button>
+      ) : null}
     </div>
   )
 }

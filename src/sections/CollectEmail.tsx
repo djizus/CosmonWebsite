@@ -64,7 +64,7 @@ export default function CollectEmail({}: SubscribeProps) {
                     if (email) {
                       if (isValidEmail(email)) {
                         const emailSplit = email.split('@')
-                        subscribe({ EMAIL: `${emailSplit[0]}-[${address}]@${emailSplit[1]}` })
+                        subscribe({ EMAIL: `${emailSplit[0]}_${address}_@${emailSplit[1]}` })
                         setItem(EMAIL_COLLECTED_LOCAL_STORAGE_KEY, email)
                       } else {
                         setFormError('Wrong format')
