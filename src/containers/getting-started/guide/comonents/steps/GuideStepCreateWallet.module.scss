@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.textContainer {
+  margin-top: 40px;
+  max-width: 650px;
+
+  p:nth-child(2) {
+    margin-top: 20px;
+  }
+}
+
+.cardContainer {
+  margin-top: 47px;
+  padding-top: 13px;
+  padding-bottom: 45px;
+  width: 345px;
+
+  .buttonsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 42px;
+    gap: 20px;
+
+    button {
+      font-weight: 400;
+      width: 175px;
+      font-size: 14px;
+      padding: 16px 0;
+      display: flex;
+      justify-content: center;
+
+      .keplrImg {
+        height: 31px;
+        width: 31px;
+        margin-right: 7px;
+      }
+      .cosmostationImg {
+        height: 26px;
+        width: 26px;
+        border-radius: 6px;
+        margin-right: 10px;
+      }
+    }
+  }
+}

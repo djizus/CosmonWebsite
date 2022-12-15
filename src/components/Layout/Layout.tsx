@@ -152,13 +152,13 @@ export default function Layout({ children }: LayoutProps) {
           <Link href="/">
             <a>
               <div className="relative z-[100] h-[22px] w-[73px] lg:h-[40px] lg:w-[131px]">
-                <Image priority={true} src={'../logo.png'} layout="fill" />
+                <img src={'/logo.png'} />
               </div>
             </a>
           </Link>
           {/* MVP - Remove navigation */}
 
-          <div className="ml-20 hidden items-center gap-x-[60px] lg:flex">
+          <div className="ml-20 hidden items-center gap-x-[25px] lg:flex">
             <Link href="/buy-cosmon">
               <a>Buy Cosmon</a>
             </Link>

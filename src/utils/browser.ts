@@ -1,7 +1,5 @@
-import { useWindowSize } from 'react-use'
+import { isMobile as isMobileWC } from '@walletconnect/browser-utils'
 
 export function isMobile() {
-  const { width } = useWindowSize()
-
-  return width < 640
+  return isMobileWC()
 }

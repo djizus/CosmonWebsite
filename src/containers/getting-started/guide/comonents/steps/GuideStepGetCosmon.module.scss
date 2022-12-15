@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.textContainer {
+  margin-top: 40px;
+  max-width: 650px;
+}
+
+.blackBoxesContainer {
+  display: flex;
+  gap: 160px;
+  margin-top: 90px;
+
+  .blackBoxContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    max-width: 200px;
+
+    .details {
+      font-family: 'Montserrat';
+      font-style: italic;
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 26px;
+      text-align: center;
+      color: rgba(#ffffff, 0.9);
+    }
+
+    .imgStarterPack,
+    img {
+      height: 239px;
+      width: 100%;
+      object-fit: contain;
+    }
+
+    .title {
+      font-family: 'Poppins';
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    button {
+      margin-top: 25px;
+    }
+
+    &:nth-child(1) {
+      max-width: 280px;
+      img {
+        height: 173px;
+      }
+    }
+  }
+}
