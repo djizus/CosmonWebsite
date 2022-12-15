@@ -90,11 +90,6 @@ export const executeMintDeck = (
         ]
       )
 
-      console.log(
-        'allo',
-        response?.logs[0]?.events.find((event) => event?.type === 'wasm')?.attributes
-      )
-
       const tokensId = response.logs[0].events
         .find((event) => event.type === 'wasm')
         ?.attributes?.filter((attribute) => attribute?.key === 'token_id')
@@ -200,8 +195,6 @@ export const queryCosmonInfo = async (
         const data = await signingClient.queryContractSmart(PUBLIC_NFT_CONTRACT, {
           nft_info: { token_id: cosmonId },
         })
-
-        console.log('allo', data)
 
         return resolve(data)
       } catch (e) {
