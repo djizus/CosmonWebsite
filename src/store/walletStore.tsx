@@ -19,6 +19,7 @@ import {
   executeClaimAirdrop,
   initIbc,
   fetch_tokens,
+  executeMintDeck,
 } from '@services/interaction'
 import { toast } from 'react-toastify'
 import { ToastContainer } from '../components/ToastContainer/ToastContainer'
@@ -77,6 +78,7 @@ interface WalletState {
   connect: (type?: CONNECTION_TYPE) => void
   setCosmons: (cosmons: CosmonType[]) => void
   buyCosmon: (scarcity: Scarcity, price: string) => any
+  mintFullDeck: (price: string) => any
   transferAsset: (recipient: string, asset: CosmonType) => void
   disconnect: () => void
   setHasSubscribed: (hasSubscribed: boolean) => void
@@ -115,7 +117,6 @@ const useWalletStore = create<WalletState>(
       isConnected: false,
       cosmosConnectionProvider: null,
       hasSubscribed: false,
-      isEligibleForAirdrop: null,
       connectedWith: undefined,
       connectionClientType: undefined,
       setHasSubscribed: (hasSubscribed) => {
@@ -510,6 +511,38 @@ const useWalletStore = create<WalletState>(
               // update wallet available balance
               fetchCoin()
               return token
+            })
+          return response
+        }
+      },
+      mintFullDeck: async (price: string) => {
+        const { signingClient, fetchCosmons, address, fetchCoin } = get()
+        if (signingClient && address) {
+          const response = await toast
+            .promise(executeMintDeck(signingClient, price, address), {
+              pending: {
+                render() {
+                  return <ToastContainer type="pending">{`Buying your deck`}</ToastContainer>
+                },
+              },
+              success: {
+                render() {
+                  return <ToastContainer type={'success'}>Deck bought successfully,</ToastContainer>
+                },
+                icon: SuccessIcon,
+              },
+
+              error: {
+                render({ data }: any) {
+                  return <ToastContainer type="error">{data.message}</ToastContainer>
+                },
+                icon: ErrorIcon,
+              },
+            })
+            .then(({ cosmons }: any) => {
+              fetchCosmons()
+              fetchCoin()
+              return cosmons
             })
           return response
         }
