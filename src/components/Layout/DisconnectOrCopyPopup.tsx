@@ -1,3 +1,4 @@
+import CollectEmail from '@sections/CollectEmail'
 import { useWalletStore } from '../../store/walletStore'
 import Button from '../Button/Button'
 
@@ -11,6 +12,7 @@ export default function DisconnectOrCopyPopup({ onClosePopup }: DisconnectOrCopy
   const copyAddressToClipboard = () => {
     navigator.clipboard.writeText(walletAddress).then(() => {})
   }
+
   return (
     <>
       <div
@@ -35,8 +37,15 @@ export default function DisconnectOrCopyPopup({ onClosePopup }: DisconnectOrCopy
           onClick={() => copyAddressToClipboard()}
           className=" group mb-4 flex cursor-pointer items-center justify-between gap-x-4 rounded-2xl border border-[#413673] bg-[#0D0531] px-3 py-4  text-xs active:opacity-40 lg:py-[17px] lg:px-6"
         >
-          <span> {walletAddress}</span>
+          <span className="font-normal">{walletAddress}</span>
           <img className="" src="../icons/copy-link.svg" alt="" />
+        </div>
+
+        <div className="flex flex-col items-start">
+          <p className="lg:text-md text-sm text-[#D1D2D8]">Stay connected to community</p>
+          <div className="mt-[10px] mb-[20px] w-full">
+            <CollectEmail />
+          </div>
         </div>
 
         <div className="flex justify-between">
