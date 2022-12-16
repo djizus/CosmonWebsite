@@ -52,7 +52,12 @@ export const executeBuyCosmon = (
         const cosmonBought: CosmonType = {
           id: tokenId,
           data: await queryCosmonInfo(signingClient, tokenId),
-          stats: [],
+          stats: [
+            {
+              key: 'Level',
+              value: '1',
+            },
+          ],
           statsWithoutBoosts: [],
           boosts: [null, null, null],
         }
@@ -101,7 +106,12 @@ export const executeMintDeck = (
             return {
               id: tokenId,
               data: await queryCosmonInfo(signingClient, tokenId),
-              stats: [],
+              stats: [
+                {
+                  key: 'Level',
+                  value: '1',
+                },
+              ],
               statsWithoutBoosts: [],
               boosts: [null, null, null],
             }
