@@ -4,6 +4,12 @@ export const buyRandomCardButton: string
 export const connectButton: string
 export const container: string
 export const deckContainer: string
+export const deckQuestion: string
+export const deckQuestionAnswers: string
+export const deckTitle: string
 export const description: string
-export const rightDeckContainer: string
 export const imgStarterPack: string
+export const rightDeckContainer: string
+export const secondDescription: string
+export const secondSubDescription: string
+export const secondTitle: string

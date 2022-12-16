@@ -13,18 +13,12 @@ export default function Page() {
   return (
     <>
       <div className="mx-auto max-w-[1230px]">
-        <Section className="px-[40px] pt-[107px] lg:pt-[160px]">
-          <h4 className="mx-auto max-w-[288px] lg:max-w-none">Open a pack, unleash a leader!</h4>
-          <p className="mx-auto flex flex-col gap-y-2 pt-[40px] lg:max-w-[880px] lg:pt-[20px]">
-            <div>
-              Get a vial to mint a random Cosmon from a given rarity level! Each vial will unleash
-              one of our 25 Cosmons.
-            </div>
-            <div>
-              The rarer your Cosmons are, the more yield you will get from it. Your Cosmon's initial
-              characteristics will also be higher with an upper rarity.{' '}
-            </div>
-          </p>
+        <Section className=" px-[40px] pt-[107px] lg:pt-[160px]">
+          <h4 className="mx-auto mb-[69px] max-w-[288px] lg:max-w-none">
+            Start the adventure, get a ready-to-play
+            <br />
+            deck ...
+          </h4>
         </Section>
 
         {/* @INFO :  we keep old code to buy a cosmon in case */}

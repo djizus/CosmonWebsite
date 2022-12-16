@@ -18,7 +18,7 @@ import AnimatedImage from '@components/AnimatedImage/AnimatedImage'
 interface Props {}
 
 const BuyCosmonSection: React.FC<Props> = () => {
-  const { cosmons, buyCosmon, isConnected, mintFullDeck, coins } = useWalletStore()
+  const { buyCosmon, isConnected, mintFullDeck, coins } = useWalletStore()
   const { getCosmonPrice: fetchCosmonPrice, whitelistData } = useCosmonStore()
 
   const [displayBuyCosmonModal, setDisplayBuyCosmonModal] = useState<boolean>(false)
@@ -120,7 +120,15 @@ const BuyCosmonSection: React.FC<Props> = () => {
           imgClassName={style.imgStarterPack}
         />
         <div className={style.rightDeckContainer}>
-          <p className={style.description}>Buy a full deck with 3 common cards</p>
+          <p className={style.deckTitle}>Full common deck </p>
+          <p className={style.description}>
+            This deck allows you to acquire a “ready-to-play” deck.
+            <br />
+            You will get 3 NFT Cards with random common Leaders.
+          </p>
+          <p className={style.deckQuestion}>WHAT’S INSIDE ?</p>
+          <p className={style.deckQuestionAnswers}>{`> 3 NFT Cards`}</p>
+          <p className={style.deckQuestionAnswers}>{`> Scarcity: Common`}</p>
           {isConnected ? (
             <div data-tip="tootlip" data-for={`buy-deck`}>
               <Button
@@ -143,9 +151,20 @@ const BuyCosmonSection: React.FC<Props> = () => {
           )}
         </div>
       </div>
+      <UnmaskOnReach delay={0.2}>
+        <p className={style.secondTitle}>... or buy a Cosmon Card </p>
+        <p className={style.secondDescription}>
+          Get a random Cosmon from a given scarcity level or mint a full deck!
+        </p>
+        <p className={style.secondSubDescription}>
+          The rarer your Cosmons are, the more yield you will get from it.
+          <br />
+          Your Cosmon's initial characteristics will also be higher with an upper rarity.
+        </p>
+      </UnmaskOnReach>
       <div
         className={clsx(
-          'grid grid-cols-2 gap-y-[60px] lg:mt-20 lg:grid-cols-5',
+          'grid grid-cols-2 gap-y-[60px] lg:grid-cols-5',
           style.buyableCosmonsContainer
         )}
       >

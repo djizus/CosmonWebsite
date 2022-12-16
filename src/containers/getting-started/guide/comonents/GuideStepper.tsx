@@ -1,7 +1,6 @@
-import Button from '@components/Button/Button'
 import { gettingStartedSteps } from '@containers/getting-started/data'
 import clsx from 'clsx'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { GettingStartedGuideStep } from 'types/GettingStartedGuide'
 
 import styles from './GuideStepper.module.scss'
@@ -37,7 +36,7 @@ const GuideStepper: React.FC<GuideStepperProps> = ({
             <span>{i + 1}</span>
           </div>
 
-          <div className={styles.stepTitleContainer}>
+          <div>
             <span className={styles.stepTitle}>{step.title}</span>
           </div>
         </div>
