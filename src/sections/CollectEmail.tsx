@@ -49,32 +49,38 @@ export default function CollectEmail({}: SubscribeProps) {
           <span className="font-normal">Thank you for subscribing</span>
         ) : (
           <div className="">
-            <div className="w-full items-center gap-x-[10px] lg:flex lg:justify-between">
-              <input
-                onChange={(e) => set_email(e.target.value)}
-                value={email}
-                type="text"
-                className="w-full rounded-2xl border border-[#413673] bg-[#0D0531] py-[18px] pl-6 font-normal"
-                placeholder="Enter your email address"
-              />
+            <div className="lg:flex lg:flex-col">
+              <div className="w-full items-center gap-x-[10px] lg:flex lg:justify-between">
+                <input
+                  onChange={(e) => set_email(e.target.value)}
+                  value={email}
+                  type="text"
+                  className="w-full rounded-2xl border border-[#413673] bg-[#0D0531] py-[18px] pl-6 font-normal"
+                  placeholder="Enter your email address"
+                />
 
-              <div className="pt-6 lg:pt-0">
-                <Button
-                  onClick={() => {
-                    if (email) {
-                      if (isValidEmail(email)) {
-                        const emailSplit = email.split('@')
-                        subscribe({ EMAIL: `${emailSplit[0]}_${address}_@${emailSplit[1]}` })
-                        setItem(EMAIL_COLLECTED_LOCAL_STORAGE_KEY, email)
-                      } else {
-                        setFormError('Wrong format')
+                <div className="pt-6 lg:pt-0">
+                  <Button
+                    onClick={() => {
+                      if (email) {
+                        if (isValidEmail(email)) {
+                          const emailSplit = email.split('@')
+                          subscribe({ EMAIL: `${emailSplit[0]}_${address}_@${emailSplit[1]}` })
+                          setItem(EMAIL_COLLECTED_LOCAL_STORAGE_KEY, email)
+                        } else {
+                          setFormError('Wrong format')
+                        }
                       }
-                    }
-                  }}
-                >
-                  Send
-                </Button>
+                    }}
+                  >
+                    Send
+                  </Button>
+                </div>
               </div>
+              <span className="mt-[10px] text-xs font-normal">
+                Your email will be associated with your wallet address. Cosmon will push game
+                updates to you
+              </span>
             </div>
             {formError ? (
               <div className="mt-[10px]">
