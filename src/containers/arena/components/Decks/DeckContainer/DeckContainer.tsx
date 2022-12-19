@@ -83,7 +83,7 @@ const DeckContainer: React.FC<DeckContainerProps> = ({
         </div>
         <div
           className="mt-[30px] grid w-full grid-cols-3 gap-[18px] lg:gap-[32px]"
-          style={{ aspectRatio: '1.7' }}
+          style={{ aspectRatio: '1.55' }}
         >
           {deck.cosmons.map((cosmon) => (
             <div key={`image-${deck.id}-${cosmon.id}`} className="flex h-full w-full flex-col">

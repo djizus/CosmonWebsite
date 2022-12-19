@@ -128,6 +128,7 @@ const CosmonCard: React.FC<CosmonCardProps & HTMLMotionProps<'div'>> = ({
         perspective: 600,
         display: 'grid',
         willChange: 'transform',
+        height: '100%',
       }}
     >
       <motion.div

@@ -90,7 +90,7 @@ const Fighter = forwardRef<HTMLDivElement, FighterProps>(
         key={cosmon.id}
         {...divProps}
         className={clsx(
-          `relative h-full w-full rounded-[4px] border-[0.5px] border-[#ffffff]/[0.2] p-[5px] transition-shadow`,
+          `relative h-full w-full rounded-[8px] border-[0.5px] border-[#ffffff]/[0.2] p-[5px] transition-shadow`,
           { 'border-[#ffffff]/[0.6]': isAttacker },
           { 'border-[#f07273]': isDefender },
           {
