@@ -4,7 +4,8 @@ export const chainInfo = {
   rpc: process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT || 'https://rpc-mainnet.blockchain.ki/',
   rest: process.env.NEXT_PUBLIC_CHAIN_REST_ENDPOINT || 'https://api-mainnet.blockchain.ki/',
   bip44: {
-    coinType: process.env.NEXT_PUBLIC_BIP_COIN_TYPE || 118,
+    coinType:
+      (process.env.NEXT_PUBLIC_BIP_COIN_TYPE && +process.env.NEXT_PUBLIC_BIP_COIN_TYPE) || 118,
   },
   bech32Config: {
     bech32PrefixAccAddr: process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX || 'ki',

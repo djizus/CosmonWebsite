@@ -5,6 +5,7 @@ import Section from '../components/Section/Section'
 import { useWalletStore } from '../store/walletStore'
 import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
 import BuyCosmonSection from '@containers/buy-cosmon/components/BuyCosmonSection/BuyCosmonSection'
+import Airdrop from '@containers/buy-cosmon/components/Airdrop/Airdrop'
 // import OldBuy from '@containers/buy-cosmon/components/OldBuy/OldBuy'
 
 export default function Page() {
@@ -14,7 +15,8 @@ export default function Page() {
     <>
       <div className="mx-auto max-w-[1230px]">
         <Section className=" px-[40px] pt-[107px] lg:pt-[160px]">
-          <h4 className="mx-auto mb-[69px] max-w-[288px] lg:max-w-none">
+          <Airdrop />
+          <h4 className="mx-auto mb-[69px] max-w-[288px] pt-[73px] lg:max-w-none">
             Start the adventure, get a ready-to-play
             <br />
             deck ...
