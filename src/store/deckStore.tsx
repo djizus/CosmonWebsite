@@ -166,7 +166,22 @@ export const useDeckStore = create<DeckState>((set, get) => ({
     }
   },
   computeDeckAffinities: (nfts: CosmonTypeWithMalus[]) => {
-    const cosmons = nfts?.filter((c) => c !== undefined)
+    const cosmons = nfts.reduce((acc: CosmonTypeWithMalus[], curr) => {
+      if (curr) {
+        const isCosmonAlreadyInDeck =
+          acc.findIndex(
+            (cosmon: CosmonTypeWithMalus) =>
+              cosmon.data.extension.name === curr.data.extension.name &&
+              getTrait(cosmon, 'scarcity') === getTrait(curr, 'scarcity')
+          ) !== -1
+
+        if (isCosmonAlreadyInDeck) {
+          return [...acc, curr]
+        }
+      }
+
+      return acc
+    }, [])
 
     // Geographical
     let geoAffinity: Set<NFTId> = new Set()
