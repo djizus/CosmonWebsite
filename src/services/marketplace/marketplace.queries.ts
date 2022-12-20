@@ -34,6 +34,7 @@ export const fetchAllSellingNft = async ({
       get_all_selling_nft: {
         start_after,
         limit,
+        order: 'low_to_high',
       },
     })) as SellDataResponse[]
 
