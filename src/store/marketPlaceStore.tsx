@@ -11,6 +11,7 @@ import { XPRegistryService } from '@services/xp-registry'
 import { approveNft, queryCosmonInfo } from '@services/interaction'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { convertMicroDenomToDenom } from '@utils/conversion'
+import { itemPerPage } from '@containers/marketplace'
 
 interface MarketPlaceState {
   detailedCosmon: CosmonMarketPlaceType | null
@@ -147,7 +148,9 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         })
         .then(async (data) => {
           const { fetchCosmons } = useWalletStore.getState()
+          const { fetchCosmonsForMarketPlace } = get()
 
+          await fetchCosmonsForMarketPlace(itemPerPage)
           await fetchCosmons()
         })
         .catch(() => {
