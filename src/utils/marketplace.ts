@@ -1,5 +1,10 @@
 import { CosmonMarketPlaceType } from 'types'
-import { getCosmonStat, getScarcityByCosmon, getTrait } from './cosmon'
+import {
+  getCosmonPersonalityAffinity,
+  getCosmonStat,
+  getScarcityByCosmon,
+  getTrait,
+} from './cosmon'
 
 const computeAttributesForCosmonDetails = (cosmon: CosmonMarketPlaceType) => {
   return [
@@ -13,7 +18,7 @@ const computeAttributesForCosmonDetails = (cosmon: CosmonMarketPlaceType) => {
     },
     {
       label: 'Type’s preference',
-      value: 'Creative',
+      value: getCosmonPersonalityAffinity(cosmon),
     },
     {
       label: 'Geographical area',

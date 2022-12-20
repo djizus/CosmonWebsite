@@ -108,6 +108,7 @@ export const executeMintDeck = (
             return {
               id: tokenId,
               data: await queryCosmonInfo(signingClient, tokenId),
+              isListed: false,
               stats: [
                 {
                   key: 'Level',
