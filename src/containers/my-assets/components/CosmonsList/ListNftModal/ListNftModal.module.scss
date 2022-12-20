@@ -1,0 +1,162 @@
+.modal {
+    position: relative;
+    background: #20164f;
+    border-radius: 12px;
+    padding: 32px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    max-height: 95vh;
+    overflow: auto;
+    z-index: 99;
+    width: 616px;
+
+    &::after {
+        z-index: -1;
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        background: linear-gradient(180deg, #a996ff 0%, rgba(118, 96, 216, 0.5) 100%) border-box;
+        -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: destination-out;
+        mask-composite: exclude;
+    }
+}
+
+.modalContent {
+    flex: 1;
+    overflow: auto;
+    width: 100%;
+}
+
+.overlay {
+    background: rgba(27, 27, 27, 0.3);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 98;
+}
+
+.closeButton {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    padding: 8px;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+}
+
+.modalTitle {
+    font-weight: 600;
+    font-size: 22px;
+    color: #ffffff;
+    margin-bottom: 32px;
+}
+
+.cosmonContainer {
+    display: flex;
+    flex-direction: row;
+    background: rgba(49, 46, 90, 0.5);
+    border-radius: 20px;
+    padding: 12px 20px;
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+.card {
+    width: 40px;
+    margin-right: 40px;
+}
+
+.cosmonData {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.cosmonNumber {
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.floorPrice {
+    font-weight: 400;
+    font-size: 12px;
+    color: white;
+}
+
+.sellingPrice {
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.priceInputContainer {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 32px;
+}
+
+.priceInput {
+    width: 469px;
+    border: 1px solid #413673 !important;
+    border-radius: 16px !important;
+    background: #0d0531 !important;
+    margin-right: 16px;
+    padding: 24px 11px;
+    color: white !important;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+}
+
+.xki {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.xkiLabel {
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    margin-left: 8px;
+}
+
+.submitButton {
+    width: 224px;
+    height: 42px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    margin: auto;
+}

@@ -1,0 +1,230 @@
+.container {
+    margin-top: 44px;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.cosmonCard {
+    width: 560px !important;
+    margin-right: 60px;
+}
+
+.rightContainer {
+    width: 631px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.cosmonLabel {
+    font-weight: 600;
+    font-size: 34px;
+    line-height: 32px;
+    color: white;
+    margin-bottom: 26px;
+    margin-top: 16px;
+}
+
+.cosmonOwner {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 23px;
+    color: white;
+    margin-bottom: 27px;
+}
+
+.cosmonOwnerWallet {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.cardPrice {
+    width: 100%;
+    background: rgba(49, 46, 90, 0.5);
+    border-radius: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 20px 40px 45px 40px;
+    margin-bottom: 15px;
+}
+
+.cardPriceTitle {
+    text-align: left;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 32px;
+    color: white;
+    margin-bottom: 33px;
+}
+
+.linePrice {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    margin-bottom: 34px;
+}
+
+.kiLogo {
+    width: 32px;
+    height: 32px;
+    margin-right: 31px;
+}
+
+.priceValue {
+    color: white;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 32px;
+    margin-right: 8px;
+}
+
+.priceLabel {
+    color: white;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 23px;
+    margin-right: 32px;
+}
+
+.priceUsdc {
+    color: white;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 23px;
+}
+
+.buyButton {
+    width: 169px !important;
+    height: 42px !important;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.cardAttributes {
+    width: 100%;
+    background: rgba(49, 46, 90, 0.5);
+    border-radius: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 20px 30px 23px 30px;
+    margin-bottom: 27px;
+}
+
+.titleAttributes {
+    text-align: left;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 21px;
+    margin-bottom: 32px;
+}
+
+.attributesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.attributeItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 15px 13px 16px;
+    border: 0.5px solid rgba(159, 164, 221, 0.6);
+    border-radius: 8px;
+    width: 180px;
+}
+
+.attributeLabel {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+    color: white;
+    margin-bottom: 6px;
+}
+
+.attributValue {
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 21px;
+    color: white;
+}
+
+.cardDetails {
+    width: 100%;
+    background: rgba(49, 46, 90, 0.5);
+    border-radius: 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 21px 29px 29px;
+    margin-bottom: 15px;
+}
+
+.titleDetails {
+    text-align: left;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 23px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.labelDetails {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 23px;
+    color: white;
+    text-align: left;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:last-of-type {
+        margin-bottom: 0px;
+    }
+}
+
+.valueDetails {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 23px;
+    color: white;
+    text-align: left;
+    margin-left: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.attributesNumber {
+    position: absolute;
+    right: 110px;
+    top: -8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 38px;
+    width: 38px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    color: white;
+    border-radius: 50%;
+    background: rgba(169, 150, 255, 0.5);
+}
+
+.headerAttribute {
+    position: relative;
+}

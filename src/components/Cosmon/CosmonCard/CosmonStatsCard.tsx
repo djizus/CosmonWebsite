@@ -22,6 +22,7 @@ const CosmonStatsCard: React.FC<CosmonStatsCardProps> = ({ cosmon }) => {
       className={clsx(styles.cosmonStatsCardContainer, {
         [styles.common]: scarcity === 'common',
         [styles.uncommon]: scarcity === 'uncommon',
+        [styles.epic]: scarcity === 'epic',
         [styles.rare]: scarcity === 'rare',
         [styles.legendary]: scarcity === 'legendary',
         [styles.divinity]: scarcity === 'divinity',

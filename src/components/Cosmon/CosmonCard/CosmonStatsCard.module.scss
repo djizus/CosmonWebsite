@@ -11,22 +11,22 @@ $polygonBorderWidth: 2px;
   border-radius: 6px;
 
   &.common {
-    background-image: url('/cosmons/bg-card/common.png');
+    background-image: url("/cosmons/bg-card/common.png");
   }
   &.uncommon {
-    background-image: url('/cosmons/bg-card/uncommon.png');
+    background-image: url("/cosmons/bg-card/uncommon.png");
   }
   &.rare {
-    background-image: url('/cosmons/bg-card/rare.png');
+    background-image: url("/cosmons/bg-card/rare.png");
   }
   &.epic {
-    background-image: url('/cosmons/bg-card/epic.png');
+    background-image: url("/cosmons/bg-card/epic.png");
   }
   &.legendary {
-    background-image: url('/cosmons/bg-card/legendary.png');
+    background-image: url("/cosmons/bg-card/legendary.png");
   }
   &.divinity {
-    background-image: url('/cosmons/bg-card/divinity.png');
+    background-image: url("/cosmons/bg-card/divinity.png");
   }
 
   .mainContainer {
@@ -67,7 +67,7 @@ $polygonBorderWidth: 2px;
       &::after {
         width: inherit;
         height: inherit;
-        content: '';
+        content: "";
       }
 
       &::before {

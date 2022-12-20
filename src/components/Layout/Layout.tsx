@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 import Button from '../Button/Button'
 import Footer from '../Footer/Footer'
@@ -162,8 +161,8 @@ export default function Layout({ children }: LayoutProps) {
             <Link href="/buy-cosmon">
               <a>Buy Cosmon</a>
             </Link>
-            <Link href="https://docs.cosmon.ki/">
-              <a target="_blank">Documentation</a>
+            <Link href="/marketplace">
+              <a>Marketplace</a>
             </Link>
             <Link href="/my-assets">
               <a>

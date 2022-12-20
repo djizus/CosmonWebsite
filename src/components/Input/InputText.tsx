@@ -13,7 +13,7 @@ interface InputTextProps {
 const InputText: React.FC<
   InputTextProps &
     React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
-> = ({ icon, borderClassName, ...props }) => {
+> = ({ icon, borderClassName, className, ...props }) => {
   return (
     <div className={clsx(styles.inputText)}>
       {icon && icon.position === 'left' ? (
@@ -23,7 +23,7 @@ const InputText: React.FC<
       <input
         type="text"
         {...props}
-        className={clsx(props.className, borderClassName)}
+        className={clsx(className, borderClassName)}
         style={{
           ...(icon &&
             icon.position === 'left' && {

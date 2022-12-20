@@ -83,7 +83,8 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
             return {
               id: token,
               data: cosmon,
-              isInDeck: false,
+              isInDeck: true,
+              isListed: false,
               stats,
               statsWithoutBoosts: computeStatsWithoutBoosts(stats, boosts),
               boosts: fillBoosts(boosts),

@@ -19,16 +19,24 @@ import * as style from './style.module.scss'
 
 interface MyAssetsProps {}
 
-type Sections = 'all' | 'enrolled'
+export type CosmonsListType = 'all' | 'enrolled' | 'listed' | 'available'
 
 const MyAssets: React.FC<MyAssetsProps> = ({}) => {
   const { cosmons } = useWalletStore()
   const [assetToTransfer, set_assetToTransfer] = useState<null | CosmonType>()
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
-  const [currentSection, setCurrentSection] = useState<Sections>('all')
+  const [currentSection, setCurrentSection] = useState<CosmonsListType>('all')
+
+  const availableCosmons = useMemo(() => {
+    return cosmons.filter((cosmon) => !cosmon.isListed && !cosmon.isInDeck)
+  }, [cosmons])
 
   const enrolledCosmons = useMemo(() => {
     return cosmons.filter((cosmon) => cosmon.isInDeck)
+  }, [cosmons])
+
+  const listedCosmons = useMemo(() => {
+    return cosmons.filter((cosmon) => cosmon.isListed)
   }, [cosmons])
 
   const filtredCosmons = useMemo(() => {
@@ -37,8 +45,16 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
         return cosmons
       }
 
+      case 'available': {
+        return availableCosmons
+      }
+
       case 'enrolled': {
         return enrolledCosmons
+      }
+
+      case 'listed': {
+        return listedCosmons
       }
 
       default: {
@@ -92,6 +108,16 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
               {`All (${cosmons.length})`}
             </Button>
             <Button
+              className={clsx('ml-[32px]', style.button, {
+                [style.activeButton]: currentSection === 'available',
+              })}
+              type="quaternary"
+              size="small"
+              onClick={() => setCurrentSection('available')}
+            >
+              {`Available (${availableCosmons.length})`}
+            </Button>
+            <Button
               type="quaternary"
               size="small"
               className={clsx('ml-[32px]', style.button, {
@@ -101,6 +127,16 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
             >
               {`Enrolled cards (${enrolledCosmons.length})`}
             </Button>
+            <Button
+              type="quaternary"
+              size="small"
+              className={clsx('ml-[32px]', style.button, {
+                [style.activeButton]: currentSection === 'listed',
+              })}
+              onClick={() => setCurrentSection('listed')}
+            >
+              {`Listed Assets (${listedCosmons.length})`}
+            </Button>
           </div>
 
           <CosmonsList
@@ -108,6 +144,7 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
             cosmons={filtredCosmons}
             onClickShowDetails={set_showCosmonDetail}
             onClickTransfer={set_assetToTransfer}
+            variation={currentSection}
           />
         </ConnectionNeededContent>
 

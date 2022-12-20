@@ -1,0 +1,35 @@
+.container {
+    margin: auto;
+    max-width: 1250px;
+    margin-top: 130px;
+}
+
+.header {
+    margin-bottom: 40px;
+}
+
+.paginationContainer {
+    display: flex;
+    flex-direction: row;
+    width: 200px;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px auto;
+}
+
+.paginationButton {
+    cursor: pointer;
+
+    &:disabled {
+        cursor: not-allowed;
+        color: #e7e7e7 !important;
+        opacity: 0.7;
+    }
+    &:active {
+        color: #9fa4dd;
+        opacity: 0.7;
+    }
+    &:hover {
+        color: #9fa4dd;
+    }
+}
