@@ -1,0 +1,134 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    margin-top: 76px;
+    margin-bottom: 60px;
+}
+
+.deckContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.rightDeckContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-left: 143px;
+}
+
+.buyableCosmonsContainer {
+    width: 100%;
+    margin-top: 0px;
+}
+
+.description {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 27px;
+    color: #e7e7e7;
+    margin-bottom: 38px;
+}
+
+.buyDeckButton {
+    padding: 16px 20px !important;
+    height: 42px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    background: linear-gradient(180deg, #a996ff 0%, rgba(76, 54, 173, 0.5) 100%) !important;
+    box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.4) !important;
+}
+
+.connectButton {
+    height: 42px;
+    background: linear-gradient(180deg, #a996ff 0%, rgba(76, 54, 173, 0.5) 100%) !important;
+    box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.4) !important;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    padding: 16px 20px !important;
+}
+
+.connectButton {
+    height: 42px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.buyRandomCardButton {
+    padding: 16px 20px !important;
+    height: 42px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.imgStarterPack {
+    height: 485px;
+    width: 100%;
+    object-fit: contain;
+}
+
+.deckTitle {
+    margin-top: 50px;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 45px;
+    color: white;
+    margin-bottom: 38px;
+}
+
+.deckQuestion {
+    color: #9fa4dd;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 33px;
+    margin-bottom: 15px;
+}
+
+.deckQuestionAnswers {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 27px;
+    color: #e7e7e7;
+    margin-bottom: 15px;
+
+    &:last-of-type {
+        margin-bottom: 49px;
+    }
+}
+
+.secondTitle {
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 45px;
+    color: #d5d5d5;
+    margin-top: 133px;
+    margin-bottom: 45px;
+}
+
+.secondDescription {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    color: #d4d4d4;
+    margin-bottom: 8px;
+}
+
+.secondSubDescription {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    color: #d4d4d4;
+    margin-bottom: 60px;
+}

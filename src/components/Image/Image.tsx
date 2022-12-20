@@ -1,6 +1,6 @@
 // To use later for better code splitting
 
-import NextImage from 'next/image'
+import NextImage, { ImageProps as NextImageProps } from 'next/image'
 
 type ImageProps = {
   src: string
@@ -15,7 +15,7 @@ export default function Image({
   imgClassName,
   layout,
   ...props
-}: ImageProps) {
+}: ImageProps & NextImageProps) {
   return (
     <div className={`${className}`}>
       <NextImage src={src} className={imgClassName} {...props} />

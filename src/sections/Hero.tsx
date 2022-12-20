@@ -4,13 +4,16 @@ import HeroBackground from '../../public/hero-background.png'
 import HeroBackgroundMobile from '../../public/hero-background-mobile.png'
 import router from 'next/router'
 import { motion } from 'framer-motion'
-import Subscribe from './Subscribe'
+import { useWalletStore } from '@store/walletStore'
+import { isMobile } from '@utils/browser'
 
 type HeroProps = {
   children: React.ReactNode
 }
 
 export default function Hero({ children }: HeroProps) {
+  const { isConnected } = useWalletStore()
+
   return (
     <>
       <div className="absolute top-0 left-0 z-0 h-full w-full">
@@ -72,11 +75,7 @@ export default function Hero({ children }: HeroProps) {
             }}
             className="relative h-[15px] w-[126px] lg:h-[39px] lg:w-[327px]"
           >
-            <Image
-              priority={true}
-              src={'/protect-the-planet.png'}
-              layout="fill"
-            />
+            <Image priority={true} src={'/protect-the-planet.png'} layout="fill" />
           </motion.div>
         </div>
 
@@ -103,17 +102,38 @@ export default function Hero({ children }: HeroProps) {
 
         {/* MVP - Remove Subscribe and discord */}
         <div className="flex flex-col gap-y-8 pt-32 lg:flex-row lg:justify-center lg:gap-x-8 lg:pt-[62px]">
-          <motion.div
-            initial={{ translateY: 10, opacity: 0 }}
-            animate={{ translateY: 0, opacity: 1 }}
-            transition={{
-              delay: 1,
-            }}
-          >
-            <Button onClick={() => router.push('/buy-cosmon')}>
-              Buy Cosmon
-            </Button>
-          </motion.div>
+          {isConnected ? (
+            <motion.div
+              initial={{ translateY: 10, opacity: 0 }}
+              animate={{ translateY: 0, opacity: 1 }}
+              transition={{
+                delay: 1,
+              }}
+            >
+              <Button onClick={() => router.push('/buy-cosmon')}>Buy Cosmon</Button>
+            </motion.div>
+          ) : isMobile() ? (
+            <motion.div
+              initial={{ translateY: 10, opacity: 0 }}
+              animate={{ translateY: 0, opacity: 1 }}
+              transition={{
+                delay: 1,
+              }}
+            >
+              <Button onClick={() => router.push('/buy-cosmon')}>Buy Cosmon</Button>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ translateY: 10, opacity: 0 }}
+              animate={{ translateY: 0, opacity: 1 }}
+              transition={{
+                delay: 1,
+              }}
+            >
+              <Button onClick={() => router.push('/getting-started')}>Getting started</Button>
+            </motion.div>
+          )}
+
           <motion.div
             initial={{ translateY: 10, opacity: 0 }}
             animate={{ translateY: 0, opacity: 1 }}
@@ -127,9 +147,7 @@ export default function Hero({ children }: HeroProps) {
                 position: 'left',
                 direction: 'right',
               }}
-              onClick={() =>
-                window.open(`http://discord.gg/CAvjMPbgBk`, '_blank')
-              }
+              onClick={() => window.open(`http://discord.gg/CAvjMPbgBk`, '_blank')}
             >
               Join discord
             </Button>
