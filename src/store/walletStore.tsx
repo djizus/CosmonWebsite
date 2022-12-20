@@ -28,7 +28,7 @@ import SuccessIcon from '/public/icons/success.svg'
 import { useCosmonStore } from './cosmonStore'
 import { useRewardStore } from './rewardStore'
 import { sortCosmonsByScarcity } from '@utils/cosmon'
-import { NFTId, CosmonType, Scarcity } from 'types'
+import { NFTId, CosmonType, Scarcity, KiInformationResponse } from 'types'
 import { XPRegistryService } from '@services/xp-registry'
 import { DeckService } from '@services/deck'
 import { CustomIndexedTx, IndexedTxMethodType } from 'types/IndexedTxMethodType'
@@ -43,6 +43,7 @@ import { getOfflineSignerCosmostation } from '@services/connection/cosmostation-
 import { computeStatsWithoutBoosts, fillBoosts } from '@utils/boost'
 import { useMarketPlaceStore } from './marketPlaceStore'
 import { MarketPlaceService } from '@services/marketplace'
+import axios from 'axios'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
@@ -77,6 +78,7 @@ interface WalletState {
   cosmosConnectionProvider?: CosmosConnectionProvider | null
   hasSubscribed: boolean
   showWithdrawDepositModal?: 'withdraw' | 'deposit'
+  kiInfo: KiInformationResponse | undefined
   connect: (type?: CONNECTION_TYPE) => void
   setCosmons: (cosmons: CosmonType[]) => void
   buyCosmon: (scarcity: Scarcity, price: string) => any
@@ -98,6 +100,7 @@ interface WalletState {
   searchTx: (txMethodType: IndexedTxMethodType) => Promise<CustomIndexedTx>
   setShowWithdrawDepositModal: (type?: 'withdraw' | 'deposit') => void
   getIbcSigningClient: () => Promise<SigningStargateClient | null>
+  fetchKiInfo: () => void
 }
 
 const useWalletStore = create<WalletState>(
@@ -121,6 +124,7 @@ const useWalletStore = create<WalletState>(
       hasSubscribed: false,
       connectedWith: undefined,
       connectionClientType: undefined,
+      kiInfo: undefined,
       setHasSubscribed: (hasSubscribed) => {
         set({
           hasSubscribed: hasSubscribed,
@@ -336,8 +340,8 @@ const useWalletStore = create<WalletState>(
         const { fetchSellData } = useCosmonStore.getState()
         const { getRewardsData } = useRewardStore.getState()
         const { fetchKPI } = useMarketPlaceStore.getState()
-        await fetchSellData()
         const { fetchCoin, fetchCosmons } = get()
+        await fetchSellData()
         await fetchCosmons()
         await fetchCoin()
         await getRewardsData()
@@ -675,6 +679,18 @@ const useWalletStore = create<WalletState>(
           signingClient: null,
           isConnected: false,
           cosmons: [],
+        })
+      },
+      fetchKiInfo: async () => {
+        const kiInfo = await axios({
+          method: 'get',
+          url: 'https://api-osmosis.imperator.co/tokens/v2/XKI',
+        }).then(function (response) {
+          return response.data[0]
+        })
+
+        set({
+          kiInfo,
         })
       },
       searchTx: async (txMethodType: IndexedTxMethodType): Promise<CustomIndexedTx> => {

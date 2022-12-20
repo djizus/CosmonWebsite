@@ -10,7 +10,7 @@ import { KiInformationResponse } from 'types'
 import { convertDenomToMicroDenom } from '@utils/conversion'
 
 interface ListedCosmonDetailsProps {
-  kiData: KiInformationResponse
+  kiData?: KiInformationResponse
 }
 
 const ListedCosmonDetails: React.FC<ListedCosmonDetailsProps> = ({ kiData }) => {
