@@ -170,7 +170,7 @@ export const useArenaStore = create<ArenaState>((set, get) => ({
       if (init) {
         const firstsLeaderBoard = await ArenaService.queries().fetchFirstsLeaderboard(
           arenaAddress,
-          249
+          999
         )
         currentLeaderboard = [...firstsLeaderBoard]
 
