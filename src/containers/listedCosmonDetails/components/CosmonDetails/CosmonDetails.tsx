@@ -2,7 +2,7 @@ import Button from '@components/Button/Button'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import { truncate } from '@utils/text'
 import React, { useMemo } from 'react'
-import { CosmonMarketPlaceType, CosmonType, KiInformationResponse } from 'types'
+import { CosmonMarketPlaceType, KiInformationResponse } from 'types'
 import * as style from './CosmonDetails.module.scss'
 import { computeAttributesForCosmonDetails } from '@utils/marketplace'
 
@@ -10,7 +10,7 @@ interface Props {
   buyNftLoading: boolean
   buyNft: (nftId: string) => void
   cosmon: CosmonMarketPlaceType
-  kiData: KiInformationResponse
+  kiData?: KiInformationResponse
 }
 
 const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData }) => {
@@ -51,7 +51,7 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
             <span className={style.priceValue}>{cosmon.price ?? '???'}</span>
             <span className={style.priceLabel}>XKI</span>
             <span className={style.priceUsdc}>{`($${
-              cosmon.price ? (cosmon.price * kiData.price).toFixed(2) : '???'
+              cosmon.price && kiData ? (cosmon.price * kiData.price).toFixed(2) : '???'
             })`}</span>
           </div>
           <Button
