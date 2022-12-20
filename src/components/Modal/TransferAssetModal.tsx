@@ -107,7 +107,6 @@ export default function TransferAssetModal({ onCloseModal, asset }: TransferAsse
             {' '}
             Transfer{' '}
           </Button>
-          <p>Allo</p>
         </div>
       </Transition>
     </Modal>

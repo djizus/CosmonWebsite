@@ -15,7 +15,7 @@ interface Props {
 const Header: React.FC<Props> = ({ floor, totalVolume, items, collection, className }) => {
   return (
     <div className={clsx(style.headerContainer, className)}>
-      <img className={style.logo} src={'../logo.png'} />
+      <img className={style.logo} src={'/logo.png'} />
       <div className={style.collectionInfo}>
         <p className={style.collectionTitle}>Cosmons Leaders</p>
         <p className={style.collectionAddress}>{collection ?? ''}</p>
@@ -34,7 +34,7 @@ const Header: React.FC<Props> = ({ floor, totalVolume, items, collection, classN
       <div className={style.info}>
         <p className={style.label}>Floor Price</p>
         <div className={style.floorPriceValue}>
-          <img className={style.floorPriceValueImg} src="../icons/xki.png" alt="" />
+          <img className={style.floorPriceValueImg} src="/icons/xki.png" alt="" />
           <span className={style.floorPriceValueText}>
             {convertMicroDenomToDenom(floor?.amount ?? '')}
           </span>

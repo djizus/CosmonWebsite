@@ -11,7 +11,7 @@ import Button from '@components/Button/Button'
 
 interface MarketplaceProps {}
 
-const itemPerPage = 16
+export const itemPerPage = 16
 
 const Marketplace: React.FC<MarketplaceProps> = () => {
   const { fetchCosmonsForMarketPlace, fetchKPI, floor, totalVolume, cosmonsInMarketplace } =
