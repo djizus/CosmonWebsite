@@ -86,8 +86,8 @@ export const fetchSellDataForNft = async (nftId: string): Promise<SellDataRespon
 }
 
 /**
- * Fetch selling data for nft
- * @return selling data for nft
+ * Fetch selling nft history
+ * @return selling nft history
  */
 export const fetchNftHistory = async (nftId: string): Promise<NftHistory[] | undefined> => {
   try {
@@ -100,7 +100,7 @@ export const fetchNftHistory = async (nftId: string): Promise<NftHistory[] | und
 
     return response
   } catch (e) {
-    console.error(`Error while fetching selling data for nft`, e)
+    console.error(`Error while fetching nft history`, e)
   }
 }
 
