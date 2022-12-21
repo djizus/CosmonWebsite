@@ -30,7 +30,7 @@ interface MarketPlaceState {
   fetchSellingNftFromAddress: (walletAddress: string) => void
   fetchKPI: () => void
   cosmonsForMarketPlaceLoading: boolean
-  fetchCosmonsForMarketPlace: (limit: number) => void
+  fetchCosmonsForMarketPlace: (limit: number, init: boolean) => void
   CosmonsInMarketplaceLoading: boolean
   fetchDetailedCosmon: (id: string) => void
 }
@@ -150,7 +150,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           const { fetchCosmons } = useWalletStore.getState()
           const { fetchCosmonsForMarketPlace } = get()
 
-          await fetchCosmonsForMarketPlace(itemPerPage)
+          await fetchCosmonsForMarketPlace(itemPerPage, true)
           await fetchCosmons()
         })
         .catch(() => {
@@ -192,7 +192,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       console.error(error)
     }
   },
-  fetchCosmonsForMarketPlace: async (limit: number) => {
+  fetchCosmonsForMarketPlace: async (limit: number, init: boolean) => {
     set({
       cosmonsForMarketPlaceLoading: true,
     })
@@ -203,7 +203,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       const nfts = await MarketPlaceService.queries().fetchAllSellingNft({
         limit,
         start_after:
-          lastCosmon !== undefined
+          lastCosmon !== undefined && !init
             ? {
                 token_id: lastCosmon.id,
                 price: lastCosmon.price,

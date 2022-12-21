@@ -26,7 +26,7 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
 
   useEffect(() => {
     if (isConnected) {
-      fetchCosmonsForMarketPlace(itemPerPage)
+      fetchCosmonsForMarketPlace(itemPerPage, true)
       fetchKPI()
     }
   }, [isConnected])
