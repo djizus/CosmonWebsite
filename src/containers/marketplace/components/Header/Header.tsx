@@ -29,7 +29,7 @@ const Header: React.FC<Props> = ({ floor, totalVolume, items, collection, classN
       </div>
       <div className={style.info}>
         <p className={style.label}>Total Volume</p>
-        <p className={style.value}>{totalVolume?.amount}</p>
+        <p className={style.value}>{convertMicroDenomToDenom(totalVolume?.amount ?? 0)}</p>
       </div>
       <div className={style.info}>
         <p className={style.label}>Floor Price</p>

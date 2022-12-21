@@ -4,6 +4,7 @@ export const attributesGrid: string
 export const attributesNumber: string
 export const attributValue: string
 export const buyButton: string
+export const buyButtonContainer: string
 export const cardAttributes: string
 export const cardDetails: string
 export const cardPrice: string

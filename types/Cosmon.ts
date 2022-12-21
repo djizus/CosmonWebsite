@@ -58,9 +58,28 @@ export type CosmonType = {
   boosts: [Boost | null, Boost | null, Boost | null]
 }
 
+export type NftHistory = NftHistoryListing | NftHistoryBuying
+
+interface NftHistoryListing {
+  listing: {
+    address: string
+    price: string
+    timestamp: string
+  }
+}
+
+interface NftHistoryBuying {
+  buying: {
+    address: string
+    price: string
+    timestamp: string
+  }
+}
+
 export type CosmonMarketPlaceType = CosmonType & {
   price?: number
   collection?: string
   expire?: any
   owner?: string
+  history?: NftHistory[]
 }

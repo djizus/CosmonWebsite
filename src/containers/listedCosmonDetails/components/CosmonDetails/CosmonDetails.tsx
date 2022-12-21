@@ -5,6 +5,8 @@ import React, { useMemo } from 'react'
 import { CosmonMarketPlaceType, KiInformationResponse } from 'types'
 import * as style from './CosmonDetails.module.scss'
 import { computeAttributesForCosmonDetails } from '@utils/marketplace'
+import { useWalletStore } from '@store/walletStore'
+import Tooltip from '@components/Tooltip/Tooltip'
 
 interface Props {
   buyNftLoading: boolean
@@ -17,6 +19,8 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
   const attributes = useMemo(() => {
     return computeAttributesForCosmonDetails(cosmon)
   }, [cosmon])
+
+  const { address } = useWalletStore()
 
   const handleBuy = () => {
     if (cosmon.price !== undefined) {
@@ -54,15 +58,26 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
               cosmon.price && kiData ? (cosmon.price * kiData.price).toFixed(2) : '???'
             })`}</span>
           </div>
-          <Button
-            disabled={cosmon.price === undefined}
-            className={style.buyButton}
-            withoutContainer
-            onClick={handleBuy}
-            isLoading={buyNftLoading}
+          <div
+            className={style.buyButtonContainer}
+            data-tip="tootlip"
+            data-for={`cosmon-${cosmon.owner}`}
           >
-            Buy now
-          </Button>
+            <Button
+              disabled={cosmon.price === undefined || cosmon.owner === address}
+              className={style.buyButton}
+              withoutContainer
+              onClick={handleBuy}
+              isLoading={buyNftLoading}
+            >
+              Buy now
+            </Button>
+          </div>
+          {cosmon.owner === address ? (
+            <Tooltip id={`cosmon-${cosmon.owner}`} place="bottom">
+              <p>You are the owner of this NFT</p>
+            </Tooltip>
+          ) : null}
         </div>
         <div className={style.cardAttributes}>
           <div className={style.headerAttribute}>

@@ -1,5 +1,6 @@
 import { Coin } from '@cosmjs/proto-signing'
 import { makeUnsignedClient } from '@services/connection/cosmos-clients'
+import { NftHistory } from 'types/Cosmon'
 
 const PUBLIC_MARKETPLACE_CONTRACT = process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT!
 
@@ -22,7 +23,7 @@ export const fetchAllSellingNft = async ({
 }: {
   start_after:
     | {
-        price?: number
+        price?: string
         token_id?: string
       }
     | undefined
@@ -65,6 +66,44 @@ export const fetchSellingNftFromAddress = async (
   }
 }
 
+/**
+ * Fetch selling data for nft
+ * @return selling data for nft
+ */
+export const fetchSellDataForNft = async (nftId: string): Promise<SellDataResponse | undefined> => {
+  try {
+    const client = await makeUnsignedClient()
+    const response = (await client?.queryContractSmart(PUBLIC_MARKETPLACE_CONTRACT, {
+      get_sell_data: {
+        nft: nftId,
+      },
+    })) as SellDataResponse
+
+    return response
+  } catch (e) {
+    console.error(`Error while fetching selling data for nft`, e)
+  }
+}
+
+/**
+ * Fetch selling data for nft
+ * @return selling data for nft
+ */
+export const fetchNftHistory = async (nftId: string): Promise<NftHistory[] | undefined> => {
+  try {
+    const client = await makeUnsignedClient()
+    const response = (await client?.queryContractSmart(PUBLIC_MARKETPLACE_CONTRACT, {
+      get_transaction_history: {
+        nft_id: nftId,
+      },
+    })) as NftHistory[]
+
+    return response
+  } catch (e) {
+    console.error(`Error while fetching selling data for nft`, e)
+  }
+}
+
 export interface KPIResponse {
   floor: Coin
   total_volume: Coin
@@ -93,4 +132,6 @@ export default {
   fetchAllSellingNft,
   fetchSellingNftFromAddress,
   fetchKpi,
+  fetchSellDataForNft,
+  fetchNftHistory,
 }

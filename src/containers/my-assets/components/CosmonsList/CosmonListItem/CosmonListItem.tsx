@@ -1,5 +1,4 @@
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
-import Tooltip from '@components/Tooltip/Tooltip'
 import { CosmonsListType } from '@containers/my-assets'
 import { useState } from 'react'
 import { CosmonType } from 'types'
@@ -23,6 +22,17 @@ const CosmonListItem: React.FC<CosmonListItemProps> = ({
   variation,
 }) => {
   const [displayDropDown, setDisplayDropDown] = useState(false)
+  const displayDropDownInAll = variation === 'all' && !cosmon.isInDeck && !cosmon.isListed
+  const displayDropDownInListed = variation === 'listed' && !cosmon.isInDeck && cosmon.isListed
+  const displayDropDownInAvailable =
+    variation === 'available' && !cosmon.isInDeck && !cosmon.isListed
+  const displayDropDownInEnrolled = variation === 'enrolled' && false
+
+  const canDropDownBeDisplay =
+    displayDropDownInAll ||
+    displayDropDownInListed ||
+    displayDropDownInAvailable ||
+    displayDropDownInEnrolled
 
   return (
     <div
@@ -43,7 +53,7 @@ const CosmonListItem: React.FC<CosmonListItemProps> = ({
         containerStyle={{ height: 280, width: 167 }}
         className="cursor-pointer"
       />
-      {displayDropDown ? (
+      {displayDropDown && canDropDownBeDisplay ? (
         <CardDropDownMenu
           onClickList={onClickList}
           onClickUnlist={onClickUnlist}

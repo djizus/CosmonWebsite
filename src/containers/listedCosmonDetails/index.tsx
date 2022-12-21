@@ -8,6 +8,7 @@ import CosmonDetails from './components/CosmonDetails/CosmonDetails'
 import { useWalletStore } from '@store/walletStore'
 import { KiInformationResponse } from 'types'
 import { convertDenomToMicroDenom } from '@utils/conversion'
+import Link from 'next/link'
 
 interface ListedCosmonDetailsProps {
   kiData?: KiInformationResponse
@@ -44,6 +45,9 @@ const ListedCosmonDetails: React.FC<ListedCosmonDetailsProps> = ({ kiData }) => 
         <LoadingIcon />
       ) : (
         <ConnectionNeededContent>
+          <Link href={'/marketplace'}>
+            <span className={style.backLink}>← Back to marketplace</span>
+          </Link>
           {detailedCosmon ? (
             <CosmonDetails
               buyNftLoading={buyNftLoading}
