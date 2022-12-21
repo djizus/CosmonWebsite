@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useMemo } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import ChooseYourLeaders from '../sections/ChooseYourLeaders'
 import Hero from '../sections/Hero'
 import HoldAndEarn from '../sections/HoldAndEarn'
@@ -14,14 +14,32 @@ import Section from '../components/Section/Section'
 import BandeauLastBlockchainActions from '@sections/BandeauLastBlockchainActions/BandeauLastBlockchainActions'
 import CashPrize from '@components/Highlighted/CashPrize'
 import HighlightedCountdown from '@components/Highlighted/Countdown'
-import { useMount } from 'react-use'
+import { useLocalStorage } from '@hooks/useLocalStorage'
 import { useGameStore } from '@store/gameStore'
 import { useArenaStore } from '@store/arenaStore'
 import { AnimatePresence, motion } from 'framer-motion'
+import {
+  EMAIL_COLLECTED_LOCAL_STORAGE_KEY,
+  EMAIL_LATER_COUNT_LOCAL_STORAGE_KEY,
+} from '@utils/constants'
+import { useMount } from 'react-use'
+import EmailModal from '@components/Modal/EmailModal/EmailModal'
 
 export default function Page() {
   const { fetchArenasList, arenasList } = useGameStore()
   const { getPrizePool, prizePool } = useArenaStore()
+  const { getItem } = useLocalStorage()
+
+  const [displayEmailModal, setDisplayEmailModal] = useState(false)
+
+  useEffect(() => {
+    if (
+      !getItem(EMAIL_COLLECTED_LOCAL_STORAGE_KEY) &&
+      parseInt(getItem(EMAIL_LATER_COUNT_LOCAL_STORAGE_KEY) ?? '0') < 5
+    ) {
+      setDisplayEmailModal(true)
+    }
+  }, [])
 
   useMount(() => {
     fetchData()
@@ -120,6 +138,9 @@ export default function Page() {
       <Section className="pt-48 pb-28 lg:pt-[298px]">
         <Subscribe />
       </Section>
+      {displayEmailModal ? (
+        <EmailModal handleCloseModal={() => setDisplayEmailModal(false)} />
+      ) : null}
     </div>
   )
 }

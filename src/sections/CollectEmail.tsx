@@ -5,12 +5,11 @@ import { toast } from 'react-toastify'
 import { useLocalStorage } from '@hooks/useLocalStorage'
 import { isValidEmail } from '@utils/form'
 import { useWalletStore } from '@store/walletStore'
+import { EMAIL_COLLECTED_LOCAL_STORAGE_KEY } from '@utils/constants'
 
 type SubscribeProps = {}
 
 const MAILCHIMP_URL = process.env.NEXT_PUBLIC_MAILCHIMP_URL
-
-const EMAIL_COLLECTED_LOCAL_STORAGE_KEY = 'email-collected'
 
 export default function CollectEmail({}: SubscribeProps) {
   const { address } = useWalletStore()
