@@ -10,10 +10,11 @@ import { useWalletStore } from './walletStore'
 import { XPRegistryService } from '@services/xp-registry'
 import { approveNft, queryCosmonInfo } from '@services/interaction'
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
-import { convertMicroDenomToDenom } from '@utils/conversion'
+import { convertDenomToMicroDenom, convertMicroDenomToDenom } from '@utils/conversion'
 import { itemPerPage } from '@containers/marketplace'
 
 interface MarketPlaceState {
+  myListedCosmons: CosmonMarketPlaceType[]
   detailedCosmon: CosmonMarketPlaceType | null
   detailedCosmonLoading: boolean
   cosmonsInMarketplace: CosmonMarketPlaceType[]
@@ -30,7 +31,7 @@ interface MarketPlaceState {
   fetchSellingNftFromAddress: (walletAddress: string) => void
   fetchKPI: () => void
   cosmonsForMarketPlaceLoading: boolean
-  fetchCosmonsForMarketPlace: (limit: number) => void
+  fetchCosmonsForMarketPlace: (limit: number, init: boolean) => void
   CosmonsInMarketplaceLoading: boolean
   fetchDetailedCosmon: (id: string) => void
 }
@@ -38,6 +39,7 @@ interface MarketPlaceState {
 export const WINNER_IS_DRAW = 'DRAW'
 
 export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
+  myListedCosmons: [],
   detailedCosmon: null,
   detailedCosmonLoading: false,
   cosmonsInMarketplace: [],
@@ -77,6 +79,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           },
         })
         .then(async (data) => {
+          set({ listNftLoading: false })
           const { fetchCosmons } = useWalletStore.getState()
 
           await fetchCosmons()
@@ -150,7 +153,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           const { fetchCosmons } = useWalletStore.getState()
           const { fetchCosmonsForMarketPlace } = get()
 
-          await fetchCosmonsForMarketPlace(itemPerPage)
+          await fetchCosmonsForMarketPlace(itemPerPage, true)
           await fetchCosmons()
         })
         .catch(() => {
@@ -164,10 +167,42 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
   },
   fetchSellingNftFromAddress: async () => {
     try {
-      const { address } = useWalletStore()
+      const { address, signingClient } = useWalletStore.getState()
       const listedNftsFromAddress = await MarketPlaceService.queries().fetchSellingNftFromAddress(
         address
       )
+
+      if (listedNftsFromAddress && signingClient) {
+        // getting cosmon details
+        let myCosmons: CosmonMarketPlaceType[] = await Promise.all(
+          listedNftsFromAddress.map(async (nft) => {
+            const cosmon = await queryCosmonInfo(signingClient, nft.nft)
+            const stats = await XPRegistryService.queries().getCosmonStats(nft.nft)
+
+            return {
+              id: nft.nft,
+              data: cosmon,
+              isInDeck: false,
+              stats,
+              isListed: true,
+              statsWithoutBoosts: stats,
+              boosts: [null, null, null],
+              price: convertMicroDenomToDenom(nft.price ?? ''),
+              collection: nft.collection,
+              owner: nft.address,
+              expire: nft.expire,
+            }
+          })
+        )
+
+        if (myCosmons.length > 0) {
+          set({
+            myListedCosmons: myCosmons,
+          })
+
+          return myCosmons
+        }
+      }
 
       return listedNftsFromAddress
     } catch (error) {
@@ -192,7 +227,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       console.error(error)
     }
   },
-  fetchCosmonsForMarketPlace: async (limit: number) => {
+  fetchCosmonsForMarketPlace: async (limit: number, init: boolean) => {
     set({
       cosmonsForMarketPlaceLoading: true,
     })
@@ -203,10 +238,10 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       const nfts = await MarketPlaceService.queries().fetchAllSellingNft({
         limit,
         start_after:
-          lastCosmon !== undefined
+          lastCosmon !== undefined && !init
             ? {
                 token_id: lastCosmon.id,
-                price: lastCosmon.price,
+                price: convertDenomToMicroDenom(lastCosmon.price ?? ''),
               }
             : undefined,
       })
@@ -235,9 +270,15 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         )
 
         if (myCosmons.length > 0) {
-          set({
-            cosmonsInMarketplace: myCosmons,
-          })
+          if (init) {
+            set({
+              cosmonsInMarketplace: myCosmons,
+            })
+          } else {
+            set({
+              cosmonsInMarketplace: [...cosmonsInMarketplace, ...myCosmons],
+            })
+          }
 
           return myCosmons
         }
@@ -257,14 +298,15 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       detailedCosmonLoading: true,
     })
     const { signingClient } = useWalletStore.getState()
-    const { cosmonsInMarketplace } = get()
 
-    const currentNft = cosmonsInMarketplace?.find((nft: CosmonMarketPlaceType) => nft.id === id)
+    const sellData = await MarketPlaceService.queries().fetchSellDataForNft(id)
 
     try {
       if (signingClient) {
         const cosmon = await queryCosmonInfo(signingClient, id)
         const stats = await XPRegistryService.queries().getCosmonStats(id)
+        const history = await MarketPlaceService.queries().fetchNftHistory(id)
+
         const isListed = true
 
         const detailedCosmon: CosmonMarketPlaceType = {
@@ -275,10 +317,11 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           isListed: isListed,
           statsWithoutBoosts: stats,
           boosts: [null, null, null] as [null, null, null],
-          price: currentNft?.price,
-          collection: currentNft?.collection,
-          owner: currentNft?.owner,
-          expire: currentNft?.expire,
+          price: convertMicroDenomToDenom(sellData?.price ?? ''),
+          collection: sellData?.collection,
+          owner: sellData?.address,
+          expire: sellData?.expire,
+          history: history,
         }
 
         set({

@@ -3,7 +3,19 @@
     max-width: 1250px;
     margin-top: 130px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 900px;
+}
+
+.backLink {
+    color: white;
+    font-weight: 400;
+    cursor: pointer;
+    align-self: flex-start;
+
+    &:hover {
+        color: rgb(212, 212, 212);
+    }
 }

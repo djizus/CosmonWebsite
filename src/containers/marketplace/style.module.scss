@@ -11,9 +11,8 @@
 .paginationContainer {
     display: flex;
     flex-direction: row;
-    width: 200px;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     margin: 20px auto;
 }
 
@@ -32,4 +31,36 @@
     &:hover {
         color: #9fa4dd;
     }
+}
+
+.button {
+    background-color: theme("colors.cosmon.main.secondary") !important;
+
+    &:hover {
+        background-color: theme("colors.cosmon.main.primary") !important;
+    }
+}
+
+.buttonMargin {
+    margin-left: 32px;
+}
+
+.activeButton {
+    background-color: theme("colors.cosmon.main.primary") !important;
+}
+
+.optionsContainer {
+    display: flex;
+    flex-direction: row;
+    max-width: 1120px;
+    margin: auto;
+    margin-top: 38px;
+    margin-bottom: 38px;
+}
+
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
 }
