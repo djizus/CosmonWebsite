@@ -175,7 +175,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
               getTrait(cosmon, 'scarcity') === getTrait(curr, 'scarcity')
           ) !== -1
 
-        if (isCosmonAlreadyInDeck) {
+        if (!isCosmonAlreadyInDeck) {
           return [...acc, curr]
         }
       }
