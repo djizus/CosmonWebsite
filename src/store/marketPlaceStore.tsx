@@ -155,6 +155,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
 
           await fetchCosmonsForMarketPlace(itemPerPage, true)
           await fetchCosmons()
+          set({ buyNftLoading: false })
         })
         .catch(() => {
           set({ buyNftLoading: false })
