@@ -170,9 +170,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
       if (curr) {
         const isCosmonAlreadyInDeck =
           acc.findIndex(
-            (cosmon: CosmonTypeWithMalus) =>
-              cosmon.data.extension.name === curr.data.extension.name &&
-              getTrait(cosmon, 'scarcity') === getTrait(curr, 'scarcity')
+            (cosmon: CosmonTypeWithMalus) => cosmon.data.extension.name === curr.data.extension.name
           ) !== -1
 
         if (!isCosmonAlreadyInDeck) {
