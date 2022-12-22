@@ -9,7 +9,7 @@ const PUBLIC_MARKETPLACE_CONTRACT = process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT
  * @return all selling nft
  */
 
-interface SellDataResponse {
+export interface SellDataResponse {
   price: number
   address: string
   nft: string

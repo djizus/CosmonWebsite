@@ -42,7 +42,7 @@ import { getConnectedWithByType, removeLastConnection, saveLastConnection } from
 import { getOfflineSignerCosmostation } from '@services/connection/cosmostation-walletconnect'
 import { computeStatsWithoutBoosts, fillBoosts } from '@utils/boost'
 import { useMarketPlaceStore } from './marketPlaceStore'
-import { MarketPlaceService } from '@services/marketplace'
+import { MarketPlaceService, SellDataResponse } from '@services/marketplace'
 import axios from 'axios'
 import { IS_MARKETPLACE_ACTIVE } from '@utils/constants'
 
@@ -402,7 +402,7 @@ const useWalletStore = create<WalletState>(
         if (signingClient && address) {
           try {
             const tokens: string[] = await fetch_tokens(signingClient, address)
-            let listedNftsId = []
+            let listedNftsId: SellDataResponse[] = []
 
             if (IS_MARKETPLACE_ACTIVE) {
               listedNftsId =
