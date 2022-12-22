@@ -7,6 +7,7 @@ import * as style from './CosmonDetails.module.scss'
 import { computeAttributesForCosmonDetails } from '@utils/marketplace'
 import { useWalletStore } from '@store/walletStore'
 import Tooltip from '@components/Tooltip/Tooltip'
+import TransactionHistory from '../TransactionHistory/TransactionHistory'
 
 interface Props {
   buyNftLoading: boolean
@@ -19,6 +20,8 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
   const attributes = useMemo(() => {
     return computeAttributesForCosmonDetails(cosmon)
   }, [cosmon])
+
+  console.log(cosmon)
 
   const { address } = useWalletStore()
 
