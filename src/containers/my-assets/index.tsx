@@ -16,6 +16,7 @@ import CosmonsList from './components/CosmonsList/CosmonsList'
 import Button from '@components/Button/Button'
 import clsx from 'clsx'
 import * as style from './style.module.scss'
+import { IS_MARKETPLACE_ACTIVE } from '@utils/constants'
 
 interface MyAssetsProps {}
 
@@ -54,7 +55,7 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
       }
 
       case 'listed': {
-        return listedCosmons
+        return IS_MARKETPLACE_ACTIVE ? listedCosmons : cosmons
       }
 
       default: {
@@ -127,16 +128,18 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
             >
               {`Enrolled cards (${enrolledCosmons.length})`}
             </Button>
-            <Button
-              type="quaternary"
-              size="small"
-              className={clsx('ml-[32px]', style.button, {
-                [style.activeButton]: currentSection === 'listed',
-              })}
-              onClick={() => setCurrentSection('listed')}
-            >
-              {`Listed Assets (${listedCosmons.length})`}
-            </Button>
+            {IS_MARKETPLACE_ACTIVE ? (
+              <Button
+                type="quaternary"
+                size="small"
+                className={clsx('ml-[32px]', style.button, {
+                  [style.activeButton]: currentSection === 'listed',
+                })}
+                onClick={() => setCurrentSection('listed')}
+              >
+                {`Listed Assets (${listedCosmons.length})`}
+              </Button>
+            ) : null}
           </div>
 
           <CosmonsList
