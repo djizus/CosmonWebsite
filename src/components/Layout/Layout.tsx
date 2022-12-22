@@ -28,6 +28,7 @@ import { useRouter } from 'next/router'
 import HamburgerMenu from '@components/HamburgerMenu/hamburgerMenu'
 import { useDeckStore } from '@store/deckStore'
 import { CONNECTION_TYPE } from 'types/Connection'
+import { IS_MARKETPLACE_ACTIVE } from '@utils/constants'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -161,8 +162,13 @@ export default function Layout({ children }: LayoutProps) {
             <Link href="/buy-cosmon">
               <a>Buy Cosmon</a>
             </Link>
-            <Link href="/marketplace">
-              <a>Marketplace</a>
+            {IS_MARKETPLACE_ACTIVE ? (
+              <Link href="/marketplace">
+                <a>Marketplace</a>
+              </Link>
+            ) : null}
+            <Link href="https://docs.cosmon.ki/">
+              <a target="_blank">Documentation</a>
             </Link>
             <Link href="/my-assets">
               <a>

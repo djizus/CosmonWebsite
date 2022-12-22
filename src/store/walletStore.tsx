@@ -42,8 +42,9 @@ import { getConnectedWithByType, removeLastConnection, saveLastConnection } from
 import { getOfflineSignerCosmostation } from '@services/connection/cosmostation-walletconnect'
 import { computeStatsWithoutBoosts, fillBoosts } from '@utils/boost'
 import { useMarketPlaceStore } from './marketPlaceStore'
-import { MarketPlaceService } from '@services/marketplace'
+import { MarketPlaceService, SellDataResponse } from '@services/marketplace'
 import axios from 'axios'
+import { IS_MARKETPLACE_ACTIVE } from '@utils/constants'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
@@ -345,7 +346,9 @@ const useWalletStore = create<WalletState>(
         await fetchCosmons()
         await fetchCoin()
         await getRewardsData()
-        await fetchKPI()
+        if (IS_MARKETPLACE_ACTIVE) {
+          await fetchKPI()
+        }
         // await fetchRewards()
         set({
           // maxClaimableToken: maxClaimableToken,
@@ -399,8 +402,12 @@ const useWalletStore = create<WalletState>(
         if (signingClient && address) {
           try {
             const tokens: string[] = await fetch_tokens(signingClient, address)
-            const listedNftsId =
-              (await MarketPlaceService.queries().fetchSellingNftFromAddress(address)) ?? []
+            let listedNftsId: SellDataResponse[] = []
+
+            if (IS_MARKETPLACE_ACTIVE) {
+              listedNftsId =
+                (await MarketPlaceService.queries().fetchSellingNftFromAddress(address)) ?? []
+            }
 
             // getting cosmon details
             let myCosmons: CosmonType[] = await Promise.all(

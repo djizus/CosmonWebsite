@@ -5,6 +5,7 @@ import { CosmonType } from 'types'
 import * as style from './CardDropDownMenu.module.scss'
 import clsx from 'clsx'
 import { CosmonsListType } from '@containers/my-assets'
+import { IS_MARKETPLACE_ACTIVE } from '@utils/constants'
 
 interface CardDropDownMenuProps {
   cosmon: CosmonType
@@ -40,10 +41,12 @@ const CardDropDownMenu: React.FC<CardDropDownMenuProps> = ({
   }
 
   const variationToDisplayListItem: CosmonsListType[] = ['all', 'available']
-  const displayListItem = !cosmon.isListed && variationToDisplayListItem.includes(variation)
+  const displayListItem =
+    IS_MARKETPLACE_ACTIVE && !cosmon.isListed && variationToDisplayListItem.includes(variation)
 
   const variationToDisplayUnListItem: CosmonsListType[] = ['all', 'listed']
-  const displayUnListItem = cosmon.isListed && variationToDisplayUnListItem.includes(variation)
+  const displayUnListItem =
+    IS_MARKETPLACE_ACTIVE && cosmon.isListed && variationToDisplayUnListItem.includes(variation)
 
   const variationToDisplayTransfer: CosmonsListType[] = ['all', 'available']
   const displayTransferItem =

@@ -5,7 +5,7 @@ import { useMarketPlaceStore } from '@store/marketPlaceStore'
 import Header from './components/Header/Header'
 import { useWalletStore } from '@store/walletStore'
 import CosmonsList from './components/CosmonsList/CosmonsList'
-import { CosmonType, KiInformationResponse } from 'types'
+import { CosmonType } from 'types'
 import { useRouter } from 'next/router'
 import Button from '@components/Button/Button'
 import clsx from 'clsx'
@@ -26,9 +26,9 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
     myListedCosmons,
     cosmonsForMarketPlaceLoading,
   } = useMarketPlaceStore()
+  const router = useRouter()
   const [page, setPage] = useState(0)
   const { isConnected, address } = useWalletStore()
-  const router = useRouter()
   const [currentSection, setCurrentSection] = useState<MarketPlaceListType>('all')
 
   // useEffect(() => {
