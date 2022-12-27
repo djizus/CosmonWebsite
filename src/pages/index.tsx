@@ -24,22 +24,25 @@ import {
 } from '@utils/constants'
 import { useMount } from 'react-use'
 import EmailModal from '@components/Modal/EmailModal/EmailModal'
+import { useWalletStore } from '@store/walletStore'
 
 export default function Page() {
   const { fetchArenasList, arenasList } = useGameStore()
   const { getPrizePool, prizePool } = useArenaStore()
   const { getItem } = useLocalStorage()
+  const { isConnected } = useWalletStore()
 
   const [displayEmailModal, setDisplayEmailModal] = useState(false)
 
   useEffect(() => {
     if (
       !getItem(EMAIL_COLLECTED_LOCAL_STORAGE_KEY) &&
-      parseInt(getItem(EMAIL_LATER_COUNT_LOCAL_STORAGE_KEY) ?? '0') < 5
+      parseInt(getItem(EMAIL_LATER_COUNT_LOCAL_STORAGE_KEY) ?? '0') < 5 &&
+      isConnected
     ) {
       setDisplayEmailModal(true)
     }
-  }, [])
+  }, [isConnected])
 
   useMount(() => {
     fetchData()
