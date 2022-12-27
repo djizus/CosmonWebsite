@@ -9,11 +9,13 @@ import {
   EMAIL_LATER_COUNT_LOCAL_STORAGE_KEY,
 } from '@utils/constants'
 import EmailModal from '@components/Modal/EmailModal/EmailModal'
+import { useWalletStore } from '@store/walletStore'
 
 const ARENA_IS_ACTIVE = Boolean(process.env.NEXT_PUBLIC_ARENA_IS_ACTIVE)
 
 export default function Page() {
   const router = useRouter()
+  const { isConnected } = useWalletStore()
   const { getItem } = useLocalStorage()
 
   const [displayEmailModal, setDisplayEmailModal] = useState(false)
@@ -21,11 +23,12 @@ export default function Page() {
   useEffect(() => {
     if (
       !getItem(EMAIL_COLLECTED_LOCAL_STORAGE_KEY) &&
-      parseInt(getItem(EMAIL_LATER_COUNT_LOCAL_STORAGE_KEY) ?? '0') < 5
+      parseInt(getItem(EMAIL_LATER_COUNT_LOCAL_STORAGE_KEY) ?? '0') < 5 &&
+      isConnected
     ) {
       setDisplayEmailModal(true)
     }
-  }, [])
+  }, [isConnected])
 
   useMount(() => {
     if (!ARENA_IS_ACTIVE) {
