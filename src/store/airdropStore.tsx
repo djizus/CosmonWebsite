@@ -33,9 +33,7 @@ const useAirdropStore = create<AirdropState>((set, get) => ({
         : 'Fetching airdrop data, please wait..'
     )
 
-    const isEligible =
-      signingClient &&
-      (await queryCheckAirdropEligibility(signingClient, address))
+    const isEligible = signingClient && (await queryCheckAirdropEligibility(signingClient, address))
 
     if (!isEligible) {
       set({
@@ -44,8 +42,7 @@ const useAirdropStore = create<AirdropState>((set, get) => ({
         },
       })
     } else {
-      const claimData =
-        signingClient && (await queryGetClaimData(signingClient, address))
+      const claimData = signingClient && (await queryGetClaimData(signingClient, address))
       set({
         airdropData: {
           isEligible: true,
@@ -57,42 +54,32 @@ const useAirdropStore = create<AirdropState>((set, get) => ({
   },
   claimAirdrop: async () => {
     const { getAirdropData } = get()
-    const { address, signingClient } = useWalletStore.getState()
+    const { address, signingClient, fetchCosmons } = useWalletStore.getState()
     if (signingClient && address) {
       const response = await toast
         .promise(executeClaimAirdrop(signingClient, address), {
           pending: {
             render() {
-              return (
-                <ToastContainer type="pending">
-                  {`Claiming cosmon airdrop`}
-                </ToastContainer>
-              )
+              return <ToastContainer type="pending">{`Claiming cosmon airdrop`}</ToastContainer>
             },
           },
           success: {
             render() {
-              return (
-                <ToastContainer type={'success'}>
-                  Cosmon claimed successfully,
-                </ToastContainer>
-              )
+              return <ToastContainer type={'success'}>Cosmon claimed successfully,</ToastContainer>
             },
             icon: SuccessIcon,
           },
 
           error: {
             render({ data }: any) {
-              return (
-                <ToastContainer type="error">{data.message}</ToastContainer>
-              )
+              return <ToastContainer type="error">{data.message}</ToastContainer>
             },
             icon: ErrorIcon,
           },
         })
         .then(async ({ token }: any) => {
           await getAirdropData()
-          useWalletStore.getState().fetchCosmons()
+          await fetchCosmons()
           return token
         })
       return response

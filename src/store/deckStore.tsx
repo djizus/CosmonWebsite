@@ -14,6 +14,7 @@ import { CosmonTypeWithMalus } from 'types/Malus'
 interface DeckState {
   decksList: Deck[]
   fetchDecksList: () => any
+  refreshDeck: (deckId: DeckId) => Promise<void>
   isFetchingDecksList: boolean
   personalityAffinities: any
   fetchPersonalityAffinities: () => any
@@ -24,7 +25,6 @@ interface DeckState {
   removeDeck: (deckId: DeckId) => any
   isRemovingDeck: boolean
   computeDeckAffinities: (nfts: CosmonTypeWithMalus[]) => DeckAffinitiesType
-  refreshCosmonsAndDecksList: () => Promise<void>
 }
 
 export const useDeckStore = create<DeckState>((set, get) => ({
@@ -36,8 +36,8 @@ export const useDeckStore = create<DeckState>((set, get) => ({
   isRemovingDeck: false,
 
   fetchDecksList: async () => {
-    const { address, cosmons } = useWalletStore.getState()
-    if (address && cosmons?.length > 0) {
+    const { address, fetchCosmonsDetails } = useWalletStore.getState()
+    if (address) {
       try {
         set({ isFetchingDecksList: true })
         let decks = [] as Deck[]
@@ -47,14 +47,12 @@ export const useDeckStore = create<DeckState>((set, get) => ({
           for (const deckId of deckIdsList) {
             const nftIdsList = await DeckService.queries().getNftsByDeckId(deckId)
 
+            const cosmonsInDeck = await fetchCosmonsDetails(nftIdsList)
+
             const deckName = await DeckService.queries().getName(deckId)
 
             if (nftIdsList?.length) {
-              const nftsList = nftIdsList.map((nftId: string) => {
-                return cosmons.find((cosmon: CosmonType) => cosmon.id === nftId)
-              })
-
-              const nftsListWithMalus = computeMalusForCosmons(nftsList)
+              const nftsListWithMalus = computeMalusForCosmons(cosmonsInDeck)
 
               decks.push({
                 id: deckId,
@@ -73,8 +71,32 @@ export const useDeckStore = create<DeckState>((set, get) => ({
       }
     }
   },
+  refreshDeck: async (deckId: DeckId) => {
+    const { updateCosmons } = useWalletStore.getState()
+    const { decksList } = get()
+    const deckToRefresh = decksList.find((d) => d.id === deckId)
+    if (deckToRefresh) {
+      const cosmonsInDeck = await updateCosmons(deckToRefresh?.cosmons.map((c) => c.id))
+      const deckName = await DeckService.queries().getName(deckId)
+      const nftsListWithMalus = computeMalusForCosmons(cosmonsInDeck)
+      const decksListWithNew = decksList.map((d) => {
+        if (d.id === deckId) {
+          return {
+            id: deckId,
+            cosmons: nftsListWithMalus,
+            name: deckName,
+            hasMalus: deckHasMalus(nftsListWithMalus),
+          }
+        }
+        return d
+      })
+      set({ decksList: decksListWithNew })
+    }
+  },
+
   createDeck: async (name: string, nftIds: NFTId[]) => {
     try {
+      const { fetchDecksList } = get()
       const { updateCosmonsAreInDeck } = useWalletStore.getState()
       set({ creatingDeck: true })
       const response = await toast
@@ -102,6 +124,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
         .then(async (resp: any) => {
           set({ decksList: [] })
           await updateCosmonsAreInDeck()
+          fetchDecksList()
           set({ creatingDeck: false })
           return resp
         })
@@ -114,6 +137,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
   },
   updateDeck: async (deckId: DeckId, name: string, nftIds: NFTId[]) => {
     try {
+      const { refreshDeck } = get()
       const { updateCosmonsAreInDeck } = useWalletStore.getState()
       set({ updatingDeck: true })
       const response = await toast
@@ -143,6 +167,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
           try {
             set({ decksList: [] })
             await updateCosmonsAreInDeck()
+            await refreshDeck(deckId)
             set({ updatingDeck: false })
             return resp
           } catch (error) {
@@ -242,6 +267,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
   },
   removeDeck: async (deckId: DeckId) => {
     try {
+      const { fetchDecksList } = get()
       const { updateCosmonsAreInDeck } = useWalletStore.getState()
       set({ isRemovingDeck: true })
       const response = await toast
@@ -271,6 +297,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
           try {
             set({ decksList: [] })
             await updateCosmonsAreInDeck()
+            await fetchDecksList()
             set({ isRemovingDeck: false })
             return resp
           } catch (error) {
@@ -278,18 +305,6 @@ export const useDeckStore = create<DeckState>((set, get) => ({
           }
         })
       return response
-    } catch (error) {
-      console.error(error)
-    }
-  },
-  refreshCosmonsAndDecksList: async () => {
-    try {
-      const { fetchCosmons, setCosmons } = useWalletStore.getState()
-      setCosmons([])
-      await fetchCosmons()
-      set({ decksList: [] })
-      const { fetchDecksList } = get()
-      await fetchDecksList()
     } catch (error) {
       console.error(error)
     }
