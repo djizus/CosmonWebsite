@@ -1,13 +1,13 @@
 .button {
-  background-color: theme("colors.cosmon.main.secondary") !important;
+  background-color: theme('colors.cosmon.main.secondary') !important;
 
   &:hover {
-    background-color: theme("colors.cosmon.main.primary") !important;
+    background-color: theme('colors.cosmon.main.primary') !important;
   }
 }
 
 .activeButton {
-  background-color: theme("colors.cosmon.main.primary") !important;
+  background-color: theme('colors.cosmon.main.primary') !important;
 }
 
 .optionsContainer {
@@ -21,4 +21,15 @@
 .cosmonsList {
   margin-top: 38px;
   align-items: center;
+}
+.loaderContainer {
+  display: flex;
+  width: 100%;
+  height: 200px;
+  justify-content: center;
+  align-items: center;
+}
+
+.paginationContainer {
+  margin-top: 25px;
 }

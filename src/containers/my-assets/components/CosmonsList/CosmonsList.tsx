@@ -62,9 +62,9 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
             className
           )}
         >
-          {cosmons.map((cosmon) => (
+          {cosmons.map((cosmon, i) => (
             <div
-              key={cosmon.id}
+              key={`${i}-${cosmon.id}`}
               className="group overflow-visible transition-transform hover:scale-[104%]"
             >
               <CosmonListItem

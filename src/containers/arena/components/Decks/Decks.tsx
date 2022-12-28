@@ -26,10 +26,9 @@ interface DecksProps {
 }
 
 const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModal }) => {
-  const { isConnected, cosmons, fetchCoin } = useWalletStore()
+  const { isConnected, fetchCoin } = useWalletStore()
   const { fetchArenasList, registerToArena, fight } = useGameStore()
-  const { decksList, fetchDecksList, fetchPersonalityAffinities, refreshCosmonsAndDecksList } =
-    useDeckStore()
+  const { decksList, fetchDecksList, fetchPersonalityAffinities, refreshDeck } = useDeckStore()
   const { fetchHourlyFPNumber } = useArenaStore()
 
   const [showSelectArenaModal, setShowSelectArenaModal] = useState(false)
@@ -53,13 +52,11 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
   }, [isConnected])
 
   useEffect(() => {
-    if (cosmons && cosmons.length > 0) {
-      fetchDecksList()
-      if (selectedDeck) {
-        updateCosmonsInSelectedDeck(selectedDeck, cosmons)
-      }
+    fetchDecksList()
+    if (selectedDeck) {
+      refreshDeck(selectedDeck.id)
     }
-  }, [cosmons])
+  }, [])
 
   const handleLaunchFight = useCallback(
     async (arena: ArenaType) => {
@@ -88,18 +85,6 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
     [selectedDeck]
   )
 
-  const updateCosmonsInSelectedDeck = (deck: Deck, cosmons: CosmonType[]) => {
-    const updatedCosmons = deck.cosmons
-      .map((c) => {
-        const cosmonPos = cosmons.findIndex((dc) => dc.id === c.id)
-        if (cosmonPos !== -1) {
-          return cosmons[cosmonPos]
-        }
-      })
-      .filter(Boolean)
-    setSelectedDeck((prevState) => ({ ...prevState, cosmons: updatedCosmons } as Deck))
-  }
-
   const handleRegisterToArena = useCallback(async () => {
     try {
       if (selectedArena) {
@@ -123,9 +108,13 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
   }, [])
 
   const handleFightEnd = useCallback(async () => {
-    await refreshCosmonsAndDecksList()
+    console.log('handleFightEnd ::', selectedDeck)
+    if (selectedDeck) {
+      console.log('refreshDeck ::', selectedDeck.id)
+      await refreshDeck(selectedDeck.id)
+    }
     setShowFightReportModal(true)
-  }, [])
+  }, [selectedDeck])
 
   const handleClickNewFight = async () => {
     try {
@@ -170,8 +159,10 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
   const handleAcceptSkipFight = async () => {
     setSkipTheFight(true)
     setBattle(undefined)
+    if (selectedDeck) {
+      await refreshDeck(selectedDeck.id)
+    }
     setSelectedArena(undefined)
-    await refreshCosmonsAndDecksList()
     setShowSkipFightModal(false)
   }
 

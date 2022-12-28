@@ -16,6 +16,7 @@ import DeleteDeckModal from './components/DeleteDeckModal'
 import Progression from './components/Progression/Progression'
 import * as style from './components/Hero/style.module.scss'
 import Hero from './components/Hero/Hero'
+import { useWalletStore } from '@store/walletStore'
 
 interface ArenaProps {}
 
@@ -30,6 +31,7 @@ const Arena: React.FC<ArenaProps> = ({}) => {
   const [buyBoostModalOrigin, setBuyBoostModalOrigin] = useState<BuyBoostModalOrigin | null>(null)
   const { removeDeck, isRemovingDeck } = useDeckStore()
   const { arenasList, fetchArenasList } = useGameStore()
+  const { cosmons, cosmonsId } = useWalletStore()
   const { currentLeaguePro, getNextLeagueOpenTime, getPrizePool, setCurrentLeaguePro } =
     useArenaStore()
 
@@ -151,13 +153,15 @@ const Arena: React.FC<ArenaProps> = ({}) => {
               </Button>
             </div>
             <div className={style.optionsContainer}>
-              <Button
-                size="small"
-                onClick={() => handleOpenBuyBoostModal('buyBoost')}
-                className={style.buyBoostButton}
-              >
-                Buy a boost
-              </Button>
+              {cosmons.length === cosmonsId.length ? (
+                <Button
+                  size="small"
+                  onClick={() => handleOpenBuyBoostModal('buyBoost')}
+                  className={style.buyBoostButton}
+                >
+                  Buy a boost
+                </Button>
+              ) : null}
               <Button size="small" onClick={handleOpenDeckBuilderModal}>
                 Add a new deck
               </Button>
