@@ -128,7 +128,10 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
               })}
               type="quaternary"
               size="small"
-              onClick={() => setCurrentSection('all')}
+              onClick={() => {
+                setPage(0)
+                setCurrentSection('all')
+              }}
             >
               {`All (${cosmonsId.length})`}
             </Button>
@@ -138,7 +141,10 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
               })}
               type="quaternary"
               size="small"
-              onClick={() => setCurrentSection('available')}
+              onClick={() => {
+                setPage(0)
+                setCurrentSection('available')
+              }}
             >
               {`Available (${availableCosmons.length})`}
             </Button>
@@ -148,7 +154,10 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
               className={clsx('ml-[32px]', style.button, {
                 [style.activeButton]: currentSection === 'enrolled',
               })}
-              onClick={() => setCurrentSection('enrolled')}
+              onClick={() => {
+                setPage(0)
+                setCurrentSection('enrolled')
+              }}
             >
               {`Enrolled cards (${enrolledCosmons.length})`}
             </Button>
@@ -159,7 +168,10 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
                 className={clsx('ml-[32px]', style.button, {
                   [style.activeButton]: currentSection === 'listed',
                 })}
-                onClick={() => setCurrentSection('listed')}
+                onClick={() => {
+                  setPage(0)
+                  setCurrentSection('listed')
+                }}
               >
                 {`Listed Assets (${listedCosmons.length})`}
               </Button>
@@ -173,12 +185,15 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
             <>
               <CosmonsList
                 className={style.cosmonsList}
-                cosmons={filtredCosmons}
+                cosmons={filtredCosmons?.slice(
+                  page * COSMONS_PER_PAGE,
+                  (page + 1) * COSMONS_PER_PAGE
+                )}
                 onClickShowDetails={set_showCosmonDetail}
                 onClickTransfer={set_assetToTransfer}
                 variation={currentSection}
               />
-              {cosmons.length < cosmonsId.length ? (
+              {filtredCosmons.length > COSMONS_PER_PAGE * (page + 1) ? (
                 <div className={style.paginationContainer}>
                   <Pagination
                     itemsPerPage={COSMONS_PER_PAGE}

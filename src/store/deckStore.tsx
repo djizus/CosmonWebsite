@@ -48,6 +48,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
             const nftIdsList = await DeckService.queries().getNftsByDeckId(deckId)
 
             const cosmonsInDeck = await fetchCosmonsDetails(nftIdsList)
+            console.log('cosmonsInDeck ::', cosmonsInDeck)
 
             const deckName = await DeckService.queries().getName(deckId)
 
