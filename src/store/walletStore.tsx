@@ -456,8 +456,12 @@ const useWalletStore = create<WalletState>(
         const { fetchCosmonDetails, cosmons, cosmonsId, address } = get()
         set({ isFetchingCosmons: true })
 
-        // For the case every cosmon have already been fetched
-        if (cosmons.length > 0 && cosmons.length === cosmonsId.length) {
+        // For the case every or only needed cosmon have already been fetched
+        if (
+          cosmons.length > 0 &&
+          (cosmons.length === cosmonsId.length ||
+            cosmonsIds.every((neededId) => cosmons.map((c) => c.id).includes(neededId)))
+        ) {
           set({ isFetchingCosmons: false })
           return cosmons.filter((c) => cosmonsIds.includes(c.id))
         }
@@ -607,7 +611,7 @@ const useWalletStore = create<WalletState>(
         }
       },
       mintFullDeck: async (price: string) => {
-        const { signingClient, address, fetchCoin } = get()
+        const { signingClient, address, fetchCoin, fetchCosmons } = get()
         if (signingClient && address) {
           const response = await toast
             .promise(executeMintDeck(signingClient, price, address), {
@@ -630,8 +634,9 @@ const useWalletStore = create<WalletState>(
                 icon: ErrorIcon,
               },
             })
-            .then(({ cosmons }: any) => {
-              fetchCoin()
+            .then(async ({ cosmons }: any) => {
+              await fetchCoin()
+              await fetchCosmons()
               return cosmons
             })
           return response
