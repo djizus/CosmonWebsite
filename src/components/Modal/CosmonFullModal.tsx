@@ -4,6 +4,7 @@ import Close from '/public/icons/close.svg'
 import { useEffect } from 'react'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import { CosmonStatProgressionLabel } from '@containers/arena/components/FightReportModal/CosmonsProgression'
+import TransactionHistory from '@containers/listedCosmonDetails/components/TransactionHistory/TransactionHistory'
 
 type CosmonFullModalProps = {
   cosmon: CosmonType
@@ -283,6 +284,7 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
             </div>
           </div>
         </div>
+        <TransactionHistory className={'mt-[50px] mb-[50px]'} cosmon={cosmon} />
       </div>
     </div>
   )

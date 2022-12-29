@@ -9,6 +9,7 @@ import { useWalletStore } from '@store/walletStore'
 import { KiInformationResponse } from 'types'
 import { convertDenomToMicroDenom } from '@utils/conversion'
 import Link from 'next/link'
+import TransactionHistory from './components/TransactionHistory/TransactionHistory'
 
 interface ListedCosmonDetailsProps {
   kiData?: KiInformationResponse
@@ -49,12 +50,15 @@ const ListedCosmonDetails: React.FC<ListedCosmonDetailsProps> = ({ kiData }) => 
             <span className={style.backLink}>← Back to marketplace</span>
           </Link>
           {detailedCosmon ? (
-            <CosmonDetails
-              buyNftLoading={buyNftLoading}
-              buyNft={handleBuyNft}
-              kiData={kiData}
-              cosmon={detailedCosmon}
-            />
+            <>
+              <CosmonDetails
+                buyNftLoading={buyNftLoading}
+                buyNft={handleBuyNft}
+                kiData={kiData}
+                cosmon={detailedCosmon}
+              />
+              <TransactionHistory className={style.transactionHistory} cosmon={detailedCosmon} />
+            </>
           ) : null}
         </ConnectionNeededContent>
       )}
