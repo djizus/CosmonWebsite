@@ -8,8 +8,9 @@ import clsx from 'clsx'
 import CardsWithStats from '../CardWithStats/CardWithStats'
 import { convertMicroDenomToDenom } from '@utils/conversion'
 import { useEffect } from 'react'
-import { useWalletStore } from '@store/walletStore'
 import { BuyBoostModalOrigin, CosmonTypeWithDecks } from '../BuyBoostModalType'
+import { useDeckStore } from '@store/deckStore'
+import groupBy from 'lodash/groupBy'
 
 interface Props {
   selectedLeaders: CosmonTypeWithDecks[]
@@ -27,10 +28,15 @@ const Recap: React.FC<Props> = ({
   origin,
 }) => {
   const BoostIcon = getIconForAttr(selectedBoost.boost_name)
-  const { fetchCosmons } = useWalletStore()
+  const { refreshDeck } = useDeckStore()
 
   useEffect(() => {
-    fetchCosmons()
+    // can handle multiple leaders selection and refresh only the deck they are into
+    const groupByDeckId = groupBy(selectedLeaders, 'deckId')
+    const decksIdsToRefresh = Object.keys(groupByDeckId)
+    for (const deckId of decksIdsToRefresh) {
+      refreshDeck(+deckId)
+    }
   }, [])
 
   return (

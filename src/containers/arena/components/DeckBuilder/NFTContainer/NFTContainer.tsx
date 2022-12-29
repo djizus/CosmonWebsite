@@ -1,5 +1,5 @@
 import { CosmonType } from 'types/Cosmon'
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { forwardRef, useCallback, useContext, useMemo } from 'react'
 import styles from './NFTContainer.module.scss'
 import NFTName from './NFTName'
 import Badge from '@components/Badge/Badge'
@@ -17,7 +17,7 @@ interface NFTContainerProps {
   listIdx: number
 }
 
-const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
+const NFTContainer = forwardRef<HTMLDivElement, NFTContainerProps>(({ nft, listIdx }, ref) => {
   const { listFilter, deck, setDeck } = useContext(DeckBuilderContext)
 
   const [{ isDragging: _isDragging }, drag, dragPreview] = useDrag(
@@ -71,6 +71,7 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
 
   return (
     <motion.div
+      ref={ref}
       initial={{
         x: '-100%',
         opacity: 0,
@@ -79,7 +80,7 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
         x: '0',
         opacity: 1,
         transition: {
-          delay: (listIdx * 200) / 5 / 1000,
+          // delay: (listIdx * 200) / 5 / 1000,
           duration: 0,
           type: 'spring',
           stiffness: 100,
@@ -162,6 +163,6 @@ const NFTContainer: React.FC<NFTContainerProps> = ({ nft, listIdx }) => {
       </div>
     </motion.div>
   )
-}
+})
 
 export default NFTContainer

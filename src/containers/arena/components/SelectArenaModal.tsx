@@ -114,7 +114,7 @@ const ArenaContainer: React.FC<{
   const { t } = useTranslation('arenas')
   const [nextLeagueStartDate, setNextLeagueStartDate] = useState<Date>()
   const { hourlyFPNumber } = useArenaStore()
-  const { refreshCosmonsAndDecksList } = useDeckStore()
+  const { decksList, refreshDeck } = useDeckStore()
 
   const {
     fetchDailyCombat,
@@ -189,7 +189,9 @@ const ArenaContainer: React.FC<{
   }, [])
 
   const handleCountdownReached = async () => {
-    await refreshCosmonsAndDecksList()
+    for (const deck of decksList) {
+      await refreshDeck(deck.id)
+    }
   }
 
   const renderContentLeagueMessage = () => {
