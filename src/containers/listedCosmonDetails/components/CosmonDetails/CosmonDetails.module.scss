@@ -212,23 +212,6 @@
     text-overflow: ellipsis;
 }
 
-.attributesNumber {
-    position: absolute;
-    right: 110px;
-    top: -8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 38px;
-    width: 38px;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 18px;
-    color: white;
-    border-radius: 50%;
-    background: rgba(169, 150, 255, 0.5);
-}
-
 .headerAttribute {
     position: relative;
 }

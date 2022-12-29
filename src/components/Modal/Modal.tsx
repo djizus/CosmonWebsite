@@ -11,6 +11,7 @@ export type ModalProps = {
   subContainerClassname?: string
   width?: number | string
   onCloseModal: () => void
+  className?: string
 }
 
 export default function Modal({
@@ -21,6 +22,7 @@ export default function Modal({
   subContainerClassname,
   width,
   onCloseModal,
+  className,
 }: ModalProps) {
   useEffect(() => {
     if (fullScreen) {
@@ -36,9 +38,13 @@ export default function Modal({
   return (
     <>
       <div
-        className={clsx('flex justify-center', {
-          'h-screen w-screen': fullScreen,
-        })}
+        className={clsx(
+          'flex justify-center',
+          {
+            'h-screen w-screen': fullScreen,
+          },
+          className
+        )}
       >
         <div
           onClick={onCloseModal}

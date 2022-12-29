@@ -18,7 +18,6 @@ const Header: React.FC<Props> = ({ floor, totalVolume, items, collection, classN
       <img className={style.logo} src={'/logo.png'} />
       <div className={style.collectionInfo}>
         <p className={style.collectionTitle}>Cosmons Leaders</p>
-        <p className={style.collectionAddress}>{collection ?? ''}</p>
       </div>
       <div className={style.separatorContainer}>
         <hr className={style.separator} />

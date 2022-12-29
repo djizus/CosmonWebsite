@@ -118,23 +118,14 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
             {`My listing (${myListedCosmons.length})`}
           </Button>
         </div>
-        <CosmonsList cosmons={filtredCosmons} onClickShowDetails={handleClickShowDetails} />
-        {currentSection === 'all' ? (
-          <div className={style.paginationContainer}>
-            <Button
-              type="ghost"
-              className={style.paginationButton}
-              disabled={
-                filtredCosmons.slice(itemPerPage * page, itemPerPage * page + itemPerPage).length <
-                itemPerPage
-              }
-              onClick={() => setPage(page + 1)}
-              isLoading={cosmonsForMarketPlaceLoading}
-            >
-              Load more
-            </Button>
-          </div>
-        ) : null}
+        <CosmonsList
+          page={page}
+          section={currentSection}
+          cosmons={filtredCosmons}
+          onChangePage={(value: number) => setPage(value)}
+          onClickShowDetails={handleClickShowDetails}
+          isListLoading={cosmonsForMarketPlaceLoading}
+        />
       </ConnectionNeededContent>
     </div>
   )

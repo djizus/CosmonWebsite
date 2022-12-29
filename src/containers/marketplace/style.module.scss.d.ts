@@ -5,5 +5,3 @@ export const container: string
 export const header: string
 export const loadingContainer: string
 export const optionsContainer: string
-export const paginationButton: string
-export const paginationContainer: string

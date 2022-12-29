@@ -1,4 +1,3 @@
-export const collectionAddress: string
 export const collectionInfo: string
 export const collectionTitle: string
 export const floorPriceValue: string

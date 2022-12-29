@@ -1,7 +1,6 @@
 export const attributeItem: string
 export const attributeLabel: string
 export const attributesGrid: string
-export const attributesNumber: string
 export const attributValue: string
 export const buyButton: string
 export const buyButtonContainer: string

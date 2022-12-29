@@ -7,6 +7,7 @@ import * as style from './CosmonDetails.module.scss'
 import { computeAttributesForCosmonDetails } from '@utils/marketplace'
 import { useWalletStore } from '@store/walletStore'
 import Tooltip from '@components/Tooltip/Tooltip'
+import CosmonBuyRecap from '../CosmonBuyRecap/CosmonBuyRecap'
 
 interface Props {
   buyNftLoading: boolean
@@ -82,7 +83,6 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
         <div className={style.cardAttributes}>
           <div className={style.headerAttribute}>
             <p className={style.titleAttributes}>Attributes</p>
-            <p className={style.attributesNumber}>14</p>
           </div>
           <div className={style.attributesGrid}>
             {attributes.map((attribute) => {

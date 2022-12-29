@@ -214,6 +214,8 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
     try {
       const response = await MarketPlaceService.queries().fetchKpi()
 
+      console.log(response)
+
       if (response) {
         set({
           floor: response.floor,

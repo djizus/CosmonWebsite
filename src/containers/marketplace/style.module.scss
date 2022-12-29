@@ -8,31 +8,6 @@
     margin-bottom: 40px;
 }
 
-.paginationContainer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 20px auto;
-}
-
-.paginationButton {
-    cursor: pointer;
-
-    &:disabled {
-        cursor: not-allowed;
-        color: #e7e7e7 !important;
-        opacity: 0.7;
-    }
-    &:active {
-        color: #9fa4dd;
-        opacity: 0.7;
-    }
-    &:hover {
-        color: #9fa4dd;
-    }
-}
-
 .button {
     background-color: theme("colors.cosmon.main.secondary") !important;
 
