@@ -72,5 +72,4 @@ export type CosmonMarketPlaceType = CosmonType & {
   collection?: string
   expire?: any
   owner?: string
-  history?: NftHistory[]
 }

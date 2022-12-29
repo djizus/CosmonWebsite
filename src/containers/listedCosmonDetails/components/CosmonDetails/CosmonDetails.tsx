@@ -21,8 +21,6 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
     return computeAttributesForCosmonDetails(cosmon)
   }, [cosmon])
 
-  console.log(cosmon)
-
   const { address } = useWalletStore()
 
   const handleBuy = () => {

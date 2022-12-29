@@ -90,7 +90,7 @@ interface WalletState {
   setHasSubscribed: (hasSubscribed: boolean) => void
   fetchCoin: () => void
   addMoneyFromFaucet: () => void
-  fetchCosmons: () => void
+  fetchCosmons: () => Promise<string[]>
   fetchCosmonDetails: (
     cosmonId: string,
     isInDeck: boolean,
@@ -421,12 +421,15 @@ const useWalletStore = create<WalletState>(
             return []
           } catch (e) {
             console.error('Error while fetching cosmons', e)
+            return []
           } finally {
             set({
               isFetchingCosmons: false,
             })
+            return []
           }
         }
+        return []
       },
       fetchCosmonDetails: async (
         cosmonId: string,
