@@ -30,8 +30,10 @@ export default function Page() {
       !isMobile
     ) {
       setDisplayEmailModal(true)
+    } else if (isMobile) {
+      setDisplayEmailModal(false)
     }
-  }, [isConnected])
+  }, [isConnected, isMobile])
 
   useMount(() => {
     if (!ARENA_IS_ACTIVE) {
