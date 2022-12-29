@@ -34,9 +34,9 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
   }
 
   const handleSubmitListNft = async (nftId: string, price: Coin) => {
-    //@TODO handle refreshing cosmon
     await listNft(nftId, price)
     handleCloseListNftModal()
+    onCloseModal()
   }
 
   return (
