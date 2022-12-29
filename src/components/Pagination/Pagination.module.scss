@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+
+  .pagesContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 25px;
+
+    .page {
+      font-weight: 400;
+      opacity: 0.5;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+    .pageActive {
+      font-weight: 700;
+      opacity: 1;
+    }
+  }
+}

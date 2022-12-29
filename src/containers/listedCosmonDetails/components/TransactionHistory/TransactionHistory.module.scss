@@ -1,0 +1,98 @@
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.title {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 32px;
+    margin-bottom: 40px;
+}
+
+.table {
+    width: 1041px;
+    border-spacing: 0 20px;
+    border-collapse: separate;
+    border-bottom: 1px solid #413673;
+}
+
+.label {
+    color: #9fa4dd;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 26px;
+    text-align: left;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #413673;
+}
+
+.row {
+    height: 42px;
+    gap: 20px;
+}
+
+.hashCol {
+    width: calc(144px + 190px);
+}
+
+.typeCol {
+    width: calc(40px + 190px);
+}
+
+.fromCol {
+    width: calc(42px + 147px);
+}
+
+.toCol {
+    width: calc(20px + 191px);
+}
+
+.hash {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 32px;
+    color: white;
+}
+
+.type {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 32px;
+    color: white;
+    text-transform: capitalize;
+}
+
+.from {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 32px;
+    color: white;
+}
+
+.to {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 32px;
+    color: white;
+}
+
+.price {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 32px;
+    color: white;
+}
+
+.link {
+    display: flex;
+    flex-direction: row;
+}
+
+.tabIcon {
+    margin-left: 16px;
+}

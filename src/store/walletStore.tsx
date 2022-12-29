@@ -74,6 +74,7 @@ interface WalletState {
   coins: Coin[]
   ibcCoins: Coin[]
   cosmons: CosmonType[]
+  cosmonsId: string[]
   isCurrentlyIbcTransferring: boolean
   isConnected: boolean
   cosmosConnectionProvider?: CosmosConnectionProvider | null
@@ -89,7 +90,15 @@ interface WalletState {
   setHasSubscribed: (hasSubscribed: boolean) => void
   fetchCoin: () => void
   addMoneyFromFaucet: () => void
-  fetchCosmons: () => void
+  fetchCosmons: () => Promise<string[]>
+  fetchCosmonDetails: (
+    cosmonId: string,
+    isInDeck: boolean,
+    listedNftsId: SellDataResponse[]
+  ) => Promise<CosmonType>
+  fetchCosmonsDetails: (cosmonsIds: string[]) => Promise<CosmonType[]>
+  removeCosmon: (cosmonId: string) => void
+  updateCosmons: (cosmonsIds: string[]) => Promise<CosmonType[]>
   updateCosmonsAreInDeck: () => void
   markCosmonAsTemporaryFree: (nftId: NFTId) => void
   resetAllCosmonsTemporaryFree: () => void
@@ -111,6 +120,7 @@ const useWalletStore = create<WalletState>(
       ibcCoins: [],
       ibcDenom: process.env.NEXT_PUBLIC_IBC_DENOM_HUMAN || '',
       cosmons: [],
+      cosmonsId: [],
       address: '',
       ibcAddress: '',
       isFetchingData: false,
@@ -402,60 +412,126 @@ const useWalletStore = create<WalletState>(
         if (signingClient && address) {
           try {
             const tokens: string[] = await fetch_tokens(signingClient, address)
-            let listedNftsId: SellDataResponse[] = []
-
-            if (IS_MARKETPLACE_ACTIVE) {
-              listedNftsId =
-                (await MarketPlaceService.queries().fetchSellingNftFromAddress(address)) ?? []
-            }
-
-            // getting cosmon details
-            let myCosmons: CosmonType[] = await Promise.all(
-              tokens.map(async (token: string) => {
-                const cosmon = await queryCosmonInfo(signingClient, token)
-                const stats = await XPRegistryService.queries().getCosmonStats(token)
-                const boosts = await XPRegistryService.queries().fecthBoostsForCosmon(token)
-                const isListed =
-                  listedNftsId.length > 0
-                    ? listedNftsId.findIndex((nft) => nft.nft === token) !== -1
-                    : false
-
-                return {
-                  id: token,
-                  data: cosmon,
-                  isInDeck: false,
-                  stats,
-                  isListed: isListed,
-                  statsWithoutBoosts: computeStatsWithoutBoosts(stats, boosts),
-                  boosts: fillBoosts(boosts),
-                }
-              })
-            )
-
-            if (myCosmons.length > 0) {
-              const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(
-                myCosmons.map((c) => c.id)
-              )
-
-              myCosmons = myCosmons.map((c, i) => ({
-                ...c,
-                isInDeck: cosmonIdsAlreadyInDecks[i],
-              }))
-
+            if (tokens.length > 0) {
               set({
-                cosmons: sortCosmonsByScarcity(myCosmons),
+                cosmonsId: tokens,
               })
-              return sortCosmonsByScarcity(myCosmons)
+              return tokens
             }
             return []
           } catch (e) {
             console.error('Error while fetching cosmons', e)
+            return []
           } finally {
             set({
               isFetchingCosmons: false,
             })
+            return []
           }
         }
+        return []
+      },
+      fetchCosmonDetails: async (
+        cosmonId: string,
+        isInDeck: boolean,
+        listedNftsId: SellDataResponse[]
+      ) => {
+        const { signingClient } = get()
+        const cosmon = await queryCosmonInfo(signingClient!, cosmonId)
+        const stats = await XPRegistryService.queries().getCosmonStats(cosmonId)
+        const boosts = await XPRegistryService.queries().fecthBoostsForCosmon(cosmonId)
+        const isListed =
+          listedNftsId.length > 0
+            ? listedNftsId.findIndex((nft) => nft.nft === cosmonId) !== -1
+            : false
+
+        return {
+          id: cosmonId,
+          data: cosmon,
+          isInDeck,
+          stats,
+          isListed,
+          statsWithoutBoosts: computeStatsWithoutBoosts(stats, boosts),
+          boosts: fillBoosts(boosts),
+        }
+      },
+      fetchCosmonsDetails: async (cosmonsIds: string[]) => {
+        const { fetchCosmonDetails, cosmons, cosmonsId, address } = get()
+        set({ isFetchingCosmons: true })
+
+        // For the case every or only needed cosmon have already been fetched
+        if (
+          cosmons.length > 0 &&
+          (cosmons.length === cosmonsId.length ||
+            cosmonsIds.every((neededId) => cosmons.map((c) => c.id).includes(neededId)))
+        ) {
+          set({ isFetchingCosmons: false })
+          return cosmons.filter((c) => cosmonsIds.includes(c.id))
+        }
+
+        // For the case a given slice is missing in store
+        let filteredCosmonsIds = cosmonsIds.filter(
+          (id) => cosmons.map((c) => c.id).includes(id) === false
+        )
+        const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(
+          filteredCosmonsIds
+        )
+        let listedNftsId: SellDataResponse[] = []
+
+        if (IS_MARKETPLACE_ACTIVE) {
+          listedNftsId =
+            (await MarketPlaceService.queries().fetchSellingNftFromAddress(address)) ?? []
+        }
+        let cosmonsWithDetails = []
+        for (let index = 0; index < filteredCosmonsIds.length; index++) {
+          const cosmonId = filteredCosmonsIds[index]
+          const cosmon = await fetchCosmonDetails(
+            cosmonId,
+            cosmonIdsAlreadyInDecks[index],
+            listedNftsId
+          )
+          cosmonsWithDetails.push(cosmon)
+        }
+        set({
+          cosmons: sortCosmonsByScarcity(Array.from(new Set(cosmons.concat(cosmonsWithDetails)))),
+          isFetchingCosmons: false,
+        })
+        return cosmonsWithDetails
+      },
+      removeCosmon: (cosmonId: string) => {
+        const { cosmons } = get()
+        const updatedCosmonsList = [...cosmons.filter((c) => c.id !== cosmonId)]
+        set({ cosmons: updatedCosmonsList })
+      },
+      updateCosmons: async (cosmonsIds: string[]) => {
+        const { fetchCosmonDetails, cosmons, address } = get()
+        const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(cosmonsIds)
+        let listedNftsId: SellDataResponse[] = []
+
+        if (IS_MARKETPLACE_ACTIVE) {
+          listedNftsId =
+            (await MarketPlaceService.queries().fetchSellingNftFromAddress(address)) ?? []
+        }
+        let freshCosmons: CosmonType[] = cosmons
+        let updatedCosmons: CosmonType[] = []
+        for (let index = 0; index < cosmonsIds.length; index++) {
+          const cosmonId = cosmonsIds[index]
+          const cosmon = await fetchCosmonDetails(
+            cosmonId,
+            cosmonIdsAlreadyInDecks[index],
+            listedNftsId
+          )
+          updatedCosmons.push(cosmon)
+          freshCosmons = freshCosmons.map((c) => {
+            if (c.id === cosmonId) {
+              return cosmon
+            }
+            return c
+          })
+        }
+        console.log('updated cosmons :: ', updatedCosmons)
+        set({ cosmons: sortCosmonsByScarcity(freshCosmons) })
+        return updatedCosmons
       },
       updateCosmonsAreInDeck: async () => {
         const { cosmons } = get()
@@ -497,7 +573,7 @@ const useWalletStore = create<WalletState>(
         })
       },
       buyCosmon: async (scarcity, price) => {
-        const { signingClient, fetchCosmons, address, fetchCoin } = get()
+        const { signingClient, address, fetchCoin, fetchCosmons } = get()
         if (signingClient && address) {
           const response = await toast
             .promise(executeBuyCosmon(signingClient, price, address, scarcity), {
@@ -528,17 +604,17 @@ const useWalletStore = create<WalletState>(
                 icon: ErrorIcon,
               },
             })
-            .then(({ token }: any) => {
-              fetchCosmons()
+            .then(async ({ token }: any) => {
               // update wallet available balance
-              fetchCoin()
+              await fetchCoin()
+              await fetchCosmons()
               return token
             })
           return response
         }
       },
       mintFullDeck: async (price: string) => {
-        const { signingClient, fetchCosmons, address, fetchCoin } = get()
+        const { signingClient, address, fetchCoin, fetchCosmons } = get()
         if (signingClient && address) {
           const response = await toast
             .promise(executeMintDeck(signingClient, price, address), {
@@ -561,16 +637,16 @@ const useWalletStore = create<WalletState>(
                 icon: ErrorIcon,
               },
             })
-            .then(({ cosmons }: any) => {
-              fetchCosmons()
-              fetchCoin()
+            .then(async ({ cosmons }: any) => {
+              await fetchCoin()
+              await fetchCosmons()
               return cosmons
             })
           return response
         }
       },
       transferAsset: async (recipient: string, asset: CosmonType) => {
-        const { signingClient, fetchCosmons, address } = get()
+        const { signingClient, address, removeCosmon, fetchCosmons } = get()
         if (signingClient && address) {
           toast
             .promise(executeTransferNft(signingClient, address, recipient, asset.id), {
@@ -601,7 +677,8 @@ const useWalletStore = create<WalletState>(
                 icon: ErrorIcon,
               },
             })
-            .then(() => {
+            .then(({ cosmon }: any) => {
+              removeCosmon(asset.id)
               fetchCosmons()
             })
         }
@@ -640,7 +717,7 @@ const useWalletStore = create<WalletState>(
         toast.dismiss(toastId)
       },
       claimAirdrop: async () => {
-        const { signingClient, fetchCosmons, address, getAirdropData } = get()
+        const { signingClient, address, getAirdropData, fetchCosmons } = get()
         if (signingClient && address) {
           const response = await toast
             .promise(executeClaimAirdrop(signingClient, address), {
@@ -667,7 +744,7 @@ const useWalletStore = create<WalletState>(
             })
             .then(async ({ token }: any) => {
               await getAirdropData()
-              fetchCosmons()
+              await fetchCosmons()
               return token
             })
           return response

@@ -154,8 +154,8 @@ export const useGameStore = create<GameState>((set, get) => ({
           },
         })
         .then(async (resp: any) => {
-          const { fetchCosmons } = useWalletStore.getState()
-          await fetchCosmons()
+          const { updateCosmons } = useWalletStore.getState()
+          await updateCosmons([cosmon.id])
 
           return true
         })

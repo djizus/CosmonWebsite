@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import 'react-lazy-load-image-component/src/effects/opacity.css'
 import { Transition } from '@headlessui/react'
 import { useWalletStore } from '@store/walletStore'
@@ -17,16 +17,26 @@ import Button from '@components/Button/Button'
 import clsx from 'clsx'
 import * as style from './style.module.scss'
 import { IS_MARKETPLACE_ACTIVE } from '@utils/constants'
+import Pagination from '@components/Pagination/Pagination'
+import LoadingIcon from '@components/LoadingIcon/LoadingIcon'
 
 interface MyAssetsProps {}
 
 export type CosmonsListType = 'all' | 'enrolled' | 'listed' | 'available'
 
+export const COSMONS_PER_PAGE = 100
+
 const MyAssets: React.FC<MyAssetsProps> = ({}) => {
-  const { cosmons } = useWalletStore()
+  const { cosmons, cosmonsId, isFetchingCosmons, fetchCosmonsDetails } = useWalletStore()
   const [assetToTransfer, set_assetToTransfer] = useState<null | CosmonType>()
   const [showCosmonDetail, set_showCosmonDetail] = useState<CosmonType | null>()
   const [currentSection, setCurrentSection] = useState<CosmonsListType>('all')
+  const [page, setPage] = useState(0)
+  const [loading, setLoading] = useState(false)
+
+  const handleChangePage = (nextPage: number) => {
+    setPage(nextPage)
+  }
 
   const availableCosmons = useMemo(() => {
     return cosmons.filter((cosmon) => !cosmon.isListed && !cosmon.isInDeck)
@@ -47,11 +57,11 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
       }
 
       case 'available': {
-        return availableCosmons
+        return availableCosmons || []
       }
 
       case 'enrolled': {
-        return enrolledCosmons
+        return enrolledCosmons || []
       }
 
       case 'listed': {
@@ -63,6 +73,20 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
       }
     }
   }, [cosmons, enrolledCosmons, currentSection])
+
+  useEffect(() => {
+    if (page >= 0 && cosmonsId.length > 0) {
+      fetchCosmonsData()
+    }
+  }, [page, cosmonsId])
+
+  const fetchCosmonsData = async () => {
+    setLoading(true)
+    await fetchCosmonsDetails(
+      cosmonsId.slice(page * COSMONS_PER_PAGE, (page + 1) * COSMONS_PER_PAGE)
+    )
+    setLoading(false)
+  }
 
   return (
     <>
@@ -104,9 +128,12 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
               })}
               type="quaternary"
               size="small"
-              onClick={() => setCurrentSection('all')}
+              onClick={() => {
+                setPage(0)
+                setCurrentSection('all')
+              }}
             >
-              {`All (${cosmons.length})`}
+              {`All (${cosmonsId.length})`}
             </Button>
             <Button
               className={clsx('ml-[32px]', style.button, {
@@ -114,7 +141,10 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
               })}
               type="quaternary"
               size="small"
-              onClick={() => setCurrentSection('available')}
+              onClick={() => {
+                setPage(0)
+                setCurrentSection('available')
+              }}
             >
               {`Available (${availableCosmons.length})`}
             </Button>
@@ -124,7 +154,10 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
               className={clsx('ml-[32px]', style.button, {
                 [style.activeButton]: currentSection === 'enrolled',
               })}
-              onClick={() => setCurrentSection('enrolled')}
+              onClick={() => {
+                setPage(0)
+                setCurrentSection('enrolled')
+              }}
             >
               {`Enrolled cards (${enrolledCosmons.length})`}
             </Button>
@@ -135,20 +168,43 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
                 className={clsx('ml-[32px]', style.button, {
                   [style.activeButton]: currentSection === 'listed',
                 })}
-                onClick={() => setCurrentSection('listed')}
+                onClick={() => {
+                  setPage(0)
+                  setCurrentSection('listed')
+                }}
               >
                 {`Listed Assets (${listedCosmons.length})`}
               </Button>
             ) : null}
           </div>
-
-          <CosmonsList
-            className={style.cosmonsList}
-            cosmons={filtredCosmons}
-            onClickShowDetails={set_showCosmonDetail}
-            onClickTransfer={set_assetToTransfer}
-            variation={currentSection}
-          />
+          {isFetchingCosmons || loading ? (
+            <div className={style.loaderContainer}>
+              <LoadingIcon />
+            </div>
+          ) : (
+            <>
+              <CosmonsList
+                className={style.cosmonsList}
+                cosmons={filtredCosmons?.slice(
+                  page * COSMONS_PER_PAGE,
+                  (page + 1) * COSMONS_PER_PAGE
+                )}
+                onClickShowDetails={set_showCosmonDetail}
+                onClickTransfer={set_assetToTransfer}
+                variation={currentSection}
+              />
+              {filtredCosmons.length > COSMONS_PER_PAGE * (page + 1) ? (
+                <div className={style.paginationContainer}>
+                  <Pagination
+                    itemsPerPage={COSMONS_PER_PAGE}
+                    totalItems={cosmonsId.length}
+                    currentPage={page}
+                    onPageChange={handleChangePage}
+                  />
+                </div>
+              ) : null}
+            </>
+          )}
         </ConnectionNeededContent>
 
         <Section className="hidden pt-[173px] pb-[162px] lg:flex">

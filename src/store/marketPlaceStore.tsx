@@ -1,6 +1,6 @@
 import create from 'zustand'
 import { Coin } from '@cosmjs/proto-signing'
-import { CosmonMarketPlaceType } from 'types'
+import { CosmonMarketPlaceType, NftHistory } from 'types'
 import { toast } from 'react-toastify'
 import { ToastContainer } from '@components/ToastContainer/ToastContainer'
 import SuccessIcon from '@public/icons/success.svg'
@@ -8,8 +8,7 @@ import ErrorIcon from '@public/icons/error.svg'
 import { MarketPlaceService } from '@services/marketplace'
 import { useWalletStore } from './walletStore'
 import { XPRegistryService } from '@services/xp-registry'
-import { approveNft, queryCosmonInfo } from '@services/interaction'
-import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
+import { queryCosmonInfo } from '@services/interaction'
 import { convertDenomToMicroDenom, convertMicroDenomToDenom } from '@utils/conversion'
 import { itemPerPage } from '@containers/marketplace'
 
@@ -34,6 +33,7 @@ interface MarketPlaceState {
   fetchCosmonsForMarketPlace: (limit: number, init: boolean) => void
   CosmonsInMarketplaceLoading: boolean
   fetchDetailedCosmon: (id: string) => void
+  fetchCosmonHistory: (id: string) => Promise<NftHistory[]>
 }
 
 export const WINNER_IS_DRAW = 'DRAW'
@@ -54,9 +54,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
   CosmonsInMarketplaceLoading: false,
   listNft: async (nftId: string, price: Coin) => {
     try {
-      const { signingClient, address } = useWalletStore.getState()
       set({ listNftLoading: true })
-      await approveNft(signingClient as SigningCosmWasmClient, address, nftId)
 
       await toast
         .promise(MarketPlaceService.executes().listNft(nftId, price), {
@@ -79,10 +77,10 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           },
         })
         .then(async (data) => {
-          set({ listNftLoading: false })
-          const { fetchCosmons } = useWalletStore.getState()
+          const { updateCosmons } = useWalletStore.getState()
 
-          await fetchCosmons()
+          await updateCosmons([nftId])
+          set({ listNftLoading: false })
         })
         .catch(() => {
           set({ listNftLoading: false })
@@ -115,9 +113,9 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           },
         })
         .then(async (data) => {
-          const { fetchCosmons } = useWalletStore.getState()
+          const { updateCosmons } = useWalletStore.getState()
 
-          await fetchCosmons()
+          await updateCosmons([nftId])
         })
         .catch(() => {
           set({ unlistNftLoading: false })
@@ -149,7 +147,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
             icon: ErrorIcon,
           },
         })
-        .then(async (data) => {
+        .then(async () => {
           const { fetchCosmons } = useWalletStore.getState()
           const { fetchCosmonsForMarketPlace } = get()
 
@@ -308,7 +306,6 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       if (signingClient) {
         const cosmon = await queryCosmonInfo(signingClient, id)
         const stats = await XPRegistryService.queries().getCosmonStats(id)
-        const history = await MarketPlaceService.queries().fetchNftHistory(id)
 
         const isListed = true
 
@@ -324,7 +321,6 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           collection: sellData?.collection,
           owner: sellData?.address,
           expire: sellData?.expire,
-          history: history,
         }
 
         set({
@@ -341,5 +337,20 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         detailedCosmonLoading: false,
       })
     }
+  },
+  fetchCosmonHistory: async (id: string) => {
+    const { signingClient } = useWalletStore.getState()
+
+    try {
+      if (signingClient) {
+        const history = await MarketPlaceService.queries().fetchNftHistory(id)
+
+        return history ?? []
+      }
+    } catch (error) {
+      console.error('Error while fetching nft history')
+    }
+
+    return []
   },
 }))

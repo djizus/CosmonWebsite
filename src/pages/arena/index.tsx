@@ -10,6 +10,7 @@ import {
 } from '@utils/constants'
 import EmailModal from '@components/Modal/EmailModal/EmailModal'
 import { useWalletStore } from '@store/walletStore'
+import useIsMobileScreen from '@hooks/useIsMobile'
 
 const ARENA_IS_ACTIVE = Boolean(process.env.NEXT_PUBLIC_ARENA_IS_ACTIVE)
 
@@ -17,14 +18,16 @@ export default function Page() {
   const router = useRouter()
   const { isConnected } = useWalletStore()
   const { getItem } = useLocalStorage()
+  const isMobile = useIsMobileScreen()
 
   const [displayEmailModal, setDisplayEmailModal] = useState(false)
 
   useEffect(() => {
     if (
       !getItem(EMAIL_COLLECTED_LOCAL_STORAGE_KEY) &&
-      parseInt(getItem(EMAIL_LATER_COUNT_LOCAL_STORAGE_KEY) ?? '0') < 5 &&
-      isConnected
+      parseInt(getItem(EMAIL_LATER_COUNT_LOCAL_STORAGE_KEY) ?? '0') < 3 &&
+      isConnected &&
+      !isMobile
     ) {
       setDisplayEmailModal(true)
     }

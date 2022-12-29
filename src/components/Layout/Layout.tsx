@@ -45,6 +45,7 @@ export default function Layout({ children }: LayoutProps) {
     isFetchingData,
     fetchWalletData,
     cosmons,
+    cosmonsId,
     isConnected,
     ibcDenom,
     coins,
@@ -173,7 +174,7 @@ export default function Layout({ children }: LayoutProps) {
             <Link href="/my-assets">
               <a>
                 My Assets
-                {cosmons.length > 0 && ` (${cosmons.length})`}
+                {cosmonsId.length > 0 && ` (${cosmonsId.length})`}
               </a>
             </Link>
             {ARENA_IS_ACTIVE ? (

@@ -1,8 +1,11 @@
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/cosmwasmclient'
+import { XPRegistryService } from '@services/xp-registry'
+import { computeStatsWithoutBoosts, fillBoosts } from '@utils/boost'
 import create from 'zustand'
 import { Scarcity } from '../../types/Scarcity'
 import {
   queryCosmonAvailableByScarcity,
+  queryCosmonInfo,
   queryCosmonPrice,
   queryGetWhitelistInfo,
   queryPreSellOpen,
@@ -52,7 +55,6 @@ const useCosmonStore = create<CosmonState>((set, get) => ({
       isPreSellOpen: signingClient && (await queryPreSellOpen(signingClient)),
     })
   },
-
   getCosmonScarcityAvailable: async (scarcity): Promise<number> => {
     const { signingClient } = useWalletStore.getState()
     const { getWhitelistData } = get()
@@ -85,7 +87,6 @@ const useCosmonStore = create<CosmonState>((set, get) => ({
       return 'XX'
     }
   },
-
   resetWhitelistData: () => {
     set({
       whitelistData: undefined,

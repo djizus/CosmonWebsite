@@ -45,13 +45,11 @@ const BuyBoostModal: React.FC<BuyBoostModalProps> = ({ handleCloseModal, origin 
   const [selectedLeaders, setSelectedLeaders] = useState<CosmonTypeWithDecks[]>([])
   const [cosmonsWithDeck, setCosmonsWithDeck] = useState<CosmonTypeWithDecks[]>([])
   const { fetchBoosts, boostsAvailable } = useArenaStore((state) => state)
-  const { fetchDecksList, decksList } = useDeckStore((state) => state)
-  const { cosmons, fetchCosmons } = useWalletStore((state) => state)
+  const { decksList } = useDeckStore((state) => state)
+  const { cosmons } = useWalletStore((state) => state)
 
   useEffect(() => {
     fetchBoosts()
-    fetchDecksList()
-    fetchCosmons()
   }, [])
 
   useEffect(() => {

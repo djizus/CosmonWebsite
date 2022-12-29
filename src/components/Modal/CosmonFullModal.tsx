@@ -8,6 +8,7 @@ import Button from '@components/Button/Button'
 import ListNftModal from '@containers/my-assets/components/CosmonsList/ListNftModal/ListNftModal'
 import { Coin } from '@cosmjs/proto-signing'
 import { useMarketPlaceStore } from '@store/marketPlaceStore'
+import TransactionHistory from '@containers/listedCosmonDetails/components/TransactionHistory/TransactionHistory'
 
 type CosmonFullModalProps = {
   cosmon: CosmonType
@@ -313,6 +314,7 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
             </div>
           </div>
         </div>
+        <TransactionHistory className={'mt-[50px] mb-[50px]'} cosmon={cosmon} />
       </div>
     </div>
   )

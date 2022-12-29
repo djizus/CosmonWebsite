@@ -10,15 +10,28 @@ const PUBLIC_MARKETPLACE_CONTRACT = process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT
 export const listNft = async (nftId: string, price: Coin) => {
   try {
     const { signingClient, address } = useWalletStore.getState()
-    const response = await signingClient?.execute(
+    const response = await signingClient?.executeMultiple(
       address,
-      PUBLIC_MARKETPLACE_CONTRACT,
-      {
-        list_nft: {
-          nft_id: nftId,
-          price: price,
+      [
+        {
+          contractAddress: process.env.NEXT_PUBLIC_NFT_CONTRACT || '',
+          msg: {
+            approve: {
+              spender: PUBLIC_MARKETPLACE_CONTRACT,
+              token_id: nftId,
+            },
+          },
         },
-      },
+        {
+          contractAddress: PUBLIC_MARKETPLACE_CONTRACT,
+          msg: {
+            list_nft: {
+              nft_id: nftId,
+              price: price,
+            },
+          },
+        },
+      ],
       'auto',
       '[COSMON] list a nft'
     )

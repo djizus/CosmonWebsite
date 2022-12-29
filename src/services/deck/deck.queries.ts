@@ -10,10 +10,9 @@ const PUBLIC_DECK_CONTRACT = process.env.NEXT_PUBLIC_DECK_CONTRACT!
 export const isDeckValid = async (deckId: DeckId) => {
   try {
     const { signingClient } = useWalletStore.getState()
-    const isDeckValid = await signingClient?.queryContractSmart(
-      PUBLIC_DECK_CONTRACT,
-      { is_valid: { deck: deckId } }
-    )
+    const isDeckValid = await signingClient?.queryContractSmart(PUBLIC_DECK_CONTRACT, {
+      is_valid: { deck: deckId },
+    })
     return isDeckValid
   } catch (e) {
     console.error(`Error while checking if deck ${deckId} was valid`, e)
@@ -27,10 +26,9 @@ export const isDeckValid = async (deckId: DeckId) => {
 export const getDecksByAddr = async (address: string) => {
   try {
     const { signingClient } = useWalletStore.getState()
-    const decksList = await signingClient?.queryContractSmart(
-      PUBLIC_DECK_CONTRACT,
-      { get_decks_by_addr: { address } }
-    )
+    const decksList = await signingClient?.queryContractSmart(PUBLIC_DECK_CONTRACT, {
+      get_decks_by_addr: { address },
+    })
     return decksList
   } catch (e) {
     console.error(`Error while fetching decks owned by ${address}`, e)
@@ -44,10 +42,9 @@ export const getDecksByAddr = async (address: string) => {
 export const getNftsByDeckId = async (deckId: DeckId) => {
   try {
     const { signingClient } = useWalletStore.getState()
-    const nftsList = await signingClient?.queryContractSmart(
-      PUBLIC_DECK_CONTRACT,
-      { get_nfts_by_deck_id: { deck: deckId } }
-    )
+    const nftsList = await signingClient?.queryContractSmart(PUBLIC_DECK_CONTRACT, {
+      get_nfts_by_deck_id: { deck: deckId },
+    })
     return nftsList
   } catch (e) {
     console.error(`Error while fetching nfts if the deck ${deckId}`, e)
@@ -71,10 +68,9 @@ export const getMaxDeckByAddress = () => {}
 export const isNftInADeck = async (nftId: NFTId) => {
   try {
     const { signingClient } = useWalletStore.getState()
-    const response = await signingClient?.queryContractSmart(
-      PUBLIC_DECK_CONTRACT,
-      { is_nft_in_a_deck: { nft: nftId } }
-    )
+    const response = await signingClient?.queryContractSmart(PUBLIC_DECK_CONTRACT, {
+      is_nft_in_a_deck: { nft: nftId },
+    })
     return response
   } catch (e) {
     console.error(`Error while cheking if an nft is already in a deck`, e)
@@ -85,19 +81,15 @@ export const isNftInADeck = async (nftId: NFTId) => {
  * Check if an NFTs collection is already in a deck
  * @param nftIds Collection of
  */
-export const isNftsInADeck = async (nftIds: NFTId[]) => {
+export const isNftsInADeck = async (nftIds: NFTId[]): Promise<boolean[] | any> => {
   try {
     const { signingClient } = useWalletStore.getState()
-    const response = await signingClient?.queryContractSmart(
-      PUBLIC_DECK_CONTRACT,
-      { is_nfts_in_a_deck: { nft: nftIds } }
-    )
+    const response = await signingClient?.queryContractSmart(PUBLIC_DECK_CONTRACT, {
+      is_nfts_in_a_deck: { nft: nftIds },
+    })
     return response
   } catch (e) {
-    console.error(
-      `Error while cheking if several nfts are in already in deck`,
-      e
-    )
+    console.error(`Error while cheking if several nfts are in already in deck`, e)
   }
 }
 
@@ -113,16 +105,12 @@ export const getNftContractAddress = () => {}
 export const getName = async (deckId: DeckId) => {
   try {
     const { signingClient } = useWalletStore.getState()
-    const response = await signingClient?.queryContractSmart(
-      PUBLIC_DECK_CONTRACT,
-      { get_name: { deck: deckId } }
-    )
+    const response = await signingClient?.queryContractSmart(PUBLIC_DECK_CONTRACT, {
+      get_name: { deck: deckId },
+    })
     return response
   } catch (e) {
-    console.error(
-      `Error while cheking if several nfts are in already in deck`,
-      e
-    )
+    console.error(`Error while cheking if several nfts are in already in deck`, e)
   }
 }
 
@@ -138,10 +126,9 @@ export const getAffinity = (cosmonType: string) => {}
 export const getPersonalityAffinities = async () => {
   try {
     const { signingClient } = useWalletStore.getState()
-    const response = await signingClient?.queryContractSmart(
-      PUBLIC_DECK_CONTRACT,
-      { get_affinities: {} }
-    )
+    const response = await signingClient?.queryContractSmart(PUBLIC_DECK_CONTRACT, {
+      get_affinities: {},
+    })
     return response
   } catch (e) {
     console.error(`Error while getting cosmons affinities`, e)
