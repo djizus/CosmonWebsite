@@ -43,8 +43,10 @@ export default function Page() {
       !isMobile
     ) {
       setDisplayEmailModal(true)
+    } else if (isMobile) {
+      setDisplayEmailModal(false)
     }
-  }, [isConnected])
+  }, [isConnected, isMobile])
 
   useMount(() => {
     fetchData()

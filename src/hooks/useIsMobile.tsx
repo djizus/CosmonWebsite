@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react'
 
 const useIsMobileScreen = (): boolean => {
+  const userAgent = typeof navigator === 'undefined' ? 'SSR' : navigator.userAgent
+
+  const isAndroid = Boolean(userAgent.match(/Android/i))
+  const isIos = Boolean(userAgent.match(/iPhone|iPad|iPod/i))
+
   const [width, setWidth] = useState<null | number>(null)
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth)
@@ -18,7 +23,7 @@ const useIsMobileScreen = (): boolean => {
     return false
   }
 
-  return width <= 768
+  return width <= 768 || isAndroid || isIos
 }
 
 export default useIsMobileScreen
