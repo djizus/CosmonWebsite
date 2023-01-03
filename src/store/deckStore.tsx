@@ -15,6 +15,7 @@ interface DeckState {
   decksList: Deck[]
   fetchDecksList: () => any
   refreshDeck: (deckId: DeckId) => Promise<void>
+  updateDecksListWithDeck: (deckId: number, name: string) => Promise<void>
   isFetchingDecksList: boolean
   personalityAffinities: any
   fetchPersonalityAffinities: () => any
@@ -46,9 +47,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
         if (deckIdsList && deckIdsList.length) {
           for (const deckId of deckIdsList) {
             const nftIdsList = await DeckService.queries().getNftsByDeckId(deckId)
-
             const cosmonsInDeck = await fetchCosmonsDetails(nftIdsList)
-
             const deckName = await DeckService.queries().getName(deckId)
 
             if (nftIdsList?.length) {
@@ -71,6 +70,27 @@ export const useDeckStore = create<DeckState>((set, get) => ({
       }
     }
   },
+
+  updateDecksListWithDeck: async (deckId: number, name: string) => {
+    const { fetchCosmonsDetails } = useWalletStore.getState()
+    const { decksList } = get()
+    const nftIdsList = await DeckService.queries().getNftsByDeckId(deckId)
+    const cosmonsInDeck = await fetchCosmonsDetails(nftIdsList)
+    const nftsListWithMalus = computeMalusForCosmons(cosmonsInDeck)
+    const decksListWithNew = decksList.map((d) => {
+      if (d.id === deckId) {
+        return {
+          id: deckId,
+          name,
+          cosmons: nftsListWithMalus,
+          hasMalus: deckHasMalus(nftsListWithMalus),
+        } as Deck
+      }
+      return d
+    })
+    set({ decksList: decksListWithNew })
+  },
+
   refreshDeck: async (deckId: DeckId) => {
     const { updateCosmons } = useWalletStore.getState()
     const { decksList } = get()
@@ -122,8 +142,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
           },
         })
         .then(async (resp: any) => {
-          set({ decksList: [] })
-          await updateCosmonsAreInDeck()
+          updateCosmonsAreInDeck()
           fetchDecksList()
           set({ creatingDeck: false })
           return resp
@@ -135,9 +154,10 @@ export const useDeckStore = create<DeckState>((set, get) => ({
       return response
     } catch (error) {}
   },
+
   updateDeck: async (deckId: DeckId, name: string, nftIds: NFTId[]) => {
     try {
-      const { refreshDeck } = get()
+      const { updateDecksListWithDeck } = get()
       const { updateCosmonsAreInDeck } = useWalletStore.getState()
       set({ updatingDeck: true })
       const response = await toast
@@ -165,9 +185,8 @@ export const useDeckStore = create<DeckState>((set, get) => ({
         })
         .then(async (resp: any) => {
           try {
-            set({ decksList: [] })
-            await updateCosmonsAreInDeck()
-            await refreshDeck(deckId)
+            updateCosmonsAreInDeck()
+            await updateDecksListWithDeck(deckId, name)
             set({ updatingDeck: false })
             return resp
           } catch (error) {
@@ -190,6 +209,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
       console.error(error)
     }
   },
+
   computeDeckAffinities: (nfts: CosmonTypeWithMalus[]) => {
     const cosmons = nfts.reduce((acc: CosmonTypeWithMalus[], curr) => {
       if (curr) {
@@ -296,11 +316,12 @@ export const useDeckStore = create<DeckState>((set, get) => ({
         .then(async (resp: any) => {
           try {
             set({ decksList: [] })
-            await updateCosmonsAreInDeck()
+            updateCosmonsAreInDeck()
             await fetchDecksList()
             set({ isRemovingDeck: false })
             return resp
           } catch (error) {
+            set({ isRemovingDeck: false })
             console.error(error)
           }
         })

@@ -458,7 +458,6 @@ const useWalletStore = create<WalletState>(
       fetchCosmonsDetails: async (cosmonsIds: string[]) => {
         const { fetchCosmonDetails, cosmons, cosmonsId, address } = get()
         set({ isFetchingCosmons: true })
-
         // For the case every or only needed cosmon have already been fetched
         if (
           cosmons.length > 0 &&
@@ -466,13 +465,21 @@ const useWalletStore = create<WalletState>(
             cosmonsIds.every((neededId) => cosmons.map((c) => c.id).includes(neededId)))
         ) {
           set({ isFetchingCosmons: false })
-          return cosmons.filter((c) => cosmonsIds.includes(c.id))
+          const co = cosmonsIds.map((cosmonId) =>
+            cosmons.find((c) => c.id === cosmonId)
+          ) as CosmonType[]
+          if (co?.length) {
+            return co
+          } else {
+            return []
+          }
         }
 
         // For the case a given slice is missing in store
         let filteredCosmonsIds = cosmonsIds.filter(
           (id) => cosmons.map((c) => c.id).includes(id) === false
         )
+
         const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(
           filteredCosmonsIds
         )
@@ -493,7 +500,7 @@ const useWalletStore = create<WalletState>(
           cosmonsWithDetails.push(cosmon)
         }
         set({
-          cosmons: sortCosmonsByScarcity(Array.from(new Set(cosmons.concat(cosmonsWithDetails)))),
+          cosmons: Array.from(new Set(cosmons.concat(cosmonsWithDetails))),
           isFetchingCosmons: false,
         })
         return cosmonsWithDetails
@@ -529,7 +536,7 @@ const useWalletStore = create<WalletState>(
             return c
           })
         }
-        console.log('updated cosmons :: ', updatedCosmons)
+
         set({ cosmons: sortCosmonsByScarcity(freshCosmons) })
         return updatedCosmons
       },
