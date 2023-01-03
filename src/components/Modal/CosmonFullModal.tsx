@@ -5,10 +5,11 @@ import { useEffect, useState } from 'react'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import { CosmonStatProgressionLabel } from '@containers/arena/components/FightReportModal/CosmonsProgression'
 import Button from '@components/Button/Button'
-import ListNftModal from '@containers/my-assets/components/CosmonsList/ListNftModal/ListNftModal'
+import ListNftModal from '@components/Modal/ListNftModal/ListNftModal'
 import { Coin } from '@cosmjs/proto-signing'
 import { useMarketPlaceStore } from '@store/marketPlaceStore'
 import TransactionHistory from '@containers/listedCosmonDetails/components/TransactionHistory/TransactionHistory'
+import ListConfirmNftModal from './ListConfirmNftModal/ListConfirmNftModal'
 
 type CosmonFullModalProps = {
   cosmon: CosmonType
@@ -28,6 +29,7 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
   }, [])
 
   const [displayListNftModal, setDisplayListNftModal] = useState(false)
+  const [displayListConfirmNftModal, setDisplayListConfirmNftModal] = useState(false)
 
   const handleCloseListNftModal = () => {
     setDisplayListNftModal(false)
@@ -36,6 +38,15 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
   const handleSubmitListNft = async (nftId: string, price: Coin) => {
     await listNft(nftId, price)
     handleCloseListNftModal()
+    handleDisplayListConfirmModal()
+  }
+
+  const handleDisplayListConfirmModal = () => {
+    setDisplayListConfirmNftModal(true)
+  }
+
+  const handleHideListConfirmModal = () => {
+    setDisplayListConfirmNftModal(false)
     onCloseModal()
   }
 
@@ -47,6 +58,9 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
           cosmon={cosmon}
           handleCloseModal={handleCloseListNftModal}
         />
+      ) : null}
+      {displayListConfirmNftModal ? (
+        <ListConfirmNftModal cosmon={cosmon} handleCloseModal={handleHideListConfirmModal} />
       ) : null}
       <div className="mx-auto max-w-[1120px]">
         <div className="flex w-full">

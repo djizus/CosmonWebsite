@@ -9,14 +9,14 @@ import { convertMicroDenomToDenom } from '@utils/conversion'
 import { getCosmonStat } from '@utils/cosmon'
 import React, { useMemo } from 'react'
 import { CosmonMarketPlaceType } from 'types'
-import * as style from './CosmonBuyRecap.module.scss'
+import * as style from './CosmonBuyRecapModal.module.scss'
 
 interface Props {
   cosmon: CosmonMarketPlaceType
   handleCloseModal: () => void
 }
 
-const CosmonBuyRecap: React.FC<Props> = ({ cosmon, handleCloseModal }) => {
+const CosmonBuyRecapModal: React.FC<Props> = ({ cosmon, handleCloseModal }) => {
   const floorXp = parseInt(getCosmonStat(cosmon.stats, 'Floor Level')?.value ?? '0')
   const NextLevelXp = parseInt(getCosmonStat(cosmon.stats, 'Next Level')?.value ?? '0')
 
@@ -201,6 +201,6 @@ const CosmonBuyRecap: React.FC<Props> = ({ cosmon, handleCloseModal }) => {
   )
 }
 
-CosmonBuyRecap.displayName = 'CosmonBuyRecap'
+CosmonBuyRecapModal.displayName = 'CosmonBuyRecapModal'
 
-export default CosmonBuyRecap
+export default CosmonBuyRecapModal

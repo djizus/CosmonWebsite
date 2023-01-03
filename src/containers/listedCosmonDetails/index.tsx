@@ -9,8 +9,8 @@ import { useWalletStore } from '@store/walletStore'
 import { KiInformationResponse } from 'types'
 import { convertDenomToMicroDenom } from '@utils/conversion'
 import Link from 'next/link'
-import CosmonBuyRecap from './components/CosmonBuyRecap/CosmonBuyRecap'
 import TransactionHistory from './components/TransactionHistory/TransactionHistory'
+import CosmonBuyRecapModal from '@components/Modal/CosmonBuyRecapModal/CosmonBuyRecapModal'
 
 interface ListedCosmonDetailsProps {
   kiData?: KiInformationResponse
@@ -35,7 +35,7 @@ const ListedCosmonDetails: React.FC<ListedCosmonDetailsProps> = ({ kiData }) => 
     }
   }
 
-  const [displayBuyRecap, setDisplayBuyRecap] = useState(true)
+  const [displayBuyRecap, setDisplayBuyRecap] = useState(false)
 
   const handleCloseBuyRecap = () => {
     setDisplayBuyRecap(false)
@@ -68,7 +68,7 @@ const ListedCosmonDetails: React.FC<ListedCosmonDetailsProps> = ({ kiData }) => 
             </>
           ) : null}
           {displayBuyRecap && detailedCosmon ? (
-            <CosmonBuyRecap cosmon={detailedCosmon} handleCloseModal={handleCloseBuyRecap} />
+            <CosmonBuyRecapModal cosmon={detailedCosmon} handleCloseModal={handleCloseBuyRecap} />
           ) : null}
         </ConnectionNeededContent>
       )}

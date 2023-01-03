@@ -16,11 +16,11 @@ export const cosmonOwnerWallet: string
 export const headerAttribute: string
 export const kiLogo: string
 export const labelDetails: string
+export const leftContainer: string
 export const linePrice: string
 export const priceLabel: string
 export const priceUsdc: string
 export const priceValue: string
-export const rightContainer: string
 export const titleAttributes: string
 export const titleDetails: string
 export const valueDetails: string

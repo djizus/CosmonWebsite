@@ -6,7 +6,9 @@ import clsx from 'clsx'
 import React, { useState } from 'react'
 import { CosmonType } from 'types'
 import CosmonListItem from './CosmonListItem/CosmonListItem'
-import ListNftModal from './ListNftModal/ListNftModal'
+import ListNftModal from '../../../../components/Modal/ListNftModal/ListNftModal'
+import UnlistNftModal from '@components/Modal/UnlistNftModal/UnlistNftModal'
+import ListConfirmNftModal from '@components/Modal/ListConfirmNftModal/ListConfirmNftModal'
 
 interface CosmonsListProps {
   cosmons: CosmonType[]
@@ -23,17 +25,33 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
   variation,
   className,
 }) => {
+  const [displayUnlistNftModal, setDisplayUnlistNftModal] = useState(false)
   const [displayListNftModal, setDisplayListNftModal] = useState(false)
+  const [displayListConfirmNftModal, setDisplayListConfirmNftModal] = useState(false)
   const [selectedCosmon, setSelectedCosmon] = useState<CosmonType | null>(null)
   const { listNft, unlistNft } = useMarketPlaceStore()
+
+  const handleDisplayUnlistModal = () => {
+    setDisplayUnlistNftModal(true)
+  }
+
+  const handleHideUnlistModal = () => {
+    setDisplayUnlistNftModal(false)
+  }
+
+  const onClickUnlist = (cosmon: CosmonType) => {
+    setSelectedCosmon(cosmon)
+    handleDisplayUnlistModal()
+  }
+
+  const handleSubmitUnlistNft = async (nftId: string) => {
+    await unlistNft(nftId)
+    handleHideUnlistModal()
+  }
 
   const onClickList = (cosmon: CosmonType) => {
     setSelectedCosmon(cosmon)
     handleDisplayListModal()
-  }
-
-  const onClickUnlist = (cosmon: CosmonType) => {
-    unlistNft(cosmon.id)
   }
 
   const handleDisplayListModal = () => {
@@ -47,7 +65,16 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
 
   const handleSubmitListNft = async (nftId: string, price: Coin) => {
     await listNft(nftId, price)
-    handleHideListModal()
+    setDisplayListNftModal(false)
+    handleDisplayListConfirmModal()
+  }
+
+  const handleDisplayListConfirmModal = () => {
+    setDisplayListConfirmNftModal(true)
+  }
+
+  const handleHideListConfirmModal = () => {
+    setDisplayListConfirmNftModal(false)
   }
 
   return (
@@ -84,6 +111,19 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
           cosmon={selectedCosmon}
           handleCloseModal={handleHideListModal}
           handleSubmitListNft={handleSubmitListNft}
+        />
+      ) : null}
+      {displayListConfirmNftModal && selectedCosmon ? (
+        <ListConfirmNftModal
+          cosmon={selectedCosmon}
+          handleCloseModal={handleHideListConfirmModal}
+        />
+      ) : null}
+      {displayUnlistNftModal && selectedCosmon ? (
+        <UnlistNftModal
+          cosmon={selectedCosmon}
+          handleCloseModal={handleHideUnlistModal}
+          handleSubmitUnlistNft={handleSubmitUnlistNft}
         />
       ) : null}
     </>
