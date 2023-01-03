@@ -11,8 +11,6 @@ import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/cosmwasmclient'
 import { useWalletStore } from '@store/walletStore'
 import chunk from 'lodash/chunk'
 
-const Height = require('long')
-
 const PUBLIC_SELL_CONTRACT = process.env.NEXT_PUBLIC_SELL_CONTRACT || ''
 const PUBLIC_REWARDS_CONTRACT = process.env.NEXT_PUBLIC_REWARDS_CONTRACT || ''
 const PUBLIC_NFT_CONTRACT = process.env.NEXT_PUBLIC_NFT_CONTRACT || ''
@@ -575,21 +573,20 @@ export const getRewards = async (
   current: Coin
   total: Coin
 }> => {
-  const { cosmons } = useWalletStore.getState()
+  const { cosmonsId } = useWalletStore.getState()
 
   const CHUNK_SIZE = 20
 
-  const chunks = chunk(cosmons, CHUNK_SIZE)
+  const chunks = chunk(cosmonsId, CHUNK_SIZE)
 
   let tempRewards: { current_reward: Coin; total_rewards: Coin }[] = []
 
-  for (const chunkOfCosmons of chunks) {
+  for (const chunkOfCosmonsIds of chunks) {
     const fetchedRewards = await signingClient.queryContractSmart(PUBLIC_REWARDS_CONTRACT, {
-      available_rewards_for_nfts: { nfts: chunkOfCosmons.map((c) => c.id) },
+      available_rewards_for_nfts: { nfts: chunkOfCosmonsIds },
     })
     tempRewards.push(fetchedRewards)
   }
-
   const rewards = tempRewards.reduce(
     (prev, curr) => {
       return {
