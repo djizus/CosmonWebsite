@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { ToastContainer } from '@components/ToastContainer/ToastContainer'
 import SuccessIcon from '@public/icons/success.svg'
 import ErrorIcon from '@public/icons/error.svg'
-import { MarketPlaceService } from '@services/marketplace'
+import { MarketPlaceService, SellDataResponse } from '@services/marketplace'
 import { useWalletStore } from './walletStore'
 import { XPRegistryService } from '@services/xp-registry'
 import { queryCosmonInfo } from '@services/interaction'
@@ -34,6 +34,7 @@ interface MarketPlaceState {
   CosmonsInMarketplaceLoading: boolean
   fetchDetailedCosmon: (id: string) => void
   fetchCosmonHistory: (id: string) => Promise<NftHistory[]>
+  fetchSellData: (id: string) => Promise<SellDataResponse | undefined>
 }
 
 export const WINNER_IS_DRAW = 'DRAW'
@@ -350,5 +351,20 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
     }
 
     return []
+  },
+  fetchSellData: async (id: string) => {
+    const { signingClient } = useWalletStore.getState()
+
+    try {
+      if (signingClient) {
+        const sellData = await MarketPlaceService.queries().fetchSellDataForNft(id)
+
+        return sellData
+      }
+    } catch (error) {
+      console.error('Error while fetching sell data')
+    }
+
+    return undefined
   },
 }))

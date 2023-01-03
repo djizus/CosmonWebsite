@@ -1,0 +1,146 @@
+.modal {
+    padding: 32px 99px 40px 99px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 506px;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 32px;
+    color: white;
+    margin-bottom: 32px;
+}
+
+.card {
+    background: rgba(49, 46, 90, 0.5);
+    border-radius: 20px;
+    padding: 26px 57px 31px 57px;
+    margin-bottom: 41px;
+}
+
+.cosmonNumber {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.price {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 18px;
+    color: white;
+    margin-bottom: 31px;
+}
+
+.experienceContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.level {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 24px;
+    color: white;
+}
+
+.xp {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 24px;
+    color: #d4d4d4;
+}
+
+.xpBold {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 24px;
+    color: #d4d4d4;
+}
+
+.xpBarreContainer {
+    margin-top: 4px;
+    background: rgba(217, 217, 217, 0.3);
+    border-radius: 6px;
+    width: 100%;
+    height: 6px;
+}
+
+.xpBarre {
+    background: #d9d9d9;
+    border-radius: 6px;
+    height: 6px;
+}
+
+.cosmonData {
+    display: flex;
+    flex-direction: row;
+    margin-top: 31px;
+}
+
+.cosmonCard {
+    width: 144px;
+    height: 242px;
+}
+
+.statsContainer {
+    display: flex;
+    flex-direction: column;
+    margin-left: 23px;
+}
+
+.statsLine {
+    display: flex;
+    flex-direction: row;
+}
+
+.statsLineSeparation {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+}
+
+.label {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 24px;
+    color: #d8d1e7;
+    width: 102px;
+    text-align: left;
+}
+
+.secondLabel {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 24px;
+    color: #d8d1e7;
+    width: 116px;
+    text-align: left;
+}
+
+.value {
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 24px;
+    color: #d8d1e7;
+    display: inline;
+    width: auto;
+}
+
+.thxText {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #b1a8b9;
+    margin-bottom: 42px;
+}
+
+.closeButton {
+    height: 42px;
+}

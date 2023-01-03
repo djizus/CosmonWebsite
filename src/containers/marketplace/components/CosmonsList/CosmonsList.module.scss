@@ -8,3 +8,48 @@
     margin: auto;
     padding-bottom: 12px;
 }
+
+.emptyBackground {
+    width: 382px;
+    height: auto;
+    margin-bottom: 18px;
+}
+
+.paginationContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+.paginationButton {
+    cursor: pointer;
+
+    &:disabled {
+        cursor: not-allowed;
+        color: #e7e7e7 !important;
+        opacity: 0.7;
+    }
+    &:active {
+        color: #9fa4dd;
+        opacity: 0.7;
+    }
+    &:hover {
+        color: #9fa4dd;
+    }
+}
+
+.emptyContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.emptyText {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 32px;
+    color: white;
+    text-align: center;
+}

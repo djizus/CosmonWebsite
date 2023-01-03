@@ -7,7 +7,6 @@ import * as style from './CosmonDetails.module.scss'
 import { computeAttributesForCosmonDetails } from '@utils/marketplace'
 import { useWalletStore } from '@store/walletStore'
 import Tooltip from '@components/Tooltip/Tooltip'
-import TransactionHistory from '../TransactionHistory/TransactionHistory'
 
 interface Props {
   buyNftLoading: boolean
@@ -31,17 +30,7 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
 
   return (
     <div className={style.container}>
-      <CosmonCard
-        cosmon={cosmon}
-        showLevel
-        showPersonality
-        showScarcity
-        showNationality
-        size="lg"
-        className={style.cosmonCard}
-      />
-
-      <div className={style.rightContainer}>
+      <div className={style.leftContainer}>
         <p className={style.cosmonLabel}>Cosmon #{cosmon.id}</p>
         <p className={style.cosmonOwner}>
           Owned by{' '}
@@ -83,7 +72,6 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
         <div className={style.cardAttributes}>
           <div className={style.headerAttribute}>
             <p className={style.titleAttributes}>Attributes</p>
-            <p className={style.attributesNumber}>14</p>
           </div>
           <div className={style.attributesGrid}>
             {attributes.map((attribute) => {
@@ -108,6 +96,15 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
           </div>
         </div>
       </div>
+      <CosmonCard
+        cosmon={cosmon}
+        showLevel
+        showPersonality
+        showScarcity
+        showNationality
+        size="lg"
+        className={style.cosmonCard}
+      />
     </div>
   )
 }

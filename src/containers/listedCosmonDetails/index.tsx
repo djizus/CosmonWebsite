@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import ConnectionNeededContent from '@components/ConnectionNeededContent/ConnectionNeededContent'
 import * as style from './style.module.scss'
 import { useMarketPlaceStore } from '@store/marketPlaceStore'
@@ -10,6 +10,7 @@ import { KiInformationResponse } from 'types'
 import { convertDenomToMicroDenom } from '@utils/conversion'
 import Link from 'next/link'
 import TransactionHistory from './components/TransactionHistory/TransactionHistory'
+import CosmonBuyRecapModal from '@components/Modal/CosmonBuyRecapModal/CosmonBuyRecapModal'
 
 interface ListedCosmonDetailsProps {
   kiData?: KiInformationResponse
@@ -29,9 +30,15 @@ const ListedCosmonDetails: React.FC<ListedCosmonDetailsProps> = ({ kiData }) => 
       })
 
       if (response) {
-        router.push('/marketplace')
+        setDisplayBuyRecap(true)
       }
     }
+  }
+
+  const [displayBuyRecap, setDisplayBuyRecap] = useState(false)
+
+  const handleCloseBuyRecap = () => {
+    setDisplayBuyRecap(false)
   }
 
   useEffect(() => {
@@ -59,6 +66,9 @@ const ListedCosmonDetails: React.FC<ListedCosmonDetailsProps> = ({ kiData }) => 
               />
               <TransactionHistory className={style.transactionHistory} cosmon={detailedCosmon} />
             </>
+          ) : null}
+          {displayBuyRecap && detailedCosmon ? (
+            <CosmonBuyRecapModal cosmon={detailedCosmon} handleCloseModal={handleCloseBuyRecap} />
           ) : null}
         </ConnectionNeededContent>
       )}

@@ -6,11 +6,13 @@
 }
 
 .cosmonCard {
-    width: 560px !important;
-    margin-right: 60px;
+    width: 358px !important;
+    height: 598px;
+    margin-left: 142px;
+    margin-top: 300px;
 }
 
-.rightContainer {
+.leftContainer {
     width: 631px;
     display: flex;
     flex-direction: column;
@@ -210,23 +212,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.attributesNumber {
-    position: absolute;
-    right: 110px;
-    top: -8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 38px;
-    width: 38px;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 18px;
-    color: white;
-    border-radius: 50%;
-    background: rgba(169, 150, 255, 0.5);
 }
 
 .headerAttribute {

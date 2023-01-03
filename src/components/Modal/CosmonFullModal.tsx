@@ -1,10 +1,15 @@
 import { CosmonType } from '../../../types/Cosmon'
 import { getCosmonPersonalityAffinity, getCosmonStat, getTrait } from '../../utils/cosmon'
 import Close from '/public/icons/close.svg'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import { CosmonStatProgressionLabel } from '@containers/arena/components/FightReportModal/CosmonsProgression'
+import Button from '@components/Button/Button'
+import ListNftModal from '@components/Modal/ListNftModal/ListNftModal'
+import { Coin } from '@cosmjs/proto-signing'
+import { useMarketPlaceStore } from '@store/marketPlaceStore'
 import TransactionHistory from '@containers/listedCosmonDetails/components/TransactionHistory/TransactionHistory'
+import ListConfirmNftModal from './ListConfirmNftModal/ListConfirmNftModal'
 
 type CosmonFullModalProps = {
   cosmon: CosmonType
@@ -12,6 +17,8 @@ type CosmonFullModalProps = {
 }
 
 export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModalProps) {
+  const { listNft } = useMarketPlaceStore()
+
   useEffect(() => {
     document.getElementsByTagName('html')[0].className = 'overflow-hidden'
     document.getElementsByTagName('body')[0].className = 'overflow-hidden'
@@ -21,8 +28,40 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
     }
   }, [])
 
+  const [displayListNftModal, setDisplayListNftModal] = useState(false)
+  const [displayListConfirmNftModal, setDisplayListConfirmNftModal] = useState(false)
+
+  const handleCloseListNftModal = () => {
+    setDisplayListNftModal(false)
+  }
+
+  const handleSubmitListNft = async (nftId: string, price: Coin) => {
+    await listNft(nftId, price)
+    handleCloseListNftModal()
+    handleDisplayListConfirmModal()
+  }
+
+  const handleDisplayListConfirmModal = () => {
+    setDisplayListConfirmNftModal(true)
+  }
+
+  const handleHideListConfirmModal = () => {
+    setDisplayListConfirmNftModal(false)
+    onCloseModal()
+  }
+
   return (
     <div className="fixed top-0 bottom-0 right-0  h-full w-full overflow-auto bg-cosmon-main-secondary pt-[60px] text-white">
+      {displayListNftModal ? (
+        <ListNftModal
+          handleSubmitListNft={handleSubmitListNft}
+          cosmon={cosmon}
+          handleCloseModal={handleCloseListNftModal}
+        />
+      ) : null}
+      {displayListConfirmNftModal ? (
+        <ListConfirmNftModal cosmon={cosmon} handleCloseModal={handleHideListConfirmModal} />
+      ) : null}
       <div className="mx-auto max-w-[1120px]">
         <div className="flex w-full">
           <div className="flex w-full flex-col items-center justify-center gap-x-4 lg:flex-row">
@@ -42,7 +81,7 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
         </div>
 
         <div className="mt-16 flex flex-col justify-center lg:mt-24 lg:flex-row lg:items-start lg:justify-start lg:gap-x-16">
-          <div className="self-center lg:sticky lg:top-0 lg:self-start">
+          <div className="flex flex-col items-center justify-center self-center lg:sticky lg:top-0 lg:self-start">
             <CosmonCard
               cosmon={cosmon}
               showLevel
@@ -54,6 +93,11 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               size="lg"
               containerStyle={{ height: 530, width: 315 }}
             />
+            {!cosmon.isListed && !cosmon.isInDeck ? (
+              <Button onClick={() => setDisplayListNftModal(true)} className="mt-[25px] h-[42px]">
+                List for sale
+              </Button>
+            ) : null}
           </div>
 
           <div className="mt-10 flex flex-col gap-y-5 px-[20px] lg:mt-0 lg:px-0">
