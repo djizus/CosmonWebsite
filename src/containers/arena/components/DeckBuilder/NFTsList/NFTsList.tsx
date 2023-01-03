@@ -119,8 +119,8 @@ const NFTsList: React.FC<NFTsListProps> = ({}) => {
       }
     }
 
-    return nftsList
-  }, [listFilter, nfts, cosmons])
+    return sortCosmonsByScarcity(nftsList)
+  }, [listFilter, cosmons])
 
   return (
     <div className="flex h-full flex-col">

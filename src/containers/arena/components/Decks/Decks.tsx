@@ -108,9 +108,7 @@ const Decks: React.FC<DecksProps> = ({ onEditDeck, onDeleteDeck, onOpenBoostModa
   }, [])
 
   const handleFightEnd = useCallback(async () => {
-    console.log('handleFightEnd ::', selectedDeck)
     if (selectedDeck) {
-      console.log('refreshDeck ::', selectedDeck.id)
       await refreshDeck(selectedDeck.id)
     }
     setShowFightReportModal(true)
