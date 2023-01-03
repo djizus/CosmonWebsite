@@ -47,7 +47,7 @@ const UnlistNftModal: React.FC<Props> = ({ cosmon, handleSubmitUnlistNft, handle
         className={style.closeButton}
         onClick={() => handleSubmitUnlistNft(cosmon.id)}
       >
-        Confim canceling
+        Confirm canceling
       </Button>
     </Modal>
   )
