@@ -12,7 +12,8 @@ import { queryCosmonInfo } from '@services/interaction'
 import { convertDenomToMicroDenom, convertMicroDenomToDenom } from '@utils/conversion'
 import { itemPerPage } from '@containers/marketplace'
 import { MarketPlaceFilters, MarketplaceSortOrder, SellData } from 'types'
-import { intersectionBy, isEqual } from 'lodash'
+import intersectionBy from 'lodash/intersectionBy'
+import isEqual from 'lodash/isEqual'
 import { getCosmonStat } from '@utils/cosmon'
 
 interface MarketPlaceState {
