@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
-import { Scarcity } from '../../../types/Scarcity'
+import { Scarcity } from 'types/Attributes'
 import { useCosmonStore } from '../../store/cosmonStore'
 import { useWalletStore } from '../../store/walletStore'
 import Button from '../Button/Button'

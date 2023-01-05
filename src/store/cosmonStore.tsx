@@ -2,7 +2,7 @@ import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate/build/cosmwasmclient'
 import { XPRegistryService } from '@services/xp-registry'
 import { computeStatsWithoutBoosts, fillBoosts } from '@utils/boost'
 import create from 'zustand'
-import { Scarcity } from '../../types/Scarcity'
+import { Scarcity } from '../../types'
 import {
   queryCosmonAvailableByScarcity,
   queryCosmonInfo,

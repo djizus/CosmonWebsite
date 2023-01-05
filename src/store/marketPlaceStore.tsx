@@ -1,18 +1,25 @@
 import create from 'zustand'
 import { Coin } from '@cosmjs/proto-signing'
-import { CosmonMarketPlaceType, NftHistory } from 'types'
+import { CosmonMarketPlaceType, NftHistory, Time } from 'types'
 import { toast } from 'react-toastify'
 import { ToastContainer } from '@components/ToastContainer/ToastContainer'
 import SuccessIcon from '@public/icons/success.svg'
 import ErrorIcon from '@public/icons/error.svg'
-import { MarketPlaceService, SellDataResponse } from '@services/marketplace'
+import { MarketPlaceService } from '@services/marketplace'
 import { useWalletStore } from './walletStore'
 import { XPRegistryService } from '@services/xp-registry'
 import { queryCosmonInfo } from '@services/interaction'
 import { convertDenomToMicroDenom, convertMicroDenomToDenom } from '@utils/conversion'
 import { itemPerPage } from '@containers/marketplace'
+import { MarketPlaceFilters, MarketplaceSortOrder, SellData } from 'types'
+import intersectionBy from 'lodash/intersectionBy'
+import isEqual from 'lodash/isEqual'
+import { getCosmonStat } from '@utils/cosmon'
 
 interface MarketPlaceState {
+  filtersActive: boolean
+  filters: MarketPlaceFilters
+  sortOrder: MarketplaceSortOrder
   myListedCosmons: CosmonMarketPlaceType[]
   detailedCosmon: CosmonMarketPlaceType | null
   detailedCosmonLoading: boolean
@@ -34,12 +41,32 @@ interface MarketPlaceState {
   CosmonsInMarketplaceLoading: boolean
   fetchDetailedCosmon: (id: string) => void
   fetchCosmonHistory: (id: string) => Promise<NftHistory[]>
-  fetchSellData: (id: string) => Promise<SellDataResponse | undefined>
+  fetchSellData: (id: string) => Promise<SellData | undefined>
+  setFilters: (filters: MarketPlaceFilters) => void
+  setOrder: (sortOrder: MarketplaceSortOrder) => void
+  clearFilters: () => void
 }
 
 export const WINNER_IS_DRAW = 'DRAW'
 
 export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
+  filtersActive: false,
+  filters: {
+    name: '',
+    price: {
+      min: '',
+      max: '',
+    },
+    levels: {
+      min: '',
+      max: '',
+    },
+    scarcity: [],
+    time: [],
+    geographical: [],
+    personnality: [],
+  },
+  sortOrder: 'low_to_high',
   myListedCosmons: [],
   detailedCosmon: null,
   detailedCosmonLoading: false,
@@ -232,34 +259,184 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       cosmonsForMarketPlaceLoading: true,
     })
     const { signingClient } = useWalletStore.getState()
-    const { cosmonsInMarketplace } = get()
-    try {
-      const lastCosmon = cosmonsInMarketplace.at(-1)
-      const nfts = await MarketPlaceService.queries().fetchAllSellingNft({
-        limit,
-        start_after:
-          lastCosmon !== undefined && !init
-            ? {
-                token_id: lastCosmon.id,
-                price: convertDenomToMicroDenom(lastCosmon.price ?? ''),
-              }
-            : undefined,
-      })
+    const { cosmonsInMarketplace, filtersActive, filters, sortOrder } = get()
+    const lastCosmon = cosmonsInMarketplace.at(-1)
+    const lastCosmonLevel = lastCosmon ? getCosmonStat(lastCosmon.stats, 'Level')?.value : undefined
+    const start_after =
+      lastCosmon !== undefined && !init
+        ? {
+            token_id: lastCosmon.id,
+            price: convertDenomToMicroDenom(lastCosmon.price ?? ''),
+            level: lastCosmonLevel ? parseInt(lastCosmonLevel) : undefined,
+          }
+        : undefined
 
-      if (nfts && signingClient) {
+    try {
+      let nfts: SellData[] = []
+      if (filtersActive) {
+        let timeResult: SellData[] = []
+        let personalityResult: SellData[] = []
+        let geoResult: SellData[] = []
+        let scarcityResult: SellData[] = []
+        let priceResult: SellData[] = []
+        let levelResult: SellData[] = []
+        let arrayToCompare: Array<SellData[]> = []
+
+        if (filters.time.length > 0) {
+          timeResult = await Promise.all(
+            filters.time.map(async (filter) => {
+              return (
+                (await MarketPlaceService.queries().fetchNftByTime({
+                  limit,
+                  start_after,
+                  time: filter,
+                })) ?? []
+              )
+            })
+          ).then((value) => value.flat())
+
+          arrayToCompare = [...arrayToCompare, timeResult]
+        }
+
+        if (filters.personnality.length > 0) {
+          personalityResult = await Promise.all(
+            filters.personnality.map(async (filter) => {
+              return (
+                (await MarketPlaceService.queries().fetchNftByPersonality({
+                  limit,
+                  start_after,
+                  personnality: filter,
+                })) ?? []
+              )
+            })
+          ).then((value) => value.flat())
+
+          arrayToCompare = [...arrayToCompare, personalityResult]
+        }
+
+        if (filters.geographical.length > 0) {
+          geoResult = await Promise.all(
+            filters.geographical.map(async (filter) => {
+              return (
+                (await MarketPlaceService.queries().fetchNftByGeo({
+                  limit,
+                  start_after,
+                  geo: filter,
+                })) ?? []
+              )
+            })
+          ).then((value) => value.flat())
+
+          arrayToCompare = [...arrayToCompare, geoResult]
+        }
+
+        if (filters.scarcity.length > 0) {
+          scarcityResult = await Promise.all(
+            filters.scarcity.map(async (filter) => {
+              return (
+                (await MarketPlaceService.queries().fetchNftByScarcity({
+                  limit,
+                  start_after,
+                  scarcity: filter,
+                })) ?? []
+              )
+            })
+          ).then((value) => value.flat())
+
+          arrayToCompare = [...arrayToCompare, scarcityResult]
+        }
+
+        if (
+          (filters.price.min !== '' && filters.price.max === '') ||
+          (filters.price.min === '' && filters.price.max !== '')
+        ) {
+          const price = filters.price.min !== '' ? filters.price.min : filters.price.max
+
+          priceResult =
+            (await MarketPlaceService.queries().fetchNftByPrice({
+              limit,
+              start_after,
+              price: parseFloat(price),
+            })) ?? []
+
+          arrayToCompare = [...arrayToCompare, priceResult]
+        } else if (filters.price.min !== '' && filters.price.max !== '') {
+          priceResult =
+            (await MarketPlaceService.queries().fetchNftByPriceRange({
+              limit,
+              start_after,
+              min_price: parseFloat(filters.price.min),
+              max_price: parseFloat(filters.price.max),
+            })) ?? []
+
+          arrayToCompare = [...arrayToCompare, priceResult]
+        }
+
+        if (
+          (filters.levels.min !== '' && filters.levels.max === '') ||
+          (filters.levels.min === '' && filters.levels.max !== '')
+        ) {
+          const level = filters.levels.min !== '' ? filters.levels.min : filters.levels.max
+
+          levelResult =
+            (await MarketPlaceService.queries().fetchNftByLevel({
+              limit,
+              start_after,
+              level: parseFloat(level),
+            })) ?? []
+
+          arrayToCompare = [...arrayToCompare, levelResult]
+        } else if (filters.levels.min !== '' && filters.levels.max !== '') {
+          levelResult =
+            (await MarketPlaceService.queries().fetchNftByLevelRange({
+              limit,
+              start_after,
+              level_min: parseFloat(filters.levels.min),
+              level_max: parseFloat(filters.levels.max),
+            })) ?? []
+
+          arrayToCompare = [...arrayToCompare, levelResult]
+        }
+
+        nfts = arrayToCompare.reduce((acc, curr, index) => {
+          if (acc.length === 0 && index === 0) {
+            return [...curr]
+          }
+
+          return intersectionBy(acc, curr, 'nft')
+        }, [])
+      } else {
+        nfts =
+          (await MarketPlaceService.queries().fetchAllSellingNft({
+            limit,
+            start_after,
+            order: sortOrder,
+          })) ?? []
+      }
+
+      if (nfts.length > 0 && signingClient) {
         // getting cosmon details
         let myCosmons: CosmonMarketPlaceType[] = await Promise.all(
           nfts.map(async (nft) => {
             const cosmon = await queryCosmonInfo(signingClient, nft.nft)
-            const stats = await XPRegistryService.queries().getCosmonStats(nft.nft)
 
             return {
               id: nft.nft,
               data: cosmon,
               isInDeck: false,
-              stats,
+              stats: [
+                {
+                  key: 'Level',
+                  value: nft.level.toString(),
+                },
+              ],
               isListed: true,
-              statsWithoutBoosts: stats,
+              statsWithoutBoosts: [
+                {
+                  key: 'Level',
+                  value: nft.level.toString(),
+                },
+              ],
               boosts: [null, null, null],
               price: convertMicroDenomToDenom(nft.price ?? ''),
               collection: nft.collection,
@@ -284,6 +461,10 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         }
       }
 
+      set({
+        cosmonsInMarketplace: [],
+      })
+
       return []
     } catch (e) {
       console.error('Error while fetching cosmons', e)
@@ -306,14 +487,12 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         const cosmon = await queryCosmonInfo(signingClient, id)
         const stats = await XPRegistryService.queries().getCosmonStats(id)
 
-        const isListed = true
-
         const detailedCosmon: CosmonMarketPlaceType = {
           id: id,
           data: cosmon,
           isInDeck: false,
+          isListed: true,
           stats,
-          isListed: isListed,
           statsWithoutBoosts: stats,
           boosts: [null, null, null] as [null, null, null],
           price: convertMicroDenomToDenom(sellData?.price ?? ''),
@@ -366,5 +545,59 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
     }
 
     return undefined
+  },
+  setFilters: (filters: MarketPlaceFilters) => {
+    if (
+      isEqual(filters, {
+        name: '',
+        price: {
+          min: '',
+          max: '',
+        },
+        levels: {
+          min: '',
+          max: '',
+        },
+        scarcity: [],
+        time: [],
+        geographical: [],
+        personnality: [],
+      })
+    ) {
+      set({
+        filters,
+        filtersActive: false,
+      })
+    } else {
+      set({
+        filters,
+        filtersActive: true,
+      })
+    }
+  },
+  setOrder: (sortOrder: MarketplaceSortOrder) => {
+    set({
+      sortOrder,
+    })
+  },
+  clearFilters: () => {
+    set({
+      filters: {
+        name: '',
+        price: {
+          min: '',
+          max: '',
+        },
+        levels: {
+          min: '',
+          max: '',
+        },
+        scarcity: [],
+        time: [],
+        geographical: [],
+        personnality: [],
+      },
+      filtersActive: false,
+    })
   },
 }))

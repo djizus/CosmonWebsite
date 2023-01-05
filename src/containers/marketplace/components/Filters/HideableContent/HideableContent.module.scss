@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 24px;
+    max-height: 24px;
+    transition: max-height 0.3s ease-out;
+    overflow: hidden;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 23px;
+    color: white;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.show {
+    transition: max-height 0.3s ease-in;
+    max-height: 100%;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    cursor: pointer;
+    width: 100%;
+}
+
+.chevron {
+    transform: rotate(180deg);
+    transition: 0.3s ease-out;
+}
+
+.chevronUp {
+    transform: rotate(0deg);
+    transition: 0.3s ease-in;
+}

@@ -5,7 +5,7 @@ import DeckBuilderContainer from './DeckBuilderContainer'
 import { DeckBuilderContext, NftsListFilter } from './DeckBuilderContext'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { DndProvider } from 'react-dnd'
-import { SCARCITIES } from 'types/Scarcity'
+import { SCARCITIES } from 'types'
 import { useWalletStore } from '@store/walletStore'
 
 const dropIn = {

@@ -42,9 +42,10 @@ import { getConnectedWithByType, removeLastConnection, saveLastConnection } from
 import { getOfflineSignerCosmostation } from '@services/connection/cosmostation-walletconnect'
 import { computeStatsWithoutBoosts, fillBoosts } from '@utils/boost'
 import { useMarketPlaceStore } from './marketPlaceStore'
-import { MarketPlaceService, SellDataResponse } from '@services/marketplace'
+import { MarketPlaceService } from '@services/marketplace'
 import axios from 'axios'
 import { IS_MARKETPLACE_ACTIVE } from '@utils/constants'
+import { SellData } from 'types'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || ''
 const PUBLIC_STAKING_IBC_DENOM = process.env.NEXT_PUBLIC_IBC_DENOM_RAW || ''
@@ -94,7 +95,7 @@ interface WalletState {
   fetchCosmonDetails: (
     cosmonId: string,
     isInDeck: boolean,
-    listedNftsId: SellDataResponse[]
+    listedNftsId: SellData[]
   ) => Promise<CosmonType>
   fetchCosmonsDetails: (cosmonsIds: string[]) => Promise<CosmonType[]>
   removeCosmon: (cosmonId: string) => void
@@ -431,11 +432,7 @@ const useWalletStore = create<WalletState>(
         }
         return []
       },
-      fetchCosmonDetails: async (
-        cosmonId: string,
-        isInDeck: boolean,
-        listedNftsId: SellDataResponse[]
-      ) => {
+      fetchCosmonDetails: async (cosmonId: string, isInDeck: boolean, listedNftsId: SellData[]) => {
         const { signingClient } = get()
         const cosmon = await queryCosmonInfo(signingClient!, cosmonId)
         const stats = await XPRegistryService.queries().getCosmonStats(cosmonId)
@@ -483,7 +480,7 @@ const useWalletStore = create<WalletState>(
         const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(
           filteredCosmonsIds
         )
-        let listedNftsId: SellDataResponse[] = []
+        let listedNftsId: SellData[] = []
 
         if (IS_MARKETPLACE_ACTIVE) {
           listedNftsId =
@@ -513,7 +510,7 @@ const useWalletStore = create<WalletState>(
       updateCosmons: async (cosmonsIds: string[]) => {
         const { fetchCosmonDetails, cosmons, address } = get()
         const cosmonIdsAlreadyInDecks = await DeckService.queries().isNftsInADeck(cosmonsIds)
-        let listedNftsId: SellDataResponse[] = []
+        let listedNftsId: SellData[] = []
 
         if (IS_MARKETPLACE_ACTIVE) {
           listedNftsId =

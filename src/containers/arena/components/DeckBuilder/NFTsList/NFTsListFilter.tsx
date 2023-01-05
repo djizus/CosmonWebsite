@@ -3,7 +3,7 @@ import React, { ChangeEvent, useCallback, useContext, useState } from 'react'
 import Search from '@public/icons/search.svg'
 import Checkbox from '@components/Input/Checkbox'
 import Select from '@components/Input/Select'
-import { scarcities } from 'types/Scarcity'
+import { scarcities } from 'types'
 import { DeckBuilderContext } from '../DeckBuilderContext'
 
 interface NFTsListFilterProps {}

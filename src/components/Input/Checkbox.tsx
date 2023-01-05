@@ -4,21 +4,24 @@ import CheckIcon from '@public/icons/check.svg'
 import * as styles from './Checkbox.module.scss'
 
 interface CheckboxProps {
+  labelPosition?: 'right' | 'left'
   label?: string | React.ReactNode
+  checkboxClassName?: string
   children?: (renderCheckBox: () => ReactNode, renderLabel: () => ReactNode) => ReactNode
 }
 
 const Checkbox: React.FC<
   CheckboxProps &
     React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
-> = ({ label, children, ...props }) => {
+> = ({ label, labelPosition = 'right', children, checkboxClassName, ...props }) => {
   const renderCheckbox = useCallback(() => {
     return (
       <span
         className={clsx(
           styles.checkboxCustom,
           'bg-cosmon-main-primary',
-          props.checked ? styles.checkboxCustomChecked : null
+          props.checked ? styles.checkboxCustomChecked : null,
+          checkboxClassName
         )}
       >
         <CheckIcon />
@@ -45,12 +48,18 @@ const Checkbox: React.FC<
       )}
     >
       <input type="checkbox" {...props} />
-      {(children && children(renderCheckbox, renderLabel)) || (
-        <>
-          {renderCheckbox()}
-          {renderLabel()}
-        </>
-      )}
+      {(children && children(renderCheckbox, renderLabel)) ||
+        (labelPosition === 'right' ? (
+          <>
+            {renderCheckbox()}
+            {renderLabel()}
+          </>
+        ) : (
+          <>
+            {renderLabel()}
+            {renderCheckbox()}
+          </>
+        ))}
     </label>
   )
 }

@@ -1,6 +1,6 @@
 import RarityLevel from '../components/RarityLevel/RarityLevel'
 import { motion } from 'framer-motion'
-import { SCARCITIES } from 'types/Scarcity'
+import { SCARCITIES } from 'types'
 
 export default function RarityLevels() {
   const rarityListAnimation = {
@@ -46,10 +46,9 @@ export default function RarityLevels() {
         viewport={{ once: true }}
         className="mx-auto max-w-[750px] pt-4"
       >
-        And so many opportunities to evolve. Start the adventure with a common,
-        climb the levels with him as you win, and finish with a Divinity. Lead
-        your battles to victory and become the greatest war hero incarnate in
-        the entire universe.
+        And so many opportunities to evolve. Start the adventure with a common, climb the levels
+        with him as you win, and finish with a Divinity. Lead your battles to victory and become the
+        greatest war hero incarnate in the entire universe.
       </motion.p>
 
       <motion.div

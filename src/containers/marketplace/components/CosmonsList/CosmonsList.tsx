@@ -27,13 +27,13 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
   className,
 }) => {
   return (
-    <>
+    <div className={clsx(style.listContainer, className)}>
       <Transition show={true} appear={true}>
         <div
           style={{
             gridTemplateColumns: 'repeat(auto-fit, minmax(167px, max-content))',
           }}
-          className={clsx(style.list, className)}
+          className={style.list}
         >
           {cosmons.length > 0 ? (
             cosmons.map((cosmon) => (
@@ -72,7 +72,7 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
           </Button>
         </div>
       ) : null}
-    </>
+    </div>
   )
 }
 
