@@ -12,7 +12,7 @@ import { queryCosmonInfo } from '@services/interaction'
 import { convertDenomToMicroDenom, convertMicroDenomToDenom } from '@utils/conversion'
 import { itemPerPage } from '@containers/marketplace'
 import { MarketPlaceFilters, MarketplaceSortOrder, SellData } from 'types'
-import _ from 'lodash'
+import { intersectionBy, isEqual } from 'lodash'
 import { getCosmonStat } from '@utils/cosmon'
 
 interface MarketPlaceState {
@@ -402,7 +402,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
             return [...curr]
           }
 
-          return _.intersectionBy(acc, curr, 'nft')
+          return intersectionBy(acc, curr, 'nft')
         }, [])
       } else {
         nfts =
@@ -547,7 +547,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
   },
   setFilters: (filters: MarketPlaceFilters) => {
     if (
-      _.isEqual(filters, {
+      isEqual(filters, {
         name: '',
         price: {
           min: '',
