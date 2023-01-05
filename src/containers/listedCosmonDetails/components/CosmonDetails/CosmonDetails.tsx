@@ -30,7 +30,16 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
 
   return (
     <div className={style.container}>
-      <div className={style.leftContainer}>
+      <CosmonCard
+        cosmon={cosmon}
+        showLevel
+        showPersonality
+        showScarcity
+        showNationality
+        size="lg"
+        className={style.cosmonCard}
+      />
+      <div className={style.rightContainer}>
         <p className={style.cosmonLabel}>Cosmon #{cosmon.id}</p>
         <p className={style.cosmonOwner}>
           Owned by{' '}
@@ -96,15 +105,6 @@ const CosmonDetails: React.FC<Props> = ({ buyNft, buyNftLoading, cosmon, kiData 
           </div>
         </div>
       </div>
-      <CosmonCard
-        cosmon={cosmon}
-        showLevel
-        showPersonality
-        showScarcity
-        showNationality
-        size="lg"
-        className={style.cosmonCard}
-      />
     </div>
   )
 }

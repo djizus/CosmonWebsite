@@ -1,3 +1,5 @@
+import { MarketPlaceFilters } from 'types'
+
 const EMAIL_COLLECTED_LOCAL_STORAGE_KEY = 'email-collected'
 const EMAIL_LATER_COUNT_LOCAL_STORAGE_KEY = 'email-later-count'
 const IS_MARKETPLACE_ACTIVE: boolean =

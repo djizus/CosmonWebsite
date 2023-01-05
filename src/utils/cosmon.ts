@@ -1,6 +1,6 @@
 import { useDeckStore } from '@store/deckStore'
 import { CosmonStatKeyType, CosmonStatType, CosmonTraitType, CosmonType } from '../../types/Cosmon'
-import { scarcities, Scarcity } from '../../types/Scarcity'
+import { scarcities, Scarcity } from '../../types'
 
 export function getScarcityByCosmon(cosmon: CosmonType): Scarcity | null {
   let scarcity = null
@@ -142,5 +142,62 @@ export function indexByCharacter(character: string): number {
       return 24
     default:
       throw new Error('invalid cosmon character')
+  }
+}
+
+export function characterByIndex(index: number): string {
+  switch (index) {
+    case 0:
+      return CHARACTER_ABU
+    case 1:
+      return CHARACTER_ALEXANDER
+    case 2:
+      return CHARACTER_ASHOKA
+    case 3:
+      return CHARACTER_ATTILA
+    case 4:
+      return CHARACTER_CAESAR
+    case 5:
+      return CHARACTER_CATHERINE
+    case 6:
+      return CHARACTER_CHARLEMAGNE
+    case 7:
+      return CHARACTER_CHURCHILL
+    case 8:
+      return CHARACTER_CLEOPATRA
+    case 9:
+      return CHARACTER_CYRUS
+    case 10:
+      return CHARACTER_DIDO
+    case 11:
+      return CHARACTER_FERDINAND
+    case 12:
+      return CHARACTER_GENERAL
+    case 13:
+      return CHARACTER_GENGHIS
+    case 14:
+      return CHARACTER_GWENGGAETO
+    case 15:
+      return CHARACTER_KUBLAI
+    case 16:
+      return CHARACTER_MANSA
+    case 17:
+      return CHARACTER_NAPOLEON
+    case 18:
+      return CHARACTER_ODA
+    case 19:
+      return CHARACTER_QIN
+    case 20:
+      return CHARACTER_RAGNAR
+    case 21:
+      return CHARACTER_SALADIN
+    case 22:
+      return CHARACTER_THEODORA
+    case 23:
+      return CHARACTER_VICTORIA
+    case 24:
+      return CHARACTER_WILLIAM
+    default:
+      throw new Error('invalid cosmon index')
   }
 }

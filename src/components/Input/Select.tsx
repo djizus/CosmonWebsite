@@ -12,12 +12,14 @@ export type OptionType = {
 }
 
 interface SelectProps {
+  prefix?: string | React.ReactNode
   value: string | string[] | undefined
   options: OptionType[]
   placeholder: string | React.ReactNode
   onChange: (value: string | string[]) => void
   className?: string
   selectOptionsClassName?: string
+  chevronClassName?: string
 }
 
 const dropIn = {
@@ -42,11 +44,13 @@ const dropIn = {
 }
 
 const Select: React.FC<SelectProps> = ({
+  prefix,
   value,
   options,
   placeholder,
   className,
   selectOptionsClassName,
+  chevronClassName,
   onChange,
 }) => {
   const [isOptionsContainerOpen, toggleOptionsContainerOpen] = useToggle(false)
@@ -75,15 +79,21 @@ const Select: React.FC<SelectProps> = ({
     toggleOptionsContainerOpen()
   }, [])
 
+  const renderPrefix = useCallback(() => {
+    return prefix ? typeof prefix === 'string' ? <span>{prefix}</span> : prefix : null
+  }, [prefix])
+
   return (
     <div className={clsx(styles.selectContainer, className)}>
       <div className={clsx(styles.selectToggleContainer)} onClick={toggleOptionsContainerOpen}>
         <p className="text-sm font-semibold text-cosmon-main-primary">
+          {prefix ? renderPrefix() : null}
           {!value || (isMultiple && value.length <= 0) ? placeholder : selectedLabel}
         </p>
         <ChevronUp
-          className={styles.chevron}
+          className={clsx(styles.chevron, chevronClassName)}
           style={{
+            transition: '.2s linear',
             transform: !isOptionsContainerOpen ? 'rotate(180deg)' : null,
           }}
         />

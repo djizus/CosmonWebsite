@@ -1,7 +1,7 @@
 import Button from '@components/Button/Button'
 import CosmonCard from '@components/Cosmon/CosmonCard/CosmonCard'
 import Modal from '@components/Modal/Modal'
-import { SellDataResponse } from '@services/marketplace'
+import { SellData } from 'types'
 import { useMarketPlaceStore } from '@store/marketPlaceStore'
 import { convertMicroDenomToDenom } from '@utils/conversion'
 import React, { useEffect, useState } from 'react'
@@ -16,7 +16,7 @@ interface Props {
 
 const UnlistNftModal: React.FC<Props> = ({ cosmon, handleSubmitUnlistNft, handleCloseModal }) => {
   const { fetchSellData, unlistNftLoading } = useMarketPlaceStore()
-  const [sellData, setSellData] = useState<SellDataResponse | undefined>(undefined)
+  const [sellData, setSellData] = useState<SellData | undefined>(undefined)
 
   useEffect(() => {
     fetchSellData(cosmon.id).then((data) => setSellData(data))

@@ -39,3 +39,126 @@
     justify-content: center;
     min-height: 400px;
 }
+
+.filtersContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.filterHeader {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 43px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.nameInput {
+    width: 967px;
+    padding: 15px 30px 15px 30px;
+    height: 48px;
+    color: white !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    border-radius: 7px !important;
+    border-color: rgba(159, 164, 221, 0.6) !important;
+}
+
+.selectSortOrder {
+    width: 260px;
+    height: 48px !important;
+
+    > div {
+        border-radius: 7px !important;
+        border-color: rgba(159, 164, 221, 0.6) !important;
+        padding: 15px 23px 15px 23px !important;
+        height: 48px;
+
+        > p {
+            color: rgba(176, 151, 248, 1) !important;
+            font-weight: 400;
+            font-size: 14px;
+        }
+    }
+}
+
+.selectOptionsSortOrder {
+    display: flex;
+    flex-direction: column;
+    width: 260px;
+    height: auto !important;
+    border: 0.5px solid #413673;
+    background-color: #20164f !important ;
+    p {
+        color: white;
+    }
+}
+
+.chevron {
+    color: rgba(176, 151, 248, 1) !important;
+}
+
+.selectPrefix {
+    font-weight: 400;
+    font-size: 14px;
+    color: white;
+    margin-right: 4px;
+}
+
+.listContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.submitContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.filterSide {
+    display: flex;
+    flex-direction: column;
+    width: 251px;
+    margin-right: 27px;
+}
+
+.priceFilter {
+    margin-bottom: 26px;
+}
+
+.levelFilter {
+    margin-bottom: 47px;
+}
+
+.clearFilterButton {
+    padding: 16px 20px;
+    height: 42px;
+    width: 120px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 17px;
+}
+
+.submitFilterButton {
+    padding: 16px 20px;
+    width: 120px;
+    height: 42px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 17px;
+}
+
+.personnalityFilter {
+    margin-bottom: 43px;
+}
+
+.timeFilter {
+    margin-bottom: 37px;
+}
+
+.scarcityFilter {
+    margin-bottom: 42px;
+}

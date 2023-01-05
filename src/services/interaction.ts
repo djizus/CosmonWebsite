@@ -1,5 +1,5 @@
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
-import { Scarcity } from '../../types/Scarcity'
+import { Scarcity } from '../../types'
 import { FaucetClient } from '@cosmjs/faucet-client'
 import { CosmonType } from '../../types/Cosmon'
 import { convertDenomToMicroDenom } from '../utils/conversion'
