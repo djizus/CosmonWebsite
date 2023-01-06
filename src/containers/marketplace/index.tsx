@@ -30,7 +30,7 @@ import NameAndIdFilter from './components/Filters/NameAndIdFilter/NameAndIdFilte
 
 interface MarketplaceProps {}
 
-export const itemPerPage = 2
+export const itemPerPage = 50
 export type MarketPlaceListType = 'all' | 'mine'
 
 const sortOrderOptions: OptionType[] = [
@@ -78,7 +78,7 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
   }, [isConnected])
 
   useEffect(() => {
-    if (isConnected) {
+    if (isConnected && page !== 0) {
       // we load next page only if needed
       fetchCosmonsForMarketPlace(itemPerPage, false)
     }
@@ -228,6 +228,7 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
   }
 
   const handleSubmitFilter = () => {
+    setPage(0)
     fetchCosmonsForMarketPlace(itemPerPage, true)
   }
 

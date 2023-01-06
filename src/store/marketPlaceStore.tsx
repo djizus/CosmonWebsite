@@ -149,6 +149,9 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         .catch(() => {
           set({ unlistNftLoading: false })
         })
+        .finally(() => {
+          set({ unlistNftLoading: false })
+        })
     } catch (error) {
       console.error(error)
     }
@@ -441,24 +444,15 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         let myCosmons: CosmonMarketPlaceType[] = await Promise.all(
           nfts.map(async (nft) => {
             const cosmon = await queryCosmonInfo(signingClient, nft.nft)
+            const stats = await XPRegistryService.queries().getCosmonStats(nft.nft)
 
             return {
               id: nft.nft,
               data: cosmon,
               isInDeck: false,
-              stats: [
-                {
-                  key: 'Level',
-                  value: nft.level.toString(),
-                },
-              ],
+              stats: stats,
               isListed: true,
-              statsWithoutBoosts: [
-                {
-                  key: 'Level',
-                  value: nft.level.toString(),
-                },
-              ],
+              statsWithoutBoosts: stats,
               boosts: [null, null, null],
               price: convertMicroDenomToDenom(nft.price ?? ''),
               collection: nft.collection,
@@ -484,7 +478,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       }
 
       set({
-        cosmonsInMarketplace: [...cosmonsInMarketplace],
+        cosmonsInMarketplace: [],
       })
 
       return []

@@ -169,7 +169,7 @@ export function indexByCharacter(character: string): number {
     case CHARACTER_WILLIAM:
       return 24
     default:
-      throw new Error('invalid cosmon character')
+      return -1
   }
 }
 

@@ -9,6 +9,7 @@ import CosmonListItem from './CosmonListItem/CosmonListItem'
 import ListNftModal from '../../../../components/Modal/ListNftModal/ListNftModal'
 import UnlistNftModal from '@components/Modal/UnlistNftModal/UnlistNftModal'
 import ListConfirmNftModal from '@components/Modal/ListConfirmNftModal/ListConfirmNftModal'
+import UnlistConfirmNftModal from '@components/Modal/UnlistConfirmNftModal/UnlistConfirmNftModal'
 
 interface CosmonsListProps {
   cosmons: CosmonType[]
@@ -28,6 +29,7 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
   const [displayUnlistNftModal, setDisplayUnlistNftModal] = useState(false)
   const [displayListNftModal, setDisplayListNftModal] = useState(false)
   const [displayListConfirmNftModal, setDisplayListConfirmNftModal] = useState(false)
+  const [displayUnListConfirmNftModal, setDisplayUnListConfirmNftModal] = useState(false)
   const [selectedCosmon, setSelectedCosmon] = useState<CosmonType | null>(null)
   const { listNft, unlistNft } = useMarketPlaceStore()
 
@@ -47,6 +49,7 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
   const handleSubmitUnlistNft = async (nftId: string) => {
     await unlistNft(nftId)
     handleHideUnlistModal()
+    handleDisplayUnListConfirmModal()
   }
 
   const onClickList = (cosmon: CosmonType) => {
@@ -75,6 +78,14 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
 
   const handleHideListConfirmModal = () => {
     setDisplayListConfirmNftModal(false)
+  }
+
+  const handleDisplayUnListConfirmModal = () => {
+    setDisplayUnListConfirmNftModal(true)
+  }
+
+  const handleHideUnListConfirmModal = () => {
+    setDisplayUnListConfirmNftModal(false)
   }
 
   return (
@@ -124,6 +135,12 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
           cosmon={selectedCosmon}
           handleCloseModal={handleHideUnlistModal}
           handleSubmitUnlistNft={handleSubmitUnlistNft}
+        />
+      ) : null}
+      {displayUnListConfirmNftModal && selectedCosmon ? (
+        <UnlistConfirmNftModal
+          cosmon={selectedCosmon}
+          handleCloseModal={handleHideUnListConfirmModal}
         />
       ) : null}
     </>
