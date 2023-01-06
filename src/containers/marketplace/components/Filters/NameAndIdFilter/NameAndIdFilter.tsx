@@ -1,6 +1,6 @@
 import InputText from '@components/Input/InputText'
 import { useOutsideAlerter } from '@hooks/useOutsideClick'
-import { characterByIndex, characterOptions } from '@utils/cosmon'
+import { characterOptions, indexByCharacter } from '@utils/cosmon'
 import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import * as style from './NameAndIdFilter.module.scss'
 
@@ -20,6 +20,11 @@ const NameAndIdFilter: React.FC<Props> = ({ name, id, handleChangeNameOrIdFilter
   useEffect(() => {
     if (clickOutside) {
       setDisplayDropdown(false)
+
+      if (!/^\d/.test(search) && indexByCharacter(search) === -1) {
+        setSearch('')
+        handleChangeNameOrIdFilter(null)
+      }
     }
   }, [clickOutside])
 
@@ -49,6 +54,10 @@ const NameAndIdFilter: React.FC<Props> = ({ name, id, handleChangeNameOrIdFilter
   }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!displayDropdown) {
+      setDisplayDropdown(true)
+    }
+
     if (e.currentTarget.value === '') {
       handleChangeNameOrIdFilter(null)
       setSearch('')

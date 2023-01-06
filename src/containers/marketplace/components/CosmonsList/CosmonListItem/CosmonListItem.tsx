@@ -46,7 +46,15 @@ const CosmonListItem: React.FC<CosmonListItemProps> = ({ cosmon, onClick }) => {
               className={style.cosmonCard}
             />
           }
-          cardBack={<CosmonStatsCard cosmon={cosmon} />}
+          cardBack={
+            <div
+              onClick={() => {
+                onClick(cosmon)
+              }}
+            >
+              <CosmonStatsCard cosmon={cosmon} />
+            </div>
+          }
           revealed={revealed}
         />
       </div>
