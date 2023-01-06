@@ -28,7 +28,10 @@ const Header: React.FC<Props> = ({ floor, totalVolume, items, collection, classN
       </div>
       <div className={style.info}>
         <p className={style.label}>Total Volume</p>
-        <p className={style.value}>{convertMicroDenomToDenom(totalVolume?.amount ?? 0)}</p>
+        <div className={style.floorPriceValue}>
+          <img className={style.floorPriceValueImg} src="/icons/xki.png" alt="" />
+          <span className={style.value}>{convertMicroDenomToDenom(totalVolume?.amount ?? 0)}</span>
+        </div>
       </div>
       <div className={style.info}>
         <p className={style.label}>Floor Price</p>
