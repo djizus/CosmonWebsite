@@ -88,8 +88,6 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
     setLoading(false)
   }
 
-  console.log(filtredCosmons)
-
   return (
     <>
       <Transition
