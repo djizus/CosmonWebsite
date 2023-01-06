@@ -76,7 +76,7 @@ export const executeBuyCosmon = (
 
 export const executeBuyRandomCosmon = (
   signingClient: SigningCosmWasmClient,
-  price: string,
+  price: Coin,
   address: string
 ) => {
   return new Promise(async (resolve, reject) => {
@@ -90,8 +90,8 @@ export const executeBuyRandomCosmon = (
         'memo',
         [
           {
-            amount: convertDenomToMicroDenom(price),
-            denom: PUBLIC_IBC_DENOM,
+            amount: price.amount,
+            denom: price.denom,
           },
         ]
       )
@@ -232,6 +232,16 @@ export const queryCosmonPrice = async (
     get_price_by_scarcity: { scarcity: scarcity },
   })
   return price.amount
+}
+
+export const queryCosmonBlindMintPrice = async (
+  signingClient: SigningCosmWasmClient | CosmWasmClient
+): Promise<Coin> => {
+  const price = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
+    get_blind_mint_price: {},
+  })
+
+  return price
 }
 
 export const queryGetMaxClaimableToken = async (

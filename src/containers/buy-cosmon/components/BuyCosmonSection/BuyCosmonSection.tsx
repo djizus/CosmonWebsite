@@ -13,12 +13,18 @@ import BuyDeckModal from './BuyDeckModal/BuyDeckModal'
 import BigNumber from 'bignumber.js'
 import { getAmountFromDenom } from '@utils'
 import AnimatedImage from '@components/AnimatedImage/AnimatedImage'
+import { Coin } from '@cosmjs/proto-signing'
+import { convertMicroDenomToDenom } from '@utils/conversion'
 
 interface Props {}
 
 const BuyCosmonSection: React.FC<Props> = () => {
   const { buyRandomCosmon, isConnected, mintFullDeck, coins } = useWalletStore()
-  const { getCosmonPrice: fetchCosmonPrice, whitelistData } = useCosmonStore()
+  const {
+    getCosmonPrice: fetchCosmonPrice,
+    whitelistData,
+    getBlindMintPrice: fetchBlindMintPrice,
+  } = useCosmonStore()
 
   const [displayBuyCosmonModal, setDisplayBuyCosmonModal] = useState<boolean>(false)
   const [displayBuyDeckModal, setDisplayBuyDeckModal] = useState<boolean>(false)
@@ -29,6 +35,7 @@ const BuyCosmonSection: React.FC<Props> = () => {
   const [deckBought, setDeckBought] = useState<CosmonType[]>([])
   const [isCurrentlyBuyingDeck, setIsCurrentlyBuyingDeck] = useState<boolean>(false)
   const [deckPrice, setDeckPrice] = useState<string>('XX')
+  const [blindMintPrice, setBlindMintPrice] = useState<Coin | null>(null)
 
   const getDeckPrice = async () => {
     let price = await fetchCosmonPrice(SCARCITIES.COMMON)
@@ -54,19 +61,35 @@ const BuyCosmonSection: React.FC<Props> = () => {
     }
   }
 
+  const getBlindMintPrice = async () => {
+    let price = await fetchBlindMintPrice()
+    if (
+      whitelistData &&
+      whitelistData.discount_percent !== 0 &&
+      whitelistData.used_slots < whitelistData.available_slots
+    ) {
+      setBlindMintPrice(price)
+    } else {
+      setBlindMintPrice(price)
+    }
+  }
+
   useEffect(() => {
     getDeckPrice()
+    getBlindMintPrice()
   }, [])
 
   const buy = async () => {
-    set_isCurrentlyBuying(true)
-    try {
-      set_cosmonBought(await buyRandomCosmon('20'))
-      handleShowCosmonModal()
-    } catch (e: any) {
-      console.error('Error! ', e)
-    } finally {
-      set_isCurrentlyBuying(false)
+    if (blindMintPrice) {
+      set_isCurrentlyBuying(true)
+      try {
+        set_cosmonBought(await buyRandomCosmon(blindMintPrice))
+        handleShowCosmonModal()
+      } catch (e: any) {
+        console.error('Error! ', e)
+      } finally {
+        set_isCurrentlyBuying(false)
+      }
     }
   }
 
@@ -93,6 +116,22 @@ const BuyCosmonSection: React.FC<Props> = () => {
       return availableBalance > +deckPrice
     }
   }, [deckPrice, coins])
+
+  const hasEnoughCoinsBlindMint = useMemo(() => {
+    if (blindMintPrice) {
+      const price = convertMicroDenomToDenom(blindMintPrice.amount)
+      if (price && coins) {
+        const availableBalance = getAmountFromDenom(
+          process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
+          coins
+        )
+
+        return availableBalance > +price
+      }
+    }
+
+    return false
+  }, [blindMintPrice, coins])
 
   const handleShowCosmonModal = () => {
     setDisplayBuyCosmonModal(true)
@@ -165,14 +204,23 @@ const BuyCosmonSection: React.FC<Props> = () => {
         <UnmaskOnReach delay={0.2}>
           <img className={style.randomCardImg} src="/cosmons/buyable-card/every-card.png" />
           {isConnected ? (
-            <Button
-              onClick={buy}
-              isLoading={isCurrentlyBuying}
-              className={style.buyRandomCardButton}
-              withoutContainer
-            >
-              Buy random card for X ATOM
-            </Button>
+            <div data-tip="tootlip" data-for={`blind-mint`}>
+              <Button
+                onClick={buy}
+                disabled={!hasEnoughCoinsBlindMint}
+                isLoading={isCurrentlyBuying}
+                className={style.buyRandomCardButton}
+                withoutContainer
+              >
+                Buy random card for{' '}
+                {blindMintPrice ? convertMicroDenomToDenom(blindMintPrice.amount) : 'XX'} ATOM
+              </Button>
+              {!hasEnoughCoinsToBuyDeck ? (
+                <Tooltip id={`blind-mint`} place="top">
+                  <p>You don’t have enough ATOM in your wallet. Please deposit ATOMs</p>
+                </Tooltip>
+              ) : null}
+            </div>
           ) : (
             <ButtonConnectWallet withoutContainer className={style.connectButton} />
           )}

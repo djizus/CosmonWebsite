@@ -86,7 +86,7 @@ interface WalletState {
   connect: (type?: CONNECTION_TYPE) => void
   setCosmons: (cosmons: CosmonType[]) => void
   buyCosmon: (scarcity: Scarcity, price: string) => any
-  buyRandomCosmon: (price: string) => any
+  buyRandomCosmon: (price: Coin) => any
   mintFullDeck: (price: string) => any
   transferAsset: (recipient: string, asset: CosmonType) => void
   disconnect: () => void
