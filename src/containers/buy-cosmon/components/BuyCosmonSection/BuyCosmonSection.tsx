@@ -121,10 +121,7 @@ const BuyCosmonSection: React.FC<Props> = () => {
     if (blindMintPrice) {
       const price = convertMicroDenomToDenom(blindMintPrice.amount)
       if (price && coins) {
-        const availableBalance = getAmountFromDenom(
-          process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
-          coins
-        )
+        const availableBalance = getAmountFromDenom(blindMintPrice.denom || '', coins)
 
         return availableBalance > +price
       }
