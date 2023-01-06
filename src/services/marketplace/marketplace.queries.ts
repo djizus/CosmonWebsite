@@ -4,6 +4,7 @@ import { convertDenomToMicroDenom } from '@utils/conversion'
 import { NftHistory } from 'types/Cosmon'
 import {
   FetchByGeoPaginationOptions,
+  FetchByIdPaginationOptions,
   FetchByLevelPaginationOptions,
   FetchByLevelRangePaginationOptions,
   FetchByPersonalityPaginationOptions,
@@ -334,6 +335,31 @@ export const fetchNftByScarcity = async ({
   }
 }
 
+/**
+ * Fetch Nft by id
+ * @return Sell data[]
+ */
+export const fetchNftById = async ({
+  start_after,
+  limit,
+  asset_id,
+}: FetchByIdPaginationOptions): Promise<undefined | SellData[]> => {
+  try {
+    const client = await makeUnsignedClient()
+    const response = (await client?.queryContractSmart(PUBLIC_MARKETPLACE_CONTRACT, {
+      get_nft_by_id: {
+        start_after,
+        limit,
+        asset_id,
+      },
+    })) as SellData[]
+
+    return response
+  } catch (e) {
+    console.error(`Error while fetching nft by id`, e)
+  }
+}
+
 export default {
   fetchAllSellingNft,
   fetchSellingNftFromAddress,
@@ -348,4 +374,5 @@ export default {
   fetchNftByGeo,
   fetchNftByTime,
   fetchNftByScarcity,
+  fetchNftById,
 }

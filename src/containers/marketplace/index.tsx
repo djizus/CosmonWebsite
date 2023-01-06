@@ -27,6 +27,7 @@ import LevelFilter from './components/Filters/LevelFilter/LevelFilter'
 import AttributeFilter from './components/Filters/AttributeFilter/AttributeFilter'
 import InputText from '@components/Input/InputText'
 import Select, { OptionType } from '@components/Input/Select'
+import NameAndIdFilter from './components/Filters/NameAndIdFilter/NameAndIdFilter'
 
 interface MarketplaceProps {}
 
@@ -202,11 +203,24 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
     })
   }
 
-  const handleChangeNameFilter = (e: ChangeEvent<HTMLInputElement>) => {
-    setFilters({
-      ...filters,
-      name: e.currentTarget.value,
-    })
+  const handleChangeNameOrIdFilter = (value: number | string | null) => {
+    if (typeof value === 'string') {
+      setFilters({
+        ...filters,
+        name: value,
+      })
+    } else if (typeof value === 'number') {
+      setFilters({
+        ...filters,
+        id: value,
+      })
+    } else {
+      setFilters({
+        ...filters,
+        id: -1,
+        name: '',
+      })
+    }
   }
 
   const handleClearAllFilters = async () => {
@@ -254,11 +268,10 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
           {currentSection === 'all' ? (
             <div className={style.filtersContainer}>
               <div className={style.filterHeader}>
-                <InputText
-                  className={style.nameInput}
-                  placeholder="Token ID or name"
-                  value={filters.name}
-                  onChange={handleChangeNameFilter}
+                <NameAndIdFilter
+                  handleChangeNameOrIdFilter={handleChangeNameOrIdFilter}
+                  name={filters.name}
+                  id={filters.id}
                 />
                 <Select
                   className={style.selectSortOrder}

@@ -14,7 +14,7 @@ import { itemPerPage } from '@containers/marketplace'
 import { MarketPlaceFilters, MarketplaceSortOrder, SellData } from 'types'
 import intersectionBy from 'lodash/intersectionBy'
 import isEqual from 'lodash/isEqual'
-import { getCosmonStat } from '@utils/cosmon'
+import { getCosmonStat, indexByCharacter } from '@utils/cosmon'
 
 interface MarketPlaceState {
   filtersActive: boolean
@@ -53,6 +53,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
   filtersActive: false,
   filters: {
     name: '',
+    id: -1,
     price: {
       min: '',
       max: '',
@@ -280,7 +281,28 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         let scarcityResult: SellData[] = []
         let priceResult: SellData[] = []
         let levelResult: SellData[] = []
+        let idResult: SellData | undefined = undefined
+        let nameResult: SellData[] = []
         let arrayToCompare: Array<SellData[]> = []
+
+        if (filters.name !== '' && filters.id === -1) {
+          nameResult =
+            (await MarketPlaceService.queries().fetchNftById({
+              limit,
+              start_after,
+              asset_id: indexByCharacter(filters.name),
+            })) ?? []
+
+          arrayToCompare = [...arrayToCompare, nameResult]
+        } else if (filters.name === '' && filters.id !== -1) {
+          idResult =
+            (await MarketPlaceService.queries().fetchSellDataForNft(filters.id.toString())) ??
+            undefined
+
+          if (idResult) {
+            arrayToCompare = [...arrayToCompare, [idResult]]
+          }
+        }
 
         if (filters.time.length > 0) {
           timeResult = await Promise.all(
@@ -550,6 +572,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
     if (
       isEqual(filters, {
         name: '',
+        id: -1,
         price: {
           min: '',
           max: '',
@@ -584,6 +607,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
     set({
       filters: {
         name: '',
+        id: -1,
         price: {
           min: '',
           max: '',

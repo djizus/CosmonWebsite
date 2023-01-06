@@ -88,6 +88,34 @@ const CHARACTER_THEODORA = 'Theodora Empress of Byzantium'
 const CHARACTER_VICTORIA = 'Queen Victoria'
 const CHARACTER_WILLIAM = 'William the Conqueror'
 
+export const characterOptions: { name: string; value: number }[] = [
+  { name: CHARACTER_ABU, value: indexByCharacter(CHARACTER_ABU) },
+  { name: CHARACTER_ALEXANDER, value: indexByCharacter(CHARACTER_ALEXANDER) },
+  { name: CHARACTER_ASHOKA, value: indexByCharacter(CHARACTER_ASHOKA) },
+  { name: CHARACTER_ATTILA, value: indexByCharacter(CHARACTER_ATTILA) },
+  { name: CHARACTER_CAESAR, value: indexByCharacter(CHARACTER_CAESAR) },
+  { name: CHARACTER_CATHERINE, value: indexByCharacter(CHARACTER_CATHERINE) },
+  { name: CHARACTER_CHARLEMAGNE, value: indexByCharacter(CHARACTER_CHARLEMAGNE) },
+  { name: CHARACTER_CHURCHILL, value: indexByCharacter(CHARACTER_CHURCHILL) },
+  { name: CHARACTER_CLEOPATRA, value: indexByCharacter(CHARACTER_CLEOPATRA) },
+  { name: CHARACTER_CYRUS, value: indexByCharacter(CHARACTER_CYRUS) },
+  { name: CHARACTER_DIDO, value: indexByCharacter(CHARACTER_DIDO) },
+  { name: CHARACTER_FERDINAND, value: indexByCharacter(CHARACTER_FERDINAND) },
+  { name: CHARACTER_GENERAL, value: indexByCharacter(CHARACTER_GENERAL) },
+  { name: CHARACTER_GENGHIS, value: indexByCharacter(CHARACTER_GENGHIS) },
+  { name: CHARACTER_GWENGGAETO, value: indexByCharacter(CHARACTER_GWENGGAETO) },
+  { name: CHARACTER_KUBLAI, value: indexByCharacter(CHARACTER_KUBLAI) },
+  { name: CHARACTER_MANSA, value: indexByCharacter(CHARACTER_MANSA) },
+  { name: CHARACTER_NAPOLEON, value: indexByCharacter(CHARACTER_NAPOLEON) },
+  { name: CHARACTER_ODA, value: indexByCharacter(CHARACTER_ODA) },
+  { name: CHARACTER_QIN, value: indexByCharacter(CHARACTER_QIN) },
+  { name: CHARACTER_RAGNAR, value: indexByCharacter(CHARACTER_RAGNAR) },
+  { name: CHARACTER_SALADIN, value: indexByCharacter(CHARACTER_SALADIN) },
+  { name: CHARACTER_THEODORA, value: indexByCharacter(CHARACTER_THEODORA) },
+  { name: CHARACTER_VICTORIA, value: indexByCharacter(CHARACTER_VICTORIA) },
+  { name: CHARACTER_WILLIAM, value: indexByCharacter(CHARACTER_WILLIAM) },
+]
+
 export function indexByCharacter(character: string): number {
   switch (character) {
     case CHARACTER_ABU:
