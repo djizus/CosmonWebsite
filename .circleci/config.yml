@@ -79,6 +79,9 @@ workflows:
     jobs:
       - test_and_build
       - deploy_preprod:
+          context:
+            - deploy-ecs
+            - deploy-notifications
           requires:
             - test_and_build
           filters:
@@ -87,6 +90,9 @@ workflows:
                 - preprod
                 - preprod-new
       - deploy_prod:
+          context:
+            - deploy-ecs
+            - deploy-notifications
           requires:
             - test_and_build
           filters:
