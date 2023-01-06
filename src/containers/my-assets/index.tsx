@@ -193,7 +193,7 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
                 onClickTransfer={set_assetToTransfer}
                 variation={currentSection}
               />
-              {filtredCosmons.length > COSMONS_PER_PAGE * (page + 1) ? (
+              {cosmonsId.length > COSMONS_PER_PAGE * (page + 1) ? (
                 <div className={style.paginationContainer}>
                   <Pagination
                     itemsPerPage={COSMONS_PER_PAGE}
