@@ -72,7 +72,7 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
         return cosmons
       }
     }
-  }, [cosmons, enrolledCosmons, currentSection])
+  }, [cosmons, enrolledCosmons, availableCosmons, currentSection])
 
   useEffect(() => {
     if (page >= 0 && cosmonsId.length > 0) {

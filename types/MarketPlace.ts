@@ -15,6 +15,7 @@ export type ScarcityFilterType = Scarcity[]
 
 export interface MarketPlaceFilters {
   name: string
+  id: number
   price: PriceFilterType
   levels: LevelFilterType
   scarcity: ScarcityFilterType
@@ -94,4 +95,10 @@ export interface FetchByScarcityPaginationOptions {
   start_after: SellOffset
   limit: number
   scarcity: Scarcity
+}
+
+export interface FetchByIdPaginationOptions {
+  start_after: SellOffset
+  limit: number
+  asset_id: number
 }
