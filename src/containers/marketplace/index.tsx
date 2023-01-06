@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ConnectionNeededContent from '@components/ConnectionNeededContent/ConnectionNeededContent'
 import * as style from './style.module.scss'
 import { useMarketPlaceStore } from '@store/marketPlaceStore'
@@ -25,13 +25,12 @@ import clsx from 'clsx'
 import PriceFilter from './components/Filters/PriceFilter/PriceFilter'
 import LevelFilter from './components/Filters/LevelFilter/LevelFilter'
 import AttributeFilter from './components/Filters/AttributeFilter/AttributeFilter'
-import InputText from '@components/Input/InputText'
 import Select, { OptionType } from '@components/Input/Select'
 import NameAndIdFilter from './components/Filters/NameAndIdFilter/NameAndIdFilter'
 
 interface MarketplaceProps {}
 
-export const itemPerPage = 16
+export const itemPerPage = 2
 export type MarketPlaceListType = 'all' | 'mine'
 
 const sortOrderOptions: OptionType[] = [

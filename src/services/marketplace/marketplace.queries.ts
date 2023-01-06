@@ -347,7 +347,7 @@ export const fetchNftById = async ({
   try {
     const client = await makeUnsignedClient()
     const response = (await client?.queryContractSmart(PUBLIC_MARKETPLACE_CONTRACT, {
-      get_nft_by_id: {
+      get_nft_by_asset_i_d: {
         start_after,
         limit,
         asset_id,

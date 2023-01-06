@@ -484,7 +484,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       }
 
       set({
-        cosmonsInMarketplace: [],
+        cosmonsInMarketplace: [...cosmonsInMarketplace],
       })
 
       return []
