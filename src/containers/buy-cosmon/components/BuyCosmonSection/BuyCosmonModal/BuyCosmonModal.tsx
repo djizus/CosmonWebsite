@@ -10,7 +10,7 @@ import Confetti from 'react-confetti'
 import * as style from './BuyCosmonModal.module.scss'
 import { useWindowSize } from 'react-use'
 import Hover from 'react-3d-hover'
-import { getScarcityByCosmon, getTrait } from '@utils/cosmon'
+import { getScarcityByCosmon, getTrait, getYieldPercent } from '@utils/cosmon'
 
 interface Props {
   cosmon: CosmonType
@@ -43,7 +43,7 @@ const BuyCosmonModal: React.FC<Props> = ({ cosmon, handleCloseModal }) => {
   const [isCardRevealed, setIsCardRevealed] = useState<boolean>(false)
   const router = useRouter()
   const [showConfetti, set_showConfetti] = useState<boolean>(false)
-
+  const scarcity = getScarcityByCosmon(cosmon)
   useEffect(() => {
     if (isCardRevealed) {
       set_showConfetti(true)
@@ -120,7 +120,8 @@ const BuyCosmonModal: React.FC<Props> = ({ cosmon, handleCloseModal }) => {
             {isCardRevealed ? (
               <>
                 <p className={style.cosmonName}>{cosmon.data.extension.name}</p>
-                <p className={style.scarcity}>{getScarcityByCosmon(cosmon)}</p>
+                <p className={style.scarcity}>{scarcity}</p>
+                <p className={style.yieldPercent}>{getYieldPercent(scarcity)}% Yield*</p>
                 <p
                   className={style.description}
                   dangerouslySetInnerHTML={{
@@ -145,6 +146,10 @@ const BuyCosmonModal: React.FC<Props> = ({ cosmon, handleCloseModal }) => {
               </Button>
             </>
           )}
+          <p className={style.footerText}>
+            *Returns shown represent past performances, and are not guarantees of future
+            performances.
+          </p>
         </div>
       </div>
     </motion.div>

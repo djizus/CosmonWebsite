@@ -7,6 +7,7 @@ export const cosmonName: string
 export const description: string
 export const flipCosmon: string
 export const flipCosmonRevealed: string
+export const footerText: string
 export const labelNotRevealed: string
 export const modal: string
 export const modalContent: string
@@ -14,3 +15,4 @@ export const overlay: string
 export const revealedCosmon: string
 export const scarcity: string
 export const title: string
+export const yieldPercent: string

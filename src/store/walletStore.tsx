@@ -11,6 +11,7 @@ import {
 import { Coin } from '@cosmjs/amino/build/coins'
 import {
   executeBuyCosmon,
+  executeBuyRandomCosmon,
   executeCreditWalletWithFaucet,
   queryCosmonInfo,
   executeTransferNft,
@@ -85,6 +86,7 @@ interface WalletState {
   connect: (type?: CONNECTION_TYPE) => void
   setCosmons: (cosmons: CosmonType[]) => void
   buyCosmon: (scarcity: Scarcity, price: string) => any
+  buyRandomCosmon: (price: Coin) => any
   mintFullDeck: (price: string) => any
   transferAsset: (recipient: string, asset: CosmonType) => void
   disconnect: () => void
@@ -595,6 +597,43 @@ const useWalletStore = create<WalletState>(
                   return (
                     <ToastContainer type={'success'}>
                       {scarcity} bought successfully,
+                    </ToastContainer>
+                  )
+                },
+                icon: SuccessIcon,
+              },
+
+              error: {
+                render({ data }: any) {
+                  return <ToastContainer type="error">{data.message}</ToastContainer>
+                },
+                icon: ErrorIcon,
+              },
+            })
+            .then(async ({ token }: any) => {
+              // update wallet available balance
+              await fetchCoin()
+              await fetchCosmons()
+              return token
+            })
+          return response
+        }
+      },
+      buyRandomCosmon: async (price) => {
+        const { signingClient, address, fetchCoin, fetchCosmons } = get()
+        if (signingClient && address) {
+          const response = await toast
+            .promise(executeBuyRandomCosmon(signingClient, price, address), {
+              pending: {
+                render() {
+                  return <ToastContainer type="pending">{`Buying a random cosmon`}</ToastContainer>
+                },
+              },
+              success: {
+                render() {
+                  return (
+                    <ToastContainer type={'success'}>
+                      Random cosmon bought successfully,
                     </ToastContainer>
                   )
                 },

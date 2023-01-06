@@ -9,6 +9,7 @@ export const deckQuestionAnswers: string
 export const deckTitle: string
 export const description: string
 export const imgStarterPack: string
+export const randomCardImg: string
 export const rightDeckContainer: string
 export const secondDescription: string
 export const secondSubDescription: string

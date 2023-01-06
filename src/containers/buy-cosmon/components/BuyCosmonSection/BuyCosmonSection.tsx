@@ -1,35 +1,41 @@
 import Button from '@components/Button/Button'
 import ButtonConnectWallet from '@components/Button/ButtonConnectWallet'
-import BuyableCard from '@components/BuyableCard/BuyableCard'
 import Tooltip from '@components/Tooltip/Tooltip'
 import UnmaskOnReach from '@components/UnmaskOnReach/UnmaskOnReach'
 import { useCosmonStore } from '@store/cosmonStore'
 import { useWalletStore } from '@store/walletStore'
 import clsx from 'clsx'
 import React, { useEffect, useMemo, useState } from 'react'
-import { CosmonType, SCARCITIES, Scarcity } from 'types'
+import { CosmonType, SCARCITIES } from 'types'
 import BuyCosmonModal from './BuyCosmonModal/BuyCosmonModal'
 import * as style from './BuyCosmonSection.module.scss'
 import BuyDeckModal from './BuyDeckModal/BuyDeckModal'
 import BigNumber from 'bignumber.js'
 import { getAmountFromDenom } from '@utils'
 import AnimatedImage from '@components/AnimatedImage/AnimatedImage'
+import { Coin } from '@cosmjs/proto-signing'
+import { convertMicroDenomToDenom } from '@utils/conversion'
 
 interface Props {}
 
 const BuyCosmonSection: React.FC<Props> = () => {
-  const { buyCosmon, isConnected, mintFullDeck, coins } = useWalletStore()
-  const { getCosmonPrice: fetchCosmonPrice, whitelistData } = useCosmonStore()
+  const { buyRandomCosmon, isConnected, mintFullDeck, coins } = useWalletStore()
+  const {
+    getCosmonPrice: fetchCosmonPrice,
+    whitelistData,
+    getBlindMintPrice: fetchBlindMintPrice,
+  } = useCosmonStore()
 
   const [displayBuyCosmonModal, setDisplayBuyCosmonModal] = useState<boolean>(false)
   const [displayBuyDeckModal, setDisplayBuyDeckModal] = useState<boolean>(false)
 
   const [cosmonBought, set_cosmonBought] = useState<null | CosmonType>(null)
-  const [isCurrentlyBuying, set_isCurrentlyBuying] = useState<Scarcity | null>(null)
+  const [isCurrentlyBuying, set_isCurrentlyBuying] = useState<boolean>(false)
 
   const [deckBought, setDeckBought] = useState<CosmonType[]>([])
   const [isCurrentlyBuyingDeck, setIsCurrentlyBuyingDeck] = useState<boolean>(false)
   const [deckPrice, setDeckPrice] = useState<string>('XX')
+  const [blindMintPrice, setBlindMintPrice] = useState<Coin | null>(null)
 
   const getDeckPrice = async () => {
     let price = await fetchCosmonPrice(SCARCITIES.COMMON)
@@ -55,19 +61,35 @@ const BuyCosmonSection: React.FC<Props> = () => {
     }
   }
 
+  const getBlindMintPrice = async () => {
+    let price = await fetchBlindMintPrice()
+    if (
+      whitelistData &&
+      whitelistData.discount_percent !== 0 &&
+      whitelistData.used_slots < whitelistData.available_slots
+    ) {
+      setBlindMintPrice(price)
+    } else {
+      setBlindMintPrice(price)
+    }
+  }
+
   useEffect(() => {
     getDeckPrice()
+    getBlindMintPrice()
   }, [])
 
-  const buy = async (scarcity: Scarcity, price: string) => {
-    set_isCurrentlyBuying(scarcity)
-    try {
-      set_cosmonBought(await buyCosmon(scarcity, price))
-      handleShowCosmonModal()
-    } catch (e: any) {
-      console.error('Error! ', e)
-    } finally {
-      set_isCurrentlyBuying(null)
+  const buy = async () => {
+    if (blindMintPrice) {
+      set_isCurrentlyBuying(true)
+      try {
+        set_cosmonBought(await buyRandomCosmon(blindMintPrice))
+        handleShowCosmonModal()
+      } catch (e: any) {
+        console.error('Error! ', e)
+      } finally {
+        set_isCurrentlyBuying(false)
+      }
     }
   }
 
@@ -94,6 +116,22 @@ const BuyCosmonSection: React.FC<Props> = () => {
       return availableBalance > +deckPrice
     }
   }, [deckPrice, coins])
+
+  const hasEnoughCoinsBlindMint = useMemo(() => {
+    if (blindMintPrice) {
+      const price = convertMicroDenomToDenom(blindMintPrice.amount)
+      if (price && coins) {
+        const availableBalance = getAmountFromDenom(
+          process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
+          coins
+        )
+
+        return availableBalance > +price
+      }
+    }
+
+    return false
+  }, [blindMintPrice, coins])
 
   const handleShowCosmonModal = () => {
     setDisplayBuyCosmonModal(true)
@@ -162,60 +200,30 @@ const BuyCosmonSection: React.FC<Props> = () => {
           Your Cosmon's initial characteristics will also be higher with an upper rarity.
         </p>
       </UnmaskOnReach>
-      <div
-        className={clsx(
-          'grid grid-cols-2 gap-y-[60px] lg:grid-cols-5',
-          style.buyableCosmonsContainer
-        )}
-      >
+      <div className={clsx(style.buyableCosmonsContainer)}>
         <UnmaskOnReach delay={0.2}>
-          <BuyableCard
-            buy={(price: string) => buy(SCARCITIES.COMMON, price)}
-            yieldPercent={
-              (process.env.NEXT_PUBLIC_YIELD_COMMON !== undefined &&
-                process.env.NEXT_PUBLIC_YIELD_COMMON) ||
-              'xx'
-            }
-            isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.COMMON}
-            type={SCARCITIES.COMMON}
-            img="common.png"
-          />
-        </UnmaskOnReach>
-        <UnmaskOnReach delay={0.3}>
-          <BuyableCard
-            buy={(price: string) => buy(SCARCITIES.UNCOMMON, price)}
-            yieldPercent={process.env.NEXT_PUBLIC_YIELD_UNCOMMON || 'xx'}
-            isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.UNCOMMON}
-            type={SCARCITIES.UNCOMMON}
-            img="uncommon.png"
-          />
-        </UnmaskOnReach>
-        <UnmaskOnReach delay={0.4}>
-          <BuyableCard
-            buy={(price) => buy(SCARCITIES.RARE, price)}
-            yieldPercent={process.env.NEXT_PUBLIC_YIELD_RARE || 'xx'}
-            isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.RARE}
-            type={SCARCITIES.RARE}
-            img="rare.png"
-          />
-        </UnmaskOnReach>
-        <UnmaskOnReach delay={0.6}>
-          <BuyableCard
-            buy={(price) => buy(SCARCITIES.EPIC, price)}
-            yieldPercent={process.env.NEXT_PUBLIC_YIELD_EPIC || 'xx'}
-            isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.EPIC}
-            type={SCARCITIES.EPIC}
-            img="epic.png"
-          />
-        </UnmaskOnReach>
-        <UnmaskOnReach delay={0.8}>
-          <BuyableCard
-            buy={(price) => buy(SCARCITIES.LEGENDARY, price)}
-            yieldPercent={process.env.NEXT_PUBLIC_YIELD_LEGENDARY || 'xx'}
-            isCurrentlyBuying={isCurrentlyBuying === SCARCITIES.LEGENDARY}
-            type={SCARCITIES.LEGENDARY}
-            img="legendary.png"
-          />
+          <img className={style.randomCardImg} src="/cosmons/buyable-card/every-card.png" />
+          {isConnected ? (
+            <div data-tip="tootlip" data-for={`blind-mint`}>
+              <Button
+                onClick={buy}
+                disabled={!hasEnoughCoinsBlindMint}
+                isLoading={isCurrentlyBuying}
+                className={style.buyRandomCardButton}
+                withoutContainer
+              >
+                Buy random card for{' '}
+                {blindMintPrice ? convertMicroDenomToDenom(blindMintPrice.amount) : 'XX'} ATOM
+              </Button>
+              {!hasEnoughCoinsToBuyDeck ? (
+                <Tooltip id={`blind-mint`} place="top">
+                  <p>You don’t have enough ATOM in your wallet. Please deposit ATOMs</p>
+                </Tooltip>
+              ) : null}
+            </div>
+          ) : (
+            <ButtonConnectWallet withoutContainer className={style.connectButton} />
+          )}
         </UnmaskOnReach>
       </div>
       {displayBuyCosmonModal && cosmonBought ? (

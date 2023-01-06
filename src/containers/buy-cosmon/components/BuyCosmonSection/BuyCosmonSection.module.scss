@@ -28,6 +28,10 @@
 .buyableCosmonsContainer {
     width: 100%;
     margin-top: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .description {
@@ -56,6 +60,7 @@
     font-size: 14px;
     line-height: 18px;
     padding: 16px 20px !important;
+    margin: auto;
 }
 
 .connectButton {
@@ -71,6 +76,13 @@
     font-weight: 600;
     font-size: 14px;
     line-height: 18px;
+    margin: auto;
+}
+
+.randomCardImg {
+    width: 701px;
+    height: auto;
+    margin-bottom: 22px;
 }
 
 .imgStarterPack {
@@ -131,4 +143,7 @@
     line-height: 22px;
     color: #d4d4d4;
     margin-bottom: 60px;
+}
+
+.randomCardImg {
 }

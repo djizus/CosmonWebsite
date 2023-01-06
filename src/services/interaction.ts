@@ -74,6 +74,60 @@ export const executeBuyCosmon = (
   })
 }
 
+export const executeBuyRandomCosmon = (
+  signingClient: SigningCosmWasmClient,
+  price: Coin,
+  address: string
+) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // const price = await queryCosmonPrice(signingClient, scarcity)
+      const response = await signingClient.execute(
+        address,
+        PUBLIC_SELL_CONTRACT,
+        { blind_mint: {} },
+        'auto',
+        'memo',
+        [
+          {
+            amount: price.amount,
+            denom: price.denom,
+          },
+        ]
+      )
+
+      const tokenId =
+        response.logs[0].events
+          .find((event) => event.type === 'wasm')
+          ?.attributes?.find((attribute) => attribute?.key === 'token_id')?.value || null
+
+      if (tokenId) {
+        const cosmonBought: CosmonType = {
+          id: tokenId,
+          data: await queryCosmonInfo(signingClient, tokenId),
+          isListed: false,
+          stats: [
+            {
+              key: 'Level',
+              value: '1',
+            },
+          ],
+          statsWithoutBoosts: [],
+          boosts: [null, null, null],
+        }
+        return resolve({
+          message: 'Bought successfully',
+          token: cosmonBought,
+        })
+      } else {
+        reject(handleTransactionError('No token id received from the cosmon'))
+      }
+    } catch (e: any) {
+      reject(handleTransactionError(e))
+    }
+  })
+}
+
 export const executeMintDeck = (
   signingClient: SigningCosmWasmClient,
   price: string,
@@ -178,6 +232,16 @@ export const queryCosmonPrice = async (
     get_price_by_scarcity: { scarcity: scarcity },
   })
   return price.amount
+}
+
+export const queryCosmonBlindMintPrice = async (
+  signingClient: SigningCosmWasmClient | CosmWasmClient
+): Promise<Coin> => {
+  const price = await signingClient.queryContractSmart(PUBLIC_SELL_CONTRACT, {
+    get_blind_mint_price: {},
+  })
+
+  return price
 }
 
 export const queryGetMaxClaimableToken = async (

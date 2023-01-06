@@ -1,6 +1,6 @@
 import { useDeckStore } from '@store/deckStore'
 import { CosmonStatKeyType, CosmonStatType, CosmonTraitType, CosmonType } from '../../types/Cosmon'
-import { scarcities, Scarcity } from '../../types'
+import { SCARCITIES, scarcities, Scarcity } from '../../types'
 
 export function getScarcityByCosmon(cosmon: CosmonType): Scarcity | null {
   let scarcity = null
@@ -227,5 +227,27 @@ export function characterByIndex(index: number): string {
       return CHARACTER_WILLIAM
     default:
       throw new Error('invalid cosmon index')
+  }
+}
+
+export function getYieldPercent(scarcity: Scarcity | null) {
+  switch (scarcity) {
+    case 'Common':
+      return 0
+
+    case 'Uncommon':
+      return 15
+
+    case 'Rare':
+      return 20
+
+    case 'Epic':
+      return 25
+
+    case 'Legendary':
+      return 40
+
+    default:
+      return 0
   }
 }
