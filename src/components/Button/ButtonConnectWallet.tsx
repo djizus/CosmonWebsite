@@ -8,16 +8,22 @@ import Button, { ButtonProps } from './Button'
 
 interface ButtonConnectWalletProps {
   buttonProps?: Omit<ButtonProps, 'children'>
+  withoutContainer?: boolean
   className?: string
 }
 
-const ButtonConnectWallet: React.FC<ButtonConnectWalletProps> = ({ buttonProps, className }) => {
+const ButtonConnectWallet: React.FC<ButtonConnectWalletProps> = ({
+  buttonProps,
+  withoutContainer = false,
+  className,
+}) => {
   const [showConnectionSelectModal, setShowConnectionSelectModal] = useState(false)
   const { connect, isFetchingData } = useWalletStore()
 
   return (
     <>
       <Button
+        withoutContainer={withoutContainer}
         className={clsx('max-h-[42px]', className)}
         isLoading={isFetchingData}
         onClick={() => {
