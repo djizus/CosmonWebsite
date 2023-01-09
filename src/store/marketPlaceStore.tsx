@@ -290,8 +290,6 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         let nameResult: SellData[] = []
         let arrayToCompare: Array<SellData[]> = []
 
-        console.log('allo', arrayToCompare, start_after, limit)
-
         if (filters.name !== '' && filters.id === -1) {
           nameResult =
             (await MarketPlaceService.queries().fetchNftById({
@@ -372,8 +370,6 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
             })
           ).then((value) => value.flat())
 
-          console.log('allo2', scarcityResult)
-
           arrayToCompare = [...arrayToCompare, scarcityResult]
         }
 
@@ -429,8 +425,6 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           arrayToCompare = [...arrayToCompare, levelResult]
         }
 
-        console.log('allo3', arrayToCompare, nfts)
-
         nfts = arrayToCompare.reduce((acc, curr, index) => {
           if (acc.length === 0 && index === 0) {
             return [...curr]
@@ -446,8 +440,6 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
             order: sortOrder,
           })) ?? []
       }
-
-      console.log('allo4', nfts)
 
       if (nfts.length > 0 && signingClient) {
         // getting cosmon details
