@@ -642,7 +642,11 @@ const useWalletStore = create<WalletState>(
 
               error: {
                 render({ data }: any) {
-                  return <ToastContainer type="error">{data.message}</ToastContainer>
+                  return (
+                    <ToastContainer type="error">
+                      The whole collection has been sold! Get ready for the next one!
+                    </ToastContainer>
+                  )
                 },
                 icon: ErrorIcon,
               },
