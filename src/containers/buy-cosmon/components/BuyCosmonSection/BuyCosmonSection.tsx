@@ -206,8 +206,9 @@ const BuyCosmonSection: React.FC<Props> = () => {
           {isConnected ? (
             <div data-tip="tootlip" data-for={`blind-mint`}>
               <Button
-                onClick={buy}
-                disabled={!hasEnoughCoinsBlindMint}
+                // onClick={buy}
+                // disabled={!hasEnoughCoinsBlindMint}
+                disabled={true}
                 isLoading={isCurrentlyBuying}
                 className={style.buyRandomCardButton}
                 withoutContainer
