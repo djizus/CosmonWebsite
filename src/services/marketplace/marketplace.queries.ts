@@ -360,6 +360,23 @@ export const fetchNftById = async ({
   }
 }
 
+/**
+ * Fetch numbers of sellers
+ * @return
+ */
+export const fetchSellersCount = async (): Promise<undefined | number> => {
+  try {
+    const client = await makeUnsignedClient()
+    const response = await client?.queryContractSmart(PUBLIC_MARKETPLACE_CONTRACT, {
+      get_sellers_count: {},
+    })
+
+    return response
+  } catch (e) {
+    console.error(`Error while fetching number of sellers`, e)
+  }
+}
+
 export default {
   fetchAllSellingNft,
   fetchSellingNftFromAddress,
@@ -375,4 +392,5 @@ export default {
   fetchNftByTime,
   fetchNftByScarcity,
   fetchNftById,
+  fetchSellersCount,
 }

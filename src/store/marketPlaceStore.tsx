@@ -14,6 +14,7 @@ import { itemPerPage } from '@containers/marketplace'
 import { MarketPlaceFilters, MarketplaceSortOrder, SellData } from 'types'
 import intersectionBy from 'lodash/intersectionBy'
 import isEqual from 'lodash/isEqual'
+import uniqBy from 'lodash/uniqBy'
 import { getCosmonStat, indexByCharacter } from '@utils/cosmon'
 
 interface MarketPlaceState {
@@ -26,6 +27,7 @@ interface MarketPlaceState {
   cosmonsInMarketplace: CosmonMarketPlaceType[]
   buyNftLoading: boolean
   floor: Coin | null
+  sellers: number | null
   totalVolume: Coin | null
   salesNumber: number
   marketplaceFees: number
@@ -41,6 +43,7 @@ interface MarketPlaceState {
   CosmonsInMarketplaceLoading: boolean
   fetchDetailedCosmon: (id: string) => void
   fetchCosmonHistory: (id: string) => Promise<NftHistory[]>
+  fetchSellers: () => Promise<number | null>
   fetchSellData: (id: string) => Promise<SellData | undefined>
   setFilters: (filters: MarketPlaceFilters) => void
   setOrder: (sortOrder: MarketplaceSortOrder) => void
@@ -51,6 +54,7 @@ export const WINNER_IS_DRAW = 'DRAW'
 
 export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
   filtersActive: false,
+  sellers: null,
   filters: {
     name: '',
     id: -1,
@@ -187,12 +191,10 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           await fetchCosmons()
           set({ buyNftLoading: false })
         })
-        .catch(() => {
-          set({ buyNftLoading: false })
-        })
       return true
     } catch (error) {
       console.error(error)
+      set({ buyNftLoading: false })
       return false
     }
   },
@@ -288,6 +290,8 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         let nameResult: SellData[] = []
         let arrayToCompare: Array<SellData[]> = []
 
+        console.log('allo', arrayToCompare, start_after, limit)
+
         if (filters.name !== '' && filters.id === -1) {
           nameResult =
             (await MarketPlaceService.queries().fetchNftById({
@@ -368,6 +372,8 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
             })
           ).then((value) => value.flat())
 
+          console.log('allo2', scarcityResult)
+
           arrayToCompare = [...arrayToCompare, scarcityResult]
         }
 
@@ -423,6 +429,8 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           arrayToCompare = [...arrayToCompare, levelResult]
         }
 
+        console.log('allo3', arrayToCompare, nfts)
+
         nfts = arrayToCompare.reduce((acc, curr, index) => {
           if (acc.length === 0 && index === 0) {
             return [...curr]
@@ -438,6 +446,8 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
             order: sortOrder,
           })) ?? []
       }
+
+      console.log('allo4', nfts)
 
       if (nfts.length > 0 && signingClient) {
         // getting cosmon details
@@ -469,7 +479,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
             })
           } else {
             set({
-              cosmonsInMarketplace: [...cosmonsInMarketplace, ...myCosmons],
+              cosmonsInMarketplace: uniqBy([...cosmonsInMarketplace, ...myCosmons], 'id'),
             })
           }
 
@@ -546,6 +556,25 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
     }
 
     return []
+  },
+  fetchSellers: async () => {
+    const { signingClient } = useWalletStore.getState()
+
+    try {
+      if (signingClient) {
+        const result = await MarketPlaceService.queries().fetchSellersCount()
+
+        if (result !== undefined) {
+          set({ sellers: result })
+        }
+
+        return result ?? null
+      }
+    } catch (error) {
+      console.error('Error while fetching sellers count')
+    }
+
+    return null
   },
   fetchSellData: async (id: string) => {
     const { signingClient } = useWalletStore.getState()

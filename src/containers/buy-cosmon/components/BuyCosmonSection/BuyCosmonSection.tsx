@@ -187,9 +187,12 @@ const BuyCosmonSection: React.FC<Props> = () => {
         </div>
       </div>
       <UnmaskOnReach delay={0.2}>
-        <p className={style.secondTitle}>... or buy a Cosmon Card </p>
+        <p className={style.secondTitle}>... or buy a random Cosmon Card</p>
         <p className={style.secondDescription}>
-          Get a random Cosmon from a given scarcity level or mint a full deck!
+          Mint a random Cosmon in a pool of 500 cards!
+          <br />
+          This pool contains at least 10 uncommon Cosmon cards & at least 5 cards with a higher
+          scarcity, including legendary!
         </p>
         <p className={style.secondSubDescription}>
           The rarer your Cosmons are, the more yield you will get from it.
