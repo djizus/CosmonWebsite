@@ -10,6 +10,7 @@ import { Coin } from '@cosmjs/proto-signing'
 import { useMarketPlaceStore } from '@store/marketPlaceStore'
 import TransactionHistory from '@containers/listedCosmonDetails/components/TransactionHistory/TransactionHistory'
 import ListConfirmNftModal from './ListConfirmNftModal/ListConfirmNftModal'
+import { IS_MARKETPLACE_ACTIVE } from '@utils/constants'
 
 type CosmonFullModalProps = {
   cosmon: CosmonType
@@ -93,7 +94,7 @@ export default function CosmonFullModal({ cosmon, onCloseModal }: CosmonFullModa
               size="lg"
               containerStyle={{ height: 530, width: 315 }}
             />
-            {!cosmon.isListed && !cosmon.isInDeck ? (
+            {!cosmon.isListed && !cosmon.isInDeck && IS_MARKETPLACE_ACTIVE ? (
               <Button onClick={() => setDisplayListNftModal(true)} className="mt-[25px] h-[42px]">
                 List for sale
               </Button>
