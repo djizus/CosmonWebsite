@@ -151,14 +151,16 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
 
           await updateCosmons([nftId])
         })
-        .catch(() => {
+        .catch((error) => {
           set({ unlistNftLoading: false })
+          throw new Error(`${error}`).message
         })
         .finally(() => {
           set({ unlistNftLoading: false })
         })
     } catch (error) {
       console.error(error)
+      throw new Error(`${error}`).message
     }
   },
   buyNft: async (nftId: string, price: Coin): Promise<boolean> => {
