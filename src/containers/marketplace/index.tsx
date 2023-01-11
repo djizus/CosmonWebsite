@@ -69,6 +69,9 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
     if (isConnected) {
       handleRefreshPageData(true)
     }
+    return () => {
+      handleClearAllFilters()
+    }
   }, [])
 
   useEffect(() => {
