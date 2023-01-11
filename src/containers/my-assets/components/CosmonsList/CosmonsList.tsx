@@ -48,9 +48,11 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
 
   const handleSubmitUnlistNft = async (nftId: string, price: number | undefined) => {
     if (price !== undefined) {
-      await unlistNft(nftId, price)
-      handleHideUnlistModal()
-      handleDisplayUnListConfirmModal()
+      try {
+        await unlistNft(nftId, price)
+        handleHideUnlistModal()
+        handleDisplayUnListConfirmModal()
+      } catch (error) {}
     }
   }
 
