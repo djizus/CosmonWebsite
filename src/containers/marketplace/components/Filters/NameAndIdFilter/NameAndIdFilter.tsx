@@ -1,16 +1,18 @@
 import InputText from '@components/Input/InputText'
 import { useOutsideAlerter } from '@hooks/useOutsideClick'
 import { characterOptions, indexByCharacter } from '@utils/cosmon'
-import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
+import clsx from 'clsx'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import * as style from './NameAndIdFilter.module.scss'
 
 interface Props {
   name: string
   id: number
   handleChangeNameOrIdFilter: (value: string | number | null) => void
+  className?: string
 }
 
-const NameAndIdFilter: React.FC<Props> = ({ name, id, handleChangeNameOrIdFilter }) => {
+const NameAndIdFilter: React.FC<Props> = ({ name, id, handleChangeNameOrIdFilter, className }) => {
   const [search, setSearch] = useState('')
   const [displayDropdown, setDisplayDropdown] = useState(false)
 
@@ -69,7 +71,7 @@ const NameAndIdFilter: React.FC<Props> = ({ name, id, handleChangeNameOrIdFilter
   }
 
   return (
-    <div ref={wrapperRef} className={style.nameAndIdInputContainer}>
+    <div ref={wrapperRef} className={clsx(style.nameAndIdInputContainer, className)}>
       <InputText
         value={search}
         onFocus={handleFocus}

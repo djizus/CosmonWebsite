@@ -31,7 +31,7 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
       <Transition show={true} appear={true}>
         <div
           style={{
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, max-content))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(188px, max-content))',
           }}
           className={style.list}
         >

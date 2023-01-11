@@ -34,7 +34,7 @@ interface MarketPlaceState {
   listNft: (nftId: string, price: Coin) => void
   listNftLoading: boolean
   unlistNftLoading: boolean
-  unlistNft: (nftId: string) => void
+  unlistNft: (nftId: string, price: number) => void
   buyNft: (nftId: string, price: Coin) => Promise<boolean>
   fetchSellingNftFromAddress: (walletAddress: string) => void
   fetchKPI: () => void
@@ -122,11 +122,11 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
       console.error(error)
     }
   },
-  unlistNft: async (nftId: string) => {
+  unlistNft: async (nftId: string, price: number) => {
     try {
       set({ unlistNftLoading: true })
       await toast
-        .promise(MarketPlaceService.executes().unlistNft(nftId), {
+        .promise(MarketPlaceService.executes().unlistNft(nftId, price), {
           pending: {
             render() {
               return <ToastContainer type="pending">Unlisting your cosmon</ToastContainer>
@@ -201,9 +201,12 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
   fetchSellingNftFromAddress: async () => {
     try {
       const { address, signingClient } = useWalletStore.getState()
-      const listedNftsFromAddress = await MarketPlaceService.queries().fetchSellingNftFromAddress(
-        address
-      )
+      const listedNftsFromAddress = await MarketPlaceService.queries().fetchSellingNftFromAddress({
+        start_after: undefined,
+        limit: undefined,
+        address,
+        order: 'low_to_high',
+      })
 
       if (listedNftsFromAddress && signingClient) {
         // getting cosmon details
@@ -296,6 +299,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
               limit,
               start_after,
               asset_id: indexByCharacter(filters.name),
+              order: sortOrder,
             })) ?? []
 
           arrayToCompare = [...arrayToCompare, nameResult]
@@ -317,6 +321,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
                   limit,
                   start_after,
                   time: filter,
+                  order: sortOrder,
                 })) ?? []
               )
             })
@@ -333,6 +338,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
                   limit,
                   start_after,
                   personnality: filter,
+                  order: sortOrder,
                 })) ?? []
               )
             })
@@ -349,6 +355,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
                   limit,
                   start_after,
                   geo: filter,
+                  order: sortOrder,
                 })) ?? []
               )
             })
@@ -365,6 +372,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
                   limit,
                   start_after,
                   scarcity: filter,
+                  order: sortOrder,
                 })) ?? []
               )
             })
@@ -394,6 +402,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
               start_after,
               min_price: parseFloat(filters.price.min),
               max_price: parseFloat(filters.price.max),
+              order: sortOrder,
             })) ?? []
 
           arrayToCompare = [...arrayToCompare, priceResult]
@@ -410,6 +419,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
               limit,
               start_after,
               level: parseFloat(level),
+              order: sortOrder,
             })) ?? []
 
           arrayToCompare = [...arrayToCompare, levelResult]
@@ -420,6 +430,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
               start_after,
               level_min: parseFloat(filters.levels.min),
               level_max: parseFloat(filters.levels.max),
+              order: sortOrder,
             })) ?? []
 
           arrayToCompare = [...arrayToCompare, levelResult]

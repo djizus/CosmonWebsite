@@ -3,6 +3,7 @@ import { makeUnsignedClient } from '@services/connection/cosmos-clients'
 import { convertDenomToMicroDenom } from '@utils/conversion'
 import { NftHistory } from 'types/Cosmon'
 import {
+  FetchAllSellingNftOptions,
   FetchByGeoPaginationOptions,
   FetchByIdPaginationOptions,
   FetchByLevelPaginationOptions,
@@ -12,6 +13,7 @@ import {
   FetchByPriceRangePaginationOptions,
   FetchByScarcityPaginationOptions,
   FetchByTimePaginationOptions,
+  FetchSellingNftFromAddressOptions,
   MarketplaceSortOrder,
   SellData,
 } from 'types/MarketPlace'
@@ -22,16 +24,7 @@ export const fetchAllSellingNft = async ({
   start_after,
   limit,
   order,
-}: {
-  start_after:
-    | {
-        price?: string
-        token_id?: string
-      }
-    | undefined
-  limit: number | undefined
-  order: MarketplaceSortOrder
-}): Promise<SellData[] | undefined> => {
+}: FetchAllSellingNftOptions): Promise<SellData[] | undefined> => {
   try {
     const client = await makeUnsignedClient()
     const response = (await client?.queryContractSmart(PUBLIC_MARKETPLACE_CONTRACT, {
@@ -52,14 +45,16 @@ export const fetchAllSellingNft = async ({
  * Fetch all selling nft from wallet
  * @return all selling nft from wallet
  */
-export const fetchSellingNftFromAddress = async (
-  walletAddress: string
-): Promise<SellData[] | undefined> => {
+export const fetchSellingNftFromAddress = async ({
+  address,
+  order,
+}: FetchSellingNftFromAddressOptions): Promise<SellData[] | undefined> => {
   try {
     const client = await makeUnsignedClient()
     const response = (await client?.queryContractSmart(PUBLIC_MARKETPLACE_CONTRACT, {
       get_selling_nft_from_address: {
-        address: walletAddress,
+        address,
+        order,
       },
     })) as SellData[]
 
@@ -165,6 +160,7 @@ export const fetchNftByPriceRange = async ({
   limit,
   min_price,
   max_price,
+  order,
 }: FetchByPriceRangePaginationOptions): Promise<undefined | SellData[]> => {
   try {
     const client = await makeUnsignedClient()
@@ -174,6 +170,7 @@ export const fetchNftByPriceRange = async ({
         limit,
         min_price: convertDenomToMicroDenom(min_price),
         max_price: convertDenomToMicroDenom(max_price),
+        order,
       },
     })) as SellData[]
 
@@ -191,6 +188,7 @@ export const fetchNftByLevel = async ({
   start_after,
   limit,
   level,
+  order,
 }: FetchByLevelPaginationOptions): Promise<undefined | SellData[]> => {
   try {
     const client = await makeUnsignedClient()
@@ -199,6 +197,7 @@ export const fetchNftByLevel = async ({
         start_after,
         limit,
         level,
+        order,
       },
     })) as SellData[]
 
@@ -217,6 +216,7 @@ export const fetchNftByLevelRange = async ({
   limit,
   level_min,
   level_max,
+  order,
 }: FetchByLevelRangePaginationOptions): Promise<undefined | SellData[]> => {
   try {
     const client = await makeUnsignedClient()
@@ -226,6 +226,7 @@ export const fetchNftByLevelRange = async ({
         limit,
         level_min: level_min,
         level_max: level_max,
+        order,
       },
     })) as SellData[]
 
@@ -243,6 +244,7 @@ export const fetchNftByPersonality = async ({
   start_after,
   limit,
   personnality,
+  order,
 }: FetchByPersonalityPaginationOptions): Promise<undefined | SellData[]> => {
   try {
     const client = await makeUnsignedClient()
@@ -251,6 +253,7 @@ export const fetchNftByPersonality = async ({
         start_after,
         limit,
         personality: personnality,
+        order,
       },
     })) as SellData[]
 
@@ -268,6 +271,7 @@ export const fetchNftByGeo = async ({
   start_after,
   limit,
   geo,
+  order,
 }: FetchByGeoPaginationOptions): Promise<undefined | SellData[]> => {
   try {
     const client = await makeUnsignedClient()
@@ -276,6 +280,7 @@ export const fetchNftByGeo = async ({
         start_after,
         limit,
         geo,
+        order,
       },
     })) as SellData[]
 
@@ -293,6 +298,7 @@ export const fetchNftByTime = async ({
   start_after,
   limit,
   time,
+  order,
 }: FetchByTimePaginationOptions): Promise<undefined | SellData[]> => {
   try {
     const client = await makeUnsignedClient()
@@ -301,6 +307,7 @@ export const fetchNftByTime = async ({
         start_after,
         limit,
         time,
+        order,
       },
     })) as SellData[]
 
@@ -318,6 +325,7 @@ export const fetchNftByScarcity = async ({
   start_after,
   limit,
   scarcity,
+  order,
 }: FetchByScarcityPaginationOptions): Promise<undefined | SellData[]> => {
   try {
     const client = await makeUnsignedClient()
@@ -326,6 +334,7 @@ export const fetchNftByScarcity = async ({
         start_after,
         limit,
         scarcity,
+        order,
       },
     })) as SellData[]
 
@@ -343,6 +352,7 @@ export const fetchNftById = async ({
   start_after,
   limit,
   asset_id,
+  order,
 }: FetchByIdPaginationOptions): Promise<undefined | SellData[]> => {
   try {
     const client = await makeUnsignedClient()
@@ -351,6 +361,7 @@ export const fetchNftById = async ({
         start_after,
         limit,
         asset_id,
+        order,
       },
     })) as SellData[]
 
