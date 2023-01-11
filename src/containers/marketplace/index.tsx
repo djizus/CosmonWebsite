@@ -30,7 +30,7 @@ import NameAndIdFilter from './components/Filters/NameAndIdFilter/NameAndIdFilte
 
 interface MarketplaceProps {}
 
-export const itemPerPage = 50
+export const itemPerPage = 52
 export type MarketPlaceListType = 'all' | 'mine'
 
 const sortOrderOptions: OptionType[] = [
@@ -269,6 +269,7 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
             <div className={style.filtersContainer}>
               <div className={style.filterHeader}>
                 <NameAndIdFilter
+                  className={style.nameInput}
                   handleChangeNameOrIdFilter={handleChangeNameOrIdFilter}
                   name={filters.name}
                   id={filters.id}

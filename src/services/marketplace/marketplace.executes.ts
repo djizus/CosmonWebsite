@@ -47,7 +47,7 @@ export const listNft = async (nftId: string, price: Coin) => {
  * Unlist a nft
  * @param nftId id of the nft
  */
-export const unlistNft = async (nftId: string) => {
+export const unlistNft = async (nftId: string, price: number) => {
   try {
     const { signingClient, address } = useWalletStore.getState()
     const response = await signingClient?.execute(
@@ -56,6 +56,7 @@ export const unlistNft = async (nftId: string) => {
       {
         unlist_nft: {
           nft_id: nftId,
+          price,
         },
       },
       'auto',
@@ -82,6 +83,7 @@ export const buyNft = async (nftId: string, price: Coin) => {
       {
         buy_nft: {
           nft_id: nftId,
+          price: price.amount,
         },
       },
       'auto',

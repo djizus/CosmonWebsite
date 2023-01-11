@@ -54,9 +54,9 @@
 }
 
 .nameInput {
-    width: 967px;
-    padding: 15px 30px 15px 30px;
-    height: 48px;
+    width: 967px !important;
+    justify-content: center;
+    align-items: center;
     color: white !important;
     font-weight: 400 !important;
     font-size: 14px !important;

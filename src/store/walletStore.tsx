@@ -486,7 +486,12 @@ const useWalletStore = create<WalletState>(
 
         if (IS_MARKETPLACE_ACTIVE) {
           listedNftsId =
-            (await MarketPlaceService.queries().fetchSellingNftFromAddress(address)) ?? []
+            (await MarketPlaceService.queries().fetchSellingNftFromAddress({
+              address,
+              limit: undefined,
+              start_after: undefined,
+              order: 'low_to_high',
+            })) ?? []
         }
         let cosmonsWithDetails = []
         for (let index = 0; index < filteredCosmonsIds.length; index++) {
@@ -516,7 +521,12 @@ const useWalletStore = create<WalletState>(
 
         if (IS_MARKETPLACE_ACTIVE) {
           listedNftsId =
-            (await MarketPlaceService.queries().fetchSellingNftFromAddress(address)) ?? []
+            (await MarketPlaceService.queries().fetchSellingNftFromAddress({
+              address,
+              start_after: undefined,
+              limit: undefined,
+              order: 'low_to_high',
+            })) ?? []
         }
         let freshCosmons: CosmonType[] = cosmons
         let updatedCosmons: CosmonType[] = []

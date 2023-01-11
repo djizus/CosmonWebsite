@@ -47,58 +47,79 @@ export type SellOffset =
     }
   | undefined
 
+export interface FetchAllSellingNftOptions {
+  start_after: SellOffset
+  limit?: number
+  order: MarketplaceSortOrder
+}
+
+export interface FetchSellingNftFromAddressOptions {
+  start_after: SellOffset
+  limit?: number
+  address: string
+  order: MarketplaceSortOrder
+}
+
 export interface FetchByPricePaginationOptions {
   start_after: SellOffset
-  limit: number
+  limit?: number
   price: number
 }
 
 export interface FetchByPriceRangePaginationOptions {
   start_after: SellOffset
-  limit: number
+  limit?: number
   min_price: number
   max_price: number
+  order: MarketplaceSortOrder
 }
 
 export interface FetchByLevelPaginationOptions {
   start_after: SellOffset
-  limit: number
+  limit?: number
   level: number
+  order: MarketplaceSortOrder
 }
 
 export interface FetchByLevelRangePaginationOptions {
   start_after: SellOffset
-  limit: number
+  limit?: number
   level_min: number
   level_max: number
+  order: MarketplaceSortOrder
 }
 
 export interface FetchByPersonalityPaginationOptions {
   start_after: SellOffset
-  limit: number
+  limit?: number
   personnality: Personnality
+  order: MarketplaceSortOrder
 }
 
 export interface FetchByGeoPaginationOptions {
   start_after: SellOffset
-  limit: number
+  limit?: number
   geo: Geographical
+  order: MarketplaceSortOrder
 }
 
 export interface FetchByTimePaginationOptions {
   start_after: SellOffset
-  limit: number
+  limit?: number
   time: Time
+  order: MarketplaceSortOrder
 }
 
 export interface FetchByScarcityPaginationOptions {
   start_after: SellOffset
-  limit: number
+  limit?: number
   scarcity: Scarcity
+  order: MarketplaceSortOrder
 }
 
 export interface FetchByIdPaginationOptions {
   start_after: SellOffset
-  limit: number
+  limit?: number
   asset_id: number
+  order: MarketplaceSortOrder
 }

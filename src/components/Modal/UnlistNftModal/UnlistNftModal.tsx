@@ -10,7 +10,7 @@ import * as style from './UnlistNftModal.module.scss'
 
 interface Props {
   cosmon: CosmonType
-  handleSubmitUnlistNft: (nftId: string) => void
+  handleSubmitUnlistNft: (nftId: string, price: number | undefined) => void
   handleCloseModal: () => void
 }
 
@@ -43,9 +43,10 @@ const UnlistNftModal: React.FC<Props> = ({ cosmon, handleSubmitUnlistNft, handle
         </div>
       </div>
       <Button
+        disabled={!sellData}
         isLoading={unlistNftLoading}
         className={style.closeButton}
-        onClick={() => handleSubmitUnlistNft(cosmon.id)}
+        onClick={() => handleSubmitUnlistNft(cosmon.id, sellData?.price ?? undefined)}
       >
         Confirm canceling
       </Button>

@@ -176,7 +176,7 @@ const BuyCosmonSection: React.FC<Props> = () => {
                 Buy starter deck for {deckPrice} ATOM
               </Button>
               {!hasEnoughCoinsToBuyDeck ? (
-                <Tooltip id={`buy-deck`} place="top">
+                <Tooltip id={`buy-deck`} place="bottom">
                   <p>You don’t have enough ATOM in your wallet. Please deposit ATOMs</p>
                 </Tooltip>
               ) : null}
@@ -215,8 +215,8 @@ const BuyCosmonSection: React.FC<Props> = () => {
                 Buy random card for{' '}
                 {blindMintPrice ? convertMicroDenomToDenom(blindMintPrice.amount) : 'XX'} ATOM
               </Button>
-              {!hasEnoughCoinsToBuyDeck ? (
-                <Tooltip id={`blind-mint`} place="top">
+              {!hasEnoughCoinsBlindMint ? (
+                <Tooltip id={`blind-mint`} place="bottom">
                   <p>You don’t have enough ATOM in your wallet. Please deposit ATOMs</p>
                 </Tooltip>
               ) : null}
