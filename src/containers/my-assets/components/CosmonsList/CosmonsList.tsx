@@ -69,9 +69,11 @@ const CosmonsList: React.FC<CosmonsListProps> = ({
   }
 
   const handleSubmitListNft = async (nftId: string, price: Coin) => {
-    await listNft(nftId, price)
-    setDisplayListNftModal(false)
-    handleDisplayListConfirmModal()
+    try {
+      await listNft(nftId, price)
+      setDisplayListNftModal(false)
+      handleDisplayListConfirmModal()
+    } catch (error) {}
   }
 
   const handleDisplayListConfirmModal = () => {
