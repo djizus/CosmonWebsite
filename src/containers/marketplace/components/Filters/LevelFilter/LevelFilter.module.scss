@@ -63,3 +63,8 @@
         margin: 0;
     }
 }
+
+.disabled {
+    cursor: not-allowed;
+    background: rgba(46, 55, 54, 0.4) !important;
+}

@@ -1,4 +1,5 @@
 export const container: string
+export const disabled: string
 export const input: string
 export const inputsContainer: string
 export const maxInputContainer: string

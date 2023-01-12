@@ -27,7 +27,7 @@ const Checkbox: React.FC<
         <CheckIcon />
       </span>
     )
-  }, [props.checked])
+  }, [props.checked, checkboxClassName])
 
   const renderLabel = useCallback(() => {
     return label ? (
