@@ -128,18 +128,19 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
 
   const handleChangeScarcityFilter = (scarcity: Scarcity) => {
     if (!activeFilter || activeFilter === 'scarcity') {
-      const isTimeInFilterIndex = filters.scarcity.findIndex((filter) => filter === scarcity)
-      const arrayToUpdate = filters.scarcity
+      const isScarcityInFilterIndex = filters.scarcity.findIndex((filter) => filter === scarcity)
+      // const arrayToUpdate = filters.scarcity
 
-      if (isTimeInFilterIndex !== -1) {
-        arrayToUpdate.splice(isTimeInFilterIndex, 1)
-      } else {
-        arrayToUpdate.push(scarcity)
-      }
+      // if (isTimeInFilterIndex !== -1) {
+      //   arrayToUpdate.splice(isTimeInFilterIndex, 1)
+      // } else {
+      //   arrayToUpdate.push(scarcity)
+      // }
 
       setFilters('scarcity', {
         ...filters,
-        scarcity: arrayToUpdate,
+        // scarcity: arrayToUpdate,
+        scarcity: isScarcityInFilterIndex !== -1 ? [] : [scarcity],
       })
     }
   }
@@ -147,17 +148,18 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
   const handleChangeTimeFilter = (time: Time) => {
     if (!activeFilter || activeFilter === 'time') {
       const isTimeInFilterIndex = filters.time.findIndex((filter) => filter === time)
-      const arrayToUpdate = filters.time
+      // const arrayToUpdate = filters.time
 
-      if (isTimeInFilterIndex !== -1) {
-        arrayToUpdate.splice(isTimeInFilterIndex, 1)
-      } else {
-        arrayToUpdate.push(time)
-      }
+      // if (isTimeInFilterIndex !== -1) {
+      //   arrayToUpdate.splice(isTimeInFilterIndex, 1)
+      // } else {
+      //   arrayToUpdate.push(time)
+      // }
 
       setFilters('time', {
         ...filters,
-        time: arrayToUpdate,
+        // time: arrayToUpdate,
+        time: isTimeInFilterIndex !== -1 ? [] : [time],
       })
     }
   }
@@ -167,37 +169,37 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
       const isPersonnalityInFilterIndex = filters.personnality.findIndex(
         (filter) => filter === personnality
       )
-      const arrayToUpdate = filters.personnality
+      // const arrayToUpdate = filters.personnality
 
-      if (isPersonnalityInFilterIndex !== -1) {
-        arrayToUpdate.splice(isPersonnalityInFilterIndex, 1)
-      } else {
-        arrayToUpdate.push(personnality)
-      }
+      // if (isPersonnalityInFilterIndex !== -1) {
+      //   arrayToUpdate.splice(isPersonnalityInFilterIndex, 1)
+      // } else {
+      //   arrayToUpdate.push(personnality)
+      // }
 
       setFilters('personnality', {
         ...filters,
-        personnality: arrayToUpdate,
+        // personnality: arrayToUpdate,
+        personnality: isPersonnalityInFilterIndex !== -1 ? [] : [personnality],
       })
     }
   }
 
   const handleChangeGeographicalFilter = (geographical: Geographical) => {
     if (!activeFilter || activeFilter === 'geographical') {
-      const isTimeInFilterIndex = filters.geographical.findIndex(
-        (filter) => filter === geographical
-      )
-      const arrayToUpdate = filters.geographical
+      const isGeoInFilterIndex = filters.geographical.findIndex((filter) => filter === geographical)
+      // const arrayToUpdate = filters.geographical
 
-      if (isTimeInFilterIndex !== -1) {
-        arrayToUpdate.splice(isTimeInFilterIndex, 1)
-      } else {
-        arrayToUpdate.push(geographical)
-      }
+      // if (isTimeInFilterIndex !== -1) {
+      //   arrayToUpdate.splice(isTimeInFilterIndex, 1)
+      // } else {
+      //   arrayToUpdate.push(geographical)
+      // }
 
       setFilters('geographical', {
         ...filters,
-        geographical: arrayToUpdate,
+        // geographical: arrayToUpdate,
+        geographical: isGeoInFilterIndex !== -1 ? [] : [geographical],
       })
     }
   }
