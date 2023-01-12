@@ -13,6 +13,17 @@ export type TimeFilterType = Time[]
 export type GeographicalFilterType = Geographical[]
 export type ScarcityFilterType = Scarcity[]
 
+export type MarketPlaceFiltersKeys =
+  | 'name'
+  | 'id'
+  | 'price'
+  | 'levels'
+  | 'scarcity'
+  | 'personnality'
+  | 'time'
+  | 'geographical'
+  | undefined
+
 export interface MarketPlaceFilters {
   name: string
   id: number

@@ -1,6 +1,6 @@
 import create from 'zustand'
 import { Coin } from '@cosmjs/proto-signing'
-import { CosmonMarketPlaceType, NftHistory, Time } from 'types'
+import { CosmonMarketPlaceType, MarketPlaceFiltersKeys, NftHistory, Time } from 'types'
 import { toast } from 'react-toastify'
 import { ToastContainer } from '@components/ToastContainer/ToastContainer'
 import SuccessIcon from '@public/icons/success.svg'
@@ -18,6 +18,7 @@ import uniqBy from 'lodash/uniqBy'
 import { getCosmonStat, indexByCharacter } from '@utils/cosmon'
 
 interface MarketPlaceState {
+  activeFilter?: MarketPlaceFiltersKeys
   filtersActive: boolean
   filters: MarketPlaceFilters
   sortOrder: MarketplaceSortOrder
@@ -45,7 +46,7 @@ interface MarketPlaceState {
   fetchCosmonHistory: (id: string) => Promise<NftHistory[]>
   fetchSellers: () => Promise<number | null>
   fetchSellData: (id: string) => Promise<SellData | undefined>
-  setFilters: (filters: MarketPlaceFilters) => void
+  setFilters: (filter: MarketPlaceFiltersKeys, filters: MarketPlaceFilters) => void
   setOrder: (sortOrder: MarketplaceSortOrder) => void
   clearFilters: () => void
 }
@@ -597,7 +598,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
 
     return undefined
   },
-  setFilters: (filters: MarketPlaceFilters) => {
+  setFilters: (filter: MarketPlaceFiltersKeys, filters: MarketPlaceFilters) => {
     if (
       isEqual(filters, {
         name: '',
@@ -618,11 +619,13 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
     ) {
       set({
         filters,
+        activeFilter: undefined,
         filtersActive: false,
       })
     } else {
       set({
         filters,
+        activeFilter: filter,
         filtersActive: true,
       })
     }
@@ -634,6 +637,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
   },
   clearFilters: () => {
     set({
+      activeFilter: undefined,
       filters: {
         name: '',
         id: -1,

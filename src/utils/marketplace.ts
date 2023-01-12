@@ -1,4 +1,4 @@
-import { CosmonMarketPlaceType } from 'types'
+import { CosmonMarketPlaceType, MarketPlaceFilters, MarketPlaceFiltersKeys } from 'types'
 import {
   getCosmonPersonalityAffinity,
   getCosmonStat,

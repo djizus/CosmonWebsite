@@ -1,4 +1,5 @@
 import InputText from '@components/Input/InputText'
+import Tooltip from '@components/Tooltip/Tooltip'
 import { useOutsideAlerter } from '@hooks/useOutsideClick'
 import { characterOptions, indexByCharacter } from '@utils/cosmon'
 import clsx from 'clsx'
@@ -9,10 +10,17 @@ interface Props {
   name: string
   id: number
   handleChangeNameOrIdFilter: (value: string | number | null) => void
+  disabled: boolean
   className?: string
 }
 
-const NameAndIdFilter: React.FC<Props> = ({ name, id, handleChangeNameOrIdFilter, className }) => {
+const NameAndIdFilter: React.FC<Props> = ({
+  name,
+  id,
+  handleChangeNameOrIdFilter,
+  disabled,
+  className,
+}) => {
   const [search, setSearch] = useState('')
   const [displayDropdown, setDisplayDropdown] = useState(false)
 
@@ -72,13 +80,27 @@ const NameAndIdFilter: React.FC<Props> = ({ name, id, handleChangeNameOrIdFilter
 
   return (
     <div ref={wrapperRef} className={clsx(style.nameAndIdInputContainer, className)}>
-      <InputText
-        value={search}
-        onFocus={handleFocus}
-        placeholder="Token ID or name"
-        onChange={handleSearch}
-        className={style.nameInput}
-      />
+      <div data-tip="tootlip" data-for={`disabled-name-id`}>
+        <InputText
+          disabled={disabled}
+          value={search}
+          onFocus={handleFocus}
+          placeholder="Token ID or name"
+          onChange={handleSearch}
+          className={clsx(style.nameInput, {
+            [style.disabled]: disabled,
+          })}
+        />
+        {disabled ? (
+          <Tooltip id={`disabled-name-id`} place="bottom">
+            <p>
+              You can just apply one filter per time, please clear the actual one and select a new
+              one later
+            </p>
+          </Tooltip>
+        ) : null}
+      </div>
+
       {!isOnlyNumber && displayDropdown && (
         <>
           <ul className={style.dropdownContainer}>

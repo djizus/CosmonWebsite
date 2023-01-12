@@ -46,6 +46,7 @@ const sortOrderOptions: OptionType[] = [
 
 const Marketplace: React.FC<MarketplaceProps> = () => {
   const {
+    activeFilter,
     filters,
     setFilters,
     clearFilters,
@@ -126,102 +127,118 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
   }, [cosmonsInMarketplace, myListedCosmons, currentSection, page, sortOrder])
 
   const handleChangeScarcityFilter = (scarcity: Scarcity) => {
-    const isTimeInFilterIndex = filters.scarcity.findIndex((filter) => filter === scarcity)
-    const arrayToUpdate = filters.scarcity
+    if (!activeFilter || activeFilter === 'scarcity') {
+      const isTimeInFilterIndex = filters.scarcity.findIndex((filter) => filter === scarcity)
+      const arrayToUpdate = filters.scarcity
 
-    if (isTimeInFilterIndex !== -1) {
-      arrayToUpdate.splice(isTimeInFilterIndex, 1)
-    } else {
-      arrayToUpdate.push(scarcity)
+      if (isTimeInFilterIndex !== -1) {
+        arrayToUpdate.splice(isTimeInFilterIndex, 1)
+      } else {
+        arrayToUpdate.push(scarcity)
+      }
+
+      setFilters('scarcity', {
+        ...filters,
+        scarcity: arrayToUpdate,
+      })
     }
-
-    setFilters({
-      ...filters,
-      scarcity: arrayToUpdate,
-    })
   }
 
   const handleChangeTimeFilter = (time: Time) => {
-    const isTimeInFilterIndex = filters.time.findIndex((filter) => filter === time)
-    const arrayToUpdate = filters.time
+    if (!activeFilter || activeFilter === 'time') {
+      const isTimeInFilterIndex = filters.time.findIndex((filter) => filter === time)
+      const arrayToUpdate = filters.time
 
-    if (isTimeInFilterIndex !== -1) {
-      arrayToUpdate.splice(isTimeInFilterIndex, 1)
-    } else {
-      arrayToUpdate.push(time)
+      if (isTimeInFilterIndex !== -1) {
+        arrayToUpdate.splice(isTimeInFilterIndex, 1)
+      } else {
+        arrayToUpdate.push(time)
+      }
+
+      setFilters('time', {
+        ...filters,
+        time: arrayToUpdate,
+      })
     }
-
-    setFilters({
-      ...filters,
-      time: arrayToUpdate,
-    })
   }
 
   const handleChangePersonnalityFilter = (personnality: Personnality) => {
-    const isPersonnalityInFilterIndex = filters.personnality.findIndex(
-      (filter) => filter === personnality
-    )
-    const arrayToUpdate = filters.personnality
+    if (!activeFilter || activeFilter === 'personnality') {
+      const isPersonnalityInFilterIndex = filters.personnality.findIndex(
+        (filter) => filter === personnality
+      )
+      const arrayToUpdate = filters.personnality
 
-    if (isPersonnalityInFilterIndex !== -1) {
-      arrayToUpdate.splice(isPersonnalityInFilterIndex, 1)
-    } else {
-      arrayToUpdate.push(personnality)
+      if (isPersonnalityInFilterIndex !== -1) {
+        arrayToUpdate.splice(isPersonnalityInFilterIndex, 1)
+      } else {
+        arrayToUpdate.push(personnality)
+      }
+
+      setFilters('personnality', {
+        ...filters,
+        personnality: arrayToUpdate,
+      })
     }
-
-    setFilters({
-      ...filters,
-      personnality: arrayToUpdate,
-    })
   }
 
   const handleChangeGeographicalFilter = (geographical: Geographical) => {
-    const isTimeInFilterIndex = filters.geographical.findIndex((filter) => filter === geographical)
-    const arrayToUpdate = filters.geographical
+    if (!activeFilter || activeFilter === 'geographical') {
+      const isTimeInFilterIndex = filters.geographical.findIndex(
+        (filter) => filter === geographical
+      )
+      const arrayToUpdate = filters.geographical
 
-    if (isTimeInFilterIndex !== -1) {
-      arrayToUpdate.splice(isTimeInFilterIndex, 1)
-    } else {
-      arrayToUpdate.push(geographical)
+      if (isTimeInFilterIndex !== -1) {
+        arrayToUpdate.splice(isTimeInFilterIndex, 1)
+      } else {
+        arrayToUpdate.push(geographical)
+      }
+
+      setFilters('geographical', {
+        ...filters,
+        geographical: arrayToUpdate,
+      })
     }
-
-    setFilters({
-      ...filters,
-      geographical: arrayToUpdate,
-    })
   }
 
   const handleChangePriceFilter = (price: PriceFilterType) => {
-    setFilters({
-      ...filters,
-      price,
-    })
+    if (!activeFilter || activeFilter === 'price') {
+      setFilters('price', {
+        ...filters,
+        price,
+      })
+    }
   }
 
   const handleChangeLevelFilter = (levels: LevelFilterType) => {
-    setFilters({
-      ...filters,
-      levels,
-    })
+    if (!activeFilter || activeFilter === 'levels') {
+      setFilters('levels', {
+        ...filters,
+        levels,
+      })
+    }
   }
 
   const handleChangeNameOrIdFilter = (value: number | string | null) => {
-    if (typeof value === 'string') {
-      setFilters({
-        ...filters,
-        name: value,
-      })
-    } else if (typeof value === 'number') {
-      setFilters({
-        ...filters,
-        id: value,
-      })
-    } else {
-      setFilters({
-        ...filters,
-        id: -1,
-        name: '',
-      })
+    if (!activeFilter || ['name', 'id'].includes(activeFilter)) {
+      if (typeof value === 'string') {
+        setFilters('name', {
+          ...filters,
+          name: value,
+        })
+      } else if (typeof value === 'number') {
+        setFilters('id', {
+          ...filters,
+          id: value,
+        })
+      } else {
+        setFilters(undefined, {
+          ...filters,
+          id: -1,
+          name: '',
+        })
+      }
     }
   }
 
@@ -276,6 +293,7 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
                   handleChangeNameOrIdFilter={handleChangeNameOrIdFilter}
                   name={filters.name}
                   id={filters.id}
+                  disabled={!!activeFilter && !['name', 'id'].includes(activeFilter)}
                 />
                 <Select
                   className={style.selectSortOrder}
@@ -292,6 +310,7 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
                 <div className={style.filterSide}>
                   <div className={style.submitContainer}>
                     <Button
+                      disabled={activeFilter === undefined}
                       className={style.submitFilterButton}
                       type="secondary"
                       withoutContainer
@@ -309,11 +328,13 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
                     </Button>
                   </div>
                   <PriceFilter
+                    disabled={!!activeFilter && activeFilter !== 'price'}
                     className={style.priceFilter}
                     onChangePrice={handleChangePriceFilter}
                     prices={filters.price}
                   />
                   <AttributeFilter
+                    disabled={!!activeFilter && activeFilter !== 'scarcity'}
                     className={style.scarcityFilter}
                     title="Scarcity"
                     onChangeFilter={handleChangeScarcityFilter}
@@ -322,11 +343,13 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
                     defaultDisplay={true}
                   />
                   <LevelFilter
+                    disabled={!!activeFilter && activeFilter !== 'levels'}
                     className={style.levelFilter}
                     onChangeLevel={handleChangeLevelFilter}
                     levels={filters.levels}
                   />
                   <AttributeFilter
+                    disabled={!!activeFilter && activeFilter !== 'personnality'}
                     className={style.personnalityFilter}
                     title="Type’s preference"
                     onChangeFilter={handleChangePersonnalityFilter}
@@ -334,6 +357,7 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
                     options={personnalities}
                   />
                   <AttributeFilter
+                    disabled={!!activeFilter && activeFilter !== 'time'}
                     className={style.timeFilter}
                     title="Time period"
                     onChangeFilter={handleChangeTimeFilter}
@@ -341,6 +365,7 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
                     options={times}
                   />
                   <AttributeFilter
+                    disabled={!!activeFilter && activeFilter !== 'geographical'}
                     title="Geographical Area"
                     onChangeFilter={handleChangeGeographicalFilter}
                     filter={filters.geographical}
