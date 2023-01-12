@@ -68,7 +68,7 @@ const ListNftModal: React.FC<Props> = ({ cosmon, handleCloseModal, handleSubmitL
     if (price !== null) {
       handleSubmitListNft(cosmon.id, {
         amount: convertDenomToMicroDenom(price),
-        denom: 'utki',
+        denom: process.env.NEXT_PUBLIC_STAKING_DENOM!,
       })
     }
   }
