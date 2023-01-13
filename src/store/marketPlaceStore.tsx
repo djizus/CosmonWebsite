@@ -385,55 +385,26 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           arrayToCompare = [...arrayToCompare, scarcityResult]
         }
 
-        if (
-          (filters.price.min !== '' && filters.price.max === '') ||
-          (filters.price.min === '' && filters.price.max !== '')
-        ) {
-          const price = filters.price.min !== '' ? filters.price.min : filters.price.max
-
-          priceResult =
-            (await MarketPlaceService.queries().fetchNftByPrice({
-              limit,
-              start_after,
-              price: parseFloat(price),
-            })) ?? []
-
-          arrayToCompare = [...arrayToCompare, priceResult]
-        } else if (filters.price.min !== '' && filters.price.max !== '') {
+        if (filters.price.min !== '' || filters.price.max !== '') {
           priceResult =
             (await MarketPlaceService.queries().fetchNftByPriceRange({
               limit,
               start_after,
-              min_price: parseFloat(filters.price.min),
-              max_price: parseFloat(filters.price.max),
+              min_price: parseFloat(filters.price.min === '' ? '0' : filters.price.min),
+              max_price: parseFloat(filters.price.max === '' ? '999999999999' : filters.price.max),
               order: sortOrder,
             })) ?? []
 
           arrayToCompare = [...arrayToCompare, priceResult]
         }
 
-        if (
-          (filters.levels.min !== '' && filters.levels.max === '') ||
-          (filters.levels.min === '' && filters.levels.max !== '')
-        ) {
-          const level = filters.levels.min !== '' ? filters.levels.min : filters.levels.max
-
-          levelResult =
-            (await MarketPlaceService.queries().fetchNftByLevel({
-              limit,
-              start_after,
-              level: parseFloat(level),
-              order: sortOrder,
-            })) ?? []
-
-          arrayToCompare = [...arrayToCompare, levelResult]
-        } else if (filters.levels.min !== '' && filters.levels.max !== '') {
+        if (filters.levels.min !== '' && filters.levels.max !== '') {
           levelResult =
             (await MarketPlaceService.queries().fetchNftByLevelRange({
               limit,
               start_after,
-              level_min: parseFloat(filters.levels.min),
-              level_max: parseFloat(filters.levels.max),
+              level_min: parseFloat(filters.levels.min === '' ? '0' : filters.levels.min),
+              level_max: parseFloat(filters.levels.max === '' ? '50' : filters.levels.max),
               order: sortOrder,
             })) ?? []
 
@@ -482,7 +453,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
         if (myCosmons.length > 0) {
           if (init) {
             set({
-              cosmonsInMarketplace: myCosmons,
+              cosmonsInMarketplace: uniqBy(myCosmons, 'id'),
             })
           } else {
             set({
@@ -490,7 +461,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
             })
           }
 
-          return myCosmons
+          return uniqBy(myCosmons, 'id')
         }
       }
 
