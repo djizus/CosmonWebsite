@@ -398,7 +398,7 @@ export const useMarketPlaceStore = create<MarketPlaceState>((set, get) => ({
           arrayToCompare = [...arrayToCompare, priceResult]
         }
 
-        if (filters.levels.min !== '' && filters.levels.max !== '') {
+        if (filters.levels.min !== '' || filters.levels.max !== '') {
           levelResult =
             (await MarketPlaceService.queries().fetchNftByLevelRange({
               limit,
