@@ -69,6 +69,12 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
       return fightAttributes?.find((fa) => fa.key === key)?.value!
     }
 
+    const earnXkiEvent = response.events.find(
+      (event) =>
+        event.type === 'coin_received' &&
+        event.attributes.findIndex((e) => e.key === 'receiver' && e.value === address) !== -1
+    )
+
     const isBot = getAttrValue('bot') === 'true'
 
     const getOpponentCosmonsList = async () => {
@@ -137,6 +143,7 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
         identity: getAttrValue('winner') || '', // getAttrValue('winner') === "" if it's a draw
       },
       events: JSON.parse(getAttrValue('action'))?.results || [],
+      earnedXki: earnXkiEvent ? earnXkiEvent.attributes[1] : undefined,
     }
 
     return battle

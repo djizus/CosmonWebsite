@@ -1,3 +1,4 @@
+import { Attribute } from '@cosmjs/cosmwasm-stargate'
 import { ArenaType } from './Arena'
 import { CosmonTypeWithMalus } from './Malus'
 
@@ -36,4 +37,5 @@ export type FightType = {
   }
   winner: Omit<FightPlayerType, 'cosmons' | 'cosmonsWithoutBonus' | 'deckScore'>
   events: FightEventType[]
+  earnedXki: Attribute | undefined
 }
