@@ -121,7 +121,12 @@ const MainEvents: React.FC<MainEventsProps> = ({ battle }) => {
         <div className="mt-[20px] flex w-full flex-col items-center justify-center rounded-[20px] bg-[#282255] py-[20px] px-[50px]">
           <p className="text-[14px] font-normal text-white">
             💰 Congrats! Thanks to your victory, you just won{' '}
-            {convertMicroDenomToDenom(battle.earnedXki.value.split('utki').shift() as string)} XKI
+            {convertMicroDenomToDenom(
+              battle.earnedXki.value
+                .split(process.env.NEXT_PUBLIC_STAKING_DENOM as string)
+                .shift() as string
+            )}{' '}
+            XKI
           </p>
         </div>
       ) : null}
