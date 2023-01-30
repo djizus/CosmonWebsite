@@ -143,7 +143,9 @@ const fight = async (deck: Deck, arena: ArenaType): Promise<FightType> => {
         identity: getAttrValue('winner') || '', // getAttrValue('winner') === "" if it's a draw
       },
       events: JSON.parse(getAttrValue('action'))?.results || [],
-      earnedXki: earnXkiEvent ? earnXkiEvent.attributes[1] : undefined,
+      earnedXki: earnXkiEvent
+        ? earnXkiEvent.attributes.find((attr) => attr.key === 'amount')
+        : undefined,
     }
 
     return battle
