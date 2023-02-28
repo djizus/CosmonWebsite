@@ -13,7 +13,7 @@
     "@cosmjs/launchpad": "^0.27.1",
     "@cosmjs/proto-signing": "^0.29.5",
     "@cosmjs/stargate": "^0.29.5",
-    "@cosmostation/cosmos-client": "^0.0.4",
+    "@cosmostation/cosmos-client": "^0.0.5",
     "@cosmostation/extension-client": "^0.1.11",
     "@cosmostation/wc-modal": "^0.0.5",
     "@headlessui/react": "^1.5.0",

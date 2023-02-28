@@ -1382,10 +1382,10 @@
   resolved "https://registry.yarnpkg.com/@cosmjs/utils/-/utils-0.29.5.tgz#3fed1b3528ae8c5f1eb5d29b68755bebfd3294ee"
   integrity sha512-m7h+RXDUxOzEOGt4P+3OVPX7PuakZT3GBmaM/Y2u+abN3xZkziykD/NvedYFvvCCdQo714XcGl33bwifS9FZPQ==
 
-"@cosmostation/cosmos-client@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@cosmostation/cosmos-client/-/cosmos-client-0.0.4.tgz#9dc82df2a0da2c3d4fc4f36535961f0f35a9ed44"
-  integrity sha512-zYScOoPB20vleklvL6qJ2eglzYhIqtleJJXtXdCMSLf3mn/BuZ9rLecgETrPZDGPPEOcxJ9VgFOoZz0i2nfviw==
+"@cosmostation/cosmos-client@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@cosmostation/cosmos-client/-/cosmos-client-0.0.5.tgz#c6c8dccfe21ead25baa3a7113174d8b8bfc6c892"
+  integrity sha512-ly7EKC/DolZal+sFQzZtU7wN9hhOH1MgE5XZ+tGml+22bu68UU7KibsghM7VZoUf6F8ikYZ4AXGt1CTzf1bCnw==
   dependencies:
     "@cosmjs/amino" "^0.28.4"
     "@cosmjs/proto-signing" "^0.28.4"
