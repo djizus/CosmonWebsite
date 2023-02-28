@@ -36,7 +36,7 @@ export const getOfflineSignerCosmostation = async (): Promise<OfflineSigner> => 
               ({
                 address: key.bech32Address,
                 algo: 'secp256k1',
-                pubkey: key.pubKey,
+                pubkey: Buffer.from(key.pubKey, 'hex'),
               } as AccountData)
           )
           return accounts
