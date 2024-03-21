@@ -49,9 +49,10 @@ export default function Roadmap() {
             </RoadmapItem>
               <RoadmapItem order={2} date="Q2 2024">
                   <div>Improving website experience</div>
+                  <div>Discord bot integration</div>
               </RoadmapItem>
               <RoadmapItem order={3} date="Q3 2024">
-                  <div>Improving gameplay</div>
+              <div>Improving gameplay</div>
                   <div>Adjusting rewards distribution</div>
               </RoadmapItem>
               <RoadmapItem order={4} date="Q4 2024">

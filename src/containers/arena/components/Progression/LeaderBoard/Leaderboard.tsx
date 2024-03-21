@@ -84,7 +84,7 @@ const Leaderboard: React.FC<Props> = ({
       <table className={clsx(style.table, className)}>
         <thead className={style.header}>
         <tr>
-          <th className={style.headerCell}>Ranking</th>
+          <th className={style.headerCell}>Rank</th>
           <th className={style.headerCell}>Player</th>
           <th className={clsx(style.headerCell, 'hidden lg:table-cell')}>Score</th>
           <th className={clsx(style.headerCell, 'hidden lg:table-cell')}>Fights</th>
@@ -114,7 +114,10 @@ const Leaderboard: React.FC<Props> = ({
                   {walletInfos.defeats + walletInfos.draws === 0 ? "100%" :
                       `${(walletInfos.victories / (fights) * 100).toFixed(2)}%`}
                 </td>
-                <td className={clsx(style.cell, style.cellAlignedRight)}>{walletInfos.position}</td>
+                <td className={clsx(style.cell, style.cellAlignedRight)}>
+                  {walletInfos.position === null ? "0 XKI" :
+                      calculateRewardFormatted(walletInfos.position, prizepool)}
+                </td>
               </tr>
               <tr className={style.line}>
                 <td className={style.fakePositionCell}>...</td>

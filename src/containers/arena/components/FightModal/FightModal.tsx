@@ -109,7 +109,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
   const announceWhoStart = useCallback(async () => {
     await sleep(1000 / fightSpeed)
     setSentence(
-      `The fight is starting. ${iStart ? 'Your team' : 'The opponent'} deck is engaging the battle.`
+      `The fight is starting. ${iStart ? 'Your team' : 'The opponent'} is engaging the battle.`
     )
   }, [fightSpeed, iStart])
 
@@ -122,7 +122,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
   const announceWinner = useCallback(async () => {
     setSentence(
       <Trans>
-        {iWin ? 'You won 💪' : isDraw ? 'It’s a draw. Both parties fought well!' : 'You lost 😟'}
+        {iWin ? 'Congratulations, you won !' : isDraw ? 'It’s a draw. Well fought !' : 'You lost, better luck next time !'}
       </Trans>
     )
     if (iWin && !isDraw) {
@@ -211,7 +211,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
 
         return (
           <Trans>
-            The fight is running hard!{' '}
+            Look at the moves !{' '}
             <strong>{{ defenderName: defender?.data.extension.name }}</strong> just dodged the
             opponent attack!
           </Trans>
@@ -243,7 +243,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
 
         return (
           <Trans>
-            The fight is running hard!{' '}
+            Another one bites the dust !{' '}
             <strong>{{ defenderName: defender?.data.extension.name }}</strong> is KO... Only{' '}
             {{
               nbKeepingCards: defenderIsInOpponentTeam
@@ -258,7 +258,7 @@ const FightModal: React.FC<FightModalProps> = ({ onCloseModal, onFightEnd }) => 
       if (critical) {
         return (
           <Trans>
-            The fight is running hard! <strong>{attacker?.data.extension.name}</strong> performed a
+            Watch out ! <strong>{attacker?.data.extension.name}</strong> performed a
             critical attack!
           </Trans>
         )
