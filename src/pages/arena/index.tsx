@@ -29,7 +29,7 @@ export default function Page() {
       isConnected &&
       !isMobile
     ) {
-      setDisplayEmailModal(true)
+      setDisplayEmailModal(false)
     } else if (isMobile) {
       setDisplayEmailModal(false)
     }

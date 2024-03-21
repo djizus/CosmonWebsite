@@ -40,21 +40,21 @@ const BuyCosmonSection: React.FC<Props> = () => {
   const getDeckPrice = async () => {
     let price = await fetchCosmonPrice(SCARCITIES.COMMON)
     if (
-      whitelistData &&
-      whitelistData.discount_percent !== 0 &&
-      whitelistData.used_slots < whitelistData.available_slots
+        whitelistData &&
+        whitelistData.discount_percent !== 0 &&
+        whitelistData.used_slots < whitelistData.available_slots
     ) {
       setDeckPrice(
-        new BigNumber(price)
-          .multipliedBy(3)
-          .minus(
-            new BigNumber(price)
+          new BigNumber(price)
               .multipliedBy(3)
-              .multipliedBy(whitelistData.discount_percent)
-              .dividedBy(100)
-          )
-          .plus(0.01)
-          .toFixed(2)
+              .minus(
+                  new BigNumber(price)
+                      .multipliedBy(3)
+                      .multipliedBy(whitelistData.discount_percent)
+                      .dividedBy(100)
+              )
+              .plus(0.01)
+              .toFixed(2)
       )
     } else {
       setDeckPrice(new BigNumber(price).multipliedBy(3).toFixed(2))
@@ -64,9 +64,9 @@ const BuyCosmonSection: React.FC<Props> = () => {
   const getBlindMintPrice = async () => {
     let price = await fetchBlindMintPrice()
     if (
-      whitelistData &&
-      whitelistData.discount_percent !== 0 &&
-      whitelistData.used_slots < whitelistData.available_slots
+        whitelistData &&
+        whitelistData.discount_percent !== 0 &&
+        whitelistData.used_slots < whitelistData.available_slots
     ) {
       setBlindMintPrice(price)
     } else {
@@ -110,8 +110,8 @@ const BuyCosmonSection: React.FC<Props> = () => {
   const hasEnoughCoinsToBuyDeck = useMemo(() => {
     if (deckPrice !== 'XX' && coins) {
       const availableBalance = getAmountFromDenom(
-        process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
-        coins
+          process.env.NEXT_PUBLIC_IBC_DENOM_RAW || '',
+          coins
       )
       return availableBalance > +deckPrice
     }
@@ -148,91 +148,54 @@ const BuyCosmonSection: React.FC<Props> = () => {
   }
 
   return (
-    <div className={style.container}>
-      <div className={style.deckContainer}>
-        <AnimatedImage
-          imgSrc="/getting-started/raffle-one-deck.png"
-          imgClassName={style.imgStarterPack}
-        />
-        <div className={style.rightDeckContainer}>
-          <p className={style.deckTitle}>Full common deck </p>
-          <p className={style.description}>
-            This deck allows you to acquire a “ready-to-play” deck.
-            <br />
-            You will get 3 NFT Cards with random common Leaders.
-          </p>
-          <p className={style.deckQuestion}>WHAT’S INSIDE ?</p>
-          <p className={style.deckQuestionAnswers}>{`> 3 NFT Cards`}</p>
-          <p className={style.deckQuestionAnswers}>{`> Scarcity: Common`}</p>
-          {isConnected ? (
-            <div data-tip="tootlip" data-for={`buy-deck`}>
-              <Button
-                disabled={!hasEnoughCoinsToBuyDeck || !deckPrice}
-                withoutContainer
-                className={style.buyDeckButton}
-                onClick={mintDeck}
-                isLoading={isCurrentlyBuyingDeck}
-              >
-                Buy starter deck for {deckPrice} ATOM
-              </Button>
-              {!hasEnoughCoinsToBuyDeck ? (
-                <Tooltip id={`buy-deck`} place="bottom">
-                  <p>You don’t have enough ATOM in your wallet. Please deposit ATOMs</p>
-                </Tooltip>
-              ) : null}
-            </div>
-          ) : (
-            <ButtonConnectWallet className={style.connectButton} />
-          )}
-        </div>
-      </div>
-      <UnmaskOnReach delay={0.2}>
-        <p className={style.secondTitle}>... or buy a random Cosmon Card</p>
-        <p className={style.secondDescription}>
-          Mint a random Cosmon in a pool of 500 cards!
-          <br />
-          This pool contains at least 10 uncommon Cosmon cards & at least 5 cards with a higher
-          scarcity, including legendary!
-        </p>
-        <p className={style.secondSubDescription}>
-          The rarer your Cosmons are, the more yield you will get from it.
-          <br />
-          Your Cosmon's initial characteristics will also be higher with an upper rarity.
-        </p>
-      </UnmaskOnReach>
-      <div className={clsx(style.buyableCosmonsContainer)}>
+      <div className={style.container}>
         <UnmaskOnReach delay={0.2}>
-          <img className={style.randomCardImg} src="/cosmons/buyable-card/every-card.png" />
-          {isConnected ? (
-            <div data-tip="tootlip" data-for={`blind-mint`}>
-              <Button
-                onClick={buy}
-                disabled={!hasEnoughCoinsBlindMint}
-                isLoading={isCurrentlyBuying}
-                className={style.buyRandomCardButton}
-                withoutContainer
-              >
-                Buy random card for{' '}
-                {blindMintPrice ? convertMicroDenomToDenom(blindMintPrice.amount) : 'XX'} ATOM
-              </Button>
-              {!hasEnoughCoinsBlindMint ? (
-                <Tooltip id={`blind-mint`} place="bottom">
-                  <p>You don’t have enough ATOM in your wallet. Please deposit ATOMs</p>
-                </Tooltip>
-              ) : null}
-            </div>
-          ) : (
-            <ButtonConnectWallet withoutContainer className={style.connectButton} />
-          )}
+          <p className={style.secondTitle}>Buy a random Cosmon Card</p>
+          <p className={style.secondDescription}>
+            Mint a random Cosmon in a pool of 500 cards!
+            <br />
+            This pool contains at least 10 uncommon Cosmon cards & at least 5 cards with a higher
+            scarcity, including legendary!
+          </p>
+          <p className={style.secondSubDescription}>
+            The rarer your Cosmons are, the more yield you will get from it.
+            <br />
+            Your Cosmon's initial characteristics will also be higher with an upper rarity.
+          </p>
         </UnmaskOnReach>
+        <div className={clsx(style.buyableCosmonsContainer)}>
+          <UnmaskOnReach delay={0.2}>
+            <img className={style.randomCardImg} src="/cosmons/buyable-card/every-card.png" />
+            {isConnected ? (
+                <div data-tip="tootlip" data-for={`blind-mint`}>
+                  <Button
+                      onClick={buy}
+                      disabled={!hasEnoughCoinsBlindMint}
+                      isLoading={isCurrentlyBuying}
+                      className={style.buyRandomCardButton}
+                      withoutContainer
+                  >
+                    Mint a random card for{' '}
+                    {blindMintPrice ? convertMicroDenomToDenom(blindMintPrice.amount) : 'XX'} ATOM
+                  </Button>
+                  {!hasEnoughCoinsBlindMint ? (
+                      <Tooltip id={`blind-mint`} place="bottom">
+                        <p>You don’t have enough ATOM in your wallet. Please deposit ATOMs</p>
+                      </Tooltip>
+                  ) : null}
+                </div>
+            ) : (
+                <ButtonConnectWallet withoutContainer className={style.connectButton} />
+            )}
+          </UnmaskOnReach>
+        </div>
+        {displayBuyCosmonModal && cosmonBought ? (
+            <BuyCosmonModal cosmon={cosmonBought} handleCloseModal={handleHideCosmonModal} />
+        ) : null}
+        {displayBuyDeckModal && deckBought.length === 3 ? (
+            <BuyDeckModal cosmons={deckBought} handleCloseModal={handleHideDeckModal} />
+        ) : null}
       </div>
-      {displayBuyCosmonModal && cosmonBought ? (
-        <BuyCosmonModal cosmon={cosmonBought} handleCloseModal={handleHideCosmonModal} />
-      ) : null}
-      {displayBuyDeckModal && deckBought.length === 3 ? (
-        <BuyDeckModal cosmons={deckBought} handleCloseModal={handleHideDeckModal} />
-      ) : null}
-    </div>
   )
 }
 

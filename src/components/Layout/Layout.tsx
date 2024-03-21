@@ -168,20 +168,20 @@ export default function Layout({ children }: LayoutProps) {
                 <a>Marketplace</a>
               </Link>
             ) : null}
-            <Link href="https://docs.cosmon.ki/">
-              <a target="_blank">Documentation</a>
-            </Link>
+            {ARENA_IS_ACTIVE ? (
+                <Link href="/arena">
+                  <a>Arena</a>
+                </Link>
+            ) : null}
             <Link href="/my-assets">
               <a>
                 My Assets
                 {cosmonsId.length > 0 && ` (${cosmonsId.length})`}
               </a>
             </Link>
-            {ARENA_IS_ACTIVE ? (
-              <Link href="/arena">
-                <a>Arena</a>
-              </Link>
-            ) : null}
+            <Link href="https://docs.cosmon.ki/">
+              <a target="_blank">Documentation</a>
+            </Link>
           </div>
         </div>
 

@@ -42,7 +42,7 @@ export default function Page() {
       isConnected &&
       !isMobile
     ) {
-      setDisplayEmailModal(true)
+      setDisplayEmailModal(false)
     } else if (isMobile) {
       setDisplayEmailModal(false)
     }
@@ -107,22 +107,17 @@ export default function Page() {
             </div>
           </div>
         ) : null}
-        <BandeauLastBlockchainActions />
       </div>
 
       <Section className="bg-cosmon-blue-darker pt-[91px] lg:pt-[185px] lg:pb-[180px]">
         <Intro />
       </Section>
 
-      <Section className="-mt-3 mb-[160px] pb-[360px] pt-80 lg:mb-0 lg:min-h-[1500px] lg:pt-36">
-        <ChooseYourLeaders />
-      </Section>
-
-      <Section className="pt-[165px] pb-[76px] lg:pt-[272px] lg:pb-[138px]">
+      <Section className="overflow-hidden pt-[165px] pb-[76px] lg:pt-[272px] lg:pb-[138px]">
         <RarityLevels />
       </Section>
 
-      <Section className=" pt-[159px] lg:pt-[172px]">
+      <Section className="overflow-hidden pt-[159px] lg:pt-[172px]">
         <HoldAndEarn />
       </Section>
 
@@ -138,16 +133,6 @@ export default function Page() {
         <Partners />
       </Section>
 
-      <Section className="pt-52 lg:pt-[261px]">
-        <CommonQuestions />
-      </Section>
-
-      <Section className="pt-48 pb-28 lg:pt-[298px]">
-        <Subscribe />
-      </Section>
-      {displayEmailModal ? (
-        <EmailModal handleCloseModal={() => setDisplayEmailModal(false)} />
-      ) : null}
     </div>
   )
 }

@@ -207,10 +207,6 @@ const MyAssets: React.FC<MyAssetsProps> = ({}) => {
           )}
         </ConnectionNeededContent>
 
-        <Section className="hidden pt-[173px] pb-[162px] lg:flex">
-          <CommonQuestions />
-        </Section>
-
         <Section className="pt-48 pb-44 lg:hidden lg:pt-[298px]">
           <Subscribe />
         </Section>

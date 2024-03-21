@@ -49,22 +49,14 @@ export default function Footer() {
 
             <div className={style.linkGroup}>
               <div className={style.title}>Support</div>
-              {/* MVP */}
-              {/* <Link href={'/about'}>
-                <a className={style.link}>Help Center</a>
-              </Link> */}
-              <Link
-                href={
-                  'https://inky-sidewalk-879.notion.site/Cosmon-white-paper-722dc48d832a49e9ae348eaf94184706'
-                }
-              >
-                <a target="_blank" className={style.link}>
-                  Light Paper
-                </a>
-              </Link>
               <Link href="https://docs.cosmon.ki/">
                 <a target="_blank" className={style.link}>
                   Documentation
+                </a>
+              </Link>
+              <Link href="https://commonwealth.im/dashboard/global">
+                <a target="_blank" className={style.link}>
+                  Commonwealth
                 </a>
               </Link>
             </div>

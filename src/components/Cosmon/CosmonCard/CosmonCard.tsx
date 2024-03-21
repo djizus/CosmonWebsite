@@ -17,6 +17,7 @@ interface CosmonCardProps {
   showLevel?: boolean
   showPerspectiveAnimation?: boolean
   showGlareAnimation?: boolean
+  combatState?: 'idle' | 'attacking' | 'defending'| 'dodge'| 'defendingCrit' | 'critical'
   size?: 'sm' | 'md' | 'lg'
 }
 
@@ -30,6 +31,7 @@ const CosmonCard: React.FC<CosmonCardProps & HTMLMotionProps<'div'>> = ({
   showLevel = false,
   showPerspectiveAnimation = false,
   showGlareAnimation = false,
+  combatState = "static",
   size = 'md',
   ...divProps
 }) => {
@@ -122,6 +124,43 @@ const CosmonCard: React.FC<CosmonCardProps & HTMLMotionProps<'div'>> = ({
     glareMotionOpacity.set(0, true)
   }
 
+  //const numericLevel = parseInt(level ?? "0", 10);
+  //const evoLevel = numericLevel < 15 ? "evo-0" :
+  //    (numericLevel < 30 ? "evo-1" : "evo-2");
+  const evoLevel = "evo-0"
+  const videoSrc = useMemo(() => {
+    switch(combatState) {
+      case 'idle':
+        return `https://scrappo.trade/${indexByCharacter(
+            cosmon.data.extension.name
+        )}/${scarcity?.toLowerCase()}/idle.mp4`;
+      case 'attacking':
+        return `https://scrappo.trade/${indexByCharacter(
+            cosmon.data.extension.name
+        )}/${scarcity?.toLowerCase()}/attack.mp4`;
+      case 'defending':
+        return `https://scrappo.trade/${indexByCharacter(
+            cosmon.data.extension.name
+        )}/${scarcity?.toLowerCase()}/defense.mp4`;
+      case 'dodge':
+        return `https://scrappo.trade/${indexByCharacter(
+            cosmon.data.extension.name
+        )}/${scarcity?.toLowerCase()}/dodge.mp4`;
+      case 'defendingCrit':
+        return `https://scrappo.trade/${indexByCharacter(
+            cosmon.data.extension.name
+        )}/${scarcity?.toLowerCase()}/defensecrit.mp4`;
+      case 'critical':
+        return `https://scrappo.trade/${indexByCharacter(
+            cosmon.data.extension.name
+        )}/${scarcity?.toLowerCase()}/critical.mp4`;
+      default:
+        return `https://static.foundation.ki/klub/images/cosmon/${indexByCharacter(
+            cosmon.data.extension.name
+        )}/${evoLevel}/${scarcity?.toLowerCase()}.png`; // Image par défaut si nécessaire
+    }
+  }, [combatState, cosmon.data.extension.name]);
+
   return (
     <div
       style={{
@@ -132,87 +171,103 @@ const CosmonCard: React.FC<CosmonCardProps & HTMLMotionProps<'div'>> = ({
       }}
     >
       <motion.div
-        {...divProps}
-        ref={cardRef}
-        className={clsx(
-          'relative flex h-full w-full',
-          styles.cosmonCardContainer,
-          divProps.className
-        )}
-        onPointerMove={handlePointerMoveCard}
-        onMouseOut={handlePointerLeave}
-        style={{
-          ...divProps.style,
-          ...containerStyle,
-          ...(showPerspectiveAnimation && { rotateY }),
-          ...(showPerspectiveAnimation && { rotateX }),
-          overflow: 'hidden',
-        }}
-      >
-        <motion.img
-          src={`https://static.foundation.ki/klub/images/cosmon/${indexByCharacter(
-            cosmon.data.extension.name
-          )}/evo-0/${scarcity?.toLowerCase()}.png`}
+          {...divProps}
+          ref={cardRef}
+          className={clsx(
+              'relative flex h-full w-full',
+              styles.cosmonCardContainer,
+              divProps.className
+          )}
+          onPointerMove={handlePointerMoveCard}
+          onMouseOut={handlePointerLeave}
           style={{
-            height: '100%',
-            width: '100%',
-            objectFit: 'contain',
-            ...imgStyle,
+            ...divProps.style,
+            ...containerStyle,
+            ...(showPerspectiveAnimation && {rotateY}),
+            ...(showPerspectiveAnimation && {rotateX}),
+            overflow: 'hidden',
           }}
-        />
+      >
+        {
+          videoSrc.endsWith('.png') ? (
+              <motion.img
+                  src={videoSrc}
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    objectFit: 'contain',
+                    ...imgStyle,
+                  }}
+              />
+          ) : (
+              <motion.video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  src={videoSrc}
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    objectFit: 'contain',
+                    ...imgStyle,
+                  }}
+              />
+          )
+        }
 
         {showGlareAnimation ? (
-          <motion.div
-            style={{
-              position: 'absolute',
-              transform: 'translateZ(1.4px)',
-              background: `radial-gradient(farthest-corner circle at ${glareX}% ${glareY}%,rgba(255,255,255,.8) 10%,rgba(255,255,255,.65) 20%,rgba(0,0,0,.5) 90%)`,
-              mixBlendMode: 'overlay',
-              opacity: glareOpacity,
-              width: '100%',
-              height: '100%',
-            }}
-          />
+            <motion.div
+                style={{
+                  position: 'absolute',
+                  transform: 'translateZ(1.4px)',
+                  background: `radial-gradient(farthest-corner circle at ${glareX}% ${glareY}%,rgba(255,255,255,.8) 10%,rgba(255,255,255,.65) 20%,rgba(0,0,0,.5) 90%)`,
+                  mixBlendMode: 'overlay',
+                  opacity: glareOpacity,
+                  width: '100%',
+                  height: '100%',
+                }}
+            />
         ) : null}
 
         {showScarcity ? (
-          <div className={clsx(styles.scarcityContainer, styles[size])}>
-            <img
-              className="lg:m-1"
-              src={`/rarity-levels/${getScarcityByCosmon(cosmon)!.toLowerCase()}.png`}
-            />
-            <p>{getScarcityByCosmon(cosmon)}</p>
-          </div>
+            <div className={clsx(styles.scarcityContainer, styles[size])}>
+              <img
+                  className="lg:m-1"
+                  src={`/rarity-levels/${getScarcityByCosmon(cosmon)!.toLowerCase()}.png`}
+              />
+              <p>{getScarcityByCosmon(cosmon)}</p>
+            </div>
         ) : null}
 
         <div className={clsx(styles.attributsContainer, styles[size])}>
           <div className="flex flex-col items-center">
             {showPersonality ? (
-              <>
-                <img
-                  src={`/cosmons/personality-icons/${personality?.toLowerCase()}.svg`}
-                  style={{ width: personalityIconWidth(personality?.toLowerCase()!) }}
-                />
-                <p className={clsx(styles.label, styles[size])}>{personality?.toUpperCase()}</p>
-              </>
+                <>
+                  <img
+                      src={`/cosmons/personality-icons/${personality?.toLowerCase()}.svg`}
+                      style={{width: personalityIconWidth(personality?.toLowerCase()!)}}
+                  />
+                  <p className={clsx(styles.label, styles[size])}>{personality?.toUpperCase()}</p>
+                </>
             ) : null}
           </div>
           <div className="flex flex-col items-center">
             {showNationality ? (
-              <>
-                <span className={clsx(styles.flag, styles[size])}>{nationality?.flag}</span>
-                <p className={clsx(styles.label, styles[size])}>
-                  {nationality?.name?.common?.toUpperCase()}
-                </p>
-              </>
+                <>
+                  <span className={clsx(styles.flag, styles[size])}>{nationality?.flag}</span>
+                  <p className={clsx(styles.label, styles[size])}>
+                    {nationality?.name?.common?.toUpperCase()}
+                  </p>
+                </>
             ) : null}
           </div>
           <div className="flex flex-col items-center">
             {showLevel ? (
-              <>
-                <p className={clsx(styles.level, styles[size])}>{level}</p>
-                <p className={clsx(styles.label, styles[size])}>LEVEL</p>
-              </>
+                <>
+                  <p className={clsx(styles.level, styles[size])}>{level}</p>
+                  <p className={clsx(styles.label, styles[size])}>LEVEL</p>
+                </>
             ) : null}
           </div>
         </div>

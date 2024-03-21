@@ -44,33 +44,22 @@ export default function Roadmap() {
             viewport={{ once: true }}
             className="my-8 ml-2 flex flex-col gap-y-10 lg:flex-row"
           >
-            <RoadmapItem order={1} date="Q4 2021">
-              Project Start
+            <RoadmapItem order={1} date="2024">
+              Cosmon DAO takeover
             </RoadmapItem>
-            <RoadmapItem order={2} date="Q1 2022">
-              <div>White paper formalization</div>
-              <div>1st private sale</div>
-            </RoadmapItem>
-            <RoadmapItem order={3} date="Q2 2022">
-              <div>2nd private sale</div>
-              <div>Public sale launch</div>
-              <div>Stakedrop</div>
-            </RoadmapItem>
-            <RoadmapItem order={4} date="Q3 2022">
-              <div> Gameplay MVP</div>
-              <div> Build your deck</div>
-              <div>Cosmon training mode</div>
-            </RoadmapItem>
-            <RoadmapItem order={5} date="Q4 2022">
-              <div>Alpha 1st season</div>
-              <div>Leagues and prize pools</div>
-              <div>Boost and fighting bonuses</div>
-            </RoadmapItem>
-            <RoadmapItem order={6} date="2023">
-              <div>Full gameplay final release</div>
-              <div>Launch of pro leagues</div>
-              <div>Secondary market place</div>
-            </RoadmapItem>
+              <RoadmapItem order={2} date="Q2 2024">
+                  <div>Improving website experience</div>
+              </RoadmapItem>
+              <RoadmapItem order={3} date="Q3 2024">
+                  <div>Improving gameplay</div>
+                  <div>Adjusting rewards distribution</div>
+              </RoadmapItem>
+              <RoadmapItem order={4} date="Q4 2024">
+                  <div>Making Cosmon a fairer experience</div>
+              </RoadmapItem>
+              <RoadmapItem order={5} date="2025">
+                  <div>Expanding Cosmon</div>
+              </RoadmapItem>
           </motion.div>
         </div>
       </div>
