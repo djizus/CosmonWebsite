@@ -131,27 +131,27 @@ const CosmonCard: React.FC<CosmonCardProps & HTMLMotionProps<'div'>> = ({
   const videoSrc = useMemo(() => {
     switch(combatState) {
       case 'idle':
-        return `https://scrappo.trade/${indexByCharacter(
+        return `https://github.com/djizus/CosmonWebsite/raw/main/public/cosmons/gif/${indexByCharacter(
             cosmon.data.extension.name
         )}/${scarcity?.toLowerCase()}/idle.mp4`;
       case 'attacking':
-        return `https://scrappo.trade/${indexByCharacter(
+        return `https://github.com/djizus/CosmonWebsite/raw/main/public/cosmons/gif/${indexByCharacter(
             cosmon.data.extension.name
         )}/${scarcity?.toLowerCase()}/attack.mp4`;
       case 'defending':
-        return `https://scrappo.trade/${indexByCharacter(
+        return `https://github.com/djizus/CosmonWebsite/raw/main/public/cosmons/gif/${indexByCharacter(
             cosmon.data.extension.name
         )}/${scarcity?.toLowerCase()}/defense.mp4`;
       case 'dodge':
-        return `https://scrappo.trade/${indexByCharacter(
+        return `https://github.com/djizus/CosmonWebsite/raw/main/public/cosmons/gif/${indexByCharacter(
             cosmon.data.extension.name
         )}/${scarcity?.toLowerCase()}/dodge.mp4`;
       case 'defendingCrit':
-        return `https://scrappo.trade/${indexByCharacter(
+        return `https://github.com/djizus/CosmonWebsite/raw/main/public/cosmons/gif/${indexByCharacter(
             cosmon.data.extension.name
         )}/${scarcity?.toLowerCase()}/defensecrit.mp4`;
       case 'critical':
-        return `https://scrappo.trade/${indexByCharacter(
+        return `https://github.com/djizus/CosmonWebsite/raw/main/public/cosmons/gif/${indexByCharacter(
             cosmon.data.extension.name
         )}/${scarcity?.toLowerCase()}/critical.mp4`;
       default:
